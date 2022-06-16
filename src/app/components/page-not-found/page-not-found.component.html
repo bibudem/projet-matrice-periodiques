@@ -1,0 +1,21 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page --->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <div class="content-wrapper">
+      <!-- Contenu de la page -->
+      <div class="row justify-content-center mt-5">
+        <div class="col-md-12 text-center m-5">
+          <span class="display-1 font-size-5 d-block ">404</span>
+          <div class="mb-4 lead"><h1>Opps!</h1>{{ '404-message' | translate}}</div>
+          <a  routerLink="/accueil" class="btn btn-outline-dark btn-fw mt-2">{{ 'not-user-lien' | translate}}</a><br><br>
+        </div>
+      </div>
+      <!-- fin page -->
+    </div>
+    <!-- Contenu footer -->
+    <app-footer></app-footer>
+    </div>
+  </div>

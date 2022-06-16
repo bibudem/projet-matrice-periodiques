@@ -1,0 +1,201 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <!-- div animation -->
+    <div id="load-import" class="cacherVisible">
+      <div class="loader">...</div>
+      <div id="load">{{ 'importation.attendre' | translate}}</div>
+    </div>
+    <div class="content-wrapper b-white h-100" id="contenu-interface">
+      <!-- Contenu de la page liste des periodiques -->
+      <!-- Quick Action Toolbar Ends-->
+      <div class="page-header pt-5">
+        <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
+          <h4 class="font-weight-semibold text-initial ">{{ 'importation.titre' | translate}}</h4>
+          <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+          </span>
+        </div>
+      </div>
+      <div id="contenu-form">
+        <!-- alert resultat vide -->
+        <blockquote class="blockquote blockquote-warning cacherVisible" id="reponse-importation">
+          <button type="button"  class="close" (click)="methodesGlobal.nonAfficher('reponse-importation')" >
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h5 class="p-2">{{ 'importation.demande-importation' | translate}}</h5>
+        </blockquote>
+        <!-- alert result update -->
+        <blockquote class="blockquote blockquote-warning cacherVisible" id="result-update">
+          <button type="button"  class="close" (click)="methodesGlobal.nonAfficher('result-update')" >
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h5 class="p-2">{{ 'importation.result-update' | translate}}</h5>
+        </blockquote>
+        <form  #importationForm="ngForm" >
+          <div class="row mt-5">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="plateforme">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
+                <select name="annee" id="annee"  class="form-control" #annee >
+                  <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="form-group">
+                <label for="plateforme">{{ 'plateforme' | translate}}</label>
+                <select name="plateforme" id="plateforme"  class="form-control" #plateforme >
+                  <option value="">{{ 'importation.tous-plateforme' | translate}}</option>
+                  <option *ngFor="let rep of this.listePlateforme" [value]="rep.PlatformID">{{rep.titrePlateforme}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="page-header mt-3">
+            <h4 class="mt-3 text-uppercase"></h4>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">
+                  <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#modal-enregistrer"><i class="icon-cloud-upload btn-icon-prepend"></i> {{ 'importation.sushi-titre' | translate}}</button>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  <button type="button" class="btn btn-dark mr-2" (click)="this.methodesGlobal.afficher('contenu-resultat')"><i class="icon-list btn-icon-prepend"></i> {{ 'importation.afficher-resultats' | translate}}</button>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  <button type="button" class="btn btn-dark mr-2" (click)="updateStatistiques(this.methodesGlobal.getValue(annee.value))"><i class="fa fa-save btn-icon-prepend"></i> {{ 'importation.mis-a-jour-statistiques' | translate}}</button>
+                </li>
+              </ol>
+            </nav>
+          </div>
+          <!-- Modal pour modifier-->
+        <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{ 'importation.sushi-titre' | translate}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                {{ 'importation.confirmer-text' | translate}}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i>{{'btn-annuler'| translate}}</button>
+                <button type="button" class="btn btn-primary btn-sm "  data-dismiss="modal" id="add-boutton" (click)="importer(this.methodesGlobal.getValueNgSelect(plateforme.value),this.methodesGlobal.getValue(annee.value))" ><i class="fa fa-save btn-icon-prepend"></i> {{'importation.sushi-titre'| translate }}</button></div>
+            </div>
+          </div>
+        </div>
+      </form>
+      </div>
+      <!-- progresse bar -->
+      <!-- fin contenu form -->
+      <!-- Contenu des tableaux des résultats -->
+      <div id="contenu-resultat" class="cacherVisible">
+        <!-- alert resultat vide -->
+        <div class="alert alert-danger" id="message-brute">
+          <button type="button"  class="close" (click)="methodesGlobal.nonAfficher('message-brute')" >
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h6 class="p-2">{{ 'importation.message-brute' | translate}}</h6>
+        </div>
+      <div class="card-header mt-1 row b-white" id="filtreResult" >
+        <div class="col-md-12">
+
+          <ul class="list-inline w-100">
+            <li class="list-inline-item w-50" >
+              <mat-form-field class="w-100" >
+                <input  (keyup)="applyFilter(methodesGlobal.getValue(texteFiltre.value))"
+                        matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre>
+              </mat-form-field>
+            </li>
+            <li class="list-inline-item" ><button class="btn btn-outline-dark btn-sm ml-5" (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j1')">{{ 'importation.rapportJ1' | translate}}</button></li>
+            <li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j2')">{{ 'importation.rapportJ2' | translate}}</button> </li>
+            <!--<li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j4')">{{ 'importation.rapportJ4' | translate}}</button></li>-->
+            <li class="list-inline-item" ><button class="btn btn-primary btn-sm" title="{{ 'btn-export' | translate}}" (click)="ExportTOExcel()"><i class="fa fa-file-excel-o"></i></button></li>
+            <li class="list-inline-item ml-2" ><button class="btn btn-dark btn-sm" (click)="methodesGlobal.nonAfficher('contenu-resultat')"><i class="fa fa-eye-slash"></i></button></li>
+          </ul>
+        </div>
+      </div>
+      <div class="example-container" id="tableauResult" class="cacherVisible">
+        <div class="table-responsive">
+          <table mat-table
+                 [dataSource]="dataSource"
+                 class="mat-elevation-z8 w-100 p-2"
+                 matSort  >
+            <!-- ID Column -->
+            <ng-container matColumnDef="numero" >
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'numero' | translate}} </th>
+              <td *matCellDef="let row" class="w-10 p-3" > {{row.numero}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="PlatformID">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'PlatformID' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10" > {{row.PlatformID}} </td>
+            </ng-container>
+
+            <!-- Acronime Column -->
+            <ng-container matColumnDef="Title">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-15"> {{ 'titre' | translate}} </th>
+              <td  *matCellDef="let row" class="w-15" > {{row.Title}} </td>
+            </ng-container>
+
+            <!-- ISSN Column -->
+            <ng-container matColumnDef="ISSN">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'ISSN' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.ISSN}} </td>
+            </ng-container>
+
+            <!-- Derniere modification -->
+            <ng-container matColumnDef="EISSN">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'EISSN' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.EISSN }} </td>
+            </ng-container>
+
+            <!-- Derniere modification -->
+            <ng-container matColumnDef="annee">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'annee' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.annee }} </td>
+            </ng-container>
+
+            <!-- Derniere modification -->
+            <ng-container matColumnDef="Metric_Type">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15"> {{ 'type' | translate}} </th>
+              <td  *matCellDef="let row" class="w-15"> {{row.Metric_Type }} </td>
+            </ng-container>
+
+            <!-- Derniere modification -->
+            <ng-container matColumnDef="Reporting_Period_Total">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'Total' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.Reporting_Period_Total }} </td>
+            </ng-container>
+
+            <!-- Derniere modification -->
+            <ng-container matColumnDef="dateA">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'dateA' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.dateA | date:'short': 'fr'}} </td>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+          </table>
+        </div>
+          <mat-paginator [pageSizeOptions]="[25, 50, 100, 150]"></mat-paginator>
+        <!-- creation  du tableau pour export-->
+        <table  class="table table-bordered cacherVisible"  id="table-rapport" >
+          <tr><th *ngFor="let th of displayedColumns ">{{th}}</th></tr>
+          <tr *ngFor="let col of tableauRapports">
+            <td *ngFor="let rep of displayedColumns">{{col[rep]}}</td></tr>
+        </table>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>
+

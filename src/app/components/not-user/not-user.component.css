@@ -1,0 +1,134 @@
+:root {
+  --bc: #efeeee;
+  --white: #ffffff;
+  --black: #000000;
+  --red: #da2c4d;
+  --teal: #20c997;
+  --cyan: #17a2b8;
+  --primary: #f9c6cf;
+  --font-family-sans-serif: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+* {
+  box-sizing: border-box;
+}
+/* Classes */
+.top {
+  padding: 2em;
+  margin: 0 auto;
+  background-color: white;
+  text-align: center;
+}
+.title {
+  color: var(--black);
+}
+.title h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 35px;
+  font-weight: 400;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+}
+.title h3 {
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 8px;
+  line-height: 0;
+}
+/* Parallax */
+.parallax1 {
+  position: relative;
+  background-image: url("https://matrice.bib.umontreal.ca/assets/images/not-user1.jpg");
+  min-height: 35vh;
+  position: relative;
+  background-attachment: fixed;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.parallax2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-image: url("https://matrice.bib.umontreal.ca/assets/images/not-user2.jpg");
+  min-height: 45vh;
+  position: relative;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.overlay {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .4);
+  position: absolute;
+}
+.parallax2 h2 {
+  font-size: 3em;
+  font-weight: 300;
+  text-transform: uppercase;
+  color: var(--white);
+  z-index: 1;
+}
+h5 {
+  color: #495057;
+  font-weight: normal;
+}
+/* Paragraph */
+.paragraph {
+  margin: 3em 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.paragraph p {
+  width: 60%;
+  font-size: 1.05em;
+  line-height: 1.45em;
+  letter-spacing: .1em;
+  color: rgb(64, 64, 64);
+}
+.first span {
+  font-size: 4em;
+  color: var(--red);
+  float: left;
+  font-weight: 400;
+  line-height: 55px;
+  padding: .05em .2em 0 0;
+}
+.second span {
+  font-size: 4em;
+  color: var(--teal);
+  float: left;
+  font-weight: 400;
+  line-height: 55px;
+  padding: .05em .2em 0 0;
+}
+.third span {
+  font-size: 4em;
+  color: var(--cyan);
+  float: left;
+  font-weight: 400;
+  line-height: 55px;
+  padding: .05em .2em 0 0;
+}
+/* Selection */
+::selection {
+  color: var(--white);
+  background: rgba(161, 181, 201, .8);
+}
+/* SCROLLBAR */
+::-webkit-scrollbar-track {
+  background-color: #F5F5F5;
+}
+::-webkit-scrollbar {
+  width: 12px;
+  background-color: #F5F5F5;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(161, 181, 201, .8);
+}

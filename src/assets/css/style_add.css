@@ -1,0 +1,174 @@
+/* style personaliser*/
+.container, .container-fluid, .container-sm, .container-md, .container-lg, .container-xl {
+  padding-left: 0!important;
+  padding-right: 0!important;
+  margin-top: 20px;
+}
+.w-8 {
+  width: 8%!important;
+  text-align: center;
+}
+.w-5 {
+  width: 5%!important;
+}
+.w-40 {
+  width: 40%!important;
+}
+.w-30 {
+  width: 30%!important;
+}
+
+.w-20 {
+  width: 20%!important;
+}
+.btna-xs{
+  width: 35px;
+  height: 35px;
+}
+.select2-container .select2-selection--multiple .select2-selection__rendered {
+  height: 2.5rem!important;
+}
+/*Colorer les entetes des tableaux*/
+thead {
+  background: #f6f7f9;
+}
+.sidebar {
+  min-height: 100%!important;
+}
+.footer {
+  background: #021421!important;
+  padding-top: 5px!important;
+}
+/* enlever le border pour le menu */
+.sidebar .nav .nav-item .nav-link {
+ border-top: none!important;
+  font-size: 14px!important;
+  color: #88ecef;
+}
+.navbar .navbar-brand-wrapper {
+  background: #ffffff !important;
+  border-right: 1px solid #ecf0f4;
+  border-bottom: 3px solid #ff4d6b;
+}
+/*Ajustement pour le logo et menu*/
+.img-logo {
+  padding-top: 2px;
+  padding-bottom: 5px;
+  height: 80px;
+
+}
+.navbar .navbar-menu-wrapper{
+  height: 80px!important;
+  border-bottom: 3px solid #ff4d6b;
+}
+.navbar .navbar-brand {
+  width: 200px!important;
+  padding-bottom: 10px!important;
+}
+.navbar .navbar-brand-wrapper {
+  height: 80px!important;
+}
+.hauteur-50 {
+  height: 50px;
+}
+/*Ajustements sur les onglets dans le formulaire de la periodique*/
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+  background-color:#ecf0f4;;
+  color: #006bb6!important;
+  font-weight: bold;
+}
+.nav-tabs .nav-link {
+  color: #212529;
+  font-weight: bold;
+}
+/* style pour ng-select*/
+div.ng-select-container {
+  outline: 1px solid #bdbfc3!important;
+  color: #262525 !important;
+  height: 2.875rem!important;
+}
+.ng-input input{
+  border-color: transparent!important;
+}
+.ng-dropdown-panel .scroll-host {
+  background: #ebedef!important;
+  padding: 20px!important;
+}
+.ng-option {
+  padding: 5px!important;
+  font-weight: bold;!important;
+}
+.ng-value-label  {
+  padding: 5px!important;
+}
+.noVisible {
+  display: none!important;
+}
+.cacherVisible {
+  display: none;
+}
+.addVisible {
+  display: block!important;
+}
+.b-white{
+  background: white!important;
+}
+.font-size-5 {
+  font-size:175px!important;
+}
+.auth .brand-logo img{
+  width: 100%!important;
+}
+mat-cell:last-of-type, mat-header-cell:last-of-type, mat-footer-cell:last-of-type {
+  padding-right: 0!important;
+}
+.bouton-pl-10{
+  padding-left: 10px!important;
+}
+/* Overwrite the styles of the mat-dialog-container element globally, but only for those
+that have an id of `modal-component` */
+select.form-control, .select2-container--default select.select2-selection--single, .select2-container--default .select2-selection--single select.select2-search__field, select.typeahead, select.tt-query, select.tt-hint {
+  color: #495057!important;
+}
+mat-row, mat-header-row, mat-footer-row {
+/*display: inherit!important;*/
+}
+.w-10 {
+  width: 10%;
+}
+.w-15 {
+  width: 15%;
+}
+.w-35 {
+  width: 35%;
+}
+.b-gray {
+  background: #aaacaf36!important;
+}
+.tab-content > .active {
+  border-color: #bdbfc3!important;
+}
+th,td {
+  font-size: 14px!important;
+}
+.align-left {
+  text-align: left!important;
+}
+.btn-outline-secondary {
+  color: #989595!important;
+  border-color: #989595!important;
+}
+.font-size-3{
+  font-size: 46px;
+}
+.btn-h-35{
+  height: 35px!important;
+}
+.titre-initial{
+  text-transform: initial!important;
+  font-size: 20px!important;
+}
+footer a {
+ color: #b6b8bb!important;
+}

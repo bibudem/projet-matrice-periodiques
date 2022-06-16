@@ -1,0 +1,546 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <div class="content-wrapper b-white">
+      <!-- Contenu de la page liste des periodiques -->
+      <div class="page-header mt-4">
+        <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
+          <h4 class="font-weight-semibold titre-initial">{{ 'form-periodique' | translate}}
+            <span *ngIf="periodique.idRevue" > | {{ 'labels-rapport-periodique.id' | translate}} = {{periodique.idRevue}}</span>
+          </h4>
+          <span  class="ml-auto">
+              <!--<button type="button" class="btn btn-outline-info btn-sm mb-1 mr-1" (click)="ajouterConsultation()" >
+                <i class="icon-layers  btn-icon-prepend"></i> {{ 'ajout-consultation' | translate}} </button>-->
+              <button *ngIf="ifAdmin" type="button" class="btn btn-success btn-sm mb-1" data-toggle="modal" data-target="#modal-enregistrer"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
+              <button type="button" class="btn btn-secondary btn-sm mb-1 ml-1" (click)="goBack()" >
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+            </span>
+        </div>
+      </div>
+      <div class="b-white p-3">
+        <!-- Alert notification div -->
+        <div class="alert alert-success alert-dismissible fade show cacherVisible" role="alert" id="alert-periodique">
+          {{ 'message.action-text' | translate}}
+          <button type="button"  class="close" (click)="methodesGlobal.nonAfficher('alert-periodique')" >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <!-- Alert notification consultation2022 -->
+        <div class="alert alert-success alert-dismissible fade show cacherVisible" role="alert" id="alert-consultation2022">
+          {{ 'message.action-text-consultation2022' | translate}}
+          <button type="button"  class="close" (click)="methodesGlobal.nonAfficher('alert-consultation2022')" >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <!-- fin alert notification div -->
+        <form   #periodiqueForm="ngForm" name="periodiqueForm" id="periodiqueForm"  (ngSubmit)="onSubmit(periodiqueForm)">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>{{ 'titre' | translate}} <span class="text-danger">*</span></label>
+                <input  class="form-control" #titre="ngModel" name="titre" id="titre" placeholder="{{ 'titre' | translate}}" [(ngModel)]="periodique.titre" >
+                <input  class="form-control" #idRevue="ngModel" name="idRevue" id="idRevue" type="hidden" [(ngModel)]="periodique.idRevue">
+                <input  class="form-control"  name="action" id="action" type="hidden" *ngIf="idRevue" value="{{action}}"  >
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>ISSN </label>
+                <input  class="form-control" #ISSN="ngModel" name="ISSN" id="ISSN" placeholder="ISSN" [(ngModel)]="periodique.ISSN">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="EISSN">EISSN </label>
+                <input type="text" class="form-control" id="EISSN" name="EISSN" placeholder="EISSN"  #EISSN="ngModel" [(ngModel)]="periodique.EISSN">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="abonnement">{{ 'abonnement' | translate}} </label>
+                <select name="abonnement" id="abonnement"  class="form-control" #abonnement  [(ngModel)]="periodique.abonnement">
+                  <option *ngFor="let rep of this.listeChoixOptions.listAbonnement" [value]="rep.name">{{rep.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="bdd">{{ 'BDD' | translate}}</label>
+                <select name="bdd" id="bdd" class="form-control" #bdd [(ngModel)]="periodique.bdd">
+                  <option *ngFor="let rep of this.listeChoixOptions.bdd" [value]="rep.name">{{rep.name}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="statut">{{ 'statut' | translate}} </label>
+                <select name="statut" id="statut" class="form-control" #statut [(ngModel)]="periodique.statut">
+                  <option *ngFor="let rep of this.listeChoixOptions.listStatut" [value]="rep.name">{{rep.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="libreAcces">{{ 'libre-acces' | translate}}</label>
+                <select name="libreAcces" id="libreAcces" class="form-control" #libreAcces [(ngModel)]="periodique.libreAcces">
+                  <option *ngFor="let rep of this.listeChoixOptions.listeAcces" [value]="rep.name">{{rep.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="abonnement">{{ 'format' | translate}}</label>
+                <select name="format" id="format" class="form-control" #format [(ngModel)]="periodique.format">
+                  <option *ngFor="let rep of this.listeChoixOptions.listFormat" [value]="rep.name">{{rep.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="domaine">{{ 'domaine' | translate}}</label>
+                <select name="domaine" id="domaine" class="form-control" #domaine [(ngModel)]="periodique.domaine">
+                  <option *ngFor="let rep of this.listeChoixOptions.listDomaine" [value]="rep.name">{{rep.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="secteur">{{ 'secteur' | translate}}</label>
+                <br>
+                <mat-form-field class="w-100">
+                  <mat-select
+                    [(ngModel)]="periodique.secteur"
+
+                    id="secteur"
+                    name="secteur"
+                    #secteur
+                    multiple>
+                    <mat-option
+                      *ngFor="let rep of this.listeChoixOptions.listSecteurs"
+                      [value]="rep.name">
+                      {{rep.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="fonds">{{ 'fonds' | translate}}</label>
+                <br>
+                <mat-form-field class="w-100">
+                  <mat-select
+                    [(ngModel)]="periodique.fonds"
+                    id="fonds"
+                    name="fonds"
+                    #fonds
+                    multiple>
+                    <mat-option
+                      *ngFor="let fond of listeFonds "
+                      [value]="fond.titre">
+                      {{fond.titre}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="fournisseur">{{ 'fournisseur' | translate}}</label>
+                <input type="text" class="form-control" id="fournisseur" name="fournisseur" placeholder="{{ 'fournisseur' | translate}}" #fournisseur="ngModel" [(ngModel)]="periodique.fournisseur">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label >{{ 'sujet' | translate}}</label>
+                <input type="text" class="form-control" id="sujets" name="sujets" placeholder="{{ 'sujet' | translate}}" #sujets="ngModel" [(ngModel)]="periodique.sujets" >
+              </div>
+            </div>
+          </div>
+          <div class="row ">
+            <ul class="nav nav-tabs p-3 w-100 b-gray" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active font-weight-bold" id="tab-0" data-toggle="tab" href="#tab-page-0" role="tab" aria-controls="tab-0" aria-selected="true">
+                  <h6 class="text-uppercase">{{ 'tab-plateformes' | translate}}</h6>
+                </a>
+              </li>
+              <li class="nav-item" >
+                <a class="nav-link font-weight-bold" id="tab-1" data-toggle="tab" href="#tab-page-1" role="tab" aria-controls="tab-1" aria-selected="true">
+                  <h6 class="text-uppercase">{{ 'tab-duplication' | translate}}</h6>
+                </a>
+              </li>
+              <li class="nav-item" *ngIf="periodique.idRevue">
+                <a class="nav-link font-weight-bold" id="tab-2" data-toggle="tab" href="#page-2" role="tab" aria-controls="tab-page-2" aria-selected="false">
+                  <h6 class="text-uppercase">{{ 'tab-archives' | translate}}</h6>
+                </a>
+              </li>
+              <li class="nav-item" *ngIf="periodique.idRevue">
+                <a class="nav-link font-weight-bold" id="tab-3" data-toggle="tab" href="#tab-page-3" role="tab" aria-controls="tab-page-3" aria-selected="false">
+                  <h6 class="text-uppercase">{{ 'tab-core' | translate}}</h6>
+                </a>
+              </li>
+              <li class="nav-item" *ngIf="periodique.idRevue">
+                <a class="nav-link font-weight-bold" id="tab-4" data-toggle="tab" href="#tab-page-4" role="tab" aria-controls="tab-page-4" aria-selected="false">
+                  <h6 class="text-uppercase">{{ 'tab-statistique' | translate}}</h6>
+                </a>
+              </li>
+              <li class="nav-item" *ngIf="periodique.idRevue">
+                <a class="nav-link font-weight-bold" id="tab-5" data-toggle="tab" href="#tab-page-5" role="tab" aria-controls="tab-page-5" aria-selected="false">
+                  <h6 class="text-uppercase">{{ 'tab-prix' | translate}}</h6>
+                </a>
+              </li>
+              <li class="nav-item" *ngIf="periodique.idRevue">
+                <a class="nav-link font-weight-bold" id="tab-6" data-toggle="tab" href="#tab-page-6" role="tab" aria-controls="tab-page-6" aria-selected="false">
+                  <h6 class="text-uppercase">{{ 'tab-notes' | translate}}</h6>
+                </a>
+              </li>
+            </ul>
+            <div class="tab-content w-100" id="myTabContent">
+              <div class="tab-pane fade show active p-3" id="tab-page-0" role="tabpanel" aria-labelledby="tab-page-1">
+                <!-- Section plateformes-->
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="plateformePrincipale">{{ 'plateforme-principale' | translate}}</label>
+                      <select name="plateformePrincipale" id="plateformePrincipale"  class="form-control" #plateformePrincipale [(ngModel)]="periodique.plateformePrincipale">
+                        <option value="">{{ 'importation.tous-plateforme' | translate}}</option>
+                        <option *ngFor="let rep of this.listePlateforme" [value]="rep.idPlateforme">{{rep.titrePlateforme}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="form-group">
+                      <br>
+                      <mat-form-field class="w-100">
+                        <mat-select
+                          [(ngModel)]="periodique.autrePlateforme"
+                          placeholder="{{ 'plateforme-autre' | translate}}"
+                          id="autrePlateforme"
+                          name="autrePlateforme"
+                          #autrePlateforme
+                          multiple>
+                          <mat-option
+                            *ngFor="let plateforme of listePlateforme "
+                            [value]="plateforme.idPlateforme">
+                            {{plateforme.titrePlateforme}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                </div>
+                <!-- fin plateformes-->
+              </div>
+              <div class="tab-pane fade p-3" id="tab-page-1" role="tabpanel" aria-labelledby="tab-page-1">
+                <!-- Section Dublication-->
+                <div class="row">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <div class="form-check form-check-success">
+                        <label class="form-check-label">
+                          <input type="checkbox"
+                                 class="form-check-input"
+                                 id="duplication"
+                                 name="duplication"
+                                 #duplication
+                                 [value]="periodique.duplication"
+                                 (change)="this.methodesGlobal.checkedInput($event)"
+                                 [checked]="this.methodesGlobal.hasValue(periodique.duplication)"/>
+                          {{ 'duplication' | translate}} <i class="input-helper"></i></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <div class="form-check form-check-success">
+                        <label class="form-check-label">
+                          <input type="checkbox"
+                                 class="form-check-input"
+                                 name="duplicationCourant"
+                                 id="duplicationCourant"
+                                 #duplicationCourant
+                                 [value]="periodique.duplicationCourant"
+                                 (change)="this.methodesGlobal.checkedInput($event)"
+                                 [checked]="this.methodesGlobal.hasValue(periodique.duplicationCourant)">
+                          {{ 'duplication-courant' | translate}} <i class="input-helper"></i></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <div class="form-check form-check-success">
+                        <label class="form-check-label">
+                          <input type="checkbox"
+                                 class="form-check-input"
+                                 name="duplicationEmbargo1"
+                                 id="duplicationEmbargo1"
+                                 #duplicationEmbargo1
+                                 [value]="periodique.duplicationEmbargo1"
+                                 (change)="this.methodesGlobal.checkedInput($event)"
+                                 [checked]="this.methodesGlobal.hasValue(periodique.duplicationEmbargo1)">
+                          {{ 'duplication-embargo1' | translate}} <i class="input-helper"></i></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <div class="form-check form-check-success">
+                        <label class="form-check-label">
+                          <input type="checkbox"
+                                 class="form-check-input"
+                                 name="duplicationEmbargo2"
+                                 id="duplicationEmbargo2"
+                                 #duplicationEmbargo2
+                                 [value]="periodique.duplicationEmbargo2"
+                                 (change)="this.methodesGlobal.checkedInput($event)"
+                                 [checked]="this.methodesGlobal.hasValue(periodique.duplicationEmbargo2)">
+                          {{ 'duplication-embargo2' | translate}} <i class="input-helper"></i></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- fin dublication-->
+              </div>
+              <div class="tab-pane fade p-3" id="page-2" role="tabpanel" aria-labelledby="tab-page-2">
+                <!-- Section Archives-->
+                <div class="card-title row">
+                  <div class="col-md-9">
+                  </div>
+                  <div class="col-md-3">
+                    <button *ngIf="ifAdmin" class="btn btn-dark w-100"
+                            (click)="reload('/periodique/archive/'+periodique.idRevue)">
+                      <i class="icon-note btn-icon-prepend"></i>{{ 'gestion-archives' | translate}}</button>
+                  </div>
+                </div>
+                <div class="table-responsive" *ngIf="periodique.idRevue">
+                  <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                      <th class="font-weight-bold w-5">{{ 'numero' | translate}}</th>
+                      <th class="font-weight-bold ">{{ 'perennite' | translate}}</th>
+                      <th class="font-weight-bold">{{ 'conservation' | translate}}</th>
+                      <th class="font-weight-bold ">{{ 'debut' | translate}}</th>
+                      <th class="font-weight-bold ">{{ 'fin' | translate}}</th>
+                      <th class="font-weight-bold ">{{ 'volume-debut' | translate}}</th>
+                      <th class="font-weight-bold ">{{ 'volume-fin' | translate}}</th>
+                      <th class="font-weight-bold ">{{ 'embargo' | translate}}</th>
+                      <th class="font-weight-bold">{{ 'date-ajout' | translate}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let rep of this.tableauArchives" >
+                      <td>{{rep.numero}}</td>
+                      <td>{{rep.perennite}}</td>
+                      <td>{{rep.conserverPap}}</td>
+                      <td>{{rep.anneeDebut}}</td>
+                      <td>{{rep.anneeFin}}</td>
+                      <td>{{rep.volDebut}}</td>
+                      <td>{{rep.volFin}}</td>
+                      <td>{{rep.embargo}}</td>
+                      <td>{{ rep.dateA | date: 'short': 'fr' }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- fin archives-->
+              </div>
+              <div class="tab-pane fade p-3" id="tab-page-3" role="tabpanel" aria-labelledby="tab-page-3">
+                <!-- Section Historique-->
+                <div class="card-title row">
+                  <div class="col-md-9">
+                  </div>
+                  <div class="col-md-3 w-100">
+                    <button *ngIf="ifAdmin" class="btn btn-dark w-100" (click)="reload('/periodique/historique/'+periodique.idRevue)"><i class="icon-note btn-icon-prepend"></i> {{ 'gestion-core' | translate}}</button>
+                  </div>
+                </div>
+                <div class="table-responsive" *ngIf="periodique.idRevue">
+                  <table class="table table-hover w-100 table-bordered">
+                    <thead>
+                    <tr>
+                      <th class="font-weight-bold w-8">{{ 'numero' | translate}}</th>
+                      <th class="font-weight-bold">{{ 'annee' | translate}}</th>
+                      <th class="font-weight-bold">{{ 'core' | translate}}</th>
+                      <th class="font-weight-bold">{{ 'choix-secteur' | translate}}</th>
+                      <th class="font-weight-bold w-10">{{ 'date-ajout' | translate}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let rep of this.tableauHistorique" >
+                      <td>{{rep.numero}}</td>
+                      <td>{{rep.annee}}</td>
+                      <td>{{rep.core}}</td>
+                      <td>{{rep.secteur}}</td>
+                      <td>{{ rep.dateA | date:'short': 'fr' }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- fin historique-->
+              </div>
+              <div class="tab-pane fade p-3" id="tab-page-4" role="tabpanel" aria-labelledby="tab-page-4">
+                <!-- Section Statistique-->
+                <div class="card-title row">
+                  <div class="col-md-8">
+                  </div>
+                  <div class="col-md-4 w-100">
+                    <button *ngIf="ifAdmin" class="btn btn-dark" (click)="reload('/periodique/statistiques/'+periodique.idRevue)"><i class="icon-note btn-icon-prepend"></i> {{ 'gestion-statistique' | translate}}</button>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-hover table-bordered" *ngIf="periodique.idRevue">
+                    <thead>
+                    <tr>
+                      <th class="font-weight-bold w-5">{{ 'numero' | translate}}</th>
+                      <th class="font-weight-bold w-5">{{ 'annee' | translate}}</th>
+                      <th class="font-weight-bold">{{ 'plateforme' | translate}}</th>
+                      <th class="font-weight-bold">{{ 'telech.' | translate}}</th>
+                      <th class="font-weight-bold">{{ 'unique-telechargements' | translate}}</th>
+                      <th class="font-weight-bold w-5">{{ 'refus' | translate}}</th>
+                      <th class="font-weight-bold w-5">{{ 'citations' | translate}}</th>
+                      <th class="font-weight-bold w-5">{{ 'art.-udem' | translate}}</th>
+                      <th class="font-weight-bold">{{ 'jr5-courant' | translate}}</th>
+                      <th class="font-weight-bold">{{ 'date-ajout' | translate}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let rep of this.tableauStatistique" >
+                      <td>{{rep.numero}}</td>
+                      <td>{{rep.annee}}</td>
+                      <td>{{rep.plateforme}}</td>
+                      <td>{{rep.Total_Item_Requests}}</td>
+                      <td>{{rep.Unique_Item_Requests}}</td>
+                      <td>{{rep.No_License}}</td>
+                      <td>{{rep.citations}}</td>
+                      <td>{{rep.articlesUdem}}</td>
+                      <td>{{rep.JR5COURANT}}</td>
+                      <td>{{ rep.dateA | date:'short': 'fr' }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- fin statistiques-->
+              </div>
+              <div class="tab-pane fade p-5" id="tab-page-5" role="tabpanel" aria-labelledby="tab-page-5">
+                <!-- Section Note-->
+                <div class="card-title row">
+                  <div class="col-md-9">
+                  </div>
+                  <div class="col-md-3">
+                    <button *ngIf="ifAdmin" class="btn btn-dark w-100" (click)="reload('/periodique/prix/'+periodique.idRevue)"><i class="icon-note btn-icon-prepend"></i>{{ 'gestion-prix' | translate}}</button>
+                  </div>
+                </div>
+                <div class="table-responsive" *ngIf="periodique.idRevue">
+                  <table class="table table-hover w-100 table-bordered">
+                    <thead>
+                    <tr>
+                      <th class="font-weight-bold w-8">{{ 'numero' | translate}}</th>
+                      <th class="font-weight-bold">{{ 'annee' | translate}}</th>
+                      <th class="font-weight-bold">{{ 'prix' | translate}}</th>
+                      <th class="font-weight-bold w-10">{{ 'date-ajout' | translate}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let rep of this.tableauPrix" >
+                      <td>{{rep.numero}}</td>
+                      <td>{{rep.annee}}</td>
+                      <td>{{rep.prix}}</td>
+                      <td>{{ rep.dateA | date:'short': 'fr' }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- fin prix-->
+              </div>
+              <div class="tab-pane fade p-5" id="tab-page-6" role="tabpanel" aria-labelledby="tab-page-6">
+                <!-- Section Note-->
+                <div class="card-title row">
+                  <div class="col-md-9">
+                  </div>
+                  <div class="col-md-3">
+                    <button *ngIf="ifAdmin" class="btn btn-dark w-100" (click)="reload('/periodique/note/'+periodique.idRevue)"><i class="icon-note btn-icon-prepend"></i>{{ 'gestion-notes' | translate}}</button>
+                  </div>
+                </div>
+                <div class="table-responsive" *ngIf="periodique.idRevue">
+                  <div *ngFor="let rep of this.tableauNote" >
+                    <a  data-toggle="collapse" href="#note{{rep.numero}}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                      <h4 class="btn btn-outline-secondary w-100 align-left"> {{rep.numero}}. Date : {{ rep.dateA | date:'short': 'fr' }}</h4>
+                    </a>
+                    <div class="collapse" id="note{{rep.numero}}">
+                      <blockquote class="blockquote blockquote-gray">
+                        <p>{{rep.note}}</p>
+                      </blockquote>
+                    </div>
+                  </div>
+                </div>
+                <!-- fin prix-->
+              </div>
+            </div>
+          </div>
+          <div *ngIf="ifAdmin" class="row">
+            <div class="col-md-6">
+              <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#modal-enregistrer"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
+              <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-target="#modal-supprimer"><i class="fa fa-trash btn-icon-prepend"></i> {{'btn-supprimer'| translate}}</button>
+            </div>
+            <div class="col-md-6"></div>
+
+          </div>
+          <!-- Modal pour modifier-->
+          <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">{{'message.confirmer-titre'| translate}}</h5>
+                  <button type="button" class="close" #closebutton data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  {{'message.confirmer-text'| translate}}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i> Annuler</button>
+                  <input *ngIf="ifAdmin" type="submit" class="btn btn-primary btn-sm"  value="{{bouttonAction}}" (click)="onFermeModal()">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Modal pour supprimer-->
+          <div class="modal fade" id="modal-supprimer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modal-supprimer-Label">{{'message.supprimer-titre'| translate}}</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  {{'message.supprimer-text'| translate}}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i> {{'btn-annuler'| translate}}</button>
+                  <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" (click)="delete(periodique.idRevue)"><i class="fa fa-trash btn-icon-prepend"></i> {{'btn-supprimer'| translate}}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+    <!-- fin contenu page -->
+    <!-- Contenu footer -->
+    <app-footer></app-footer>
+  </div>
+  <!-- garder pour le post et essayer de changer -->
+
+  <!-- fin note -->
+  <div class="noVisible" *ngFor="let periodique of periodiques$ | async"></div></div>

@@ -1,0 +1,169 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <div class="content-wrapper b-white">
+      <!-- Contenu de la page liste des periodiques -->
+      <!-- Quick Action Toolbar Ends-->
+      <div class="page-header pt-3 mt-2">
+        <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
+          <h4 class="font-weight-semibold titre-initial ">{{ 'rapport.titre-statistique' | translate}}  </h4>
+          <span  class="ml-auto ">
+            <button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+            <button *ngIf="(totalDonnees > 0)" class="btn btn-info btn-sm mb-1 ml-2" (click)="ExportTOExcel();"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}</button>
+          </span>
+        </div>
+      </div>
+      <div id="load-import" class="cacherVisible h-100">
+        <div class="loader">...</div>
+        <div id="load">{{ 'importation.attendre' | translate}}</div>
+      </div>
+      <div id="alertErreur" class="alert alert-danger alert-dismissible fade show cacherVisible mb-3">
+        <p>{{ 'message.alert-erreur' | translate}}</p>
+        <button type="button" class="close" (click)="methodesGlobal.nonAfficher('alertErreur')" >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="page-rapport">
+        <form  #rapportForm="ngForm" >
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="annee">{{ 'annee' | translate}} <span class="text-danger">*</span></label>
+                <mat-form-field class="w-100 ">
+                  <mat-select
+                    id="annee"
+                    name="annee"
+                    #annee
+                    multiple>
+                    <mat-option
+                      *ngFor="let rep of this.arrayAnnee"
+                      [value]="rep">
+                      {{rep}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="domaine">{{ 'domaine' | translate}}</label>
+                <select name="domaine" id="domaine" class="form-control" #domaine (change)="this.implimentationFiltre($event)">
+                  <option value="">{{ 'choisissez' | translate}}</option>
+                  <option *ngFor="let rep of this.listeChoixOptions.listDomaine" [value]="rep.name">{{rep.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="secteur">{{ 'secteur' | translate}}</label>
+                <select name="secteur" id="secteur" class="form-control" #secteur (change)="this.implimentationFiltre($event)">
+                  <option value="">{{ 'choisissez' | translate}}</option>
+                  <option *ngFor="let rep of this.listeChoixOptions.listSecteurs" [value]="rep.name">{{rep.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="abonnement">{{ 'abonnement' | translate}} </label>
+                <select name="abonnement" id="abonnement"  class="form-control" #abonnement  (change)="this.implimentationFiltre($event)">
+                  <option value="">{{ 'choisissez' | translate}}</option>
+                  <option *ngFor="let rep of this.listeChoixOptions.listAbonnement" [value]="rep.name">{{rep.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="bdd">{{ 'BDD' | translate}}</label>
+                <select name="bdd" id="bdd" class="form-control" #bdd (change)="this.implimentationFiltre($event)">
+                  <option value="">{{ 'choisissez' | translate}}</option>
+                  <option *ngFor="let rep of this.listeChoixOptions.bdd" [value]="rep.name">{{rep.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="statut">{{ 'statut' | translate}} </label>
+                <select name="statut" id="statut" class="form-control" #statut (change)="this.implimentationFiltre($event)">
+                  <option value="">{{ 'choisissez' | translate}}</option>
+                  <option *ngFor="let rep of this.listeChoixOptions.listStatut" [value]="rep.name">{{rep.name}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-md-2"  *ngFor="let champ of champs">
+            <div class="list-group">
+              <div class="form-check form-check-primary">
+                <label class="form-check-label">
+                  <input type="checkbox" class="form-check-input" id="{{ champ }}" value="{{ champ }}" name="{{ champ }}"  (change)="this.creationThTable($event)">{{ champsTitre[champ] }} <i class="input-helper"></i></label>
+              </div>
+            </div>
+          </div>
+        </div><hr>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <select name="plateforme" id="plateforme"   class="form-control mt-2" #plateforme>
+                <option value="">{{ 'Choisissez la plateforme' | translate}} </option>
+                <option *ngFor="let rep of this.listePlateforme" [value]="rep.acronyme">{{rep.acronyme}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <button type="button" class="btn btn-success  text-uppercase mt-2 w-100"  (click)="creerTableauStatistique(this.methodesGlobal.getValue(annee.value),'standart',this.methodesGlobal.getValue(plateforme.value));" >
+              <i class="icon-layers"></i> {{'rapport.rapport-total-statistique'| translate }} </button>
+          </div>
+          <div class="col-md-5">
+            <button type="button" class="btn btn-success  text-uppercase mt-2 w-100"  (click)="creerTableauStatistique(this.methodesGlobal.getValue(annee.value),'plateforme',this.methodesGlobal.getValue(plateforme.value));" >
+              <i class="icon-layers"></i> {{'rapport.rapport-statistique-plateforme'| translate }} </button>
+          </div>
+        </div>
+        <!-- Tableau contenu formulaire-->
+        <div class="row" *ngIf="statistiques$">
+          <div class="col-md-12 mt-3">
+            <div class="table-responsive cacherVisible" id="contenuRapport">
+              <div class="d-sm-flex align-items-baseline report-summary-header p-2">
+                <h5 class="font-weight-semibold">{{'rapport.total-rapport'| translate }} {{totalDonnees}}</h5> <span class="ml-auto" ></span>
+
+              </div>
+              <div class="example-container mat-elevation-z4 w-100" >
+                <table    mat-table
+                          [dataSource]="dataSource"
+                          class="mat-elevation-z8 w-100 p-2"
+                          matSort >
+
+                  <!-- creation dynamique du tableau -->
+                  <ng-container  *ngFor="let th of thTableau" matColumnDef="{{th}}">
+                    <th *matHeaderCellDef mat-sort-header class="font-weight-bold pl-3 w-15"> {{ champsTitre[th]}} </th>
+                    <td *matCellDef="let row" class=" pl-3 w-15" > {{ row[th]}} </td>
+                  </ng-container>
+
+                  <mat-header-row *matHeaderRowDef="thTableau"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: thTableau;">
+                  </mat-row>
+                </table>
+              </div>
+              <mat-paginator [pageSizeOptions]="[15, 25, 50, 100]"></mat-paginator>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- creation  du tableau pour export-->
+    <table *ngIf="isLoadingResults" class="table cacherVisible"  id="table-rapport" >
+      <tr><th *ngFor="let th of thTableau ">{{champsTitre[th]}}</th></tr>
+      <tr *ngFor="let statistique of listeStatistique">
+        <td *ngFor="let th of thTableau">{{statistique[th]}}</td></tr>
+    </table>
+    <!-- fin contenu page -->
+    <!-- Contenu footer -->
+    <app-footer></app-footer>
+  </div>
+</div>
+

@@ -1,0 +1,5 @@
+/node_modules/*
+/logs-ng
+/backend/node_modules
+/backend/config
+.idea

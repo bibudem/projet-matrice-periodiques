@@ -1,0 +1,72 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <div class="content-wrapper b-white">
+      <div class="card-header w-100 b-white">
+        <div class="page-header pt-2 mt-2">
+          <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
+            <h4 class="font-weight-semibold text-initial">{{ 'configuration-plateformes' | translate}}</h4>
+            <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+              <button type="button" class="btn btn-success btn-sm mb-1 ml-2" (click)="addPlateform()" routerLink="/plateforme-form" ><i class="icon-plus text-white"></i> {{bouttonAction}}</button>
+              </span>
+          </div>
+        </div>
+        <mat-form-field class="w-50">
+          <input (keyup)="applyFilter(methodesGlobal.getValue(texteFiltre.value))"
+                 matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre>
+        </mat-form-field>
+      </div>
+
+      <div class="example-container">
+        <div class="table-responsive">
+          <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 p-2"  >
+
+            <!-- ID Column -->
+            <ng-container matColumnDef="numero" >
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'numero' | translate}} </th>
+              <td *matCellDef="let row" class="w-10 p-3" > {{row.numero}} </td>
+            </ng-container>
+
+            <!-- Acronime Column -->
+            <ng-container matColumnDef="PlatformID">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-15"> {{ 'acronyme' | translate}} </th>
+              <td  *matCellDef="let row" class="w-15" > {{row.PlatformID}} </td>
+            </ng-container>
+
+            <!-- ISSN Column -->
+            <ng-container matColumnDef="titrePlateforme">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-50"> {{ 'titre' | translate}} </th>
+              <td  *matCellDef="let row" class="w-50"> {{row.titrePlateforme}} </td>
+            </ng-container>
+
+            <!-- Derniere modification -->
+            <ng-container matColumnDef="dateM">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15"> {{ 'dateM' | translate}} </th>
+              <td  *matCellDef="let row" class="w-15"> {{row.dateM | date:'short': 'fr'}} </td>
+            </ng-container>
+            <!-- Consulter Column -->
+            <ng-container matColumnDef="consulter" >
+              <th *matHeaderCellDef   class="font-weight-bold w-10"> {{ 'consulter' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10 text-center ">
+                <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter la fiche" (click)="consulter(row.idPlateforme)" routerLink="/plateforme-form" >
+                  <i class="icon-note"></i>
+                </button>
+              </td>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+          </table>
+
+          <mat-paginator [pageSizeOptions]="[15, 25, 50, 100]"></mat-paginator>
+        </div>
+      </div>
+    </div>
+    <!-- Contenu footer -->
+    <app-footer></app-footer>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <div class="content-wrapper b-white">
+      <div class="page-header pt-3 mt-2">
+        <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
+          <h4 class="font-weight-semibold titre-initial ">{{'historique-statistiques'| translate}}  </h4>
+          <span  class="ml-auto ">
+            <button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+            <button class="btn btn-info ml-1 btn-sm mb-1" (click)="ExportTOExcel();"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}</button>
+          </span>
+        </div>
+      </div>
+      <div class="card-header mt-1 row b-white">
+        <div class="col-md-9">
+        <mat-form-field class="w-40" >
+          <input  (keyup)="applyFilter(methodesGlobal.getValue(texteFiltre.value))"
+                 matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre>
+        </mat-form-field>
+        <a href="javascript:;" *ngIf="texteFiltre.value"><span aria-hidden="true" (click)="viderFiltre()">&times;</span></a>
+        </div>
+        <div class="col-md-3">
+        <select  name="annee" id="annee"  class="form-control" #annee (change)="creerTableau(this.methodesGlobal.getValue(annee.value))" >
+          <option value="">{{ 'choisissez' | translate}}</option>
+          <option *ngIf="anneeStatistique" value="anneeStatistique" selected>{{anneeStatistique}}</option>
+          <ng-container *ngFor="let rep of this.arrayAnnee">
+             <option *ngIf="(anneeStatistique!=rep)">{{rep}}</option>
+          </ng-container>
+        </select>
+        </div>
+      </div>
+
+      <div class="example-container">
+        <div class="table-responsive">
+          <table  mat-table
+                  [dataSource]="dataSource"
+                  class="mat-elevation-z8 w-100 p-2"
+                  matSort
+                  matSortActive="titre"
+                  matSortDirection="asc" >
+
+            <!-- ID Column -->
+            <ng-container matColumnDef="numero" >
+              <th *matHeaderCellDef mat-sort-header="numero"  class="font-weight-bold w-5 p-3"> {{ 'numero' | translate}} </th>
+              <td *matCellDef="let row" class="w-5 p-3" > {{row.numero}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="annee">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'annee' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10" > {{row.annee}} </td>
+            </ng-container>
+
+            <!-- Acronime Column -->
+            <ng-container matColumnDef="plateforme">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'plateforme' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10" > {{row.plateforme}} </td>
+            </ng-container>
+            <!-- Acronime Column -->
+            <ng-container matColumnDef="titre">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-15"> {{ 'titre' | translate}} </th>
+              <td  *matCellDef="let row" class="w-15" > {{row.titre}} </td>
+            </ng-container>
+
+            <!-- ISSN Column -->
+            <ng-container matColumnDef="telech">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'telech.' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10 text-center"> {{row.telech}} </td>
+            </ng-container>
+
+            <!-- Derniere modification -->
+            <ng-container matColumnDef="refus">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'refus' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10 text-center"> {{row.refus }} </td>
+            </ng-container>
+
+            <!-- Derniere modification -->
+            <ng-container matColumnDef="citation">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'citations' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10 text-center"> {{row.citation }} </td>
+            </ng-container>
+
+            <!-- Derniere modification -->
+            <ng-container matColumnDef="articlesUdem">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'articlesUdem' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10 text-center"> {{row.articlesUdem }} </td>
+            </ng-container>
+
+            <!-- Derniere modification -->
+            <ng-container matColumnDef="dateA">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'dateA' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10 text-center"> {{row.dateA | date:'short': 'fr'}} </td>
+            </ng-container>
+
+            <!-- Consulter Column -->
+            <ng-container matColumnDef="consulter" >
+              <th *matHeaderCellDef   class="font-weight-bold w-10 text-center"> {{ 'consulter' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10 text-center ">
+                <button *ngIf="ifAdmin" type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter les détails"  routerLink="/periodique/statistiques/{{row.idRevue }}/historique" >
+                  <i class="icon-note"></i>
+                </button>
+              </td>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+          </table>
+
+          <mat-paginator [pageSizeOptions]="[15, 25, 50, 100]"></mat-paginator>
+          <!-- creation  du tableau pour export-->
+          <table  class="table table-bordered cacherVisible"  id="table-rapport-statistiques-liste" >
+            <tr><th *ngFor="let th of displayedColumns ">{{th}}</th></tr>
+            <tr *ngFor="let col of tableauStatistique">
+              <td *ngFor="let rep of displayedColumns">{{col[rep]}}</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Contenu footer -->
+    <app-footer></app-footer>
+  </div>
+</div>

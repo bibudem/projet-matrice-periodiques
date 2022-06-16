@@ -1,0 +1,80 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page --->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <div class="content-wrapper mt-4">
+      <!-- Contenu de la page d'about-->
+      <div class="row">
+        <div class="col-md-12 ">
+          <div class="card ">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="d-sm-flex align-items-baseline report-summary-header">
+                    <h3 class="font-weight-semibold titre-initial">{{ 'home.apropos' | translate}}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+      <br>
+    <div class="row mb-5">
+      <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title titre-initial">{{ 'home.direction-collections' | translate}}</h4>
+            <p>{{ 'home.direction-collections-text' | translate}}</p>
+            <div class="media mt-2">
+              <i class=" icon-phone icon-md text-info d-flex align-self-start mr-3"></i>
+              <div class="media-body">
+                <h5 class="mt-2">{{ 'home.dir-collections-tel' | translate}} </h5>
+              </div>
+            </div>
+            <div class="media mt-2">
+              <i class=" icon-envelope icon-md text-info d-flex align-self-start mr-3 "></i>
+              <div class="media-body">
+                <h5 class="mt-2">{{ 'home.dir-collections-courriel' | translate}}</h5>
+              </div>
+            </div>
+            <hr>
+            <h4 class="card-title titre-initial">{{ 'home.direction-technologies' | translate}}</h4>
+            <p>{{ 'home.direction-technologies-text' | translate}}</p>
+            <div class="media mt-2">
+              <i class=" icon-phone icon-md text-info d-flex align-self-start mr-3"></i>
+              <div class="media-body">
+                <h5 class="mt-2">{{ 'home.dir-technologies-tel' | translate}} </h5>
+              </div>
+            </div>
+            <div class="media mt-2">
+              <i class=" icon-envelope icon-md text-info d-flex align-self-start mr-3 "></i>
+              <div class="media-body">
+                <h5 class="mt-2">{{ 'home.dir-technologies-courriel' | translate}}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body performane-indicator-card">
+            <div class="d-sm-flex flex-wrap">
+              <img src="./assets/images/accueil.jpg" alt="" class="img-fluid">
+            </div>
+            <div class="row report-inner-cards-wrapper">
+              <h4 style="font-weight: 500!important">{{ 'home.home-description' | translate}}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <!-- Contenu footer -->
+    <app-footer></app-footer>
+  </div>
+</div>
+
+

@@ -1,0 +1,153 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <div class="content-wrapper b-white">
+      <!-- Contenu de la page liste des periodiques -->
+      <!-- Quick Action Toolbar Ends-->
+      <div class="page-header pt-3">
+        <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
+          <h4 class="font-weight-semibold text-initial "><span *ngIf="plateforme">{{ 'plateforme-form-titre' | translate}} « {{plateforme.titrePlateforme}} » </span></h4>
+          <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/plateformes">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+              </span>
+        </div>
+      </div>
+      <!-- Alert notification div -->
+      <div class="alert alert-success alert-dismissible fade show cacherVisible" role="alert" id="alert-save">
+        {{ 'message.action-text' | translate}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!-- Alert notification div -->
+      <div class="alert alert-warning alert-dismissible fade show cacherVisible" role="alert" id="alert-sup">
+        {{ 'message.action-suppression' | translate}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form  #plateformeForm="ngForm" >
+        <div class="row mt-5">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="PlatformID">{{ 'acronyme' | translate}}</label>
+              <input type="text" class="form-control" id="PlatformID" name="PlatformID" #PlatformID [(ngModel)]="plateforme.PlatformID" >
+              <input type="hidden" class="form-control" id="idPlateforme" name="idPlateforme" #idPlateforme  [(ngModel)]="plateforme.idPlateforme">
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="form-group">
+              <label for="titrePlateforme">{{'titre'| translate }}</label>
+              <input type="text" class="form-control" id="titrePlateforme" name="titrePlateforme" #titrePlateforme [(ngModel)]="plateforme.titrePlateforme">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="PlatformID">{{ 'sushi-url' | translate}}</label>
+              <input type="text" class="form-control" id="SUSHIURL" name="SUSHIURL" #SUSHIURL [(ngModel)]="plateforme.SUSHIURL" >
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="ConsortiumCustID">{{'customer_id'| translate }}</label>
+              <input type="text" class="form-control" id="ConsortiumCustID" name="ConsortiumCustID" #ConsortiumCustID [(ngModel)]="plateforme.ConsortiumCustID" >
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="ConsortiumRequestorID">{{'requestor_id'| translate }}</label>
+              <input type="text" class="form-control" id="ConsortiumRequestorID" name="ConsortiumRequestorID" #ConsortiumRequestorID [(ngModel)]="plateforme.ConsortiumRequestorID">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="ConsortiumApiKey">{{'api_key'| translate }}</label>
+              <input type="text" class="form-control" id="ConsortiumApiKey" name="ConsortiumApiKey" #ConsortiumApiKey [(ngModel)]="plateforme.ConsortiumApiKey">
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="PlatformID">{{ 'plateforme-code' | translate}}</label>
+              <input type="text" class="form-control" id="PlatformCode" name="PlatformCode" #PlatformCode [(ngModel)]="plateforme.PlatformCode" >
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="note">{{'note'| translate }}</label>
+              <input type="text" class="form-control" id="note" name="note" #note [(ngModel)]="plateforme.note" [(ngModel)]="plateforme.note">
+            </div>
+          </div>
+        </div>
+        <div class="page-header mt-3">
+          <h4 class="mt-3 text-uppercase"></h4>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item active" aria-current="page">
+                <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#modal-enregistrer"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
+              </li>
+              <li class="breadcrumb-item cacherVisible" aria-current="page" id="btn-supprimer">
+                <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-target="#modal-supprimer"><i class="icon-trash btn-icon-prepend"></i> {{'btn-supprimer'| translate }}</button>
+              </li>
+            </ol>
+          </nav>
+        </div>
+        <!-- Modal pour modifier-->
+        <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{'message.confirmer-titre'| translate }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                {{'message.confirmer-text'| translate }}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i>{{'btn-annuler'| translate}}</button>
+                <div id="div-add" class="cacherVisible"> <button type="button" class="btn btn-primary btn-sm "  data-dismiss="modal" id="add-boutton" (click)="post(this.methodesGlobal.getValue(PlatformID.value),this.methodesGlobal.getValue(titrePlateforme.value),this.methodesGlobal.getValue(note.value),this.methodesGlobal.getValue(SUSHIURL.value),this.methodesGlobal.getValue(ConsortiumCustID.value),this.methodesGlobal.getValue(ConsortiumRequestorID.value),this.methodesGlobal.getValue(ConsortiumApiKey.value),this.methodesGlobal.getValue(PlatformCode.value));" ><i class="fa fa-save btn-icon-prepend"></i> {{'btn-ajouter'| translate }}</button></div>
+                <div id="div-save" class="cacherVisible"><button type="button" class="cacherVisible btn btn-primary btn-sm " id="save-boutton" data-dismiss="modal"
+                        (click)="update(this.methodesGlobal.convertNumber(this.methodesGlobal.getValue(idPlateforme.value)),this.methodesGlobal.getValue(PlatformID.value),this.methodesGlobal.getValue(titrePlateforme.value),this.methodesGlobal.getValue(note.value),this.methodesGlobal.getValue(SUSHIURL.value),this.methodesGlobal.getValue(ConsortiumCustID.value),this.methodesGlobal.getValue(ConsortiumRequestorID.value),this.methodesGlobal.getValue(ConsortiumApiKey.value),this.methodesGlobal.getValue(PlatformCode.value));"><i class="fa fa-save btn-icon-prepend"></i> {{'btn-enregistrer'| translate }}</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal pour modifier-->
+        <div class="modal fade" id="modal-supprimer" tabindex="-1" role="dialog" aria-labelledby="modal-supprimer" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" >{{'message.supprimer-titre'| translate }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                {{'message.supprimer-text'| translate }}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i>{{'btn-annuler'| translate}}</button>
+                <button type="button" class="btn btn-danger btn-sm "  data-dismiss="modal"  (click)="delete(plateforme.idPlateforme);" ><i class="fa fa-save btn-icon-prepend"></i> {{'btn-supprimer'| translate }}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    <!-- fin contenu page -->
+    <!-- Contenu footer -->
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>
+<div class="noVisible" *ngFor="let plateforme of plateformes$ | async"></div>

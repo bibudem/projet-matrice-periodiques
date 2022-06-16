@@ -1,0 +1,186 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <div class="content-wrapper">
+      <!-- Contenu de la page liste des periodiques -->
+      <!-- Quick Action Toolbar Ends-->
+      <div class="row  card p-3">
+        <div class="page-header mt-3 p-3">
+          <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
+            <h4 class="font-weight-semibold titre-initial ">{{ 'statistique-titre' | translate}} « {{titrePeriodique}} » </h4>
+              <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="{{ return }}">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+               <button type="button" *ngIf="bouttonFiche" class="btn btn-primary btn-sm mb-1 ml-2" routerLink="/periodique/{{ id }}">
+                <i class="icon-folder btn-icon-prepend"></i> {{ 'fiche-periodique' | translate}} </button>
+              </span>
+          </div>
+        </div>
+        <!-- Alert notification div -->
+        <div class="alert alert-success alert-dismissible fade show cacherVisible" role="alert" id="alert-add-statistique">
+          {{ 'message.action-text' | translate}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <!-- Alert notification div -->
+        <div class="alert alert-warning alert-dismissible fade show cacherVisible" role="alert" id="alert-sup-statistique">
+          {{ 'message.action-suppression' | translate}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form   #statistiqueForm="ngForm" name="statistiqueForm" id="statistiqueForm" (ngSubmit)="onSubmit(statistiqueForm)">
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="annee">{{ 'annee' | translate}}</label> <span class="text-danger"> *</span>
+                <input type="text" class="form-control" id="annee" name="annee" #annee mask="0000" [(ngModel)]="statistique.annee">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="Total_Item_Requests">{{ 'telechargements' | translate}}</label>
+                <input type="text" class="form-control" id="Total_Item_Requests" name="Total_Item_Requests" #Total_Item_Requests [(ngModel)]="statistique.Total_Item_Requests">
+                <input type="hidden" class="form-control" id="idRevue" name="idRevue" #idRevue value="{{id}}" >
+                <input type="hidden" class="form-control" id="idStatistique" name="idStatistique" #idStatistique  [(ngModel)]="statistique.idStatistique" >
+                <input  class="form-control"  name="action" id="action" type="hidden"  value="{{action}}"  >
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="Unique_Item_Requests">{{ 'unique-telechargements' | translate}}</label>
+                <input type="text" class="form-control" id="Unique_Item_Requests" name="Unique_Item_Requests" #Unique_Item_Requests [(ngModel)]="statistique.Unique_Item_Requests">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="No_License">{{ 'refus' | translate}}</label>
+                <input type="text" class="form-control" id="No_License" name="No_License" #No_License [(ngModel)]="statistique.No_License">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="citations">{{ 'citations' | translate}}</label>
+                <input type="text" class="form-control" id="citations" name="citations" #citations [(ngModel)]="statistique.citations">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="articlesUdem">{{ 'articles-udem' | translate}}</label>
+                <input type="text" class="form-control" id="articlesUdem" name="articlesUdem" #articlesUdem [(ngModel)]="statistique.articlesUdem">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="plateforme">{{ 'plateforme' | translate}}</label>
+                <select name="plateforme" id="plateforme"  class="form-control" #plateforme [(ngModel)]="statistique.plateforme">
+                  <option value="">{{ 'choisissez' | translate}}</option>
+                  <option *ngFor="let rep of this.listePlateforme" [value]="rep.PlatformID">{{rep.titrePlateforme}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="JR5COURANT">{{ 'jr5-courant' | translate}}</label>
+                <input type="text" class="form-control" id="JR5COURANT" name="JR5COURANT" #JR5COURANT [(ngModel)]="statistique.JR5COURANT">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="JR5INTER">{{ 'jr5-inter' | translate}}</label>
+                <input type="text" class="form-control" id="JR5INTER" name="JR5INTER" #JR5INTER  [(ngModel)]="statistique.JR5INTER">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="JR5RETRO">{{ 'jr5-retro' | translate}}</label>
+                <input type="text" class="form-control" id="JR5RETRO" name="JR5RETRO" #JR5RETRO [(ngModel)]="statistique.JR5RETRO">
+              </div>
+            </div>
+            <div class="col-md-3"><br>
+              <button type="button" class="btn btn-success mr-2 w-100" data-toggle="modal" data-target="#modal-enregistrer"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
+              <!-- Modal pour modifier-->
+              <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" >{{'message.confirmer-titre'| translate }}</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closebutton>
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      {{'message.confirmer-text'| translate }}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i>{{'btn-annuler'| translate}}</button>
+                      <input type="submit" class="btn btn-primary btn-sm"  value="{{bouttonAction}}" (click)="onFermeModal()">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form><hr>
+          <div class="card-title">
+            <h4 class="mt-3 titre-initial mb-3"> {{'liste.liste-statistiques'| translate }}</h4>
+          </div>
+        <!-- Garder pour post action -->
+        <div class="noVisible" *ngFor="let statistique of statistiques$ | async"></div>
+        <div class="table-responsive">
+          <table class="table table-hover w-100 table-bordered">
+            <thead>
+            <tr>
+              <th class="font-weight-bold w-5">{{ 'numero' | translate}}</th>
+              <th class="font-weight-bold w-5">{{ 'annee' | translate}}</th>
+              <th class="font-weight-bold w-10">{{ 'plateforme' | translate}}</th>
+              <th class="font-weight-bold w-5">{{ 'telech.' | translate}}</th>
+              <th class="font-weight-bold">{{ 'unique-telechargements' | translate}}</th>
+              <th class="font-weight-bold w-5">{{ 'refus' | translate}}</th>
+              <th class="font-weight-bold w-5">{{ 'citations' | translate}}</th>
+              <th class="font-weight-bold w-5">{{ 'art.-udem' | translate}}</th>
+              <th class="font-weight-bold ">{{ 'date-ajout' | translate}}</th>
+              <th class="font-weight-bold w-8">{{ 'btn-modifier' | translate}}</th>
+              <th class="font-weight-bold w-8">{{ 'btn-supprimer' | translate}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let rep of this.tableauStatistique" >
+              <td>{{rep.numero}}</td>
+              <td>{{rep.annee}}</td>
+              <td>{{rep.plateforme}}</td>
+              <td>{{rep.Total_Item_Requests}}</td>
+              <td>{{rep.Unique_Item_Requests}}</td>
+              <td>{{rep.No_License}}</td>
+              <td>{{rep.citations}}</td>
+              <td>{{rep.articlesUdem}}</td>
+              <td>{{ rep.dateA | date:'short': 'fr' }}</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm " title="Modifier"  (click)="apliquerModifier(rep.idStatistique)">
+                <i class="icon-note"></i>
+              </button>
+              </td>
+              <td class="text-center">
+                <button  mat-icon-button (click)="delete(rep.idStatistique)">
+                  <mat-icon  color="warn">
+                    delete
+                  </mat-icon>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+      <!-- fin contenu page -->
+      <!-- Contenu footer -->
+      <app-footer></app-footer>
+    </div>
+  </div>
+

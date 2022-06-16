@@ -1,0 +1,13 @@
+{
+  "/consulatation2022": {
+    "target":  {
+      "host": "consultation2022.bib.umontreal.ca/titles",
+      "protocol": "https:",
+      "port": 443
+    },
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "info"
+    }
+  }
+

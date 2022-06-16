@@ -1,0 +1,98 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <div class="content-wrapper b-white">
+      <div class="page-header pt-3 mt-2">
+        <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
+          <h4 class="font-weight-semibold titre-initial ">{{'list-periodiques'| translate}}  </h4>
+          <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+                <button *ngIf="ifAdmin" type="button" class="btn btn-success btn-sm mb-1 ml-2"  routerLink="/periodique/add" ><i class="icon-plus text-white"></i> {{'menu.ajouter' | translate }}</button>
+              </span>
+        </div>
+      </div>
+      <div class="card-header w-100 b-white">
+        <mat-form-field class="w-50">
+          <input (keyup)="applyFilter(getValue(texteFiltre.value))"
+                 matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre value="{{textRechercher}}">
+        </mat-form-field>
+        <a href="javascript:;" *ngIf="texteFiltre.value"><span aria-hidden="true" (click)="viderFiltre()">&times;</span></a>
+      </div>
+
+      <div class="example-container">
+        <div class="table-responsive">
+        <table
+          mat-table
+          [dataSource]="dataSource"
+          class="mat-elevation-z8 w-100 p-2"
+          matSort
+          matSortActive="titre"
+          matSortDirection="asc">
+
+          <!-- ID Column -->
+          <ng-container matColumnDef="idRevue" >
+            <th  *matHeaderCellDef #idRevue mat-sort-header  class="font-weight-bold w-10 "> {{ 'labels-rapport-periodique.id' | translate}} </th>
+            <td *matCellDef="let row" class="w-10" > {{row.idRevue}} </td>
+          </ng-container>
+
+          <!-- Titre Column -->
+          <ng-container matColumnDef="titre">
+            <th  *matHeaderCellDef #titre mat-sort-header class="font-weight-bold w-20 "> {{ 'titre' | translate}} </th>
+            <td  *matCellDef="let row" class="w-20" > {{row.titre}} </td>
+          </ng-container>
+
+          <!-- ISSN Column -->
+          <ng-container matColumnDef="ISSN">
+            <th  *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15"> ISSN </th>
+            <td  *matCellDef="let row" class="w-15"> {{row.ISSN}} </td>
+          </ng-container>
+
+          <!-- EISSN Column -->
+          <ng-container matColumnDef="EISSN">
+            <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15"> EISSN </th>
+            <td  *matCellDef="let row" class="w-15"> {{row.EISSN}} </td>
+          </ng-container>
+
+              <!-- Abonnement Column -->
+              <ng-container matColumnDef="abonnement">
+                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10" > {{ 'abonnem' | translate}} </th>
+                <td  *matCellDef="let row" class="w-10"> {{row.abonnement}} </td>
+              </ng-container>
+
+              <!-- BDD Column -->
+              <ng-container matColumnDef="bdd">
+                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10" > {{ 'labels-rapport-periodique.bdd' | translate}} </th>
+                <td  *matCellDef="let row" class="w-10"> {{row.bdd}} </td>
+              </ng-container>
+
+              <!-- Statut Column -->
+              <ng-container matColumnDef="statut">
+                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'statut' | translate}} </th>
+                <td  *matCellDef="let row" class="w-10"> {{row.statut}} </td>
+              </ng-container>
+              <!-- Consulter Column -->
+              <ng-container matColumnDef="consulter" >
+                <th *matHeaderCellDef   class="font-weight-bold w-10"> {{ 'consulter' | translate}} </th>
+                <td  *matCellDef="let row" class="w-10 text-center ">
+                  <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter la fiche"  routerLink="/periodique/{{ row.idRevue }}">
+                    <i class="icon-note"></i>
+                  </button>
+                </td>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;">
+              </mat-row>
+            </table>
+
+        <mat-paginator [pageSizeOptions]="[30, 60, 90, 120]"></mat-paginator>
+        </div>
+      </div>
+    </div>
+    <!-- Contenu footer -->
+    <app-footer></app-footer>
+  </div>
+</div>
+

@@ -1,0 +1,87 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page --->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <div class="content-wrapper">
+      <!-- Contenu de la page d'accueil-->
+      <!-- Chiffres de statistique-->
+      <div class="row mt-3">
+        <div class="col-md-12 grid-margin">
+          <div class="card mt-2">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="d-sm-flex align-items-baseline report-summary-header">
+                    <h4 class="font-weight-semibold titre-initial ">{{ 'home.board' | translate}}</h4>
+                    <span class="ml-auto">Année: {{annee}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row report-inner-cards-wrapper">
+                <div class=" col-md -6 col-xl report-inner-card">
+                  <div class="inner-card-text">
+                    <span class="report-title">{{ 'home.periodique' | translate}}</span>
+                    <h4>{{totalRevue}}</h4>
+                  </div>
+                  <div class="inner-card-icon bg-success">
+                    <i class="icon-layers"></i>
+                  </div>
+                </div>
+                <div class="col-md-6 col-xl report-inner-card">
+                  <div class="inner-card-text">
+                    <span class="report-title">{{ 'home.tele' | translate}}</span>
+                    <h4>{{totalTele}}</h4>
+                  </div>
+                  <div class="inner-card-icon bg-primary">
+                    <i class="icon-cloud-download"></i>
+                  </div>
+                </div>
+                <div class="col-md-6 col-xl report-inner-card">
+                  <div class="inner-card-text">
+                    <span class="report-title">{{ 'home.citations' | translate}}</span>
+                    <h4>{{totalCitation}}</h4>
+                  </div>
+                  <div class="inner-card-icon bg-warning">
+                    <i class="icon-pin"></i>
+                  </div>
+                </div>
+                <div class="col-md-6 col-xl report-inner-card">
+                  <div class="inner-card-text">
+                    <span class="report-title">{{ 'home.article-udem' | translate}}</span>
+                    <h4>{{totalArticleUdem}}</h4>
+                  </div>
+                  <div class="inner-card-icon bg-info">
+                    <i class="icon-paper-clip"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-2 b-white mb-3">
+        <div id="chart" class="p-2">
+          <apx-chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [dataLabels]="chartOptions.dataLabels"
+            [colors]="chartOptions.colors"
+            [plotOptions]="chartOptions.plotOptions"
+            [yaxis]="chartOptions.yaxis"
+            [legend]="chartOptions.legend"
+            [fill]="chartOptions.fill"
+            [stroke]="chartOptions.stroke"
+            [tooltip]="chartOptions.tooltip"
+            [xaxis]="chartOptions.xaxis"
+          ></apx-chart>
+        </div>
+      </div>
+    </div>
+    <!-- Contenu footer -->
+    <app-footer></app-footer>
+  </div>
+</div>
+
+

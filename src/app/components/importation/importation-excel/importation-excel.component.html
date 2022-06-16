@@ -1,0 +1,193 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <!-- div animation -->
+    <div class="content-wrapper b-white" >
+      <!-- Contenu de la page liste des periodiques -->
+      <!-- Quick Action Toolbar Ends-->
+      <div class="page-header pt-3">
+        <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
+          <h4 class="font-weight-semibold text-initial ">{{ 'importation.excel-titre' | translate}}</h4>
+          <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+              </span>
+        </div>
+      </div>
+      <!-- div animation -->
+      <div id="load-import" class="cacherVisible">
+        <div class="loader">...</div>
+        <div id="load">{{ 'importation.attendre' | translate}}</div>
+      </div>
+      <div id="contenu-form">
+        <!-- Alert notification div -->
+        <div>
+          <blockquote class="blockquote blockquote-danger">
+            <p>{{ 'importation.form-description-excel' | translate}}</p>
+          </blockquote>
+        </div>
+        <form  #importationForm="ngForm" >
+          <div class="row mt-5">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
+                <select name="plateforme" id="annee"  class="form-control" #annee >
+                  <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input type="file" class="form-control mt-4" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".csv">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group cacherVisible"  id="addCsv">
+                <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
+                  <i class="fa fa-file-excel-o btn-icon-prepend"></i> {{ 'importation.btn-excel' | translate}}</button>
+              </div>
+            </div>
+
+          </div>
+          <!-- Modal pour modifier-->
+          <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">{{ 'importation.excel-titre' | translate}}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  {{ 'importation.confirmer-text' | translate}}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i>{{'btn-annuler'| translate}}</button>
+                  <button type="button" class="btn btn-primary btn-sm "  data-dismiss="modal" id="add-boutton" (click)="postArray(records)" ><i class="fa fa-file-excel-o btn-icon-prepend"></i> {{'importation.btn-csv'| translate }}</button></div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- progresse bar -->
+
+      <!-- fin progresse bar -->
+      <!-- fin contenu form -->
+      <div id="contenu-resultat" class="cacherVisible">
+        <div >
+          <h3>{{ 'importation.csv-import-provisoire' | translate}}</h3>
+          <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 p-2"  >
+
+            <!-- ID Column -->
+            <ng-container matColumnDef="numero" >
+              <th *matHeaderCellDef mat-sort-header="numero"  class="font-weight-bold w-5 p-3"> {{ 'numero' | translate}} </th>
+              <td *matCellDef="let row" class="w-5 p-3" > {{row.numero}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="annee">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-5"> {{ 'annee' | translate}} </th>
+              <td  *matCellDef="let row" class="w-5" > {{row.annee}} </td>
+            </ng-container>
+
+            <!-- plateforme -->
+            <ng-container matColumnDef="plateforme">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-15"> {{ 'plateforme' | translate}} </th>
+              <td  *matCellDef="let row" class="w-15" > {{row.plateforme}} </td>
+            </ng-container>
+
+            <!-- titre -->
+            <ng-container matColumnDef="titre">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15">{{ 'titre' | translate}} </th>
+              <td  *matCellDef="let row" class="w-15"> {{row.titre}} </td>
+            </ng-container>
+
+            <!-- ISSN -->
+            <ng-container matColumnDef="ISSN">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'ISSN' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10 text-center"> {{row.ISSN }} </td>
+            </ng-container>
+
+            <!-- EISSN -->
+            <ng-container matColumnDef="EISSN">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'EISSN' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10 text-center"> {{row.EISSN }} </td>
+            </ng-container>
+
+            <!-- Total_Item_Requests -->
+            <ng-container matColumnDef="Total_Item_Requests">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'telech.' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10 text-center"> {{row.Total_Item_Requests }} </td>
+            </ng-container>
+
+            <!-- Unique_Item_Requests -->
+            <ng-container matColumnDef="Unique_Item_Requests">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'unique-telechargements' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10 text-center"> {{row.Unique_Item_Requests }} </td>
+            </ng-container>
+
+            <!-- No_License -->
+            <ng-container matColumnDef="No_License">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-5 text-center"> {{ 'refus' | translate}} </th>
+              <td  *matCellDef="let row" class="w-5 text-center"> {{row.No_License }} </td>
+            </ng-container>
+
+            <!-- JR5COURANT -->
+            <ng-container matColumnDef="JR5COURANT">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-5 text-center"> {{ 'JR5C' | translate}} </th>
+              <td  *matCellDef="let row" class="w-5 text-center"> {{row.JR5COURANT }} </td>
+            </ng-container>
+
+
+            <!-- JR5INTER -->
+            <ng-container matColumnDef="JR5INTER">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-5 text-center"> {{ 'JR5I' | translate}} </th>
+              <td  *matCellDef="let row" class="w-5 text-center"> {{row.JR5INTER }} </td>
+            </ng-container>
+
+            <!-- JR5RETRO -->
+            <ng-container matColumnDef="JR5RETRO">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-5 text-center"> {{ 'JR5R' | translate}} </th>
+              <td  *matCellDef="let row" class="w-5 text-center"> {{row.JR5RETRO }} </td>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+          </table>
+
+          <mat-paginator [pageSizeOptions]="[25, 50, 75, 100]"></mat-paginator>
+          <ul class="cacherVisible">
+          <li *ngFor="let record of statistiqueExcel$ |async">{{record}}</li>
+          </ul>
+        </div>
+      </div>
+      <!-- Contenu mis a jour des données -->
+      <div id="updateStatistique" class="cacherVisible">
+        <!-- Alert notification div -->
+        <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert" >
+          <blockquote>{{ 'importation.result-import-csv' | translate}}</blockquote>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group"  >
+            <button type="button" class="btn btn-success mt-4" (click)="updateStatistique(methodesGlobal.getValue(annee.value))">
+              <i class="fa fa-file-excel-o btn-icon-prepend"></i> {{ 'importation.csv-update-titre' | translate}}</button>
+          </div>
+        </div>
+      </div>
+      <!-- Contenu mis a jour des données -->
+      <div id="resultUpdate" class="cacherVisible">
+        <!-- Alert notification div -->
+        <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert" >
+          <h4>{{ 'importation.result-update' | translate}}<br>
+             <strong>{{ reponseUpdate}}</strong>  {{ 'importation.enregistrements' | translate}}
+          </h4>
+        </div>
+      </div>
+      <!-- Contenu footer -->
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>
