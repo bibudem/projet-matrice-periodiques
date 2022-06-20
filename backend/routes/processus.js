@@ -1,0 +1,19 @@
+const express = require('express');
+
+const processusController = require('../controllers/processus');
+
+const router = express.Router();
+
+router.get('/all', processusController.getAllProcessus);
+
+
+router.put('/save-prix', processusController.postAbonnement);
+
+
+router.put('/save-abonnement', processusController.postAbonnement);
+
+
+router.delete('/delete/:id', processusController.deleteProcessus);
+
+
+module.exports = router;

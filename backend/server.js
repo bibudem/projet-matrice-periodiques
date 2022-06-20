@@ -35,6 +35,8 @@ const homeRoutes= require('./routes/home');
 
 const outilsRoutes= require('./routes/outils');
 
+const processusRoutes= require('./routes/processus');
+
 const errorController = require('./controllers/error');
 
 const parseurl = require('parseurl')
@@ -171,6 +173,9 @@ app.use('/home', homeRoutes);
 
 //controlleur pour les outils
 app.use('/outils',outilsRoutes);
+
+//controlleur pour les processus
+app.use('/processus',processusRoutes);
 
 //passport user
 app.use('/user-udem', userUdemRoutes);
