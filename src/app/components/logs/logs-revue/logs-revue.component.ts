@@ -33,8 +33,6 @@ export class LogsRevueComponent implements OnInit {
   //importer les fonctions global
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
 
-  /*name of the excel-file which will be downloaded. */
-  fileName= 'rapport-logs-revues.xlsx';
 
   constructor(private logsService: LogsListeServiceService,
               private translate:TranslateService) { }
@@ -88,35 +86,4 @@ export class LogsRevueComponent implements OnInit {
       .pipe(tap(() => (this.getAllLogsRevue())));
   }
 
-  //Ajouter la valeur pour l'input
-  addValue(val:string){
-    let id_log=document.getElementById('id_log')
-    if(id_log)
-    { // @ts-ignore
-      id_log.value=val
-    }
-  }
-
-  //exporter les données en format xlsx
-  async ExportTOExcel()
-  {
-    let that=this
-
-    setTimeout(async function () {
-      let dateNow=new Date().getUTCDate();
-      /* table id is passed over here */
-      let element = document.getElementById('table-rapport-logs-revues');
-      const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
-
-      /* generate workbook and add the worksheet */
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Rapport-logs-revues-'+dateNow);
-
-      /* save to file */
-      XLSX.writeFile(wb, that.fileName);
-    }, 3000);
-
-    //console.log(this.dataSource);
-
-  }
 }

@@ -28,6 +28,7 @@ import {LoginComponent} from "./components/login/login.component";
 import {NotUserComponent} from "./components/not-user/not-user.component";
 import {AdminGuard} from "./services/admin-guard.service";
 import {NotAutoriseComponent} from "./components/not-autorise/not-autorise.component";
+import {ListeProcessusComponent} from "./components/processus/liste-processus/liste-processus.component";
 
 const routes: Routes = [
   { path: '', component: AccueilComponent, canActivate: [AuthGuard] },
@@ -54,6 +55,7 @@ const routes: Routes = [
   { path: 'logs-menu', component: LogsMenuComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'logs-revue', component: LogsRevueComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'logs-plateforme', component: LogsPlateformeComponent, canActivate: [AuthGuard,AdminGuard] },
+  { path: 'liste-processus', component: ListeProcessusComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'list-fonds', component: ListFondsComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
   { path: 'page-not-found', component: PageNotFoundComponent, canActivate: [AuthGuard]  },

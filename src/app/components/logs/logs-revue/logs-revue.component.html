@@ -13,7 +13,7 @@
           <span  class="ml-auto ">
             <button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/logs-menu">
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
-            <button class="btn btn-info ml-1 btn-sm mb-1" (click)="ExportTOExcel();"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}</button>
+            <button class="btn btn-info ml-1 btn-sm mb-1" (click)="methodesGlobal.ExportTOExcel('tableau-logs','liste-logs-periodiques.xlsx');"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}</button>
               </span>
         </div>
       </div>
@@ -85,7 +85,7 @@
               <ng-container matColumnDef="supprimer" >
                 <th *matHeaderCellDef   class="font-weight-bold w-10 pr-1"> {{ 'supprimer' | translate}} </th>
                 <td  *matCellDef="let row" class="w-10 text-center pr-1">
-                  <button type="button" class="btn btn-danger btn-rounded btn-icon btn-sm" title="Supprimer la fiche" (click)="addValue(row.id_log)" data-toggle="modal" data-target="#modal-supprimer" >
+                  <button type="button" class="btn btn-danger btn-rounded btn-icon btn-sm" title="Supprimer la fiche" (click)="methodesGlobal.addValueInput(row.id_log,'id_log')" data-toggle="modal" data-target="#modal-supprimer" >
                     <i class="icon-trash"></i>
                   </button>
                 </td>
@@ -125,7 +125,7 @@
     <!-- fin note -->
     <div class="noVisible" *ngFor="let log of logs$ | async"></div>
     <!-- creation  du tableau pour export-->
-    <table  class="table table-bordered cacherVisible"  id="table-rapport-logs-revues" >
+    <table  class="table table-bordered cacherVisible"  id="tableau-logs" >
       <tr><th *ngFor="let th of displayedColumns ">{{th}}</th></tr>
       <tr *ngFor="let col of listeLogs">
         <td *ngFor="let rep of displayedColumns">{{col[rep]}}</td></tr>

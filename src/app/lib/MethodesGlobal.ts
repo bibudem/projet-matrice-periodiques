@@ -99,21 +99,21 @@ export class MethodesGlobal  {
   };
 
   //exporter les données en format xlsx
-  async ExportTOExcel(idTable:string,name:string)
+  async ExportTOExcel(nomTableau:string, nomFile:string)
   {
 
     setTimeout(async function () {
       let dateNow=new Date().getUTCDate();
       /* table id is passed over here */
-      let element = document.getElementById(idTable);
+      let element = document.getElementById(nomTableau);
       const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
 
       /* generate workbook and add the worksheet */
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, name);
+      XLSX.utils.book_append_sheet(wb, ws, nomTableau+dateNow);
 
       /* save to file */
-      XLSX.writeFile(wb, 'resultats-importation.xlsx');
+      XLSX.writeFile(wb, nomFile);
     }, 3000);
 
     //console.log(this.dataSource);
@@ -124,5 +124,14 @@ export class MethodesGlobal  {
     let ifAdmin=sessionStorage.getItem('role');
     if (ifAdmin=='Admin') { return true; }
     else return false
+  }
+
+  //Ajouter la valeur pour l'input
+  addValueInput(val:string,idInput:string){
+    let id_log=document.getElementById(idInput)
+    if(id_log)
+    { // @ts-ignore
+      id_log.value=val
+    }
   }
 }

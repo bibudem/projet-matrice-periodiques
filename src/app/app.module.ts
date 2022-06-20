@@ -72,6 +72,9 @@ import {ImportationExcelComponent} from "./components/importation/importation-ex
 import {AboutComponent} from "./components/about/about.component";
 import {NotUserComponent} from "./components/not-user/not-user.component";
 import {MatSortModule} from "@angular/material/sort";
+import { MiseAJourPrixComponent } from './components/processus/mise-a-jour-prix/mise-a-jour-prix.component';
+import { MiseAJourAbonnementComponent } from './components/processus/mise-a-jour-abonnement/mise-a-jour-abonnement.component';
+import { ListeProcessusComponent } from './components/processus/liste-processus/liste-processus.component';
 
 const maskConfig: Partial<IConfig> = {
   validation: false,
@@ -108,7 +111,10 @@ const maskConfig: Partial<IConfig> = {
     RapportPlateformesComponent,
     AboutComponent,
     NotUserComponent,
-    NotAutoriseComponent
+    NotAutoriseComponent,
+    MiseAJourPrixComponent,
+    MiseAJourAbonnementComponent,
+    ListeProcessusComponent
   ],
     imports: [
         BrowserModule,
