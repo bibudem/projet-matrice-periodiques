@@ -1,0 +1,120 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <div class="content-wrapper b-white">
+      <!-- Contenu de la page liste des periodiques -->
+      <!-- Quick Action Toolbar Ends-->
+      <div class="page-header pt-3">
+        <div  class="d-sm-flex align-items-baseline report-summary-header w-100 mt-3">
+          <h4 class="font-weight-semibold text-initial ">{{ 'processus.titre-processus' | translate}}  </h4>
+          <span  class="ml-auto ">
+            <button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/logs-menu">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+            <button class="btn btn-info ml-1 btn-sm mb-1" (click)="methodesGlobal.ExportTOExcel('tableau-processus','liste-processus.xlsx');"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}</button>
+              </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="example-container w-100">
+          <div class="card-header b-white">
+            <mat-form-field class="w-75">
+              <input (keyup)="applyFilter(methodesGlobal.getValue(texteFiltre.value))"
+                     matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre >
+            </mat-form-field>
+          </div>
+          <div class="table-responsive w-100">
+            <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100" >
+              <!-- ID Column -->
+              <ng-container matColumnDef="id_processus" >
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10 p-3"> {{ 'processus.id_processus' | translate}} </th>
+                <td *matCellDef="let row" class="w-10 p-3" > {{row.id_processus}} </td>
+              </ng-container>
+
+              <!-- plateforme Column -->
+              <ng-container matColumnDef="titre">
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-15 pl-2"> {{ 'processus.titre' | translate}} </th>
+                <td  *matCellDef="let row" class="w-15 pl-2" > {{row.titre}} </td>
+              </ng-container>
+
+              <!-- EISSN Column -->
+              <ng-container matColumnDef="admin">
+                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15 pr-1"> {{ 'processus.admin' | translate}} </th>
+                <td  *matCellDef="let row" class="w-15">
+                  {{row.admin}}
+                </td>
+              </ng-container>
+
+              <!-- Title Column -->
+              <ng-container matColumnDef="h_debut">
+                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15 pr-1"> {{ 'processus.h_debut' | translate}} </th>
+                <td  *matCellDef="let row" class="w-15 pr-1"> {{row.h_debut}} </td>
+              </ng-container>
+
+              <!-- rapport Column -->
+              <ng-container matColumnDef="h_fin">
+                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15 pr-1"> {{ 'processus.h_fin' | translate}} </th>
+                <td  *matCellDef="let row" class="w-15 pr-1"> {{row.h_fin}} </td>
+              </ng-container>
+
+              <!-- fourniseur Column -->
+              <ng-container matColumnDef="statut">
+                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-20 pr-1"> {{ 'statut' | translate}} </th>
+                <td  *matCellDef="let row" class="w-20 pr-1"> {{row.statut}} </td>
+              </ng-container>
+
+              <!-- Consulter Column -->
+              <ng-container matColumnDef="supprimer" >
+                <th *matHeaderCellDef   class="font-weight-bold w-10 text-center pr-1"> {{ 'supprimer' | translate}} </th>
+                <td  *matCellDef="let row" class="w-10 text-center pr-1">
+                  <button type="button" class="btn btn-danger btn-rounded btn-icon btn-sm" title="Supprimer la fiche" (click)="methodesGlobal.addValueInput(row.id_processus,'id_processus')" data-toggle="modal" data-target="#modal-supprimer" >
+                    <i class="icon-trash"></i>
+                  </button>
+                </td>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;">
+              </mat-row>
+            </table>
+
+            <mat-paginator [pageSizeOptions]="[15, 25, 50, 100]"></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+    <input type="hidden" id="id_processus" name="id_processus" #id_processus value="">
+    <!-- Modal pour supprimer-->
+    <div class="modal fade" id="modal-supprimer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="modal-supprimer-Label">{{'message.supprimer-titre'| translate}}</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {{'message.supprimer-text'| translate}}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm"  data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i> {{'btn-annuler'| translate}}</button>
+            <button type="button" class="btn btn-danger btn-sm" (click)="deleteProcessus(this.methodesGlobal.getValue(id_processus.value))" data-dismiss="modal" ><i class="fa fa-trash btn-icon-prepend"></i> {{'btn-supprimer'| translate}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- fin note -->
+    <div class="noVisible" *ngFor="let proces of processus$ | async"></div>
+    <!-- creation  du tableau pour export-->
+    <table  class="table table-bordered cacherVisible"  id="tableau-processus" >
+      <tr><th *ngFor="let th of displayedColumns ">{{th}}</th></tr>
+      <tr *ngFor="let col of listeProcessus">
+        <td *ngFor="let rep of displayedColumns">{{col[rep]}}</td></tr>
+    </table>
+    <!-- Contenu footer -->
+    <app-footer></app-footer>
+  </div>
+</div>
