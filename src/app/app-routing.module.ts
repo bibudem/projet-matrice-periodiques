@@ -55,7 +55,7 @@ const routes: Routes = [
   { path: 'logs-menu', component: LogsMenuComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'logs-revue', component: LogsRevueComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'logs-plateforme', component: LogsPlateformeComponent, canActivate: [AuthGuard,AdminGuard] },
-  { path: 'liste-processus', component: ListeProcessusComponent, canActivate: [AuthGuard,AdminGuard] },
+  { path: 'processus', component: ListeProcessusComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'list-fonds', component: ListFondsComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
   { path: 'page-not-found', component: PageNotFoundComponent, canActivate: [AuthGuard]  },

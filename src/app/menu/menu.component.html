@@ -1,38 +1,38 @@
 <!-- section menu -->
 <nav class="sidebar sidebar-offcanvas pt-4 " id="sidebar">
   <ul class="nav mt-5">
-    <li  class="{{classeMenu['accueil']}}">
+    <li #menuAccueil="routerLinkActive" routerLinkActive="active"  class="nav-item menuAccueil.isActive ? active:  " >
       <a class="nav-link" routerLink="/accueil">
         <span class="nav-link">{{ 'menu.accueil' | translate}}</span>
         <i class="icon-home menu-icon"></i>
       </a>
     </li>
-    <li class="{{classeMenu['periodique/liste']}}">
+    <li #menuPeriodique="routerLinkActive" routerLinkActive="active"  class="nav-item menuPeriodique.isActive ? active:  " >
       <a class="nav-link" routerLink="/periodique/liste">
         <span class="nav-link">{{ 'menu.rechercher' | translate}}</span>
         <i class="icon-layers menu-icon"></i>
       </a>
     </li>
-    <li class="{{classeMenu['statistique']}}">
+    <li #menuStatistique="routerLinkActive" routerLinkActive="active"  class="nav-item menuStatistique.isActive ? active:  ">
       <a class="nav-link" routerLink="/liste-statistique">
         <span class="nav-link">{{ 'menu.statistique' | translate}}</span>
         <i class="icon-graph menu-icon"></i>
       </a>
     </li>
-     <li class="{{classeMenu['rapport']}}">
-      <a class="nav-link" data-toggle="collapse" href="#raports" aria-expanded="false" aria-controls="ui-basic">
+    <li #menuRapport="routerLinkActive" routerLinkActive="active"  class="nav-item menuRapport.isActive ? active:  ">
+      <a class="nav-link" data-toggle="collapse" href="#raports"  aria-controls="ui-basic">
         <span class="nav-link">{{ 'menu.rapport' | translate}}</span>
         <i class="icon-arrow-down menu-icon"></i>
       </a>
-      <div class="collapse" id="raports">
-        <ul class="nav flex-column sub-menu">
-          <li class="nav-item"> <a class="nav-link" routerLink="/rapport-periodique">{{ 'menu.rapport-periodique' | translate}}</a></li>
-          <li class="nav-item"> <a class="nav-link" routerLink="/rapport-statistique">{{ 'menu.rapport-statistique' | translate}}</a></li>
+      <div class="collapse" id="raports" >
+        <ul class="nav flex-column sub-menu" >
+          <li  class="nav-item"> <a class="nav-link" routerLink="/rapport-periodique">{{ 'menu.rapport-periodique' | translate}}</a></li>
+          <li  class="nav-item "> <a class="nav-link" routerLink="/rapport-statistique">{{ 'menu.rapport-statistique' | translate}}</a></li>
           <li class="nav-item"> <a class="nav-link" routerLink="/rapport-plateforme">{{ 'menu.rapport-plateforme' | translate}}</a></li>
         </ul>
       </div>
     </li>
-    <li *ngIf="this.ifAdmin" class="{{classeMenu['importation']}}">
+    <li *ngIf="this.ifAdmin" #menuImportation="routerLinkActive" routerLinkActive="active"  class="nav-item menuImportation.isActive ? active:  ">
       <a class="nav-link" data-toggle="collapse" href="#importation" aria-expanded="false" aria-controls="importation">
         <span class="nav-link">{{ 'menu.importation' | translate}}</span>
         <i class="icon-arrow-down menu-icon"></i>
@@ -45,7 +45,13 @@
         </ul>
       </div>
     </li>
-    <li *ngIf="this.ifAdmin" class="{{classeMenu['outils']}}">
+    <li *ngIf="this.ifAdmin" #menuProcessus="routerLinkActive" routerLinkActive="active"  class="nav-item menuProcessus.isActive ? active:  ">
+      <a class="nav-link" routerLink="/processus">
+        <span class="nav-link">{{ 'menu.processus' | translate}}</span>
+        <i class="icon-settings menu-icon"></i>
+      </a>
+    </li>
+    <li *ngIf="this.ifAdmin" #menuOutils="routerLinkActive" routerLinkActive="active"  class="nav-item menuOutils.isActive ? active:  ">
       <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
         <span class="nav-link">{{ 'menu.outils' | translate}}</span>
         <i class="icon-arrow-down menu-icon"></i>
@@ -57,7 +63,7 @@
         </ul>
       </div>
     </li>
-    <li *ngIf="this.ifAdmin" class="{{classeMenu['logs-menu']}}">
+    <li *ngIf="this.ifAdmin" #menuLogs="routerLinkActive" routerLinkActive="active"  class="nav-item menuLogs.isActive ? active:  ">
       <a class="nav-link" routerLink="/logs-menu">
         <span class="nav-link">{{ 'menu.logs' | translate}}</span>
         <i class="icon-bell menu-icon"></i>
