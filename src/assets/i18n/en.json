@@ -215,6 +215,14 @@
     "titre-logs-revue": "Periodicals logs",
     "titre-logs-plateforme": "Platform logs"
   },
+  "processus":{
+    "titre-processus": "Processes Overview",
+    "id_processus": "Process ID",
+    "titre": "Name",
+    "admin": "User",
+    "h_debut": "Start time",
+    "h_fin": "Finish time"
+  },
   "codes":{
     "400": "400- This error indicates a bad request from the client. The cause of this error is usually a wrongly deleted URL or content.",
     "401": "401- Means that you do not have permission for the requested website and that you need to log in first.",

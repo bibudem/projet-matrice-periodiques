@@ -138,7 +138,7 @@ export class MethodesGlobal  {
   //creation de la date yyyy-mm-dd H:M:S
 
   dateCreator(){
-    let dateStart = new Date().toLocaleDateString()+' '+new Date().getUTCHours()+':'+new Date().getUTCMinutes()+':'+new Date().getUTCSeconds()
+    let dateStart = new Date().toLocaleDateString()+' '+new Date().getHours().toLocaleString()+':'+new Date().getUTCMinutes()+':'+new Date().getUTCSeconds()
     //let dateStart =new Date().getFullYear()+'-'+ new Date().getMonth()+'-'+new Date().getDay()+' '+new Date().getHours()+':'+new Date().getMinutes()+':'+new Date().getSeconds();
     return dateStart;
   }

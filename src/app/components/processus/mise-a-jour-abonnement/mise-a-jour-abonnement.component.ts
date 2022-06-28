@@ -5,19 +5,18 @@ import {MatPaginator} from "@angular/material/paginator";
 import {paginationPersonnalise} from "../../../lib/paginationPersonnalise";
 import {MatSort} from "@angular/material/sort";
 import {MethodesGlobal} from "../../../lib/MethodesGlobal";
-import { UpdatePrix } from '../../../models/UpdatePrix';
+import {UpdateAbonnement} from "../../../models/UpdateAbonnement";
 import {Router} from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
-import {tap} from "rxjs/operators";
 import {ProcessusService} from "../../../services/processus.service";
-
+import {tap} from "rxjs/operators";
 
 @Component({
-  selector: 'app-mise-a-jour-prix',
-  templateUrl: './mise-a-jour-prix.component.html',
-  styleUrls: ['./mise-a-jour-prix.component.css']
+  selector: 'app-mise-a-jour-abonnement',
+  templateUrl: './mise-a-jour-abonnement.component.html',
+  styleUrls: ['./mise-a-jour-abonnement.component.css']
 })
-export class MiseAJourPrixComponent implements OnInit {
+export class MiseAJourAbonnementComponent implements OnInit {
 
   //Initialiser le tableau d'annee'
   arrayAnnee:any[]=[];
@@ -25,7 +24,7 @@ export class MiseAJourPrixComponent implements OnInit {
 
   annee = '';
 
-  inUpdatePrix$: Observable<any[]> | undefined;
+  inUpdateAbonnement$: Observable<any[]> | undefined;
 
   addProcessus$: Observable<any[]> | undefined;
   //importer les fonctions global
@@ -36,7 +35,7 @@ export class MiseAJourPrixComponent implements OnInit {
   reponseUpdate = 0
 
   //les entêts du tableau
-  displayedColumns = ['IDRevue','annee', 'prix','note'];
+  displayedColumns = ['IDRevue', 'abonnement','bdd','note'];
   tableauPeriodique: any = [];
 
   // @ts-ignore
@@ -47,7 +46,7 @@ export class MiseAJourPrixComponent implements OnInit {
 
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
 
-  records: UpdatePrix[] = [];
+  records: UpdateAbonnement[] = [];
 
   separator = ';';
 
@@ -116,21 +115,21 @@ export class MiseAJourPrixComponent implements OnInit {
 
 
   async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator:string) {
-    let csvArr: UpdatePrix[] = [];
+    let csvArr: UpdateAbonnement[] = [];
     // @ts-ignore
-    let csvRecord: UpdatePrix = []; let curruntRecord;
-    let colIDRevue=-1,colAnnee=-1,colPrix=-1,colNote=-1;
+    let csvRecord: UpdateAbonnement = []; let curruntRecord;
+    let colIDRevue=-1,colAbonnement=-1,colBDD=-1,colNote=-1;
     //prendre le numero des colons selon le nom d'entete
     for(let i=0;i<headersRow.length;i++){
       switch (headersRow[i].trim()){
         case 'IDRevue':
           colIDRevue=i
           break;
-        case 'annee':
-          colAnnee=i
+        case 'abonnement':
+          colAbonnement=i
           break;
-        case 'prix':
-          colPrix=i
+        case 'bdd':
+          colBDD=i
           break;
         case 'note':
           colNote=i
@@ -143,19 +142,21 @@ export class MiseAJourPrixComponent implements OnInit {
         // @ts-ignore
         this.annee=document.getElementById('annee').value;
 
-        curruntRecord = (<string>csvRecordsArray[i]).split(separator);
-        if(curruntRecord[colIDRevue]!='') {
-          csvRecord = {
-            idRevue: curruntRecord[colIDRevue],
-            // @ts-ignore
-            annee: this.annee,
-            prix: curruntRecord[colPrix],
-            note:curruntRecord[colNote]
-          }
-          csvArr.push(csvRecord);
+      curruntRecord = (<string>csvRecordsArray[i]).split(separator);
+
+      if(curruntRecord[colIDRevue]!='') {
+        csvRecord = {
+          idRevue: curruntRecord[colIDRevue],
+          // @ts-ignore
+          annee: this.annee,
+          abonnement: curruntRecord[colAbonnement],
+          bdd: curruntRecord[colBDD],
+          note:curruntRecord[colNote]
         }
+        csvArr.push(csvRecord);
+      }
     }
-     //console.log(csvArr)
+    //console.log(csvArr)
     return csvArr;
   }
 
@@ -179,7 +180,7 @@ export class MiseAJourPrixComponent implements OnInit {
 
 
   //inserer les données
-  async postArray(records:UpdatePrix[]){
+  async postArray(records:UpdateAbonnement[]){
     //console.log(records)
     this.methodesGlobal.nonAfficher('contenu-form')
     this.methodesGlobal.nonAfficher('contenu-resultat')
@@ -194,7 +195,7 @@ export class MiseAJourPrixComponent implements OnInit {
         i++;
 
         if(val.idRevue!=''){
-          await that.post(val.idRevue,val.annee,val.prix,val.note)
+          await that.post(val.idRevue,val.abonnement,val.bdd,val.note)
         }
         // si la lecture du fichier csv est fini
         if(i==records.length){
@@ -206,14 +207,14 @@ export class MiseAJourPrixComponent implements OnInit {
     }
   }
   //fonction pour inserer
-  async post( newIDRevue:string,newAnnee: string,newPrix: string, newNote: string) {
+  async post( newIDRevue:string,newAbonnement: string,newBDD: string, newNote: string) {
     if (!newIDRevue) return;
 
-    this.inUpdatePrix$ = await this.csvService
-      .updatePrix({
+    this.inUpdateAbonnement$ = await this.csvService
+      .updateAbonnement({
         newIDRevue,
-        newAnnee,
-        newPrix,
+        newAbonnement,
+        newBDD,
         newNote
       })
       .pipe(tap(() => (this.finImportation())));
@@ -226,7 +227,7 @@ export class MiseAJourPrixComponent implements OnInit {
       // @ts-ignore
       this.admin = sessionStorage.getItem('prenomAdmin')+' '+sessionStorage.getItem('nomAdmin');
     }
-    this.processus = {'titre':'Mise à jour des prix','statut':statut,'admin':this.admin,'dateStart':this.dateStart}
+    this.processus = {'titre':'Mise à jour des abonnements/BDD','statut':statut,'admin':this.admin,'dateStart':this.dateStart}
     this.addProcessus$ = await this.csvService
       .addProcessus(this.processus)
       .pipe(tap(() => (this.router.navigate(['/processus/add']))));
@@ -235,8 +236,8 @@ export class MiseAJourPrixComponent implements OnInit {
   //cacher l'animation pour la mise a jour des données
   finImportation(){
     this.methodesGlobal.nonAfficher('load-import')
-    this.methodesGlobal.afficher('updateStatistique')
   }
+
 
 
 }

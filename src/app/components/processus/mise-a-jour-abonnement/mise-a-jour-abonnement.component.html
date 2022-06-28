@@ -10,7 +10,7 @@
       <!-- Quick Action Toolbar Ends-->
       <div class="page-header pt-3">
         <div  class="d-sm-flex align-items-baseline report-summary-header w-100 mt-2">
-          <h4 class="font-weight-semibold text-initial ">{{ 'processus.mise-a-jour-prix' | translate}}</h4>
+          <h4 class="font-weight-semibold text-initial ">{{ 'processus.mise-a-jour-abonnement' | translate}}</h4>
           <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
               </span>
@@ -25,31 +25,22 @@
         <!-- Alert notification div -->
         <div>
           <blockquote class="blockquote blockquote-danger">
-            <p>{{ 'importation.form-description-csv-prix' | translate}}</p>
+            <p>{{ 'importation.form-description-csv-abonnement' | translate}}</p>
           </blockquote>
         </div>
         <form  #importationForm="ngForm" >
           <div class="row mt-5">
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
-                <select name="plateforme" id="annee"  class="form-control" #annee >
-                  <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <div class="form-group">
                 <input type="file" class="form-control mt-4" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".csv">
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <div class="form-group cacherVisible"  id="addCsv">
                 <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
-                  <i class="fa fa-file-excel-o btn-icon-prepend"></i> {{ 'processus.btn-csv' | translate}}</button>
+                  <i class="fa fa-file-excel-o btn-icon-prepend"></i> {{ 'processus.btn-csv-abonnement' | translate}}</button>
               </div>
             </div>
-
           </div>
           <!-- Modal pour modifier-->
           <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
@@ -72,9 +63,6 @@
           </div>
         </form>
       </div>
-      <!-- progresse bar -->
-
-      <!-- fin progresse bar -->
       <!-- fin contenu form -->
       <div id="contenu-resultat" class="cacherVisible">
         <div >
@@ -90,23 +78,23 @@
               <td *matCellDef="let row" class="w-10 p-3" > {{row.idRevue}} </td>
             </ng-container>
 
-            <!-- Année Column -->
-            <ng-container matColumnDef="annee">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'annee' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10" > {{row.annee}} </td>
+
+            <!-- abonnement Column -->
+            <ng-container matColumnDef="abonnement">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-20"> {{ 'abonnement' | translate}} </th>
+              <td  *matCellDef="let row" class="w-20" > {{row.abonnement}} </td>
             </ng-container>
 
-            <!-- prix Column -->
-            <ng-container matColumnDef="prix">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-40"> {{ 'prix' | translate}} </th>
-              <td  *matCellDef="let row" class="w-40" > {{row.prix}} </td>
+            <!-- bdd Column -->
+            <ng-container matColumnDef="bdd">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-20"> {{ 'bdd' | translate}} </th>
+              <td  *matCellDef="let row" class="w-20" > {{row.bdd}} </td>
             </ng-container>
-
 
             <!-- note Column -->
             <ng-container matColumnDef="note">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'note' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.note }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-20"> {{ 'note' | translate}} </th>
+              <td  *matCellDef="let row" class="w-20"> {{row.note }} </td>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -116,7 +104,7 @@
 
           <mat-paginator [pageSizeOptions]="[25, 50, 75, 100]"></mat-paginator>
           <ul class="cacherVisible">
-            <li *ngFor="let record of inUpdatePrix$ |async">{{record}}</li>
+            <li *ngFor="let record of inUpdateAbonnement$ |async">{{record}}</li>
           </ul>
           <ul class="cacherVisible">
             <li *ngFor="let proc of addProcessus$ |async">{{processus}}</li>
