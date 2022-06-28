@@ -1,0 +1,139 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <!-- div animation -->
+    <div class="content-wrapper b-white" >
+      <!-- Contenu de la page liste des periodiques -->
+      <!-- Quick Action Toolbar Ends-->
+      <div class="page-header pt-3">
+        <div  class="d-sm-flex align-items-baseline report-summary-header w-100 mt-2">
+          <h4 class="font-weight-semibold text-initial ">{{ 'processus.mise-a-jour-prix' | translate}}</h4>
+          <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+              </span>
+        </div>
+      </div>
+      <!-- div animation -->
+      <div id="load-import" class="cacherVisible">
+        <div class="loader">...</div>
+        <div id="load">{{ 'importation.attendre' | translate}}</div>
+      </div>
+      <div id="contenu-form">
+        <!-- Alert notification div -->
+        <div>
+          <blockquote class="blockquote blockquote-danger">
+            <p>{{ 'importation.form-description-csv-prix' | translate}}</p>
+          </blockquote>
+        </div>
+        <form  #importationForm="ngForm" >
+          <div class="row mt-5">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
+                <select name="plateforme" id="annee"  class="form-control" #annee >
+                  <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input type="file" class="form-control mt-4" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".csv">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group cacherVisible"  id="addCsv">
+                <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
+                  <i class="fa fa-file-excel-o btn-icon-prepend"></i> {{ 'processus.btn-csv' | translate}}</button>
+              </div>
+            </div>
+
+          </div>
+          <!-- Modal pour modifier-->
+          <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">{{ 'processus.btn-csv' | translate}}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  {{ 'importation.confirmer-text' | translate}}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-warning btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend mr-2"></i>{{'btn-annuler'| translate}}</button>
+                  <button type="button" class="btn btn-primary btn-sm "  data-dismiss="modal" id="add-boutton" (click)="postArray(records)" ><i class="fa fa-save btn-icon-prepend mr-2"></i> {{'processus.btn-confirme'| translate }}</button></div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- progresse bar -->
+
+      <!-- fin progresse bar -->
+      <!-- fin contenu form -->
+      <div id="contenu-resultat" class="cacherVisible">
+        <div >
+          <h3>{{ 'importation.csv-import-provisoire' | translate}}</h3>
+          <table  mat-table
+                  [dataSource]="dataSource"
+                  class="mat-elevation-z8 w-100 p-2 mt-3"
+                  matSort >
+
+            <!-- ID Column -->
+            <ng-container matColumnDef="IDRevue" >
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'IDRevue' | translate}} </th>
+              <td *matCellDef="let row" class="w-10 p-3" > {{row.idRevue}} </td>
+            </ng-container>
+
+            <!-- Année Column -->
+            <ng-container matColumnDef="annee">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'annee' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10" > {{row.annee}} </td>
+            </ng-container>
+
+            <!-- prix Column -->
+            <ng-container matColumnDef="prix">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-40"> {{ 'prix' | translate}} </th>
+              <td  *matCellDef="let row" class="w-40" > {{row.prix}} </td>
+            </ng-container>
+
+
+            <!-- note Column -->
+            <ng-container matColumnDef="note">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'note' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.note }} </td>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+          </table>
+
+          <mat-paginator [pageSizeOptions]="[25, 50, 75, 100]"></mat-paginator>
+          <ul class="cacherVisible">
+            <li *ngFor="let record of inUpdatePrix$ |async">{{record}}</li>
+          </ul>
+          <ul class="cacherVisible">
+            <li *ngFor="let proc of addProcessus$ |async">{{processus}}</li>
+          </ul>
+        </div>
+      </div>
+      <!-- Contenu mis a jour des données -->
+      <div id="resultUpdate" class="cacherVisible">
+        <!-- Alert notification div -->
+        <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert" >
+          <h4>{{ 'importation.statistique-total' | translate}}<br>
+            <strong>{{ reponseUpdate}}</strong>  {{ 'importation.enregistrements' | translate}}
+          </h4>
+        </div>
+      </div>
+      <!-- Contenu footer -->
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

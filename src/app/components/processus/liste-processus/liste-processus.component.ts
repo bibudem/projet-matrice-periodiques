@@ -9,6 +9,7 @@ import {ProcessusService} from "../../../services/processus.service";
 import {TranslateService} from "@ngx-translate/core";
 import {tap} from "rxjs/operators";
 import * as XLSX from "xlsx";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-liste-processus',
@@ -27,8 +28,14 @@ export class ListeProcessusComponent implements OnInit {
   // @ts-ignore
   dataSource: MatTableDataSource<any>;
 
+  selectedProcessus: string | undefined;
+
   @ViewChild(MatPaginator) paginator: paginationPersonnalise | any;
+
   @ViewChild(MatSort)  matSort : MatSort | any;
+
+  // @ts-ignore
+  @ViewChild('closebutton') closebutton:any;
 
   //importer les fonctions global
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
@@ -36,8 +43,11 @@ export class ListeProcessusComponent implements OnInit {
   /*name of the excel-file which will be downloaded. */
   fileName= 'liste-processus.xlsx';
 
+  routerChek :string = ''
+
   constructor(private processusService: ProcessusService,
-              private translate:TranslateService) { }
+              private translate:TranslateService,
+              private router: Router) { }
 
   //appliquer filtre
   applyFilter(filterValue: string) {
@@ -48,7 +58,9 @@ export class ListeProcessusComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAllProcessus()
+    this.getAllProcessus();
+    //lire l'url
+    this.routerChek = this. router.url.toString();
 
   }
   async getAllProcessus() {
@@ -57,7 +69,7 @@ export class ListeProcessusComponent implements OnInit {
       this.processus$ = this.processusService.fetchAll();
       // @ts-ignore
       await this.processus$.toPromise().then(res => {
-        console.log(res);
+        //console.log(res);
         for (let i = 0; i < res.length; i++) {
           this.listeProcessus[i]={
             "id_processus":res[i].id_processus,
@@ -72,7 +84,7 @@ export class ListeProcessusComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.listeProcessus);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
-        console.log(this.dataSource);
+        //console.log(this.dataSource);
       });
     } catch(err) {
       console.error(`Error : ${err.Message}`);
@@ -84,6 +96,13 @@ export class ListeProcessusComponent implements OnInit {
     this.processus$ = this.processusService
       .delete(idP)
       .pipe(tap(() => (this.getAllProcessus())));
+  }
+
+  linkCreerProcessus(routeLink:string):void{
+
+    this.closebutton.nativeElement.click();
+    //console.log(routeLink);
+    this.router.navigateByUrl(routeLink);
   }
 
 }

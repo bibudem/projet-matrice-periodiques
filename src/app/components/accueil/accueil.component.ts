@@ -65,6 +65,7 @@ export class AccueilComponent implements OnInit {
   dataRefus=[]
   dataTitre=[]
 
+
   constructor(private homeService: HomeService,
               private translate:TranslateService) {
 

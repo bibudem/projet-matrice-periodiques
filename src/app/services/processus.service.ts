@@ -47,7 +47,7 @@ export class ProcessusService {
 
   updatePrix(prix: any): Observable<any> {
     const url = `/api/processus/save-prix`;
-    //console.log(fond)
+    console.log(prix)
     return this.http
       .put<any>(url, prix, this.httpOptions)
       .pipe(catchError(this.errorHandlerService.handleError<any>("update prix")));
@@ -61,6 +61,14 @@ export class ProcessusService {
     return this.http
       .put<any>(url, abonnement, this.httpOptions)
       .pipe(catchError(this.errorHandlerService.handleError<any>("update abonnement")));
+  }
+
+  addProcessus(processus: any): Observable<Processus[]>{
+    const url = '/api/processus/add';
+    console.log(processus);
+    return this.http
+      .put<any>(url, processus, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("add processus")));
   }
 
 }

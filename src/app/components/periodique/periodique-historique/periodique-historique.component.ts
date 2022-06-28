@@ -85,7 +85,7 @@ export class PeriodiqueHistoriqueComponent implements OnInit {
           // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
           this.dataSource = new MatTableDataSource(this.listeHistoriques);
           this.dataSource.paginator = this.paginator;
-          console.log(this.dataSource);
+          //console.log(this.dataSource);
         });
       }
     } catch(err) {

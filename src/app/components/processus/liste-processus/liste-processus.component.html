@@ -11,12 +11,50 @@
         <div  class="d-sm-flex align-items-baseline report-summary-header w-100 mt-3">
           <h4 class="font-weight-semibold text-initial ">{{ 'processus.titre-processus' | translate}}  </h4>
           <span  class="ml-auto ">
-            <button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/logs-menu">
+            <button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
-            <button class="btn btn-info ml-1 btn-sm mb-1" (click)="methodesGlobal.ExportTOExcel('tableau-processus','liste-processus.xlsx');"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}</button>
+            <button class="btn btn-success ml-1 btn-sm mb-1" data-toggle="modal" data-target="#modal-add-processus"><i class="icon-settings mr-1"></i> {{'processus.ajout-processus'| translate }}</button>
               </span>
         </div>
       </div>
+      <!-- div alert succes -->
+      <div class="alert alert-success alert-dismissible fade show p-2" id="alert-liste" *ngIf="(this.routerChek == '/processus/add')">
+        <p class="p-2">{{ 'processus.procedure-fini' | translate}}</p>
+        <button type="button"  class="close" (click)="methodesGlobal.nonAfficher('alert-liste')" >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!-- Modal pour supprimer-->
+      <div class="modal fade" id="modal-add-processus" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="modal-processus-Label">{{'processus.add-prosessus'| translate}}</h4>
+              <button type="button" class="close" #closebutton id="closebutton" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <label for="processSelect">{{'processus.choix-prosessus'| translate}}</label>
+              <select  id="processSelect"  name="processSelect" [(ngModel)]="selectedProcessus" (ngModelChange)="linkCreerProcessus($event)" class="form-control mt-3 mb-5"  >
+                <option  value="mise-a-jour-prix" >
+                  {{'processus.mise-a-jour-prix'| translate}}
+                </option>
+                <option  value="mise-a-jour-abonnement" >
+                  {{'processus.mise-a-jour-abonnement'| translate}}
+                </option>
+                <option  value="mise-a-jour-statistiques" >
+                  {{'processus.mise-a-jour-statistiques'| translate}}
+               </option>
+              </select>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm"  data-dismiss="modal">  {{'btn-annuler'| translate}}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- fin note -->
       <div class="row">
         <div class="example-container w-100">
           <div class="card-header b-white">
