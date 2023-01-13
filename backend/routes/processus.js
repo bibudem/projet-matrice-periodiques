@@ -10,6 +10,9 @@ router.get('/all', processusController.getAllProcessus);
 router.put('/save-prix', processusController.postPrix);
 
 
+router.put('/update-statistiques', processusController.postStatistiques);
+
+
 router.put('/add', processusController.ajoutProcessus);
 
 

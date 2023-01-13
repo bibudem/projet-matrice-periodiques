@@ -17,7 +17,7 @@ import {MethodesGlobal} from "../../../lib/MethodesGlobal";
 })
 export class PeriodiqueListeComponent implements OnInit{
  //les entêts du tableau
-  displayedColumns = ['idRevue', 'titre', 'ISSN', 'EISSN','abonnement','bdd','statut','consulter'];
+  displayedColumns = ['idRevue', 'titre', 'ISSN', 'EISSN','secteur','domaine','abonnement','bdd','statut','consulter'];
   listePeriodiques: ListePeriodique[] = [];
   // @ts-ignore
   dataSource: MatTableDataSource<ListePeriodique>;
@@ -56,6 +56,7 @@ export class PeriodiqueListeComponent implements OnInit{
 
   }
 
+
   ngOnInit():void {
     //creation du tableau
     this.creerTableau();
@@ -73,7 +74,7 @@ export class PeriodiqueListeComponent implements OnInit{
       this.periodiques$ = await this.fetchAll();
       await this.periodiques$.toPromise().then(res => {
         for (let i = 0; i < res.length; i++) {
-          this.listePeriodiques.push(createListePeriodique(res[i].idRevue,res[i].titre,res[i].ISSN,res[i].EISSN,res[i].abonnement,res[i].bdd,res[i].statut));
+          this.listePeriodiques.push(createListePeriodique(res[i].idRevue,res[i].titre,res[i].ISSN,res[i].EISSN,res[i].secteur,res[i].domaine,res[i].abonnement,res[i].bdd,res[i].statut));
         }
         // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
         this.dataSource = new MatTableDataSource(this.listePeriodiques);
@@ -127,12 +128,14 @@ export class PeriodiqueListeComponent implements OnInit{
 
 /** Fonction pour remplire le tableau de la liste des periodiques */
 
-function createListePeriodique(idRevueP: number,titreP:string,ISSNP:string,EISSNP:string,abonnementP:string,bddP:string,statutP:string): ListePeriodique {
+function createListePeriodique(idRevueP: number,titreP:string,ISSNP:string,EISSNP:string,secteurP:string,domaineP:string,abonnementP:string,bddP:string,statutP:string): ListePeriodique {
   return {
     idRevue: idRevueP.toString(),
     titre: titreP,
     ISSN: ISSNP,
     EISSN: EISSNP,
+    secteur: secteurP,
+    domaine: domaineP,
     abonnement: abonnementP,
     bdd: bddP,
     statut: statutP,
@@ -145,6 +148,8 @@ export interface ListePeriodique {
   titre: string;
   ISSN: string;
   EISSN: string;
+  secteur: string;
+  domaine: string;
   abonnement: string;
   bdd: string;
   statut: string;

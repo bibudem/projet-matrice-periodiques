@@ -24,9 +24,9 @@ module.exports = class Archive {
     //ajouter la date dans le tableau des données
     archive.push(date);
     //afficher la requette
-    /*let sql = "INSERT INTO tbl_archives SET perennite = ?,conserverPap =?,anneeDebut = ?,anneeFin = ?,volDebut =?,embargo = ?,idRevue = ?,dateA =? "
-    console.log('sql: ', SqlString.format(sql,[archive]));*/
-    return db.execute('INSERT INTO tbl_archives SET perennite = ?,conserverPap =?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,embargo = ?,idRevue = ?,dateA =? ', archive );
+    let sql = "INSERT INTO tbl_archives SET perennite = ?,conserverPap =?,embargo = ?,fournisseur = ?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,idRevue = ?,dateA =? '"
+    console.log('sql: ', SqlString.format(sql,[archive[0],archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],archive[9]]));
+    return db.execute('INSERT INTO tbl_archives SET perennite = ?,conserverPap =?,embargo = ?,fournisseur = ?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,idRevue = ?,dateA =? ', [archive[0],archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],archive[9]] );
   }
 
   static update(archive) {
@@ -34,11 +34,11 @@ module.exports = class Archive {
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
     //afficher la requette
-    /*let sql = "UPDATE tbl_archives SET idRevue = ?,perennite = ?,conserverPap=?,anneeDebut = ?,anneeFin = ?,volDebut =?,embargo = ?,dateM =? WHERE idArchive  = ?"
-    console.log('sql: ', SqlString.format(sql,[archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],date, archive[0]]));*/
+    let sql = "UPDATE tbl_archives SET idRevue = ?,perennite = ?,conserverPap=?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,embargo = ?,fournisseur = ?,dateM =? WHERE idArchive  = ?"
+    console.log('sql: ', SqlString.format(sql,[archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],archive[11],date, archive[0]]));
 
-    return db.execute('UPDATE tbl_archives SET idRevue = ?,perennite = ?,conserverPap=?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,embargo = ?,dateM =? WHERE idArchive  = ?',
-      [archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],date, archive[0]]);
+    return db.execute('UPDATE tbl_archives SET idRevue = ?,perennite = ?,conserverPap=?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,embargo = ?,fournisseur = ?,dateM =? WHERE idArchive  = ?',
+      [archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],archive[11],date, archive[0]]);
 
   }
 

@@ -26,9 +26,9 @@ export class ListeChoixOptions  {
   ];
   //options Format
   listFormat = [
-    { id: 1, name: "électronique" },
-    { id: 2, name: "papier" },
-    { id: 3, name: "hybride" }
+    { id: 1, name: "Électronique" },
+    { id: 2, name: "Papier" },
+    { id: 3, name: "Élect. + Papier" }
   ];
   //options Domaine
   listDomaine = [

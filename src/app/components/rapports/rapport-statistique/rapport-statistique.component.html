@@ -94,7 +94,33 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="domaine">{{ 'plateforme' | translate}}</label>
+                <select name="plateforme" id="plateforme"   class="form-control " #plateforme>
+                  <option value="">{{ 'choisissez' | translate}} </option>
+                  <option *ngFor="let rep of this.listePlateforme" [value]="rep.acronyme">{{rep.acronyme}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group ">
+                <label for="domaine">{{ 'fournisseur' | translate}}</label>
+                <input type="text" class="form-control" id="fournisseur" #fournisseur name="fournisseur" placeholder="{{ 'fournisseur' | translate}}" (change)="this.implimentationFiltre($event)">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <button type="button" class="btn btn-success w-100 mt-4 "  (click)="creerTableauStatistique(this.methodesGlobal.getValue(annee.value),'standart',this.methodesGlobal.getValue(plateforme.value));" >
+                <i class="icon-layers"></i> {{'rapport.rapport-total-statistique'| translate }} </button>
+            </div>
+            <div class="col-md-3">
+              <button type="button" class="btn btn-success w-100 mt-4"  (click)="creerTableauStatistique(this.methodesGlobal.getValue(annee.value),'plateforme',this.methodesGlobal.getValue(plateforme.value));" >
+                <i class="icon-layers"></i> {{'rapport.rapport-statistique-plateforme'| translate }} </button>
+            </div>
+          </div>
         </form>
+
         <div class="row">
           <div class="col-md-2"  *ngFor="let champ of champs">
             <div class="list-group">
@@ -105,24 +131,6 @@
             </div>
           </div>
         </div><hr>
-        <div class="row">
-          <div class="col-md-3">
-            <div class="form-group">
-              <select name="plateforme" id="plateforme"   class="form-control mt-2" #plateforme>
-                <option value="">{{ 'Choisissez la plateforme' | translate}} </option>
-                <option *ngFor="let rep of this.listePlateforme" [value]="rep.acronyme">{{rep.acronyme}}</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <button type="button" class="btn btn-success  text-uppercase mt-2 w-100"  (click)="creerTableauStatistique(this.methodesGlobal.getValue(annee.value),'standart',this.methodesGlobal.getValue(plateforme.value));" >
-              <i class="icon-layers"></i> {{'rapport.rapport-total-statistique'| translate }} </button>
-          </div>
-          <div class="col-md-5">
-            <button type="button" class="btn btn-success  text-uppercase mt-2 w-100"  (click)="creerTableauStatistique(this.methodesGlobal.getValue(annee.value),'plateforme',this.methodesGlobal.getValue(plateforme.value));" >
-              <i class="icon-layers"></i> {{'rapport.rapport-statistique-plateforme'| translate }} </button>
-          </div>
-        </div>
         <!-- Tableau contenu formulaire-->
         <div class="row" *ngIf="statistiques$">
           <div class="col-md-12 mt-3">

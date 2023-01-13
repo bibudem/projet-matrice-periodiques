@@ -8,4 +8,5 @@ export interface Archive {
   volDebut:string;
   volFin:string;
   embargo:string;
+  fournisseur:string;
 }

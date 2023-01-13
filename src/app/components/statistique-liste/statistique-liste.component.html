@@ -99,7 +99,7 @@
             <ng-container matColumnDef="consulter" >
               <th *matHeaderCellDef   class="font-weight-bold w-10 text-center"> {{ 'consulter' | translate}} </th>
               <td  *matCellDef="let row" class="w-10 text-center ">
-                <button *ngIf="ifAdmin" type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter les détails"  routerLink="/periodique/statistiques/{{row.idRevue }}/historique" >
+                <button *ngIf="ifAdmin" type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter les détails"  (click)="consulterStatistique(row.idRevue,row.titre)" >
                   <i class="icon-note"></i>
                 </button>
               </td>

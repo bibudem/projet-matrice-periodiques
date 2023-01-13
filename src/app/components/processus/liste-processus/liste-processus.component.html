@@ -105,7 +105,7 @@
 
               <!-- Consulter Column -->
               <ng-container matColumnDef="supprimer" >
-                <th *matHeaderCellDef   class="font-weight-bold w-10 text-center pr-1"> {{ 'supprimer' | translate}} </th>
+                <th *matHeaderCellDef   class="font-weight-bold w-10 text-center pr-1"> {{ 'btn-supprimer' | translate}} </th>
                 <td  *matCellDef="let row" class="w-10 text-center pr-1">
                   <button type="button" class="btn btn-danger btn-rounded btn-icon btn-sm" title="Supprimer la fiche" (click)="methodesGlobal.addValueInput(row.id_processus,'id_processus')" data-toggle="modal" data-target="#modal-supprimer" >
                     <i class="icon-trash"></i>

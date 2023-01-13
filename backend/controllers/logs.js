@@ -9,7 +9,7 @@ exports.getCount = async (req, res, next) => {
       res.redirect('/api/logout');
     }
     const [allLogsRevue] = await Logs.fetchCount();
-    //console.log('all ok')
+    //console.log('Logs revues'+ [allLogsRevue] )
     res.status(200).json(allLogsRevue);
 
   } catch (err) {

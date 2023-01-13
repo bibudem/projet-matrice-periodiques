@@ -6,6 +6,7 @@ import { catchError, tap } from "rxjs/operators";
 
 import { ErrorHandlerService } from "./error-handler.service";
 import { Processus } from "../models/Processus";
+import {UpdateStatistiques} from "../models/UpdateStatistiques";
 
 @Injectable({
   providedIn: "root",
@@ -51,6 +52,16 @@ export class ProcessusService {
     return this.http
       .put<any>(url, prix, this.httpOptions)
       .pipe(catchError(this.errorHandlerService.handleError<any>("update prix")));
+  }
+
+  /******************Section mise a des statistiques*******************/
+
+  async updateStatistiques(statistiques: any) {
+    const url = `/api/processus/update-statistiques`;
+    console.log(statistiques)
+    return await this.http
+      .put<any>(url, statistiques, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("update statistiques"))).toPromise();
   }
 
   /******************Section mise a jour des abonnements*******************/

@@ -112,22 +112,24 @@
           </div>
         </div>
       </form>
-        <div class="row">
-          <div class="col-md-2"  *ngFor="let champ of champs" >
-            <div class="list-group" >
-              <div class="form-check form-check-primary">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" id="{{ champ }}" value="{{ champ }}" name="{{ champ }}"  (change)="this.creationThTable($event)">{{ champsTitre[champ] }} <i class="input-helper"></i></label>
+        <div class="visible border-top border-bottom mt-2 pt-2 mb-2 pb-2" id="champs-default">
+          <div class="row">
+            <div class="col-md-2"  *ngFor="let champ of champs" >
+              <div class="list-group" >
+                <div class="form-check form-check-primary">
+                  <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" id="{{ champ }}" value="{{ champ }}" name="{{ champ }}"  (change)="this.creationThTable($event)">{{ champsTitre[champ] }} <i class="input-helper"></i></label>
+                </div>
               </div>
             </div>
           </div>
+          <button type="button" class="btn btn-success  text-uppercase "  (click)="creerTableauPeriodique(this.methodesGlobal.getValue(plateformePrincipale.value))" >
+            <i class="icon-chart icon-layers"></i> {{'rapport.btn-rapport'| translate }}
+          </button>
         </div>
+
       <!-- Tableau contenu formulaire-->
-      <div class="row" > <hr>
-        <div class="card-header  w-100 b-white">
-          <button type="button" class="btn btn-success  text-uppercase mt-4 p-2 mb-1 mr-5 w-35 d-inline"  (click)="creerTableauPeriodique(this.methodesGlobal.getValue(plateformePrincipale.value));" >
-            <i class="icon-layers"></i> {{'rapport.btn-filtre'| translate }} </button>
-        </div>
+      <div class="row" >
         <div class="col-md-12 mt-3 " *ngIf="periodiques$">
           <div class="table-responsive mat-elevation-z8 cacherVisible" id="contenuRapport">
             <div class="d-sm-flex align-items-baseline report-summary-header p-2">
@@ -142,7 +144,7 @@
                 <!-- creation dynamique du tableau -->
                 <ng-container  *ngFor="let th of thTableau" matColumnDef="{{th}}">
                   <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-15 pl-3"> {{ champsTitre[th]}} </th>
-                  <td *matCellDef="let row" class="w-15 pl-3" > {{row[th]}} </td>
+                  <td *matCellDef="let row" class="w-15 pl-3" ><a *ngIf="(champsTitre[th]=='ID Revue')" title="Consulter la fiche"  routerLink="/periodique/{{ row[th] }}"> {{row[th]}} </a><span *ngIf="(champsTitre[th]!='ID Revue')">{{row[th]}}</span></td>
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="thTableau"></mat-header-row>

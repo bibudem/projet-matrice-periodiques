@@ -9,7 +9,7 @@ module.exports = class Sushi {
 
   static async  getAllStatistique(annee) {
     console.log('Update-statistique:'+annee)
-    let rapports=['J1-J2','J4']; let resultat
+    let rapports=['J1-J2','J3','J4']; let resultat
     try {
       await this.updateStatistique(annee)
       //prendre toutes les donées du sushi pour faire la mise a jour des statistique des périodiques
@@ -18,17 +18,27 @@ module.exports = class Sushi {
           case 'J1-J2':
             await this.statisquesJ1J2(annee)
             break;
+          case 'J3': await this.statisquesJ3(annee)
+            break;
           case 'J4': await this.statisquesJ4(annee)
             break;
           default:
             return
             break;
         }
+        //retourner le nombre des statistique updaté
+        let resultat= await  db.execute(' SELECT Count(idStatistique) as count FROM tbl_statistiques where annee = ? ',[annee]);
+        //console.log(resultat);
+        /*let sql = 'SELECT Count(idStatistique) as count FROM tbl_statistiques where annee = ?';
+        console.log('sql: ', SqlString.format(sql,[annee]));
+        console.log(resultat[0]['0']['count']);*/
+        if(resultat[0]['0']['count']){
+          return [resultat[0]['0']['count']];
+        } else {
+          return ['plusieurs'];
+        }
+
       }
-      //retourner le nombre des statistique updaté
-      let resultat= await  db.execute(' SELECT Count(idStatistique) as count FROM tbl_statistiques where annee = ? ',[annee]);
-       // console.log(resultat[0]['0']['count'])
-      return [resultat[0]['0']['count']];
 
     } catch (error) {
       // console.error(error);
@@ -83,6 +93,49 @@ module.exports = class Sushi {
       console.error(error);
     }
   }
+
+  //inserer les donnée pour J3
+  static async statisquesJ3(annee){
+    let donnees;
+    let table='tbl_results_j3'
+    let champJR=['JR3OAGOLD']
+    try {
+      donnees= await db.execute("SELECT DISTINCT (Title) AS titre,ISSN,EISSN,PlatformID FROM "+table+"  WHERE annee=? AND Metric_Type=? ",[annee,'Total_Item_Requests'])
+      //inserer le Total_Item_Requests du j3 comme champ separé dans la table statisque de cette periodique
+      for(let chiffre of donnees[0]){
+        //console.log(donneesJR)
+        //prendre l'idRvue
+        let idRevue= await this.recouperationIdRevue(chiffre.ISSN,chiffre.EISSN,chiffre.titre,'J3',chiffre.PlatformID,annee)
+        //console.log(idRevue)
+        if(idRevue!=-1){
+          //verifier si ce periodique as deja des données dans statistique pour cette annee
+            let donneesExist= await this.verifierDonneesExist(annee,idRevue,champJR)
+            let dt = datetime.create();
+            let dateNow = dt.format('Y-m-d H:M:S');
+            // console.log(champ)
+            if(donneesExist=='-1'){
+              //console.log('add'+champ['idRevue'])
+               let sql = "INSERT INTO tbl_statistiques SET annee=?,plateforme=?,JR3OAGOLD =?,dateA=?, idRevue=?"
+               console.log('sql: ', SqlString.format(sql,[annee,chiffre.PlatformID,chiffre.Total_Item_Requests,dateNow,idRevue]));
+              await db.execute("INSERT INTO tbl_statistiques SET annee=?,plateforme=?,JR3OAGOLD =?,dateA=?, idRevue=?", [annee,chiffre.PlatformID,chiffre.Total_Item_Requests,dateNow,idRevue] );
+            }
+            if(donneesExist>='0'){
+
+               let sql = "UPDATE tbl_statistiques SET JR3OAGOLD =?,dateM=? where idRevue=? AND annee=?"
+               console.log('sql: ', SqlString.format(sql,[chiffre.Total_Item_Requests,dateNow,idRevue,annee]));
+              //totalRequest=Number(donneesExist)+Number(donneesJR[j])
+              //console.log(totalRequest)
+              await db.execute("UPDATE tbl_statistiques SET JR3OAGOLD =?,dateM=? where idRevue=? AND annee=?", [chiffre.Total_Item_Requests,dateNow,idRevue,annee] );
+
+            }
+
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   //inserer les donnée pour J4
   static async statisquesJ4(annee){
     let totalRequest,donnees;
@@ -95,7 +148,7 @@ module.exports = class Sushi {
       for(let chiffre of donnees[0]){
         //prendre l'idRvue
         donneesJR= await this.calculerJR(chiffre.ISSN,chiffre.EISSN,chiffre.titre,annee)
-        //console.log(donneesJR)
+
         //prendre l'idRvue
         let idRevue= await this.recouperationIdRevue(chiffre.ISSN,chiffre.EISSN,chiffre.titre,'J4',chiffre.PlatformID,annee)
         //console.log(idRevue)
@@ -106,7 +159,7 @@ module.exports = class Sushi {
             let donneesExist= await this.verifierDonneesExist(annee,idRevue,j)
             let dt = datetime.create();
             let dateNow = dt.format('Y-m-d H:M:S');
-            // console.log(champ)
+
             if(donneesExist=='-1'){
               //console.log('add'+champ['idRevue'])
               /* let sql = "INSERT INTO tbl_statistiques SET annee=?,"+j+" =?,dateA=?, idRevue=?"
@@ -125,7 +178,6 @@ module.exports = class Sushi {
 
           }
         }
-        //console.log('j4'+ja)
       }
     } catch (error) {
       console.error(error);

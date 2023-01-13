@@ -88,6 +88,22 @@ export class MethodesGlobal  {
       result=false
     return result
   }
+  //valide la valeur si non null d'un cahmp
+  isValueChamp(value:string, id:string):boolean{
+      // @ts-ignore
+      let input = document.getElementById(id);
+      // @ts-ignore
+      if (value == '') {
+        // @ts-ignore
+        input.style.setProperty('border', '1px solid red');
+        return false
+      }
+      // @ts-ignore
+      input.style.setProperty('border', '1px solid #aab2bd');
+      console.log(input);
+
+    return true;
+  }
 //mask pour l'annees
   mask = {
     "annee":{
@@ -141,5 +157,13 @@ export class MethodesGlobal  {
     let dateStart = new Date().toLocaleDateString()+' '+new Date().getHours().toLocaleString()+':'+new Date().getUTCMinutes()+':'+new Date().getUTCSeconds()
     //let dateStart =new Date().getFullYear()+'-'+ new Date().getMonth()+'-'+new Date().getDay()+' '+new Date().getHours()+':'+new Date().getMinutes()+':'+new Date().getSeconds();
     return dateStart;
+  }
+
+  //si vide retourne '-'
+  returnCharIfNull(val:string){
+    if(!val)
+       val='-';
+
+    return val
   }
 }

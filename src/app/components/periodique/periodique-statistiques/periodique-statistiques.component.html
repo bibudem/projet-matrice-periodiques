@@ -75,7 +75,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-4">
               <div class="form-group">
                 <label for="plateforme">{{ 'plateforme' | translate}}</label>
                 <select name="plateforme" id="plateforme"  class="form-control" #plateforme [(ngModel)]="statistique.plateforme">
@@ -84,22 +84,28 @@
                 </select>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
               <div class="form-group">
                 <label for="JR5COURANT">{{ 'jr5-courant' | translate}}</label>
                 <input type="text" class="form-control" id="JR5COURANT" name="JR5COURANT" #JR5COURANT [(ngModel)]="statistique.JR5COURANT">
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
               <div class="form-group">
                 <label for="JR5INTER">{{ 'jr5-inter' | translate}}</label>
                 <input type="text" class="form-control" id="JR5INTER" name="JR5INTER" #JR5INTER  [(ngModel)]="statistique.JR5INTER">
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
               <div class="form-group">
                 <label for="JR5RETRO">{{ 'jr5-retro' | translate}}</label>
                 <input type="text" class="form-control" id="JR5RETRO" name="JR5RETRO" #JR5RETRO [(ngModel)]="statistique.JR5RETRO">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="JR5RETRO">{{ 'jr3-OAGOLD' | translate}}</label>
+                <input type="text" class="form-control" id="JR3OAGOLD" name="JR3OAGOLD" #JR3OAGOLD [(ngModel)]="statistique.JR3OAGOLD">
               </div>
             </div>
             <div class="col-md-3"><br>

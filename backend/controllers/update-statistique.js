@@ -1,7 +1,7 @@
 const UpdateStatistique = require('../models/update-statistique');
 const Mail = require("../config/mail");
 const Lib  = require("../util/lib");
-
+const bs = require('browser-storage')
 exports.getAllStatistique = async (req, res, next) => {
   try {
     //retourner vers la connexion si on n'an une bonne session pour cet user
@@ -11,7 +11,6 @@ exports.getAllStatistique = async (req, res, next) => {
     //dans la réponse d'authentification le paramettre upn represente le courriel de la personne connecté
     let courriel = Lib.userConnect(req).upn;
     //console.log(res);
-    //console.log(req);
     UpdateStatistique.getAllStatistique(req.params.annee).then( reponse => {
       let htmlContenu = "<p> La procédure de la mise à jour des statistiques est terminée! </p>" +
         "<p>Pour l'année choisie : <strong>" + req.params.annee + "</strong> le systéme a modifié les données statistiques pour  <strong>" + reponse + "</strong> des périodiques. </p>" +

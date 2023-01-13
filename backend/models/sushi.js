@@ -89,7 +89,7 @@ module.exports = class Sushi {
     try{
         const agent = new HttpsProxyAgent('http://mandataire.ti.umontreal.ca:80');
         //creation d'url pour chaque plateforme
-        let values=['j1','j2','j4'];
+        let values=['j1','j2','j3','j4'];
         let url; let reponse;let resultat=[]
         localStorage.setItem('url','');
         for(let rapport of values){
@@ -129,7 +129,7 @@ module.exports = class Sushi {
     }
   }
 
-  //recouperation des données pour les rapport j1,j2,j4
+  //recouperation des données pour les rapport j1,j2,j3,j4
   static async donnesRequest(value,api,anneePost,rapport){
     //chercher les chiffres par mois et calculer le total
     let Title,chiffresT,chiffresU,chiffresN,
@@ -140,7 +140,15 @@ module.exports = class Sushi {
 
     try {
       for (const data of value) {
-        Title=data.Title
+        Title=data.Title;
+        if(data["Access_Type"]){
+          //console.log(data["Access_Type"]);
+          console.log(rapport);
+        }
+          if(rapport=='j3' && data["Access_Type"]=='Controlled'){
+            console.log(data["Access_Type"]);
+            break;
+          }
               if(data["Performance"]){
                 uniqueRequest=0;totalRequest=0;noLicence=0;
                 chiffresT=[];chiffresU=[];chiffresN=[];
@@ -262,8 +270,8 @@ module.exports = class Sushi {
     try{
       switch (action){
         case "add":
-         /* let sql = "INSERT INTO " + table + " SET PlatformID =?,ISSN =?,EISSN =?,Title=?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateA =?,admin=? "
-          console.log('sql: ', SqlString.format(sql,arrayReponse));*/
+         /*let sql1 = "INSERT INTO " + table + " SET PlatformID =?,ISSN =?,EISSN =?,Title=?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateA =?,admin=? "
+          console.log('sql: ', SqlString.format(sql1,arrayReponse));*/
           if(tbl=='j4'){
             db.execute("INSERT INTO "+ table + " SET PlatformID =?,ISSN =?,EISSN =?,Title=?,YOP =?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateA =?,admin=? ", arrayReponse );
           } else{
@@ -278,8 +286,8 @@ module.exports = class Sushi {
           arrayReponse.push(EISSN)//EISSN
           arrayReponse.push(ISSN)//ISSN
           arrayReponse.push(Metric_Type)
-          /*let sql = "UPDATE " + table + " SET PlatformID =?,ISSN =?,EISSN =?,Title=?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateM =?,admin=? WHERE annee=? and PlatformID=? AND  EISSN=? AND ISSN=? AND Metric_Type=? "
-          console.log('sql: ', SqlString.format(sql,arrayReponse));*/
+          /*let sql2 = "UPDATE " + table + " SET PlatformID =?,ISSN =?,EISSN =?,Title=?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateM =?,admin=? WHERE annee=? and PlatformID=? AND  EISSN=? AND ISSN=? AND Metric_Type=? "
+          console.log('sql: ', SqlString.format(sql2,arrayReponse));*/
           if(tbl=='j4'){
             arrayReponse.push(YOP)
             db.execute("UPDATE  "+ table +" SET PlatformID =?,ISSN =?,EISSN =?,Title=?,YOP =?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateM =?,admin=? WHERE  PlatformID=? AND  EISSN=? AND ISSN=? AND Metric_Type=? and YOP=?", arrayReponse );

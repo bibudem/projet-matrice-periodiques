@@ -46,7 +46,7 @@ exports.putArchive = async (req, res, next) => {
       res.redirect('/api/logout');
     }
     let values=Object.values(req.body);
-    //console.log(values);
+    console.log(values);
     const putResponse = await Archive.update(values);
     res.status(200).json(putResponse);
   } catch (err) {

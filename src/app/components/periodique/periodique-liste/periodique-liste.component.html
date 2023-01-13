@@ -40,20 +40,32 @@
 
           <!-- Titre Column -->
           <ng-container matColumnDef="titre">
-            <th  *matHeaderCellDef #titre mat-sort-header class="font-weight-bold w-20 "> {{ 'titre' | translate}} </th>
-            <td  *matCellDef="let row" class="w-20" > {{row.titre}} </td>
+            <th  *matHeaderCellDef #titre mat-sort-header class="font-weight-bold w-15 "> {{ 'titre' | translate}} </th>
+            <td  *matCellDef="let row" class="w-15" > {{row.titre}} </td>
           </ng-container>
 
           <!-- ISSN Column -->
           <ng-container matColumnDef="ISSN">
-            <th  *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15"> ISSN </th>
-            <td  *matCellDef="let row" class="w-15"> {{row.ISSN}} </td>
+            <th  *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> ISSN </th>
+            <td  *matCellDef="let row" class="w-10"> {{row.ISSN}} </td>
           </ng-container>
 
           <!-- EISSN Column -->
           <ng-container matColumnDef="EISSN">
-            <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15"> EISSN </th>
-            <td  *matCellDef="let row" class="w-15"> {{row.EISSN}} </td>
+            <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> EISSN </th>
+            <td  *matCellDef="let row" class="w-10"> {{row.EISSN}} </td>
+          </ng-container>
+
+          <!-- Secteur Column -->
+          <ng-container matColumnDef="secteur">
+            <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> Secteur </th>
+            <td  *matCellDef="let row" class="w-10"> {{row.secteur}} </td>
+          </ng-container>
+
+          <!-- plateformePrincipale Column -->
+          <ng-container matColumnDef="domaine">
+            <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> Domaine </th>
+            <td  *matCellDef="let row" class="w-10"> {{row.domaine}} </td>
           </ng-container>
 
               <!-- Abonnement Column -->
@@ -75,8 +87,8 @@
               </ng-container>
               <!-- Consulter Column -->
               <ng-container matColumnDef="consulter" >
-                <th *matHeaderCellDef   class="font-weight-bold w-10"> {{ 'consulter' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10 text-center ">
+                <th *matHeaderCellDef   class="font-weight-bold w-5"> {{ 'consulter' | translate}} </th>
+                <td  *matCellDef="let row" class="w-5 text-center ">
                   <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter la fiche"  routerLink="/periodique/{{ row.idRevue }}">
                     <i class="icon-note"></i>
                   </button>

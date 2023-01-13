@@ -105,6 +105,7 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
               "JR5COURANT":res[i].JR5COURANT,
               "JR5INTER":res[i].JR5INTER,
               "JR5RETRO":res[i].JR5RETRO,
+              "JR3OAGOLD":res[i].JR3OAGOLD,
               "dateA":res[i].dateA,
               "dateM":res[i].dateM
             }
@@ -169,6 +170,8 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
       document.getElementById('JR5INTER').value=res[0].JR5INTER;
       // @ts-ignore
       document.getElementById('JR5RETRO').value=res[0].JR5RETRO;
+      // @ts-ignore
+      document.getElementById('JR3OAGOLD').value=res[0].JR3OAGOLD;
 
       //changer le texte pour le boutton
       this.translate.get('btn-enregistrer').subscribe((res: string) => {
@@ -212,10 +215,10 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
         .pipe(tap(() => (this.statistiques$ = this.fetchAll(id))));
       //afficher notification
       this.methodesGlobal.afficher('alert-sup-statistique');
-      let that=this;
+     let that=this;
       setTimeout(function(){
         that.methodesGlobal.nonAfficher('alert-sup-statistique');
-        that.reload('periodique/statistiques/'+that.idRevue);
+        that.reload('periodique/statistiques/'+that.id+'/historique');
       }, 1000);
     }
   }
@@ -226,7 +229,7 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
   }
   //consulter fiche
   consulter(id: number) {
-    console.log(id);
+    //console.log(id);
     return this.periodiqueStatistiquesService.consulter(id);
 
   }
@@ -264,6 +267,8 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
     document.getElementById('JR5INTER').value='';
     // @ts-ignore
     document.getElementById('JR5RETRO').value='';
+    // @ts-ignore
+    document.getElementById('JR3OAGOLD').value='';
     //cacher bouton save
     this.methodesGlobal.nonAfficher('save-boutton-statistique');
     let that=this;
@@ -278,7 +283,7 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
     // @ts-ignore
     this.statistique={}
     //recouperer les donnes pour creer l'objet
-    console.log(f.value.idStatistique)
+    //console.log(f.value.idStatistique)
     if(f.value.idStatistique)
       this.statistique.idStatistique=f.value.idStatistique
 
@@ -321,6 +326,10 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
     if(f.value.JR5RETRO)
       this.statistique.JR5RETRO=f.value.JR5RETRO
     else this.statistique.JR5RETRO=''
+
+    if(f.value.JR3OAGOLD)
+      this.statistique.JR3OAGOLD=f.value.JR3OAGOLD
+    else this.statistique.JR3OAGOLD=''
 
     this.statistique.idRevue=Number(this.id)
     //console.log(f.value)

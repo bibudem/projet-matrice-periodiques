@@ -11,4 +11,5 @@ export interface Statistique {
   JR5COURANT : string;
   JR5INTER : string;
   JR5RETRO : string;
+  JR3OAGOLD : string;
 }

@@ -45,19 +45,35 @@ export class PeriodiqueListeService implements OnInit {
         )
       );
   }
-  //chercher toute la liste
+  //chercher toute la liste des periodiques avec les champs par defaut
   fetchRapportAll(plateforme:string): Observable<any[]> {
     if(plateforme=='')
       plateforme='vide'
 
     let params=new HttpParams().set('plateforme', plateforme)
-     console.log(`/api/periodique/rapport-all/${params}`)
+     //console.log(`/api/periodique/rapport-all/${params}`)
     return this.http
       .get<any[]>(`/api/periodique/rapport-all/${params}`, { responseType: "json" })
       .pipe(
         tap((_) => console.log("fetched periodiques raport")),
         catchError(
           this.errorHandlerService.handleError<any[]>("fetchRapportAll", [])
+        )
+      );
+  }
+  //chercher toute la liste des periodiques avec les champs par defaut
+  fetchRapportChampsAutres(plateforme:string): Observable<any[]> {
+    if(plateforme=='')
+      plateforme='vide'
+
+    let params=new HttpParams().set('plateforme', plateforme)
+    //console.log(`/api/periodique/rapport-autres/${params}`)
+    return this.http
+      .get<any[]>(`/api/periodique/rapport-autres/${params}`, { responseType: "json" })
+      .pipe(
+        tap((_) => console.log("fetched periodiques raport autres")),
+        catchError(
+          this.errorHandlerService.handleError<any[]>("fetchRapportChampsAutres", [])
         )
       );
   }

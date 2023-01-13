@@ -47,7 +47,7 @@ exports.putStatistique = async (req, res, next) => {
       res.redirect('/api/logout');
     }
     let values=Object.values(req.body);
-    //console.log(Object.values(values));
+    console.log(Object.values(values));
     //console.log(req.body.idStatistique);
     const putResponse = await Statistique.update( values);
     res.status(200).json(putResponse);

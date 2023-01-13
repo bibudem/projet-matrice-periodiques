@@ -38,6 +38,22 @@ exports.getAllRapport = async (req, res, next) => {
   }
 };
 
+exports.getAutresRapport = async (req, res, next) => {
+  try {
+    //retourner vers la connexion si on n'an une bonne session pour cet user
+    if(Lib.userConnect(req).length==0){
+      res.redirect('/api/logout');
+    }
+    const [allPeriodiques] = await Periodique.fetchRapportAutres(req.params.plateforme);
+    res.status(200).json(allPeriodiques);
+
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
 exports.postPeriodique = async (req, res, next) => {
   try {
     //retourner vers la connexion si on n'an une bonne session pour cet user
@@ -63,6 +79,7 @@ exports.putPeriodique = async (req, res, next) => {
       res.redirect('/api/logout');
     }
     let values=Object.values(req.body);
+    //console.log(Object.values(values));
     const putResponse = await Periodique.update(values);
     res.status(200).json(putResponse);
   } catch (err) {

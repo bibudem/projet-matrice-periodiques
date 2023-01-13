@@ -97,7 +97,7 @@
       <!-- Contenu des tableaux des résultats -->
       <div id="contenu-resultat" class="cacherVisible">
         <!-- alert resultat vide -->
-        <div class="alert alert-danger" id="message-brute">
+        <div class="alert alert-warning" id="message-brute">
           <button type="button"  class="close" (click)="methodesGlobal.nonAfficher('message-brute')" >
             <span aria-hidden="true">&times;</span>
           </button>
@@ -115,6 +115,7 @@
             </li>
             <li class="list-inline-item" ><button class="btn btn-outline-dark btn-sm ml-5" (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j1')">{{ 'importation.rapportJ1' | translate}}</button></li>
             <li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j2')">{{ 'importation.rapportJ2' | translate}}</button> </li>
+            <li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j3')">{{ 'importation.rapportJ3' | translate}}</button> </li>
             <!--<li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j4')">{{ 'importation.rapportJ4' | translate}}</button></li>-->
             <li class="list-inline-item" ><button class="btn btn-primary btn-sm" title="{{ 'btn-export' | translate}}" (click)="ExportTOExcel()"><i class="fa fa-file-excel-o"></i></button></li>
             <li class="list-inline-item ml-2" ><button class="btn btn-dark btn-sm" (click)="methodesGlobal.nonAfficher('contenu-resultat')"><i class="fa fa-eye-slash"></i></button></li>

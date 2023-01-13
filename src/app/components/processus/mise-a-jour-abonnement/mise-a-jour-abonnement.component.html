@@ -11,7 +11,7 @@
       <div class="page-header pt-3">
         <div  class="d-sm-flex align-items-baseline report-summary-header w-100 mt-2">
           <h4 class="font-weight-semibold text-initial ">{{ 'processus.mise-a-jour-abonnement' | translate}}</h4>
-          <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
+          <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/processus">
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
               </span>
         </div>
@@ -24,7 +24,7 @@
       <div id="contenu-form">
         <!-- Alert notification div -->
         <div>
-          <blockquote class="blockquote blockquote-danger">
+          <blockquote class="blockquote blockquote-success">
             <p>{{ 'importation.form-description-csv-abonnement' | translate}}</p>
           </blockquote>
         </div>
@@ -38,7 +38,7 @@
             <div class="col-md-6">
               <div class="form-group cacherVisible"  id="addCsv">
                 <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
-                  <i class="fa fa-file-excel-o btn-icon-prepend"></i> {{ 'processus.btn-csv-abonnement' | translate}}</button>
+                  <i class="fa fa-send btn-icon-prepend mr-2"></i> {{ 'importation.csv-send' | translate}}</button>
               </div>
             </div>
           </div>

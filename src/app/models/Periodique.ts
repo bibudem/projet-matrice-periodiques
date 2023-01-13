@@ -19,4 +19,6 @@ export interface Periodique {
   duplicationCourant:string;
   duplicationEmbargo1:string;
   duplicationEmbargo2:string;
+  essentiel2014:string;
+  essentiel2022:string;
 }

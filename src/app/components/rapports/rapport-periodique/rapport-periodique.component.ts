@@ -34,6 +34,15 @@ export class RapportPeriodiqueComponent implements OnInit {
   //creer la liste des plateforme
   periodiques$: Observable<any> | undefined;
   listePeriodique: any = [];
+
+  //ajouter les autres champs de la periodiques
+  periodiquesAutres$: Observable<any> | undefined;
+  listePeriodiqueAutres: any = [];
+
+  notesPeriodique : any = [];
+  prixPeriodique : any = [];
+  coresPeriodique : any = [];
+  archivesPeriodique : any = [];
   // @ts-ignore
   dataSource: MatTableDataSource<ListePeriodique>;
 
@@ -43,7 +52,11 @@ export class RapportPeriodiqueComponent implements OnInit {
 
   champsTitre : any = [];
 
-  champs=[]
+  champs=[];
+
+  champsAutresTitre : any = [];
+
+  champsAutres=[]
 
 //variable boolean
   isLoadingResults=false
@@ -56,7 +69,9 @@ export class RapportPeriodiqueComponent implements OnInit {
   /*name of the excel-file which will be downloaded. */
   fileName= 'rapport-periodique.xlsx';
 
-  totalDonnees=0
+  totalDonnees=0;
+
+  link =false;
 
 
   constructor(
@@ -71,12 +86,41 @@ export class RapportPeriodiqueComponent implements OnInit {
     this.creerTableauPlateforme();
 
     //cacher le bouton export
-    this.methodesGlobal.nonAfficher('contenuRapport')
+    this.methodesGlobal.nonAfficher('contenuRapport');
 
-    this.titreChamp()
-    //console.log(this.thTableau)
+    this.titreChamp();
+    this.titreChampAutres();
 
   }
+
+  async remplireAutresChampsPeriodiques(plateforme:string){
+    try {
+      this.periodiquesAutres$ = this.periodiqueServices.fetchRapportChampsAutres(plateforme);
+      await this.periodiquesAutres$.toPromise().then(res => {
+        this.notesPeriodique = res['notes'];
+        this.prixPeriodique = res['prix'];
+        this.coresPeriodique = res['cores'];
+        this.archivesPeriodique = res['archives'];
+      });
+
+    } catch(err) {
+      console.error(`Error : ${err.Message}`);
+    }
+  }
+
+  donneesAutresChamps(array:any, idP:string, champ:string){
+    let result = '-';
+    if(array.length==0)
+       return result;
+
+    for(let i = 0; i < array.length;i++){
+      if(array[i]['idP']==idP){
+        result = array[i][champ];
+      }
+    }
+    return result
+  }
+
 
 
 
@@ -116,10 +160,15 @@ export class RapportPeriodiqueComponent implements OnInit {
       this.afficherAnimation()
       let j=0,k
       let result = Object.entries(this.filtres);
+
       this.periodiques$ = this.periodiqueServices.fetchRapportAll(plateforme);
+
+      //chercher les autres champs
+      await this.remplireAutresChampsPeriodiques(plateforme);
+
       // @ts-ignore
       await this.periodiques$.toPromise().then(res => {
-        //console.log(res)
+        console.log(res)
         for (let i = 0; i < res.length; i++) {
           k=0
           for ( let [key,elem] of result){
@@ -152,6 +201,12 @@ export class RapportPeriodiqueComponent implements OnInit {
             "duplicationEmbargo1":res[i].duplicationEmbargo1,
             "duplicationEmbargo2":res[i].duplicationEmbargo2,
             "prixUtil":res[i].prixUtil,
+            "essentiel2014":res[i].essentiel2014,
+            "essentiel2022":res[i].essentiel2022,
+            "notes":this.donneesAutresChamps(this.notesPeriodique,res[i].idP,'notes'),
+            "prix":this.donneesAutresChamps(this.prixPeriodique,res[i].idP,'prix'),
+            "cores":this.donneesAutresChamps(this.coresPeriodique,res[i].idP,'cores'),
+            "archives":this.donneesAutresChamps(this.archivesPeriodique,res[i].idP,'archives'),
             "dateA":res[i].dateA,
             "dateM":res[i].dateM
           }
@@ -253,7 +308,19 @@ export class RapportPeriodiqueComponent implements OnInit {
     });
   }
 
+  //remplire les titre pour les case a caucher
+  titreChampAutres(){
+    this.translate.get('labels-rapport-periodique-autres').subscribe((res: any) => {
+      let result = Object.entries(res);
+      // console.log(typeof(result))
+      for(let [key,val] of result){
+        this.champsAutresTitre[key]=val
+        // @ts-ignore
+        this.champsAutres.push(key)
 
+      }
+    });
+  }
 
 
 

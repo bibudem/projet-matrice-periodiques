@@ -132,10 +132,10 @@ export class StatistiqueListeComponent implements OnInit {
     }
   }
 
-  //redirectioner vers les détails de la station
+  //redirectioner vers les détails de statistiques
   consulterStatistique(id:string,titre:string){
     localStorage.setItem('titrePeridique',titre);
-    this.router.navigate(['/periodique/statistiques/'+id+'/return']);
+    this.router.navigate(['/periodique/statistiques/'+id+'/historique']);
   }
     //vider le filtre
   viderFiltre(){

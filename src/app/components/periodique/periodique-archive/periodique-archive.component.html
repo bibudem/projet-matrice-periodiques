@@ -31,25 +31,31 @@
       </div>
         <form  #archiveForm="ngForm" name="archiveForm" id="archiveForm" (ngSubmit)="onSubmit(archiveForm)">
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group">
-                <label for="perennite">{{ 'perennite' | translate}} <span class="text-danger">*</span></label>
+                <label for="perennite">{{ 'perennite' | translate}} </label>
                 <input type="text" class="form-control" id="perennite" name="perennite" #perennite [(ngModel)]="archive.perennite" >
                 <input type="hidden" class="form-control" id="idArchive" name="idArchive" #idArchive [(ngModel)]="archive.idArchive">
                 <input type="hidden" class="form-control" id="idRevue" name="idRevue" #idRevue value="{{id}}" >
                 <input  class="form-control"  name="action" id="action" type="hidden" *ngIf="idArchive" value="{{action}}"  >
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="conserverPap">{{'conservation-papier'| translate }}</label>
                 <input type="text" class="form-control" id="conserverPap" name="conserverPap" #conserverPap [(ngModel)]="archive.conserverPap">
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="embargo">{{'embargo'| translate }} </label>
                 <input type="text" class="form-control" id="embargo" name="embargo" #embargo [(ngModel)]="archive.embargo">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="embargo">{{'fournisseur'| translate }} </label>
+                <input type="text" class="form-control" id="fournisseur" name="fournisseur" #fournisseur [(ngModel)]="archive.fournisseur">
               </div>
             </div>
 
@@ -63,7 +69,7 @@
             </div>
             <div class="col-md-3">
               <div class="form-group">
-                <label for="anneeFin">{{'annee-fin'| translate }} <span class="text-danger">*</span></label>
+                <label for="anneeFin">{{'annee-fin'| translate }} </label>
                 <input  type="text" class="form-control" id="anneeFin" name="anneeFin" #anneeFin [(ngModel)]="archive.anneeFin" mask="0000">
               </div>
             </div>
@@ -79,7 +85,6 @@
                 <input type="text" class="form-control" id="volFin" name="volFin" #volFin [(ngModel)]="archive.volFin">
               </div>
             </div>
-
           </div>
           <div class="page-header mt-3">
             <h4 class="mt-3 text-uppercase"></h4>
@@ -122,40 +127,40 @@
             <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100"  >
               <!-- ID Column -->
               <ng-container matColumnDef="idArchive" >
-                <th *matHeaderCellDef class="w-10 pl-2"> {{'numero'| translate }} </th>
-                <td *matCellDef="let row " class="w-10 p-3" > {{row.idArchive}} </td>
+                <th *matHeaderCellDef class="w-5 pl-2"> {{'numero'| translate }} </th>
+                <td *matCellDef="let row " class="w-5 p-3" > {{row.idArchive}} </td>
               </ng-container>
               <!-- Titre Column -->
               <ng-container matColumnDef="perennite">
-                <th *matHeaderCellDef mat-sort-header class="w-10" > {{'perennite'| translate }} </th>
-                <td  *matCellDef="let row" class="w-10" > {{row.perennite}} </td>
+                <th *matHeaderCellDef mat-sort-header class="w-15" > {{'perennite'| translate }} </th>
+                <td  *matCellDef="let row" class="w-15" > {{row.perennite}} </td>
               </ng-container>
 
               <!-- ISSN Column -->
               <ng-container matColumnDef="conserverPap">
-                <th *matHeaderCellDef mat-sort-header class="w-10" > {{'type'| translate }} </th>
-                <td  *matCellDef="let row" class="w-10"> {{row.conserverPap}} </td>
+                <th *matHeaderCellDef mat-sort-header class="w-15" > {{'type'| translate }} </th>
+                <td  *matCellDef="let row" class="w-15"> {{row.conserverPap}} </td>
               </ng-container>
 
               <!-- EISSN Column -->
               <ng-container matColumnDef="anneeDebut">
-                <th *matHeaderCellDef mat-sort-header class="w-10" > {{'debut'| translate }} </th>
-                <td  *matCellDef="let row" class="w-10"> {{row.anneeDebut}} </td>
+                <th *matHeaderCellDef mat-sort-header class="w-5" > {{'debut'| translate }} </th>
+                <td  *matCellDef="let row" class="w-5"> {{row.anneeDebut}} </td>
               </ng-container>
 
               <!-- Abonnement Column -->
               <ng-container matColumnDef="anneeFin">
-                <th *matHeaderCellDef mat-sort-header  class="w-10" > {{'fin'| translate }} </th>
-                <td  *matCellDef="let row" class="w-10"> {{row.anneeFin}} </td>
+                <th *matHeaderCellDef mat-sort-header  class="w-5" > {{'fin'| translate }} </th>
+                <td  *matCellDef="let row" class="w-5"> {{row.anneeFin}} </td>
               </ng-container>
               <!-- Volume Column -->
               <ng-container matColumnDef="volDebut">
-                <th *matHeaderCellDef mat-sort-header class="w-10" > {{'volume-debut'| translate }} </th>
+                <th *matHeaderCellDef mat-sort-header class="w-10" > {{'v-debut'| translate }} </th>
                 <td  *matCellDef="let row" class="w-10"> {{row.volDebut}} </td>
               </ng-container>
               <!-- Volume Column -->
               <ng-container matColumnDef="volFin">
-                <th *matHeaderCellDef mat-sort-header class="w-10" > {{'volume-fin'| translate }} </th>
+                <th *matHeaderCellDef mat-sort-header class="w-10" > {{'v-fin'| translate }} </th>
                 <td  *matCellDef="let row" class="w-10"> {{row.volFin}} </td>
               </ng-container>
               <!-- Embargo Column -->
@@ -163,10 +168,15 @@
                 <th *matHeaderCellDef mat-sort-header  class="w-10"> {{'embargo'| translate }} </th>
                 <td  *matCellDef="let row" class="w-10"> {{row.embargo}} </td>
               </ng-container>
+              <!-- Embargo Column -->
+              <ng-container matColumnDef="fournisseur">
+                <th *matHeaderCellDef mat-sort-header  class="w-15"> {{'fournisseur'| translate }} </th>
+                <td  *matCellDef="let row" class="w-15"> {{row.fournisseur}} </td>
+              </ng-container>
               <!-- Consulter Column -->
               <ng-container matColumnDef="modiffier" >
-                <th *matHeaderCellDef mat-sort-header  class=" w-10 text-center"> {{'btn-modifier'| translate }} </th>
-                <td  *matCellDef="let row" class="w-10 text-center ">
+                <th *matHeaderCellDef mat-sort-header  class=" w-5 "> {{'btn-modifier'| translate }} </th>
+                <td  *matCellDef="let row" class="w-5  ">
                   <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="{{'btn-modifier'| translate }}"  (click)="apliquerModifier(row.idArchive)">
                     <i class="icon-note"></i>
                   </button>
@@ -174,8 +184,8 @@
               </ng-container>
               <!-- Supprimer Column -->
               <ng-container matColumnDef="supprimer" >
-                <th *matHeaderCellDef mat-sort-header  class=" w-10 text-center"> {{'btn-supprimer'| translate }} </th>
-                <td  *matCellDef="let row" class="w-10 text-center">
+                <th *matHeaderCellDef mat-sort-header  class=" w-5 text-center"> {{'btn-supprimer'| translate }} </th>
+                <td  *matCellDef="let row" class="w-5 text-center">
                   <button  mat-icon-button (click)="delete(row.idArchive)">
                     <mat-icon  color="warn">
                       delete

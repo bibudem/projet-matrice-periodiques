@@ -13,6 +13,10 @@ exports.getUserUdem = async (req, res, next) => {
 
     const [ficheUser] = await UserAuth.returnUserUdem(Lib.sessionToken(req));
 
+    if(ficheUser=='not-user'){
+      res.redirect('/api/logout');
+    }
+
     res.status(200).json(ficheUser);
 
   } catch (err) {

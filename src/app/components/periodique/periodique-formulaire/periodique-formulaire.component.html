@@ -15,7 +15,7 @@
               <!--<button type="button" class="btn btn-outline-info btn-sm mb-1 mr-1" (click)="ajouterConsultation()" >
                 <i class="icon-layers  btn-icon-prepend"></i> {{ 'ajout-consultation' | translate}} </button>-->
               <button *ngIf="ifAdmin" type="button" class="btn btn-success btn-sm mb-1" data-toggle="modal" data-target="#modal-enregistrer"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
-              <button type="button" class="btn btn-secondary btn-sm mb-1 ml-1" (click)="goBack()" >
+              <button type="button" class="btn btn-secondary btn-sm mb-1 ml-1" (click)="backClicked()" >
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
             </span>
         </div>
@@ -151,16 +151,48 @@
                 </mat-form-field>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="fournisseur">{{ 'fournisseur' | translate}}</label>
                 <input type="text" class="form-control" id="fournisseur" name="fournisseur" placeholder="{{ 'fournisseur' | translate}}" #fournisseur="ngModel" [(ngModel)]="periodique.fournisseur">
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group">
                 <label >{{ 'sujet' | translate}}</label>
                 <input type="text" class="form-control" id="sujets" name="sujets" placeholder="{{ 'sujet' | translate}}" #sujets="ngModel" [(ngModel)]="periodique.sujets" >
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group"><br>
+                <div class="form-check form-check-success">
+                  <label class="form-check-label">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           id="essentiel2014"
+                           name="essentiel2014"
+                           #essentiel2014
+                           [value]="periodique.essentiel2014"
+                           (change)="this.methodesGlobal.checkedInput($event)"
+                           [checked]="this.methodesGlobal.hasValue(periodique.essentiel2014)"/>
+                    {{ 'essentiel2014' | translate}} <i class="input-helper"></i></label>
+                  </div>
+                </div>
+              </div>
+            <div class="col-md-1">
+              <div class="form-group"><br>
+                <div class="form-check form-check-success">
+                  <label class="form-check-label">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           id="essentiel2022"
+                           name="essentiel2022"
+                           #essentiel2022
+                           [value]="periodique.essentiel2022"
+                           (change)="this.methodesGlobal.checkedInput($event)"
+                           [checked]="this.methodesGlobal.hasValue(periodique.essentiel2022)"/>
+                    {{ 'essentiel2022' | translate}} <i class="input-helper"></i></label>
+                </div>
               </div>
             </div>
           </div>
@@ -434,7 +466,7 @@
                   <div class="col-md-9">
                   </div>
                   <div class="col-md-3">
-                    <button *ngIf="ifAdmin" class="btn btn-dark w-100" (click)="reload('/periodique/prix/'+periodique.idRevue)"><i class="icon-note btn-icon-prepend"></i>{{ 'gestion-prix' | translate}}</button>
+                    <button *ngIf="ifAdmin" class="btn btn-dark w-100" (click)="reload('/periodique/prix/'+periodique.idRevue)"><i class="icon-note btn-icon-prepend"></i> {{ 'gestion-prix' | translate}}</button>
                   </div>
                 </div>
                 <div class="table-responsive" *ngIf="periodique.idRevue">

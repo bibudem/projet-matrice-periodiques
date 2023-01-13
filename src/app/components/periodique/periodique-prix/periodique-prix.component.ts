@@ -74,7 +74,7 @@ export class PeriodiquePrixComponent implements OnInit {
         this.prix$ = await this.fetchAll(this.methodesGlobal.convertNumber(this.id));
         await this.prix$.toPromise().then(res => {
           for (let i = 0; i < res.length; i++) {
-            this.listePrix.push(createListePrix(res[i].idPrix,res[i].annee,res[i].prix,res[i].note));
+            this.listePrix.push(createListePrix(i+1,res[i].annee,res[i].prix,res[i].note));
           }
           // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
           this.dataSource = new MatTableDataSource(this.listePrix);

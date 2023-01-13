@@ -31,6 +31,7 @@ import {NotAutoriseComponent} from "./components/not-autorise/not-autorise.compo
 import {ListeProcessusComponent} from "./components/processus/liste-processus/liste-processus.component";
 import {MiseAJourPrixComponent} from "./components/processus/mise-a-jour-prix/mise-a-jour-prix.component";
 import {MiseAJourAbonnementComponent} from "./components/processus/mise-a-jour-abonnement/mise-a-jour-abonnement.component";
+import {MiseAJourStatistiquesComponent} from "./components/processus/mise-a-jour-statistiques/mise-a-jour-statistiques.component";
 
 const routes: Routes = [
   { path: '', component: AccueilComponent, canActivate: [AuthGuard] },
@@ -60,6 +61,7 @@ const routes: Routes = [
   { path: 'processus', component: ListeProcessusComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'processus/add', component: ListeProcessusComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'mise-a-jour-prix', component: MiseAJourPrixComponent, canActivate: [AuthGuard,AdminGuard] },
+  { path: 'mise-a-jour-statistiques', component: MiseAJourStatistiquesComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'mise-a-jour-abonnement', component: MiseAJourAbonnementComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'list-fonds', component: ListFondsComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },

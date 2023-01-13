@@ -16,7 +16,7 @@ import {PeriodiqueNotesService} from "../../../services/periodique-note.service"
 import {PeriodiqueStatistiquesService} from "../../../services/periodique-statistique.service";
 import {PeriodiquePrixService} from "../../../services/periodique-prix.service";
 import {OutilsService} from "../../../services/outils.service";
-
+import {Location} from '@angular/common';
 
 @Component({
   selector: "app-grocery-list",
@@ -95,7 +95,8 @@ export class PeriodiqueFormulaireComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private translate: TranslateService,
-              private plateformeService: OutilsService) {}
+              private plateformeService: OutilsService,
+              private _location: Location) {}
 
   ngOnInit(): void {
     //ajout de niveau de securité
@@ -121,6 +122,10 @@ export class PeriodiqueFormulaireComponent implements OnInit {
       this.remplireFiche(this.idRevue)
     }
 
+  }
+  //return historique page
+  backClicked() {
+    this._location.back();
   }
   //remplire la fiche de periodique
   async remplireFiche(id:number){
@@ -460,6 +465,15 @@ export class PeriodiqueFormulaireComponent implements OnInit {
     if(this.methodesGlobal.checkedResult('duplicationEmbargo2'))
       this.periodique.duplicationEmbargo2='Oui'
     else  this.periodique.duplicationEmbargo2='Non'
+
+    if(this.methodesGlobal.checkedResult('essentiel2014'))
+      this.periodique.essentiel2014='Oui'
+    else  this.periodique.essentiel2014='Non'
+
+    if(this.methodesGlobal.checkedResult('essentiel2022'))
+      this.periodique.essentiel2022='Oui'
+    else  this.periodique.essentiel2022='Non'
+
     //definir les champs obligatoire
     let donnesValider:any={'titre':this.periodique.titre}
 

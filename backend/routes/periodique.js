@@ -8,6 +8,8 @@ router.get('/all', periodiqueController.getAllPeriodiques);
 
 router.get('/rapport-all/:plateforme', periodiqueController.getAllRapport);
 
+router.get('/rapport-autres/:plateforme', periodiqueController.getAutresRapport);
+
 router.post('/add', periodiqueController.postPeriodique);
 
 router.put('/save', periodiqueController.putPeriodique);

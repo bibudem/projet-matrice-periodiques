@@ -75,6 +75,7 @@ import {MatSortModule} from "@angular/material/sort";
 import { MiseAJourPrixComponent } from './components/processus/mise-a-jour-prix/mise-a-jour-prix.component';
 import { MiseAJourAbonnementComponent } from './components/processus/mise-a-jour-abonnement/mise-a-jour-abonnement.component';
 import { ListeProcessusComponent } from './components/processus/liste-processus/liste-processus.component';
+import {MiseAJourStatistiquesComponent} from "./components/processus/mise-a-jour-statistiques/mise-a-jour-statistiques.component";
 const maskConfig: Partial<IConfig> = {
   validation: false,
 };
@@ -112,6 +113,7 @@ const maskConfig: Partial<IConfig> = {
     NotUserComponent,
     NotAutoriseComponent,
     MiseAJourPrixComponent,
+    MiseAJourStatistiquesComponent,
     MiseAJourAbonnementComponent,
     ListeProcessusComponent
   ],

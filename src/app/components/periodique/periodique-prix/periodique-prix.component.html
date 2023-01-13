@@ -105,8 +105,8 @@
 
           <!-- Consulter Column -->
           <ng-container matColumnDef="modiffier" >
-            <th *matHeaderCellDef   class="text-center w-15 text-center"> {{'btn-modifier'| translate }} </th>
-            <td  *matCellDef="let row" class="w-15 text-center ">
+            <th *matHeaderCellDef   class="text-center w-10 text-center"> {{'btn-modifier'| translate }} </th>
+            <td  *matCellDef="let row" class="w-10 text-center ">
               <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="{{'btn-modifier'| translate }}"  (click)="apliquerModifier(row.idPrix)">
                 <i class="icon-note"></i>
               </button>
@@ -114,8 +114,8 @@
           </ng-container>
           <!-- Supprimer Column -->
           <ng-container matColumnDef="supprimer" >
-            <th *matHeaderCellDef   class="text-center w-15"> {{'btn-supprimer'| translate }} </th>
-            <td  *matCellDef="let row" class="w-15 text-center">
+            <th *matHeaderCellDef   class="text-center w-10"> {{'btn-supprimer'| translate }} </th>
+            <td  *matCellDef="let row" class="w-10 text-center">
               <button  mat-icon-button (click)="delete(row.idPrix)">
                 <mat-icon  color="warn">
                   delete

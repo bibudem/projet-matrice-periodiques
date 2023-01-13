@@ -1,0 +1,186 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <!-- div animation -->
+    <div class="content-wrapper b-white" >
+      <!-- Contenu de la page liste des periodiques -->
+      <!-- Quick Action Toolbar Ends-->
+      <div class="page-header pt-3 mt-2">
+        <div  class="d-sm-flex align-items-baseline report-summary-header w-100 mt-2">
+          <h4 class="font-weight-semibold text-initial ">{{ 'processus.mise-a-jour-statistiques' | translate}}</h4>
+          <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/processus">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+              </span>
+        </div>
+      </div>
+      <!-- div animation -->
+      <div id="load-import" class="cacherVisible">
+        <div class="loader">...</div>
+        <div id="load">{{ 'importation.attendre' | translate}}</div>
+      </div>
+      <div id="contenu-form">
+        <!-- Alert notification div -->
+        <div>
+          <blockquote class="blockquote blockquote-success">
+            <p>{{ 'importation.form-description-csv-statistiques' | translate}}</p>
+          </blockquote>
+        </div>
+        <form  #importationForm="ngForm" >
+          <div class="row mt-5">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
+                <select name="plateforme" id="annee"  class="form-control" #annee >
+                  <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="plateforme">{{ 'plateforme' | translate}} <span class="text-danger"> *</span></label>
+                <select name="plateforme" id="plateforme"   class="form-control" #plateforme >
+                  <option value="">{{ 'Tous les plateformes' | translate}}</option>
+                  <option *ngFor="let rep of this.listePlateforme" [value]="rep.titrePlateforme">{{rep.titrePlateforme}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <input type="file" class="form-control mt-4" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".csv">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group cacherVisible"  id="addCsv">
+                <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
+                  <i class="fa fa-send btn-icon-prepend mr-2"></i> {{ 'importation.csv-send' | translate}}</button>
+              </div>
+            </div>
+
+          </div>
+          <!-- Modal pour modifier-->
+          <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">{{ 'processus.btn-csv' | translate}}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  {{ 'importation.confirmer-text' | translate}}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-warning btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend mr-2"></i>{{'btn-annuler'| translate}}</button>
+                  <button type="button" class="btn btn-primary btn-sm "  data-dismiss="modal" id="add-boutton" (click)="postArray(records)" ><i class="fa fa-save btn-icon-prepend mr-2"></i> {{'processus.btn-confirme'| translate }}</button></div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- progresse bar -->
+
+      <!-- fin progresse bar -->
+      <!-- fin contenu form -->
+      <div id="contenu-resultat" class="cacherVisible">
+        <div >
+          <h4 class=" text-info"> <i class="icon-bell"></i> {{ 'importation.csv-import-provisoire' | translate}}</h4>
+          <table  mat-table
+                  [dataSource]="dataSource"
+                  class="mat-elevation-z8 w-100 p-2 mt-3"
+                  matSort >
+
+            <!-- ID Column -->
+            <ng-container matColumnDef="IDRevue" >
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'IDRevue' | translate}} </th>
+              <td *matCellDef="let row" class="w-10 p-3" > {{row.idRevue}} </td>
+            </ng-container>
+
+            <!-- annee Column -->
+            <ng-container matColumnDef="annee" >
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'annee' | translate}} </th>
+              <td *matCellDef="let row" class="w-10 p-3" > {{row.annee}} </td>
+            </ng-container>
+
+            <!-- PlateformeID Column -->
+            <ng-container matColumnDef="PlateformeID">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'PlateformeID' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.PlateformeID }} </td>
+            </ng-container>
+
+            <!-- Total_Item_Requests Column -->
+            <ng-container matColumnDef="Total_Item_Requests">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.Total_Item_Requests' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10" > {{row.Total_Item_Requests}} </td>
+            </ng-container>
+
+            <!-- Unique_Item_Requests Column -->
+            <ng-container matColumnDef="Unique_Item_Requests">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.Unique_Item_Requests' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10" > {{row.Unique_Item_Requests}} </td>
+            </ng-container>
+
+
+            <!-- No_License Column -->
+            <ng-container matColumnDef="No_License">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.No_License' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.No_License }} </td>
+            </ng-container>
+
+            <!-- citations Column -->
+            <ng-container matColumnDef="citations">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.citations' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.citations }} </td>
+            </ng-container>
+
+            <!-- articlesUdem Column -->
+            <ng-container matColumnDef="articlesUdem">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.articlesUdem' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.articlesUdem }} </td>
+            </ng-container>
+
+            <!-- TR_J4COURANT Column -->
+            <ng-container matColumnDef="JR5COURANT">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.JR5COURANT' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.JR5COURANT }} </td>
+            </ng-container>
+
+            <!-- TR_J4INTER Column -->
+            <ng-container matColumnDef="JR5INTER">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.JR5INTER' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.JR5INTER }} </td>
+            </ng-container>
+
+            <!-- TR_J4RETRO Column -->
+            <ng-container matColumnDef="JR5RETRO">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.JR5RETRO' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.JR5RETRO }} </td>
+            </ng-container>
+
+            <!-- TR_J3OAGOLD Column -->
+            <ng-container matColumnDef="JR3OAGOLD">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.JR3OAGOLD' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.JR3OAGOLD }} </td>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+          </table>
+
+          <mat-paginator [pageSizeOptions]="[25, 50, 75, 100]"></mat-paginator>
+          <ul class="cacherVisible">
+            <li *ngFor="let record of inUpdateStatistiques$ |async">{{record}}</li>
+          </ul>
+          <ul class="cacherVisible">
+            <li *ngFor="let proc of addProcessus$ |async">{{processus}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>
