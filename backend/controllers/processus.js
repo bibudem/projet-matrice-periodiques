@@ -56,6 +56,22 @@ exports.postStatistiques= async (req, res, next) => {
     next(err);
   }
 };
+exports.postPeriodiques= async (req, res, next) => {
+  try {
+    //retourner vers la connexion si on n'an une bonne session pour cet user
+    if(Lib.userConnect(req).length==0){
+      res.redirect('/api/logout');
+    }
+    let values=Object.values(req.body);
+    const postResponse = await Processus.postPeriodiques(values);
+    res.status(201).json(postResponse);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
 exports.ajoutProcessus=  async (req, res, next) => {
   try {
     //retourner vers la connexion si on n'an une bonne session pour cet user

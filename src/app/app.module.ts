@@ -68,7 +68,6 @@ import {NotAutoriseComponent} from "./components/not-autorise/not-autorise.compo
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import {NgApexchartsModule} from "ng-apexcharts";
 import { RapportPlateformesComponent } from './components/rapports/rapport-plateformes/rapport-plateformes.component';
-import {ImportationExcelComponent} from "./components/importation/importation-excel/importation-excel.component";
 import {AboutComponent} from "./components/about/about.component";
 import {NotUserComponent} from "./components/not-user/not-user.component";
 import {MatSortModule} from "@angular/material/sort";
@@ -76,6 +75,7 @@ import { MiseAJourPrixComponent } from './components/processus/mise-a-jour-prix/
 import { MiseAJourAbonnementComponent } from './components/processus/mise-a-jour-abonnement/mise-a-jour-abonnement.component';
 import { ListeProcessusComponent } from './components/processus/liste-processus/liste-processus.component';
 import {MiseAJourStatistiquesComponent} from "./components/processus/mise-a-jour-statistiques/mise-a-jour-statistiques.component";
+import {MiseEnLotPeriodiquesComponent} from "./components/processus/importation-en-lot-periodiques/importation-en-lot-periodiques.component";
 const maskConfig: Partial<IConfig> = {
   validation: false,
 };
@@ -101,7 +101,6 @@ const maskConfig: Partial<IConfig> = {
     PlateformeFormComponent,
     ImportationSushiComponent,
     ImportationInCitesComponent,
-    ImportationExcelComponent,
     RapportPeriodiqueComponent,
     RapportStatistiqueComponent,
     LogsRevueComponent,
@@ -115,7 +114,8 @@ const maskConfig: Partial<IConfig> = {
     MiseAJourPrixComponent,
     MiseAJourStatistiquesComponent,
     MiseAJourAbonnementComponent,
-    ListeProcessusComponent
+    ListeProcessusComponent,
+    MiseEnLotPeriodiquesComponent
   ],
     imports: [
         BrowserModule,

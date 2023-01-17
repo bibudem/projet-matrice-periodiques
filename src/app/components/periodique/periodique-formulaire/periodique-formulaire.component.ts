@@ -145,19 +145,17 @@ export class PeriodiqueFormulaireComponent implements OnInit {
       //creation d'objet periodique
       this.periodique =res[0];
       //recouperer les données a multi choix des autres plateformes
-      let autreP=res[0].autrePlateforme.split(',')
+      let autreP=this.periodique.autrePlateforme.split(',')
       //console.log(this.listePlateforme)
       for(let at of autreP){
         if(at!=''){
             for (let i = 0; i < this.listePlateforme.length; i++) {
-
              if(this.listePlateforme[i]['idPlateforme']==at)
                this.optionAutrePlateforme.push(this.listePlateforme[i]['idPlateforme'])
             }
         }
       }
       this.periodique.autrePlateforme= this.optionAutrePlateforme
-      //console.log(this.periodique.autrePlateforme)
 
       //recouperer les données a multichoix des differents fonds
         let fondsP=res[0].fonds.split(',')
@@ -166,7 +164,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
             this.selectfonds.push(ft)
         }
         this.periodique.fonds= this.selectfonds
-       console.log(this.periodique.fonds)
+       //console.log(this.periodique.fonds)
       //recouperer les données a multichoix des differents secteur
       let secteurP=res[0].secteur.split(',')
       for(let ft of secteurP){

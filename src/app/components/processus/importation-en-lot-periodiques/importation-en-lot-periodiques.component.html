@@ -1,0 +1,271 @@
+<!-- Integrer le top de chaque page -->
+<app-header></app-header>
+<!-- Integrer le carcase de chaque page -->
+<div class="container-fluid page-body-wrapper">
+  <app-menu></app-menu>
+  <div class="main-panel">
+    <!-- div animation -->
+    <div class="content-wrapper bg-white" >
+      <!-- Contenu de la page liste des periodiques -->
+      <!-- Quick Action Toolbar Ends-->
+      <div class="page-header pt-3 mt-2">
+        <div  class="d-sm-flex align-items-baseline report-summary-header w-100 mt-2">
+          <h4 class="font-weight-semibold text-uppercase ">{{ 'processus.mise-a-jour-periodiques' | translate}}</h4>
+          <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/processus">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
+              </span>
+        </div>
+      </div>
+      <!-- div animation -->
+      <div id="load-import" class="cacherVisible">
+        <div class="loader">...</div>
+        <div id="load">{{ 'importation.attendre' | translate}}</div>
+      </div>
+      <div id="contenu-form" >
+        <!-- Alert notification div -->
+        <div class="row">
+          <div class="col-md-12 mt-2">
+            <blockquote class="blockquote blockquote-success">
+              <p>{{ 'importation.form-description-csv-periodiques' | translate}}</p>
+            </blockquote>
+          </div>
+          <div class="col-md-12">
+              <h4 class="card-title mb-4 mt-2">{{ 'options.title' | translate}}:</h4>
+          </div>
+          <div class="col-md-2">
+              <h6 class="card-title">{{ 'abonnement' | translate}}</h6>
+              <ul class="list-ticked">
+                <li *ngFor="let rep of this.listeChoixOptions.listAbonnement" [value]="rep.name">{{rep.name}}</li>
+              </ul>
+          </div>
+          <div class="col-md-2">
+            <h6 class="card-title">{{ 'statut' | translate}}</h6>
+            <ul class="list-ticked">
+              <li *ngFor="let rep of this.listeChoixOptions.listStatut" [value]="rep.name">{{rep.name}}</li>
+            </ul>
+          </div>
+          <div class="col-md-2">
+            <h6 class="card-title">{{ 'format' | translate}}</h6>
+            <ul class="list-ticked">
+              <li *ngFor="let rep of this.listeChoixOptions.listFormat" [value]="rep.name">{{rep.name}}</li>
+            </ul>
+          </div>
+          <div class="col-md-2">
+            <h6 class="card-title">{{ 'domaine' | translate}}</h6>
+            <ul class="list-ticked">
+              <li *ngFor="let rep of this.listeChoixOptions.listDomaine" [value]="rep.name">{{rep.name}}</li>
+            </ul>
+          </div>
+          <div class="col-md-2">
+            <h6 class="card-title">{{ 'secteur' | translate}}</h6>
+            <ul class="list-ticked">
+              <li *ngFor="let rep of this.listeChoixOptions.listSecteurs" [value]="rep.name">{{rep.name}}</li>
+            </ul>
+          </div>
+          <div class="col-md-2">
+            <h6 class="card-title">{{ 'libre-acces' | translate}}</h6>
+            <ul class="list-ticked">
+              <li *ngFor="let rep of this.listeChoixOptions.listeAcces" [value]="rep.name">{{rep.name}}</li>
+            </ul>
+          </div>
+        </div>
+        <form  #importationForm="ngForm" >
+          <div class="row mt-2">
+            <div class="col-md-4">
+              <div class="form-group">
+                <input type="file" class="form-control mt-4" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".csv">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group cacherVisible"  id="addCsv">
+                <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
+                  <i class="fa fa-send btn-icon-prepend mr-2 "></i> {{ 'importation.csv-send' | translate}}</button>
+                <button type="button" class="btn btn-outline-dark mt-4 ml-2 cacherVisible" (click)="methodesGlobal.viderInput('csvFile');methodesGlobal.nonAfficher('contenu-resultat')">
+                   {{ 'btn-annuler' | translate}}</button>
+              </div>
+            </div>
+
+          </div>
+          <!-- Modal pour modifier-->
+          <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">{{ 'processus.btn-csv' | translate}}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  {{ 'importation.confirmer-text' | translate}}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-warning btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend mr-2"></i>{{'btn-annuler'| translate}}</button>
+                  <button type="button" class="btn btn-primary btn-sm "  data-dismiss="modal" id="add-boutton" (click)="postArray(records)" ><i class="fa fa-save btn-icon-prepend mr-2"></i> {{'processus.btn-confirme'| translate }}</button></div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- progresse bar -->
+      <!-- fin progresse bar -->
+      <!-- fin contenu form -->
+      <div id="contenu-resultat" class="cacherVisible bg-white">
+        <div >
+          <h4 class=" text-danger"> <i class="icon-bell"></i> {{ 'importation.csv-import-provisoire' | translate}}</h4>
+          <table  mat-table
+                  [dataSource]="dataSource"
+                  class="mat-elevation-z8 w-100 p-2 mt-3 table-responsive"
+                  matSort >
+
+            <!-- ID Column -->
+            <ng-container matColumnDef="IDRevue" >
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'IDRevue' | translate}} </th>
+              <td *matCellDef="let row" class="w-10 p-3" > {{row.idRevue}} </td>
+            </ng-container>
+
+            <!-- titre Column -->
+            <ng-container matColumnDef="titre" >
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'titre' | translate}} </th>
+              <td *matCellDef="let row" class="w-10 p-3" > {{row.titre}} </td>
+            </ng-container>
+
+            <!-- ISSN Column -->
+            <ng-container matColumnDef="ISSN">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'ISSN' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.ISSN }} </td>
+            </ng-container>
+
+            <!-- EISSN Column -->
+            <ng-container matColumnDef="EISSN">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'EISSN' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10" > {{row.EISSN}} </td>
+            </ng-container>
+
+            <!-- statut Column -->
+            <ng-container matColumnDef="statut">
+              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'statut' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10" > {{row.statut}} </td>
+            </ng-container>
+
+
+            <!-- abonnement Column -->
+            <ng-container matColumnDef="abonnement">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'abonnement' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.abonnement }} </td>
+            </ng-container>
+
+            <!-- bdd Column -->
+            <ng-container matColumnDef="bdd">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'bdd' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.bdd }} </td>
+            </ng-container>
+
+            <!-- fonds Column -->
+            <ng-container matColumnDef="fonds">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'fonds' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.fonds }} </td>
+            </ng-container>
+
+            <!-- fournisseur Column -->
+            <ng-container matColumnDef="fournisseur">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'fournisseur' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.fournisseur }} </td>
+            </ng-container>
+
+            <!-- plateformePrincipale Column -->
+            <ng-container matColumnDef="plateformePrincipale">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'plateformePrincipale' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.plateformePrincipale }} </td>
+            </ng-container>
+
+            <!-- autrePlateforme Column -->
+            <ng-container matColumnDef="autrePlateforme">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'autrePlateforme' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.autrePlateforme }} </td>
+            </ng-container>
+
+            <!-- format Column -->
+            <ng-container matColumnDef="format">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'format' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.format }} </td>
+            </ng-container>
+
+            <!-- libreAcces Column -->
+            <ng-container matColumnDef="libreAcces">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'libreAcces' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.libreAcces }} </td>
+            </ng-container>
+
+            <!-- domaine Column -->
+            <ng-container matColumnDef="domaine">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'domaine' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.domaine }} </td>
+            </ng-container>
+
+            <!-- secteur Column -->
+            <ng-container matColumnDef="secteur">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'secteur' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.secteur }} </td>
+            </ng-container>
+
+            <!-- sujets Column -->
+            <ng-container matColumnDef="sujets">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'sujets' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.sujets }} </td>
+            </ng-container>
+
+            <!-- duplication Column -->
+            <ng-container matColumnDef="duplication">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'duplication' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.duplication }} </td>
+            </ng-container>
+
+            <!-- duplicationCourant Column -->
+            <ng-container matColumnDef="duplicationCourant">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'duplicationCourant' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.duplicationCourant }} </td>
+            </ng-container>
+
+            <!-- duplicationEmbargo1 Column -->
+            <ng-container matColumnDef="duplicationEmbargo1">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'duplicationEmbargo1' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.duplicationEmbargo1 }} </td>
+            </ng-container>
+
+            <!-- duplicationEmbargo2 Column -->
+            <ng-container matColumnDef="duplicationEmbargo2">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'duplicationEmbargo2' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.duplicationEmbargo2 }} </td>
+            </ng-container>
+
+            <!-- essentiel2014 Column -->
+            <ng-container matColumnDef="essentiel2014">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'essentiel2014' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.essentiel2014 }} </td>
+            </ng-container>
+
+            <!-- essentiel2022 Column -->
+            <ng-container matColumnDef="essentiel2022">
+              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'essentiel2022' | translate}} </th>
+              <td  *matCellDef="let row" class="w-10"> {{row.essentiel2022 }} </td>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+          </table>
+
+          <mat-paginator [pageSizeOptions]="[25, 50, 75, 100]"></mat-paginator>
+          <ul class="cacherVisible">
+            <li *ngFor="let record of inUpdatePeriodiques$ |async">{{record}}</li>
+          </ul>
+          <ul class="cacherVisible">
+            <li *ngFor="let proc of addProcessus$ |async">{{processus}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

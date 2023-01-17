@@ -163,7 +163,14 @@ export class MethodesGlobal  {
   returnCharIfNull(val:string){
     if(!val)
        val='-';
-
-    return val
+    return val.toString()
   }
+
+  //si vide retourne '-'
+  viderInput(id:string){
+    if(id)
+      // @ts-ignore
+      document.getElementById(id).value='';
+  }
+
 }

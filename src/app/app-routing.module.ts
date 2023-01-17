@@ -22,7 +22,6 @@ import {LogsRevueComponent} from "./components/logs/logs-revue/logs-revue.compon
 import {LogsPlateformeComponent} from "./components/logs/logs-plateforme/logs-plateforme.component";
 import {ListFondsComponent} from "./components/outils/fonds/list-fonds/list-fonds.component";
 import {RapportPlateformesComponent} from "./components/rapports/rapport-plateformes/rapport-plateformes.component";
-import {ImportationExcelComponent} from "./components/importation/importation-excel/importation-excel.component";
 import {AboutComponent} from "./components/about/about.component";
 import {LoginComponent} from "./components/login/login.component";
 import {NotUserComponent} from "./components/not-user/not-user.component";
@@ -32,6 +31,7 @@ import {ListeProcessusComponent} from "./components/processus/liste-processus/li
 import {MiseAJourPrixComponent} from "./components/processus/mise-a-jour-prix/mise-a-jour-prix.component";
 import {MiseAJourAbonnementComponent} from "./components/processus/mise-a-jour-abonnement/mise-a-jour-abonnement.component";
 import {MiseAJourStatistiquesComponent} from "./components/processus/mise-a-jour-statistiques/mise-a-jour-statistiques.component";
+import {MiseEnLotPeriodiquesComponent} from "./components/processus/importation-en-lot-periodiques/importation-en-lot-periodiques.component";
 
 const routes: Routes = [
   { path: '', component: AccueilComponent, canActivate: [AuthGuard] },
@@ -48,7 +48,7 @@ const routes: Routes = [
   { path: 'plateformes', component: ListePlateformesComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'plateforme-form', component: PlateformeFormComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'importation-sushi', component: ImportationSushiComponent, canActivate: [AuthGuard,AdminGuard] },
-  { path: 'importation-excel', component: ImportationExcelComponent, canActivate: [AuthGuard,AdminGuard] },
+  { path: 'mise-a-jour-periodiques', component: MiseEnLotPeriodiquesComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'importation-inCites', component: ImportationInCitesComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'liste-statistique', component: StatistiqueListeComponent, canActivate: [AuthGuard] },
   { path: 'liste-statistique/:annee', component: StatistiqueListeComponent, canActivate: [AuthGuard] },

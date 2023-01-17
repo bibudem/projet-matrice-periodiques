@@ -7,6 +7,7 @@ import { catchError, tap } from "rxjs/operators";
 import { ErrorHandlerService } from "./error-handler.service";
 import { Processus } from "../models/Processus";
 import {UpdateStatistiques} from "../models/UpdateStatistiques";
+import {Periodique} from "../models/Periodique";
 
 @Injectable({
   providedIn: "root",
@@ -48,20 +49,30 @@ export class ProcessusService {
 
   updatePrix(prix: any): Observable<any> {
     const url = `/api/processus/save-prix`;
-    console.log(prix)
+    //console.log(prix)
     return this.http
       .put<any>(url, prix, this.httpOptions)
       .pipe(catchError(this.errorHandlerService.handleError<any>("update prix")));
   }
 
-  /******************Section mise a des statistiques*******************/
+  /******************Section mise a jour des statistiques*******************/
 
   async updateStatistiques(statistiques: any) {
     const url = `/api/processus/update-statistiques`;
-    console.log(statistiques)
+    //console.log(statistiques)
     return await this.http
       .put<any>(url, statistiques, this.httpOptions)
       .pipe(catchError(this.errorHandlerService.handleError<any>("update statistiques"))).toPromise();
+  }
+
+  /******************Section mise a jour des periodiques*******************/
+
+  async updatePeriodiques(periodiques: any) {
+    const url = `/api/processus/importer-en-lot-periodiques`;
+    console.log(periodiques)
+    return await this.http
+      .put<any>(url, periodiques, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("update periodiques"))).toPromise();
   }
 
   /******************Section mise a jour des abonnements*******************/

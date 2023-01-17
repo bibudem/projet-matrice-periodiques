@@ -13,6 +13,9 @@ router.put('/save-prix', processusController.postPrix);
 router.put('/update-statistiques', processusController.postStatistiques);
 
 
+router.put('/importer-en-lot-periodiques', processusController.postPeriodiques);
+
+
 router.put('/add', processusController.ajoutProcessus);
 
 

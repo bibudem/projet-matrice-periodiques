@@ -10,7 +10,7 @@
       <!-- Quick Action Toolbar Ends-->
       <div class="page-header pt-3 mt-2">
         <div  class="d-sm-flex align-items-baseline report-summary-header w-100 mt-2">
-          <h4 class="font-weight-semibold text-initial ">{{ 'processus.mise-a-jour-statistiques' | translate}}</h4>
+          <h4 class="font-weight-semibold text-uppercase ">{{ 'processus.mise-a-jour-statistiques' | translate}}</h4>
           <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/processus">
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
               </span>
@@ -30,7 +30,7 @@
         </div>
         <form  #importationForm="ngForm" >
           <div class="row mt-5">
-            <div class="col-md-2">
+            <div class="col-md-1">
               <div class="form-group">
                 <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
                 <select name="plateforme" id="annee"  class="form-control" #annee >
@@ -38,7 +38,7 @@
                 </select>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="plateforme">{{ 'plateforme' | translate}} <span class="text-danger"> *</span></label>
                 <select name="plateforme" id="plateforme"   class="form-control" #plateforme >
@@ -52,10 +52,12 @@
                 <input type="file" class="form-control mt-4" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".csv">
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-5">
               <div class="form-group cacherVisible"  id="addCsv">
                 <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
                   <i class="fa fa-send btn-icon-prepend mr-2"></i> {{ 'importation.csv-send' | translate}}</button>
+                <button type="button" class="btn btn-outline-dark mt-4 ml-2 cacherVisible" (click)="methodesGlobal.viderInput('csvFile');methodesGlobal.nonAfficher('contenu-resultat')">
+                  {{ 'btn-annuler' | translate}}</button>
               </div>
             </div>
 

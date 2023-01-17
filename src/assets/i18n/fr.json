@@ -200,7 +200,8 @@
     "form-description-csv": "Les entêtes considérées seront: « Name », « Web of Science Documents », « Times Cited », « ISSN », « eISSN ». Veuillez vérifier les données dans le résultat provisoire.",
     "form-description-csv-prix": "Les entêtes considérées seront: « IDRevue », « prix », « note ». Veuillez vérifier les données dans le résultat provisoire.",
     "form-description-csv-statistiques-plus": "Les champs « IDRevue » et « PlateformeID » sont obligatoires. Le système va interrompe l'importation si un de ce champ sera vide.",
-    "form-description-csv-statistiques": "Les entêtes considérées seront: « IDRevue », « Total_Item_Requests », « Unique_Item_Requests », « No_License », « citations », « articlesUdem », « JR5COURANT », « JR5INTER », « JR5RETRO », « JR3OAGOLD » Veuillez vérifier les données dans le résultat provisoire.",
+    "form-description-csv-statistiques": "Les entêtes considérées seront: « IDRevue », « Total_Item_Requests », « Unique_Item_Requests », « No_License », « citations », « articlesUdem », « JR5COURANT », « JR5INTER », « JR5RETRO », « JR3OAGOLD »",
+    "form-description-csv-periodiques": "Les entêtes considérées seront: « IDRevue », « titre », « ISSN », « EISSN », « statut », « abonnement », « bdd », « fonds », « fournisseur », « plateformePrincipale », « autrePlateforme », « format », « libreAcces », « domaine », « secteur », « sujets », « duplication », « duplicationCourant », « duplicationEmbargo1 », « duplicationEmbargo2 », « essentiel2014 », « essentiel2022 ». ",
     "form-description-csv-abonnement": "Les entêtes considérées seront: « IDRevue », « abonnement », « BDD », « note ». Veuillez vérifier les données dans le résultat provisoire. \n Les options pour le champs « abonnement » seront : Individuel et Ensemble, tandis que pour le champ « BDD » c'est : Oui et Non",
     "result-import-csv": "L'importation est terminée",
     "resultat-vide": "Attention! L'importation est vide, veuillez vérifier les journaux pour avoir plus des détails.",
@@ -257,6 +258,7 @@
     "mise-a-jour-prix": "Mise à jour de prix",
     "mise-a-jour-abonnement": "Mise à jour d'abonnement",
     "mise-a-jour-statistiques": "Mise à jour manuellement des statistiques",
+    "mise-a-jour-periodiques": "Versements en lot des fiches des périodiques",
     "btn-csv": "Mise à jour de prix des périodiques",
     "btn-csv-abonnement": "Mise à jour d'abonnement et de BDD des périodiques",
     "procedure-fini": "Votre processus est bien complété"
@@ -347,5 +349,8 @@
     "plateformes": "Liste des plateformes",
     "list-fonds": "Liste des fonds",
     "logs-menu": "Journaux"
+  },
+  "options":{
+    "title": "Les options possibles pour les caractéristiques suivantes"
   }
 }
