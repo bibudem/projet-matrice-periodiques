@@ -22,6 +22,7 @@
   "abonnem": "Abonnem.",
   "statut": "Statut",
   "consulter": "Consulter",
+  "details": "Détails",
   "form-periodique": "Fiche principale",
   "fonds": "Fonds",
   "fournisseur": "Fournisseur",
@@ -109,6 +110,7 @@
   "description": "Description",
   "titre-graphique": "Périodiques les plus populaires",
   "fiche-periodique": "Dossier du périodique",
+  "non-periodique": "Il n'existe pas un périodique avec un tel idRevue",
   "historique-statistiques": "Historique des statistiques",
   "list-periodiques": "Liste des périodiques",
   "not-user-title": "Accès réservé",
@@ -246,6 +248,7 @@
   },
   "processus":{
     "titre-processus": "Sommaire des processus",
+    "titre-processus-details": "Détails sur le processus",
     "id_processus": "IDProcessus",
     "titre": "Nom",
     "admin": "Utilisateur.trice",

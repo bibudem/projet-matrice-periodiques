@@ -79,36 +79,36 @@
       <!-- fin progresse bar -->
       <!-- fin contenu form -->
       <div id="contenu-resultat" class="cacherVisible">
-        <div >
-          <h3>{{ 'importation.csv-import-provisoire' | translate}}</h3>
+        <div class="table-responsive p-3">
+          <h4 class=" text-danger"> <i class="icon-bell"></i> {{ 'importation.csv-import-provisoire' | translate}}</h4>
           <table  mat-table
                   [dataSource]="dataSource"
-                  class="mat-elevation-z8 w-100 p-2 mt-3"
+                  class="mat-table mt-3 table-mat-100"
                   matSort >
 
             <!-- ID Column -->
             <ng-container matColumnDef="IDRevue" >
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'IDRevue' | translate}} </th>
-              <td *matCellDef="let row" class="w-10 p-3" > {{row.idRevue}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'IDRevue' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-5" > {{row.idRevue}} </td>
             </ng-container>
 
             <!-- Année Column -->
             <ng-container matColumnDef="annee">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'annee' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10" > {{row.annee}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'annee' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10" > {{row.annee}} </td>
             </ng-container>
 
             <!-- prix Column -->
             <ng-container matColumnDef="prix">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-40"> {{ 'prix' | translate}} </th>
-              <td  *matCellDef="let row" class="w-40" > {{row.prix}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'prix' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10" > {{row.prix}} </td>
             </ng-container>
 
 
             <!-- note Column -->
             <ng-container matColumnDef="note">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'note' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.note }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'note' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.note }} </td>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

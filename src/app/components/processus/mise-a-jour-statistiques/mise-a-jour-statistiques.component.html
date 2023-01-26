@@ -88,84 +88,84 @@
       <!-- fin progresse bar -->
       <!-- fin contenu form -->
       <div id="contenu-resultat" class="cacherVisible">
-        <div >
+        <div class="table-responsive p-3">
           <h4 class=" text-info"> <i class="icon-bell"></i> {{ 'importation.csv-import-provisoire' | translate}}</h4>
           <table  mat-table
                   [dataSource]="dataSource"
-                  class="mat-elevation-z8 w-100 p-2 mt-3"
+                  class="mat-table mt-3 table-mat-100"
                   matSort >
 
             <!-- ID Column -->
             <ng-container matColumnDef="IDRevue" >
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'IDRevue' | translate}} </th>
-              <td *matCellDef="let row" class="w-10 p-3" > {{row.idRevue}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'IDRevue' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-5" > {{row.idRevue}} </td>
             </ng-container>
 
             <!-- annee Column -->
             <ng-container matColumnDef="annee" >
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'annee' | translate}} </th>
-              <td *matCellDef="let row" class="w-10 p-3" > {{row.annee}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'annee' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-5" > {{row.annee}} </td>
             </ng-container>
 
             <!-- PlateformeID Column -->
             <ng-container matColumnDef="PlateformeID">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'PlateformeID' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.PlateformeID }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'PlateformeID' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.PlateformeID }} </td>
             </ng-container>
 
             <!-- Total_Item_Requests Column -->
             <ng-container matColumnDef="Total_Item_Requests">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.Total_Item_Requests' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10" > {{row.Total_Item_Requests}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'labels-rapport-statistique.Total_Item_Requests' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10" > {{row.Total_Item_Requests}} </td>
             </ng-container>
 
             <!-- Unique_Item_Requests Column -->
             <ng-container matColumnDef="Unique_Item_Requests">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.Unique_Item_Requests' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10" > {{row.Unique_Item_Requests}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'labels-rapport-statistique.Unique_Item_Requests' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10" > {{row.Unique_Item_Requests}} </td>
             </ng-container>
 
 
             <!-- No_License Column -->
             <ng-container matColumnDef="No_License">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.No_License' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.No_License }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.No_License' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.No_License }} </td>
             </ng-container>
 
             <!-- citations Column -->
             <ng-container matColumnDef="citations">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.citations' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.citations }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.citations' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.citations }} </td>
             </ng-container>
 
             <!-- articlesUdem Column -->
             <ng-container matColumnDef="articlesUdem">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.articlesUdem' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.articlesUdem }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.articlesUdem' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.articlesUdem }} </td>
             </ng-container>
 
             <!-- TR_J4COURANT Column -->
             <ng-container matColumnDef="JR5COURANT">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.JR5COURANT' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.JR5COURANT }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.JR5COURANT' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.JR5COURANT }} </td>
             </ng-container>
 
             <!-- TR_J4INTER Column -->
             <ng-container matColumnDef="JR5INTER">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.JR5INTER' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.JR5INTER }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.JR5INTER' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.JR5INTER }} </td>
             </ng-container>
 
             <!-- TR_J4RETRO Column -->
             <ng-container matColumnDef="JR5RETRO">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.JR5RETRO' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.JR5RETRO }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.JR5RETRO' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.JR5RETRO }} </td>
             </ng-container>
 
             <!-- TR_J3OAGOLD Column -->
             <ng-container matColumnDef="JR3OAGOLD">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'labels-rapport-statistique.JR3OAGOLD' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.JR3OAGOLD }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.JR3OAGOLD' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.JR3OAGOLD }} </td>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

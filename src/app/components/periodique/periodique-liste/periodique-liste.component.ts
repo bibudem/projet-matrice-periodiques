@@ -17,7 +17,7 @@ import {MethodesGlobal} from "../../../lib/MethodesGlobal";
 })
 export class PeriodiqueListeComponent implements OnInit{
  //les entêts du tableau
-  displayedColumns = ['idRevue', 'titre', 'ISSN', 'EISSN','secteur','domaine','abonnement','bdd','statut','consulter'];
+  displayedColumns = ['idRevue', 'titre', 'ISSN', 'EISSN','secteur','domaine','abonnement','bdd','statut','dateA','dateM','consulter'];
   listePeriodiques: ListePeriodique[] = [];
   // @ts-ignore
   dataSource: MatTableDataSource<ListePeriodique>;
@@ -30,7 +30,7 @@ export class PeriodiqueListeComponent implements OnInit{
   //importer les fonctions global
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
 
-  periodiques$: Observable<Periodique[]> | undefined;
+  periodiques$: Observable<any[]> | undefined;
 
   //prendre la valeur d'un input
   getValue(value:string){
@@ -74,7 +74,7 @@ export class PeriodiqueListeComponent implements OnInit{
       this.periodiques$ = await this.fetchAll();
       await this.periodiques$.toPromise().then(res => {
         for (let i = 0; i < res.length; i++) {
-          this.listePeriodiques.push(createListePeriodique(res[i].idRevue,res[i].titre,res[i].ISSN,res[i].EISSN,res[i].secteur,res[i].domaine,res[i].abonnement,res[i].bdd,res[i].statut));
+          this.listePeriodiques.push(createListePeriodique(res[i].idRevue,res[i].titre,res[i].ISSN,res[i].EISSN,res[i].secteur,res[i].domaine,res[i].abonnement,res[i].bdd,res[i].statut,res[i].dateA,res[i].dateM));
         }
         // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
         this.dataSource = new MatTableDataSource(this.listePeriodiques);
@@ -128,7 +128,7 @@ export class PeriodiqueListeComponent implements OnInit{
 
 /** Fonction pour remplire le tableau de la liste des periodiques */
 
-function createListePeriodique(idRevueP: number,titreP:string,ISSNP:string,EISSNP:string,secteurP:string,domaineP:string,abonnementP:string,bddP:string,statutP:string): ListePeriodique {
+function createListePeriodique(idRevueP: number,titreP:string,ISSNP:string,EISSNP:string,secteurP:string,domaineP:string,abonnementP:string,bddP:string,statutP:string,dateAP:string,dateMP:string): ListePeriodique {
   return {
     idRevue: idRevueP.toString(),
     titre: titreP,
@@ -139,6 +139,8 @@ function createListePeriodique(idRevueP: number,titreP:string,ISSNP:string,EISSN
     abonnement: abonnementP,
     bdd: bddP,
     statut: statutP,
+    dateA: dateAP,
+    dateM: dateMP,
     consulter: '',
   };
 }
@@ -153,5 +155,7 @@ export interface ListePeriodique {
   abonnement: string;
   bdd: string;
   statut: string;
+  dateA: string;
+  dateM: string;
   consulter:string;
 }

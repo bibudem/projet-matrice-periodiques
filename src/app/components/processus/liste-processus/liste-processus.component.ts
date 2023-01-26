@@ -23,7 +23,7 @@ export class ListeProcessusComponent implements OnInit {
   codes:any=[]
 
   //les entêts du tableau
-  displayedColumns = ['id_processus','titre','admin','h_debut','h_fin','statut','supprimer'];
+  displayedColumns = ['id_processus','titre','admin','h_debut','h_fin','statut','details','supprimer'];
   listeProcessus: any = [];
   // @ts-ignore
   dataSource: MatTableDataSource<any>;
@@ -103,6 +103,10 @@ export class ListeProcessusComponent implements OnInit {
     this.closebutton.nativeElement.click();
     //console.log(routeLink);
     this.router.navigateByUrl(routeLink);
+  }
+
+  detailsProcessous(id:string){
+    this.router.navigate(['/processus/details/'+id])
   }
 
 }

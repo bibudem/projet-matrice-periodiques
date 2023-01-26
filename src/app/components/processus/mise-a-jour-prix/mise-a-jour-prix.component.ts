@@ -37,7 +37,10 @@ export class MiseAJourPrixComponent implements OnInit {
 
   //les entêts du tableau
   displayedColumns = ['IDRevue','annee', 'prix','note'];
-  tableauPeriodique: any = [];
+  // last id Processus
+  lastIdProcessus$: Observable<any[]> | undefined;
+
+  lastIdProccessus =0;
 
   // @ts-ignore
   dataSource: MatTableDataSource<InCites>;
@@ -116,6 +119,13 @@ export class MiseAJourPrixComponent implements OnInit {
 
 
   async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator:string) {
+    // last idProcessus
+    this.lastIdProcessus$ = await this.csvService.lastIdProcessus();
+    await this.lastIdProcessus$.toPromise().then(res => {
+      //console.log(res[0].max)
+      if(res[0].max!=null)
+        this.lastIdProccessus=res[0].max;
+    });
     let csvArr: UpdatePrix[] = [];
     // @ts-ignore
     let csvRecord: UpdatePrix = []; let curruntRecord;
@@ -189,48 +199,51 @@ export class MiseAJourPrixComponent implements OnInit {
     if (records.length == 0) return;
     let i =0;
     this.dateStart=this.methodesGlobal.dateCreator();
+    let postLigne : any = {}
     for (let val of records) {
-      n = setTimeout(async function () {
         i++;
 
         if(val.idRevue!=''){
-          await that.post(val.idRevue,val.annee,val.prix,val.note)
+          postLigne.idRevue=val.idRevue;
+          postLigne.abonnement=val.annee;
+          postLigne.bdd=val.prix;
+          postLigne.note=val.note;
+          postLigne.lastIdProcc=this.lastIdProccessus;
+          this.post(postLigne);
+          await this.methodesGlobal.delay(1000);
+
+          if(i==records.length){
+            await this.methodesGlobal.delay(5000);
+            //console.log('fin processus');
+            this.addProcessus(this.dateStart);
+
+          }
+
         }
-        // si la lecture du fichier csv est fini
-        if(i==records.length){
-          //console.log('add processus component')
-          await that.addProcessus('Succès');
-        }
-      }, 5000);
+
 
     }
   }
   //fonction pour inserer
-  async post( newIDRevue:string,newAnnee: string,newPrix: string, newNote: string) {
-    if (!newIDRevue) return;
-
-    this.inUpdatePrix$ = await this.csvService
-      .updatePrix({
-        newIDRevue,
-        newAnnee,
-        newPrix,
-        newNote
-      })
-      .pipe(tap(() => (this.finImportation())));
+  post( postLigne: string) {
+    this.inUpdatePrix$ = this.csvService
+      .updatePrix(postLigne)
+      //.pipe(tap(() => ()));
   }
 
-  async addProcessus(statut:string){
+  addProcessus(dateStart:string){
     // creer la date du début
 
     if(sessionStorage.getItem('prenomAdmin')){
       // @ts-ignore
       this.admin = sessionStorage.getItem('prenomAdmin')+' '+sessionStorage.getItem('nomAdmin');
     }
-    this.processus = {'titre':'Mise à jour des prix','statut':statut,'admin':this.admin,'dateStart':this.dateStart}
-    this.addProcessus$ = await this.csvService
+    this.processus = {'titre':'Mise à jour des prix','type':'prix','admin':this.admin,'dateStart':dateStart}
+    this.addProcessus$ = this.csvService
       .addProcessus(this.processus)
       .pipe(tap(() => (this.router.navigate(['/processus/add']))));
   }
+
 
   //cacher l'animation pour la mise a jour des données
   finImportation(){

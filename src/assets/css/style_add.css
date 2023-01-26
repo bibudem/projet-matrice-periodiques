@@ -47,8 +47,7 @@ thead {
 }
 .navbar .navbar-brand-wrapper {
   background: #ffffff !important;
-  border-right: 1px solid #ecf0f4;
-  border-bottom: 3px solid #ff4d6b;
+  border-right: 2px solid #ecf0f4;
 }
 /*Ajustement pour le logo et menu*/
 .img-logo {
@@ -59,7 +58,6 @@ thead {
 }
 .navbar .navbar-menu-wrapper{
   height: 80px!important;
-  border-bottom: 3px solid #ff4d6b;
 }
 .navbar .navbar-brand {
   width: 200px!important;
@@ -169,6 +167,29 @@ th,td {
   text-transform: initial!important;
   font-size: 20px!important;
 }
-footer a {
- color: #b6b8bb!important;
+.loader{
+  z-index: 2000;
+}
+.mat-w-10 {
+  flex: none;
+  width: 10%;
+}
+.mat-w-15 {
+  flex: none;
+  width: 15%;
+}
+.mat-w-20 {
+  flex: none;
+  width: 20%;
+}
+.mat-w-5 {
+  flex: none;
+  width: 5%;
+}
+.mat-w-50 {
+  flex: none;
+  width: 50%;
+}
+.table-mat-100{
+  width: 100%!important;
 }

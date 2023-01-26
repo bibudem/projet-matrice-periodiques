@@ -45,60 +45,65 @@
 
             <!-- ID Column -->
             <ng-container matColumnDef="numero" >
-              <th *matHeaderCellDef mat-sort-header="numero"  class="font-weight-bold w-5 p-3"> {{ 'numero' | translate}} </th>
-              <td *matCellDef="let row" class="w-5 p-3" > {{row.numero}} </td>
+              <th *matHeaderCellDef mat-sort-header="numero"  class="mat-w-5"> {{ 'numero' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-5" > {{row.numero}} </td>
             </ng-container>
 
             <ng-container matColumnDef="annee">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'annee' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10" > {{row.annee}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'annee' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10" > {{row.annee}} </td>
             </ng-container>
 
             <!-- Acronime Column -->
             <ng-container matColumnDef="plateforme">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'plateforme' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10" > {{row.plateforme}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'plateforme' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10" > {{row.plateforme}} </td>
             </ng-container>
             <!-- Acronime Column -->
             <ng-container matColumnDef="titre">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-15"> {{ 'titre' | translate}} </th>
-              <td  *matCellDef="let row" class="w-15" > {{row.titre}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-15"> {{ 'titre' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-15" > {{row.titre}} </td>
             </ng-container>
 
             <!-- ISSN Column -->
             <ng-container matColumnDef="telech">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'telech.' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10 text-center"> {{row.telech}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'telech.' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.telech}} </td>
             </ng-container>
 
             <!-- Derniere modification -->
             <ng-container matColumnDef="refus">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'refus' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10 text-center"> {{row.refus }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'refus' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-5"> {{row.refus }} </td>
             </ng-container>
 
             <!-- Derniere modification -->
             <ng-container matColumnDef="citation">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'citations' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10 text-center"> {{row.citation }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'citations' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.citation }} </td>
             </ng-container>
 
             <!-- Derniere modification -->
             <ng-container matColumnDef="articlesUdem">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'articlesUdem' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10 text-center"> {{row.articlesUdem }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'articlesUdem' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.articlesUdem }} </td>
             </ng-container>
 
             <!-- Derniere modification -->
             <ng-container matColumnDef="dateA">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 text-center"> {{ 'dateA' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10 text-center"> {{row.dateA | date:'short': 'fr'}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'dateA' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.dateA | date:'short': 'fr'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="dateM">
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'dateM' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.dateM | date:'short': 'fr'}} </td>
             </ng-container>
 
             <!-- Consulter Column -->
             <ng-container matColumnDef="consulter" >
-              <th *matHeaderCellDef   class="font-weight-bold w-10 text-center"> {{ 'consulter' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10 text-center ">
+              <th *matHeaderCellDef   class="mat-w-5"> {{ 'consulter' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-5">
                 <button *ngIf="ifAdmin" type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter les détails"  (click)="consulterStatistique(row.idRevue,row.titre)" >
                   <i class="icon-note"></i>
                 </button>

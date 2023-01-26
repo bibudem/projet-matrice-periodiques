@@ -172,5 +172,9 @@ export class MethodesGlobal  {
       // @ts-ignore
       document.getElementById(id).value='';
   }
+  //fonction utilise pour ajouté une pause dans les operations
+  delay(timeInMillis: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
+  }
 
 }

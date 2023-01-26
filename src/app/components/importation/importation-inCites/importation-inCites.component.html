@@ -77,52 +77,52 @@
       <!-- fin progresse bar -->
       <!-- fin contenu form -->
       <div id="contenu-resultat" class="cacherVisible">
-        <div >
-          <h3>{{ 'importation.csv-import-provisoire' | translate}}</h3>
+        <div class="table-responsive p-3">
+          <h4 class=" text-danger"> <i class="icon-bell"></i> {{ 'importation.csv-import-provisoire' | translate}}</h4>
           <table  mat-table
                   [dataSource]="dataSource"
-                  class="mat-elevation-z8 w-100 p-2"
+                  class="mat-table mt-3 table-mat-100"
                   matSort >
 
             <!-- ID Column -->
             <ng-container matColumnDef="numero" >
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'numero' | translate}} </th>
-              <td *matCellDef="let row" class="w-10 p-3" > {{row.numero}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'numero' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-10" > {{row.numero}} </td>
             </ng-container>
 
             <ng-container matColumnDef="annee">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'annee' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10" > {{row.annee}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'annee' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10" > {{row.annee}} </td>
             </ng-container>
 
             <!-- Acronime Column -->
             <ng-container matColumnDef="Name">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-40"> {{ 'titre' | translate}} </th>
-              <td  *matCellDef="let row" class="w-40" > {{row.Name}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-20"> {{ 'titre' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-20" > {{row.Name}} </td>
             </ng-container>
 
             <!-- ISSN Column -->
             <ng-container matColumnDef="ArticlesUdeM">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10">ArticlUdem </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.ArticlesUdeM}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-15">ArticlUdem </th>
+              <td  *matCellDef="let row" class="mat-w-15"> {{row.ArticlesUdeM}} </td>
             </ng-container>
 
             <!-- Derniere modification -->
             <ng-container matColumnDef="Citations">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'Citations' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.Citations }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'Citations' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-15"> {{row.Citations }} </td>
             </ng-container>
 
             <!-- Derniere modification -->
             <ng-container matColumnDef="ISSN">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'ISSN' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.ISSN }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'ISSN' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-15"> {{row.ISSN }} </td>
             </ng-container>
 
             <!-- Derniere modification -->
             <ng-container matColumnDef="EISSN">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'EISSN' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.EISSN }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'EISSN' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-15"> {{row.EISSN }} </td>
             </ng-container>
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;">

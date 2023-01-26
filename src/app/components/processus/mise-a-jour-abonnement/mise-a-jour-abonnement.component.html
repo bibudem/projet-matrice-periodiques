@@ -67,36 +67,36 @@
       </div>
       <!-- fin contenu form -->
       <div id="contenu-resultat" class="cacherVisible">
-        <div >
-          <h3>{{ 'importation.csv-import-provisoire' | translate}}</h3>
+        <div class="table-responsive p-3">
+          <h4 class=" text-danger"> <i class="icon-bell"></i> {{ 'importation.csv-import-provisoire' | translate}}</h4>
           <table  mat-table
                   [dataSource]="dataSource"
-                  class="mat-elevation-z8 w-100 p-2 mt-3"
+                  class="mat-table mt-3 table-mat-100"
                   matSort >
 
             <!-- ID Column -->
             <ng-container matColumnDef="IDRevue" >
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'IDRevue' | translate}} </th>
-              <td *matCellDef="let row" class="w-10 p-3" > {{row.idRevue}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'IDRevue' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-10" > {{row.idRevue}} </td>
             </ng-container>
 
 
             <!-- abonnement Column -->
             <ng-container matColumnDef="abonnement">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-20"> {{ 'abonnement' | translate}} </th>
-              <td  *matCellDef="let row" class="w-20" > {{row.abonnement}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-20"> {{ 'abonnement' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-20" > {{row.abonnement}} </td>
             </ng-container>
 
             <!-- bdd Column -->
             <ng-container matColumnDef="bdd">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-20"> {{ 'bdd' | translate}} </th>
-              <td  *matCellDef="let row" class="w-20" > {{row.bdd}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-20"> {{ 'bdd' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-20" > {{row.bdd}} </td>
             </ng-container>
 
             <!-- note Column -->
             <ng-container matColumnDef="note">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-20"> {{ 'note' | translate}} </th>
-              <td  *matCellDef="let row" class="w-20"> {{row.note }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-50"> {{ 'note' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-50"> {{row.note }} </td>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

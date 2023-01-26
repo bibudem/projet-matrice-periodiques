@@ -76,6 +76,8 @@ import { MiseAJourAbonnementComponent } from './components/processus/mise-a-jour
 import { ListeProcessusComponent } from './components/processus/liste-processus/liste-processus.component';
 import {MiseAJourStatistiquesComponent} from "./components/processus/mise-a-jour-statistiques/mise-a-jour-statistiques.component";
 import {MiseEnLotPeriodiquesComponent} from "./components/processus/importation-en-lot-periodiques/importation-en-lot-periodiques.component";
+import {ListeProcessusDelailsComponent} from "./components/processus/liste-processus-details/liste-processus-details.component";
+
 const maskConfig: Partial<IConfig> = {
   validation: false,
 };
@@ -115,7 +117,8 @@ const maskConfig: Partial<IConfig> = {
     MiseAJourStatistiquesComponent,
     MiseAJourAbonnementComponent,
     ListeProcessusComponent,
-    MiseEnLotPeriodiquesComponent
+    MiseEnLotPeriodiquesComponent,
+    ListeProcessusDelailsComponent
   ],
     imports: [
         BrowserModule,

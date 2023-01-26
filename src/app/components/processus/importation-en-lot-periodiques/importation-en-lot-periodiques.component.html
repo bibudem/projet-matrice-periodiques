@@ -111,144 +111,144 @@
       <!-- fin progresse bar -->
       <!-- fin contenu form -->
       <div id="contenu-resultat" class="cacherVisible bg-white">
-        <div >
+        <div class="table-responsive p-3">
           <h4 class=" text-danger"> <i class="icon-bell"></i> {{ 'importation.csv-import-provisoire' | translate}}</h4>
           <table  mat-table
                   [dataSource]="dataSource"
-                  class="mat-elevation-z8 w-100 p-2 mt-3 table-responsive"
+                  class="mat-table mt-3 table-mat-100"
                   matSort >
 
             <!-- ID Column -->
             <ng-container matColumnDef="IDRevue" >
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'IDRevue' | translate}} </th>
-              <td *matCellDef="let row" class="w-10 p-3" > {{row.idRevue}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'IDRevue' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-5" > {{row.idRevue}} </td>
             </ng-container>
 
             <!-- titre Column -->
             <ng-container matColumnDef="titre" >
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'titre' | translate}} </th>
-              <td *matCellDef="let row" class="w-10 p-3" > {{row.titre}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'titre' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-10" > {{row.titre}} </td>
             </ng-container>
 
             <!-- ISSN Column -->
             <ng-container matColumnDef="ISSN">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'ISSN' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.ISSN }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'ISSN' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-5"> {{row.ISSN }} </td>
             </ng-container>
 
             <!-- EISSN Column -->
             <ng-container matColumnDef="EISSN">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'EISSN' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10" > {{row.EISSN}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-5"> {{ 'EISSN' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-5" > {{row.EISSN}} </td>
             </ng-container>
 
             <!-- statut Column -->
             <ng-container matColumnDef="statut">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'statut' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10" > {{row.statut}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-5"> {{ 'statut' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-5" > {{row.statut}} </td>
             </ng-container>
 
 
             <!-- abonnement Column -->
             <ng-container matColumnDef="abonnement">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'abonnement' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.abonnement }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'abonnement' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.abonnement }} </td>
             </ng-container>
 
             <!-- bdd Column -->
             <ng-container matColumnDef="bdd">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'bdd' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.bdd }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'bdd' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-5"> {{row.bdd }} </td>
             </ng-container>
 
             <!-- fonds Column -->
             <ng-container matColumnDef="fonds">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'fonds' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.fonds }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'fonds' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.fonds }} </td>
             </ng-container>
 
             <!-- fournisseur Column -->
             <ng-container matColumnDef="fournisseur">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'fournisseur' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.fournisseur }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'fournisseur' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.fournisseur }} </td>
             </ng-container>
 
             <!-- plateformePrincipale Column -->
             <ng-container matColumnDef="plateformePrincipale">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'plateformePrincipale' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.plateformePrincipale }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'plateformePrincipale' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.plateformePrincipale }} </td>
             </ng-container>
 
             <!-- autrePlateforme Column -->
             <ng-container matColumnDef="autrePlateforme">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'autrePlateforme' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.autrePlateforme }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'autrePlateforme' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.autrePlateforme }} </td>
             </ng-container>
 
             <!-- format Column -->
             <ng-container matColumnDef="format">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'format' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.format }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'format' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.format }} </td>
             </ng-container>
 
             <!-- libreAcces Column -->
             <ng-container matColumnDef="libreAcces">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'libreAcces' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.libreAcces }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'libreAcces' | translate}} </th>
+              <td  *matCellDef="let row" class=" mat-w-10"> {{row.libreAcces }} </td>
             </ng-container>
 
             <!-- domaine Column -->
             <ng-container matColumnDef="domaine">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'domaine' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.domaine }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'domaine' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.domaine }} </td>
             </ng-container>
 
             <!-- secteur Column -->
             <ng-container matColumnDef="secteur">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'secteur' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.secteur }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'secteur' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.secteur }} </td>
             </ng-container>
 
             <!-- sujets Column -->
             <ng-container matColumnDef="sujets">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'sujets' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.sujets }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'sujets' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.sujets }} </td>
             </ng-container>
 
             <!-- duplication Column -->
             <ng-container matColumnDef="duplication">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'duplication' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.duplication }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'duplication' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.duplication }} </td>
             </ng-container>
 
             <!-- duplicationCourant Column -->
             <ng-container matColumnDef="duplicationCourant">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'duplicationCourant' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.duplicationCourant }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'duplicationCourant' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.duplicationCourant }} </td>
             </ng-container>
 
             <!-- duplicationEmbargo1 Column -->
             <ng-container matColumnDef="duplicationEmbargo1">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'duplicationEmbargo1' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.duplicationEmbargo1 }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'duplicationEmbargo1' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.duplicationEmbargo1 }} </td>
             </ng-container>
 
             <!-- duplicationEmbargo2 Column -->
             <ng-container matColumnDef="duplicationEmbargo2">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'duplicationEmbargo2' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.duplicationEmbargo2 }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'duplicationEmbargo2' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.duplicationEmbargo2 }} </td>
             </ng-container>
 
             <!-- essentiel2014 Column -->
             <ng-container matColumnDef="essentiel2014">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'essentiel2014' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.essentiel2014 }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'essentiel2014' | translate}} </th>
+              <td  *matCellDef="let row" class=" mat-w-10"> {{row.essentiel2014 }} </td>
             </ng-container>
 
             <!-- essentiel2022 Column -->
             <ng-container matColumnDef="essentiel2022">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'essentiel2022' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.essentiel2022 }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'essentiel2022' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.essentiel2022 }} </td>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

@@ -14,7 +14,7 @@ import {Note} from "../models/Note";
 })
 export class OutilsService {
   [x: string]: any;
-  private url = "https://matrice-dev.bib.umontreal.ca/api/plateforme";
+  private url = "/api/plateforme";
 
   httpOptions: { headers: HttpHeaders } = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),
@@ -40,7 +40,7 @@ export class OutilsService {
   }
 
   delete(id: number): Observable<any> {
-    const url = `https://matrice-dev.bib.umontreal.ca/api/plateforme/delete/${id}`;
+    const url = `/api/plateforme/delete/${id}`;
 
     return this.http
       .delete<Plateforme>(url, this.httpOptions)

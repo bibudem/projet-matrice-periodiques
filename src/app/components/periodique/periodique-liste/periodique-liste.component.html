@@ -34,8 +34,8 @@
 
           <!-- ID Column -->
           <ng-container matColumnDef="idRevue" >
-            <th  *matHeaderCellDef #idRevue mat-sort-header  class="font-weight-bold w-10 "> {{ 'labels-rapport-periodique.id' | translate}} </th>
-            <td *matCellDef="let row" class="w-10" > {{row.idRevue}} </td>
+            <th  *matHeaderCellDef #idRevue mat-sort-header  class="font-weight-bold w-5 "> {{ 'labels-rapport-periodique.id' | translate}} </th>
+            <td *matCellDef="let row" class="w-5" > {{row.idRevue}} </td>
           </ng-container>
 
           <!-- Titre Column -->
@@ -46,14 +46,14 @@
 
           <!-- ISSN Column -->
           <ng-container matColumnDef="ISSN">
-            <th  *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> ISSN </th>
-            <td  *matCellDef="let row" class="w-10"> {{row.ISSN}} </td>
+            <th  *matHeaderCellDef mat-sort-header  class="font-weight-bold w-5"> ISSN </th>
+            <td  *matCellDef="let row" class="w-5"> {{row.ISSN}} </td>
           </ng-container>
 
           <!-- EISSN Column -->
           <ng-container matColumnDef="EISSN">
-            <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> EISSN </th>
-            <td  *matCellDef="let row" class="w-10"> {{row.EISSN}} </td>
+            <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-5"> EISSN </th>
+            <td  *matCellDef="let row" class="w-5"> {{row.EISSN}} </td>
           </ng-container>
 
           <!-- Secteur Column -->
@@ -76,14 +76,24 @@
 
               <!-- BDD Column -->
               <ng-container matColumnDef="bdd">
-                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10" > {{ 'labels-rapport-periodique.bdd' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10"> {{row.bdd}} </td>
+                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-5" > {{ 'labels-rapport-periodique.bdd' | translate}} </th>
+                <td  *matCellDef="let row" class="w-5"> {{row.bdd}} </td>
               </ng-container>
 
               <!-- Statut Column -->
               <ng-container matColumnDef="statut">
-                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'statut' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10"> {{row.statut}} </td>
+                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-5"> {{ 'statut' | translate}} </th>
+                <td  *matCellDef="let row" class="w-5"> {{row.statut}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="dateA">
+                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10" > {{ 'dateA' | translate}} </th>
+                <td  *matCellDef="let row" class="w-10"> {{row.dateA| date:'short': 'fr'}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="dateM">
+                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10" > {{ 'dateM' | translate}} </th>
+                <td  *matCellDef="let row" class="w-10"> {{row.dateM| date:'short': 'fr'}} </td>
               </ng-container>
               <!-- Consulter Column -->
               <ng-container matColumnDef="consulter" >

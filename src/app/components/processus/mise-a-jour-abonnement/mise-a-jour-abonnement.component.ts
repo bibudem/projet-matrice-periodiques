@@ -27,19 +27,19 @@ export class MiseAJourAbonnementComponent implements OnInit {
   inUpdateAbonnement$: Observable<any[]> | undefined;
 
   addProcessus$: Observable<any[]> | undefined;
-  //importer les fonctions global
-
-  //reponse pour la mise a jour des données
-  reponsesUpdate$: Observable<any[]> | undefined;
 
   reponseUpdate = 0
 
+  // last id Processus
+  lastIdProcessus$: Observable<any[]> | undefined;
+
+  lastIdProccessus =0;
+
   //les entêts du tableau
   displayedColumns = ['IDRevue', 'abonnement','bdd','note'];
-  tableauPeriodique: any = [];
 
   // @ts-ignore
-  dataSource: MatTableDataSource<InCites>;
+  dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: paginationPersonnalise | any;
 
   @ViewChild(MatSort)  matSort : MatSort | any;
@@ -65,7 +65,7 @@ export class MiseAJourAbonnementComponent implements OnInit {
 
   ngOnInit(): void {
     //remplire la liste des annees
-    this.anneeOptions()
+    this.anneeOptions();
   }
   //creation du select d'année a partir de 2019
   anneeOptions(){
@@ -115,6 +115,13 @@ export class MiseAJourAbonnementComponent implements OnInit {
 
 
   async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator:string) {
+    // last idProcessus
+    this.lastIdProcessus$ = await this.csvService.lastIdProcessus();
+    await this.lastIdProcessus$.toPromise().then(res => {
+      //console.log(res[0].max)
+      if(res[0].max!=null)
+        this.lastIdProccessus=res[0].max;
+    });
     let csvArr: UpdateAbonnement[] = [];
     // @ts-ignore
     let csvRecord: UpdateAbonnement = []; let curruntRecord;
@@ -128,7 +135,7 @@ export class MiseAJourAbonnementComponent implements OnInit {
         case 'abonnement':
           colAbonnement=i
           break;
-        case 'bdd':
+        case 'BDD':
           colBDD=i
           break;
         case 'note':
@@ -180,57 +187,56 @@ export class MiseAJourAbonnementComponent implements OnInit {
 
 
   //inserer les données
-  async postArray(records:UpdateAbonnement[]){
+  async postArray(records:UpdateAbonnement[]): Promise<void> {
     //console.log(records)
     this.methodesGlobal.nonAfficher('contenu-form')
     this.methodesGlobal.nonAfficher('contenu-resultat')
     this.methodesGlobal.afficher('load-import')
-    let that=this
-    let n: any;
     if (records.length == 0) return;
     let i =0;
     this.dateStart=this.methodesGlobal.dateCreator();
+    let postLigne : any = {};
+
     for (let val of records) {
-      n = setTimeout(async function () {
-        i++;
+      if(val.idRevue!=''){
+          i++;
+          postLigne.idRevue=val.idRevue;
+          postLigne.abonnement=val.abonnement;
+          postLigne.bdd=val.bdd;
+          postLigne.note=val.note;
+          postLigne.lastIdProcc=this.lastIdProccessus;
+          this.post(postLigne)
 
-        if(val.idRevue!=''){
-          await that.post(val.idRevue,val.abonnement,val.bdd,val.note)
-        }
-        // si la lecture du fichier csv est fini
-        if(i==records.length){
-          //console.log('add processus component')
-          await that.addProcessus('Succès');
-        }
-      }, 5000);
+          await this.methodesGlobal.delay(1000);
 
+          if(i==records.length){
+            await this.methodesGlobal.delay(5000);
+            //console.log('fin processus');
+            await this.addProcessus(this.dateStart);
+
+          }
+
+        }
     }
   }
   //fonction pour inserer
-  async post( newIDRevue:string,newAbonnement: string,newBDD: string, newNote: string) {
-    if (!newIDRevue) return;
-
-    this.inUpdateAbonnement$ = await this.csvService
-      .updateAbonnement({
-        newIDRevue,
-        newAbonnement,
-        newBDD,
-        newNote
-      })
-      .pipe(tap(() => (this.finImportation())));
+  post( postLigne:any) {
+    this.inUpdateAbonnement$ = this.csvService
+      .updateAbonnement(postLigne);
+      //.pipe(tap(() => ()));
   }
 
-  async addProcessus(statut:string){
+  async addProcessus(dateStart:string){
     // creer la date du début
 
     if(sessionStorage.getItem('prenomAdmin')){
       // @ts-ignore
       this.admin = sessionStorage.getItem('prenomAdmin')+' '+sessionStorage.getItem('nomAdmin');
     }
-    this.processus = {'titre':'Mise à jour des abonnements/BDD','statut':statut,'admin':this.admin,'dateStart':this.dateStart}
-    this.addProcessus$ = await this.csvService
+      this.processus = {'titre':'Mise à jour des abonnements/BDD','type':'abonnements','admin':this.admin,'dateStart':dateStart}
+      this.addProcessus$ = await this.csvService
       .addProcessus(this.processus)
-      .pipe(tap(() => (this.router.navigate(['/processus/add']))));
+        .pipe(tap(() => (this.router.navigate(['/processus/add']))));;
   }
 
   //cacher l'animation pour la mise a jour des données

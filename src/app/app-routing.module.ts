@@ -32,6 +32,7 @@ import {MiseAJourPrixComponent} from "./components/processus/mise-a-jour-prix/mi
 import {MiseAJourAbonnementComponent} from "./components/processus/mise-a-jour-abonnement/mise-a-jour-abonnement.component";
 import {MiseAJourStatistiquesComponent} from "./components/processus/mise-a-jour-statistiques/mise-a-jour-statistiques.component";
 import {MiseEnLotPeriodiquesComponent} from "./components/processus/importation-en-lot-periodiques/importation-en-lot-periodiques.component";
+import {ListeProcessusDelailsComponent} from "./components/processus/liste-processus-details/liste-processus-details.component";
 
 const routes: Routes = [
   { path: '', component: AccueilComponent, canActivate: [AuthGuard] },
@@ -60,6 +61,7 @@ const routes: Routes = [
   { path: 'logs-plateforme', component: LogsPlateformeComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'processus', component: ListeProcessusComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'processus/add', component: ListeProcessusComponent, canActivate: [AuthGuard,AdminGuard] },
+  { path: 'processus/details/:id', component: ListeProcessusDelailsComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'mise-a-jour-prix', component: MiseAJourPrixComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'mise-a-jour-statistiques', component: MiseAJourStatistiquesComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'mise-a-jour-abonnement', component: MiseAJourAbonnementComponent, canActivate: [AuthGuard,AdminGuard] },

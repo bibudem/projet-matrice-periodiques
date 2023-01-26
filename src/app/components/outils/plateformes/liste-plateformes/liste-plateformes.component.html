@@ -23,35 +23,35 @@
 
       <div class="example-container">
         <div class="table-responsive">
-          <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 p-2"  >
+          <table  mat-table [dataSource]="dataSource" matSort class="p-3 mat-table mt-3 table-mat-100"  >
 
             <!-- ID Column -->
             <ng-container matColumnDef="numero" >
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'numero' | translate}} </th>
-              <td *matCellDef="let row" class="w-10 p-3" > {{row.numero}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'numero' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-10" > {{row.numero}} </td>
             </ng-container>
 
             <!-- Acronime Column -->
             <ng-container matColumnDef="PlatformID">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-15"> {{ 'acronyme' | translate}} </th>
-              <td  *matCellDef="let row" class="w-15" > {{row.PlatformID}} </td>
+              <th *matHeaderCellDef mat-sort-header class="mat-w-20"> {{ 'acronyme' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-20" > {{row.PlatformID}} </td>
             </ng-container>
 
             <!-- ISSN Column -->
             <ng-container matColumnDef="titrePlateforme">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-50"> {{ 'titre' | translate}} </th>
-              <td  *matCellDef="let row" class="w-50"> {{row.titrePlateforme}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-50"> {{ 'titre' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-50"> {{row.titrePlateforme}} </td>
             </ng-container>
 
             <!-- Derniere modification -->
             <ng-container matColumnDef="dateM">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15"> {{ 'dateM' | translate}} </th>
-              <td  *matCellDef="let row" class="w-15"> {{row.dateM | date:'short': 'fr'}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'dateM' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-15"> {{row.dateM | date:'short': 'fr'}} </td>
             </ng-container>
             <!-- Consulter Column -->
             <ng-container matColumnDef="consulter" >
-              <th *matHeaderCellDef   class="font-weight-bold w-10"> {{ 'consulter' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10 text-center ">
+              <th *matHeaderCellDef   class="mat-w-5"> {{ 'consulter' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-5">
                 <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter la fiche" (click)="consulter(row.idPlateforme)" routerLink="/plateforme-form" >
                   <i class="icon-note"></i>
                 </button>

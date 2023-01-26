@@ -24,7 +24,7 @@ export class StatistiqueListeComponent implements OnInit {
   public listeStatistique: ListeStatistique = {};
   id: string | null | undefined ;
   //les entêts du tableau
-  displayedColumns = ['numero','annee','plateforme', 'titre','telech','refus','citation','articlesUdem','dateA','consulter'];
+  displayedColumns = ['numero','annee','plateforme', 'titre','telech','refus','citation','articlesUdem','dateA','dateM','consulter'];
   tableauStatistique: any = [];
 
   //Initialiser le tableau d'annee'
@@ -83,7 +83,7 @@ export class StatistiqueListeComponent implements OnInit {
       this.tableauStatistique=[]
       this.listeStatistique$ = await this.fetchAll(annee);
       await this.listeStatistique$.toPromise().then(res => {
-        // console.log(res[0])
+         console.log(res[0])
         let i=0
         for (let val of res[0]) {
           if(!val.citations)val.citations=0
@@ -102,7 +102,8 @@ export class StatistiqueListeComponent implements OnInit {
             "refus":val.No_License,
             "citation":val.citations,
             "articlesUdem":val.articlesUdem,
-            "dateA":val.date
+            "dateA":val.dateA,
+            "dateM":val.dateM
           }
           i++
         }

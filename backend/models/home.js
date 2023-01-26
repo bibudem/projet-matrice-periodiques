@@ -48,7 +48,7 @@ module.exports = class Logs {
 
     let result= await  db.execute('SELECT titre,Total_Item_Requests,Unique_Item_Requests,No_License FROM `tbl_statistiques` INNER JOIN `tbl_periodiques` on tbl_statistiques.`idRevue`=tbl_periodiques.`idRevue`  WHERE `annee`=? ORDER BY CAST(Total_Item_Requests AS UNSIGNED) DESC,CAST(citations AS UNSIGNED) DESC,CAST(articlesUdem AS UNSIGNED) DESC LIMIT 0,10',[annee]);
 
-    while( i< 10){
+   while( i< 10){
       //console.log(result[0][i].titre)
       graphique[i]={'titre':result[0][i].titre,'Total_Item_Requests':result[0][i].Total_Item_Requests,'Unique_Item_Requests':result[0][i].Unique_Item_Requests,'No_License':result[0][i].No_License}
       i++

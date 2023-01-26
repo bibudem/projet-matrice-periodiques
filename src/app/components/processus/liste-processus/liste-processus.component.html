@@ -67,49 +67,59 @@
             </mat-form-field>
           </div>
           <div class="table-responsive w-100">
-            <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100" >
+            <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 p-5" >
               <!-- ID Column -->
               <ng-container matColumnDef="id_processus" >
-                <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10 p-3"> {{ 'processus.id_processus' | translate}} </th>
-                <td *matCellDef="let row" class="w-10 p-3" > {{row.id_processus}} </td>
+                <th *matHeaderCellDef mat-sort-header class="mat-w-10 pl-2"> {{ 'processus.id_processus' | translate}} </th>
+                <td *matCellDef="let row" class="mat-w-10 pl-2" > {{row.id_processus}} </td>
               </ng-container>
 
               <!-- plateforme Column -->
               <ng-container matColumnDef="titre">
-                <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-25 pl-2"> {{ 'processus.titre' | translate}} </th>
-                <td  *matCellDef="let row" class="w-25 pl-2" > {{row.titre}} </td>
+                <th *matHeaderCellDef mat-sort-header class="mat-w-20"> {{ 'processus.titre' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-20" > {{row.titre}} </td>
               </ng-container>
 
               <!-- EISSN Column -->
               <ng-container matColumnDef="admin">
-                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15 pr-1"> {{ 'processus.admin' | translate}} </th>
-                <td  *matCellDef="let row" class="w-15">
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'processus.admin' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-15">
                   {{row.admin}}
                 </td>
               </ng-container>
 
               <!-- Title Column -->
               <ng-container matColumnDef="h_debut">
-                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15 pr-1"> {{ 'processus.h_debut' | translate}} </th>
-                <td  *matCellDef="let row" class="w-15 pr-1"> {{row.h_debut}} </td>
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'processus.h_debut' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-15"> {{row.h_debut}} </td>
               </ng-container>
 
               <!-- rapport Column -->
               <ng-container matColumnDef="h_fin">
-                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15 pr-1"> {{ 'processus.h_fin' | translate}} </th>
-                <td  *matCellDef="let row" class="w-15 pr-1"> {{row.h_fin}} </td>
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'processus.h_fin' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-15"> {{row.h_fin}} </td>
               </ng-container>
 
-              <!-- fourniseur Column -->
+              <!-- statut Column -->
               <ng-container matColumnDef="statut">
-                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 pr-1"> {{ 'statut' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10 pr-1"> {{row.statut}} </td>
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'statut' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-5"> {{row.statut}} </td>
               </ng-container>
 
-              <!-- Consulter Column -->
+              <!-- consoulter Column -->
+              <ng-container matColumnDef="details" >
+                <th *matHeaderCellDef   class="mat-w-10 text-center"> {{ 'details' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-10 text-center">
+                  <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="{{'details'| translate}}" (click)="detailsProcessous(row.id_processus)" >
+                    <i class="icon-folder-alt"></i>
+                  </button>
+                </td>
+              </ng-container>
+
+              <!-- supprimer Column -->
               <ng-container matColumnDef="supprimer" >
-                <th *matHeaderCellDef   class="font-weight-bold w-10 text-center pr-1"> {{ 'btn-supprimer' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10 text-center pr-1">
+                <th *matHeaderCellDef   class="mat-w-10 text-center"> {{ 'btn-supprimer' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-10 text-center">
                   <button type="button" class="btn btn-danger btn-rounded btn-icon btn-sm" title="Supprimer la fiche" (click)="methodesGlobal.addValueInput(row.id_processus,'id_processus')" data-toggle="modal" data-target="#modal-supprimer" >
                     <i class="icon-trash"></i>
                   </button>

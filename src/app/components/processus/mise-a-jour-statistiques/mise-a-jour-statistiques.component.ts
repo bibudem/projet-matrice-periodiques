@@ -43,7 +43,10 @@ export class MiseAJourStatistiquesComponent implements OnInit {
 
   //les entêts du tableau
   displayedColumns = ['IDRevue','annee', 'Total_Item_Requests','Unique_Item_Requests','No_License','citations','articlesUdem','JR5COURANT','JR5INTER','JR5RETRO','JR3OAGOLD','PlateformeID'];
-  tableauPeriodique: any = [];
+  // last id Processus
+  lastIdProcessus$: Observable<any[]> | undefined;
+
+  lastIdProccessus =0;
 
   // @ts-ignore
   dataSource: MatTableDataSource<InCites>;
@@ -153,6 +156,13 @@ export class MiseAJourStatistiquesComponent implements OnInit {
 
 
   async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator:string) {
+    // last idProcessus
+    this.lastIdProcessus$ = await this.csvService.lastIdProcessus();
+    await this.lastIdProcessus$.toPromise().then(res => {
+      //console.log(res[0].max)
+      if(res[0].max!=null)
+        this.lastIdProccessus=res[0].max;
+    });
     let csvArr: UpdateStatistiques[] = [];
     // @ts-ignore
     let csvRecord: UpdateStatistiques = []; let curruntRecord;
@@ -259,9 +269,7 @@ export class MiseAJourStatistiquesComponent implements OnInit {
     this.dateStart=this.methodesGlobal.dateCreator();
     let postLigne : any = {}
     for (let val of records) {
-      n = setTimeout(async function () {
         i++;
-
         if(val.PlateformeID=='-'){
           alert('Opération interrompue, certaines règles ont été mal respecté');
           return
@@ -278,37 +286,40 @@ export class MiseAJourStatistiquesComponent implements OnInit {
           postLigne.JR5RETRO=val.JR5RETRO;
           postLigne.JR3OAGOLD=val.JR3OAGOLD;
           postLigne.PlateformeID=val.PlateformeID;
-          await that.post(postLigne)
+          postLigne.lastIdProcc=this.lastIdProccessus;
+          this.post(postLigne)
 
-        // si la lecture du fichier csv est fini
-        if(i==records.length){
-          //console.log('add processus component')
-          await that.addProcessus('Succès');
-        }
-      }, 5000);
+         await this.methodesGlobal.delay(1000);
+
+          if(i==records.length){
+            await this.methodesGlobal.delay(5000);
+            //console.log('fin processus');
+            await this.addProcessus(this.dateStart);
+
+          }
 
     }
   }
   //fonction pour inserer
-  async post( postLigne : any) {
+   post( postLigne : any) {
 
-    this.inUpdateStatistiques$ = await this.csvService
+    this.inUpdateStatistiques$ = this.csvService
       .updateStatistiques(postLigne)
       //.toPromise(tap(() => (this.finImportation())));
   }
-
-  async addProcessus(statut:string){
+  async addProcessus(dateStart:string){
     // creer la date du début
 
     if(sessionStorage.getItem('prenomAdmin')){
       // @ts-ignore
       this.admin = sessionStorage.getItem('prenomAdmin')+' '+sessionStorage.getItem('nomAdmin');
     }
-    this.processus = {'titre':'Mise à jour des statistiques','statut':statut,'admin':this.admin,'dateStart':this.dateStart}
+    this.processus = {'titre':'Mise à jour des statistiques','type':'statistiques','admin':this.admin,'dateStart':dateStart}
     this.addProcessus$ = await this.csvService
       .addProcessus(this.processus)
-      .pipe(tap(() => (this.router.navigate(['/processus/add']))));
+      .pipe(tap(() => (this.router.navigate(['/processus/add']))));;
   }
+
 
   //cacher l'animation pour la mise a jour des données
   finImportation(){
