@@ -2,5 +2,5 @@
 /logs-ng
 /backend/node_modules
 /backend/config
-/backend/logs/*
+/backend/logs
 .idea
