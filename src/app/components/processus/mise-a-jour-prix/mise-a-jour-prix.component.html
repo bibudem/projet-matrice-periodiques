@@ -88,8 +88,20 @@
 
             <!-- ID Column -->
             <ng-container matColumnDef="IDRevue" >
-              <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'IDRevue' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-5" > {{row.idRevue}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'IDRevue' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-10" > {{row.idRevue}} </td>
+            </ng-container>
+
+            <!-- ISSN Column -->
+            <ng-container matColumnDef="ISSN" >
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'ISSN' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-15" > {{row.ISSN}} </td>
+            </ng-container>
+
+            <!-- EISSN Column -->
+            <ng-container matColumnDef="EISSN" >
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'EISSN' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-15" > {{row.EISSN}} </td>
             </ng-container>
 
             <!-- Année Column -->
@@ -107,8 +119,8 @@
 
             <!-- note Column -->
             <ng-container matColumnDef="note">
-              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'note' | translate}} </th>
-              <td  *matCellDef="let row" class="mat-w-10"> {{row.note }} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-20"> {{ 'note' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-20"> {{row.note }} </td>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

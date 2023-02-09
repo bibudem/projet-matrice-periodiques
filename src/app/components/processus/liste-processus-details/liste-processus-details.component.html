@@ -28,21 +28,33 @@
             <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100" >
               <!-- ID Column -->
               <ng-container matColumnDef="numero" >
-                <th *matHeaderCellDef mat-sort-header class="mat-w-5 pl-2"> {{ 'numero' | translate}} </th>
-                <td *matCellDef="let row" class="mat-w-5 pl-2" > {{row.numero}} </td>
+                <th *matHeaderCellDef mat-sort-header class="mat-w-10 pl-2"> {{ 'numero' | translate}} </th>
+                <td *matCellDef="let row" class="mat-w-10 pl-2" > {{row.numero}} </td>
               </ng-container>
 
               <!-- plateforme Column -->
               <ng-container matColumnDef="idRevue">
-                <th *matHeaderCellDef mat-sort-header class="mat-w-15"> {{ 'idRevue' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-15" > {{row.idRevue}} </td>
+                <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'idRevue' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-10" > {{row.idRevue}} </td>
+              </ng-container>
+
+              <!-- ISSN Column -->
+              <ng-container matColumnDef="ISSN">
+                <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'ISSN' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-10" > {{row.ISSN}} </td>
+              </ng-container>
+
+              <!-- EISSN Column -->
+              <ng-container matColumnDef="EISSN">
+                <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'EISSN' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-10" > {{row.EISSN}} </td>
               </ng-container>
 
               <!-- EISSN Column -->
               <ng-container matColumnDef="titre">
-                <th *matHeaderCellDef mat-sort-header  class="mat-w-50"> {{ 'titre' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-50">
-                  <span class="text-danger" *ngIf="!row.titre">{{'non-periodique' | translate}}</span>
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-20"> {{ 'titre' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-20">
+                  <span class="text-danger" *ngIf="!row.idRevue">{{'non-periodique' | translate}}</span>
                   {{row.titre}}
                 </td>
               </ng-container>
@@ -50,15 +62,15 @@
 
               <!-- rapport Column -->
               <ng-container matColumnDef="dateA">
-                <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'dateA' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-15"> {{row.dateA}} </td>
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-20"> {{ 'dateA' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-20"> {{row.dateA}} </td>
               </ng-container>
 
               <!-- Fiche periodique -->
               <ng-container matColumnDef="fiche" >
                 <th *matHeaderCellDef   class="mat-w-10 text-center"> {{ 'consulter' | translate}} </th>
                 <td  *matCellDef="let row" class="mat-w-10 text-center">
-                  <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" *ngIf="row.titre" title="{{'fiche-periodique'| translate}}" routerLink="/periodique/{{row.idRevue}}" >
+                  <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" *ngIf="row.idRevue" title="{{'fiche-periodique'| translate}}" routerLink="/periodique/{{row.idRevue}}" >
                     <i class="icon-note"></i>
                   </button>
                 </td>
@@ -66,8 +78,8 @@
 
               <!-- supprimer Column -->
               <ng-container matColumnDef="supprimer" >
-                <th *matHeaderCellDef   class="mat-w-5 text-center"> {{ 'btn-supprimer' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-5 text-center">
+                <th *matHeaderCellDef   class="mat-w-10 text-center"> {{ 'btn-supprimer' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-10 text-center">
                   <button type="button" class="btn btn-danger btn-rounded btn-icon btn-sm" title="Supprimer la ligne" (click)="methodesGlobal.addValueInput(row.id_details,'id_details')" data-toggle="modal" data-target="#modal-supprimer" >
                     <i class="icon-trash"></i>
                   </button>

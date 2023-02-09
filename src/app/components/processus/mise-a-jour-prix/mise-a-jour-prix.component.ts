@@ -36,7 +36,7 @@ export class MiseAJourPrixComponent implements OnInit {
   reponseUpdate = 0
 
   //les entêts du tableau
-  displayedColumns = ['IDRevue','annee', 'prix','note'];
+  displayedColumns = ['IDRevue','ISSN','EISSN','annee', 'prix','note'];
   // last id Processus
   lastIdProcessus$: Observable<any[]> | undefined;
 
@@ -129,12 +129,18 @@ export class MiseAJourPrixComponent implements OnInit {
     let csvArr: UpdatePrix[] = [];
     // @ts-ignore
     let csvRecord: UpdatePrix = []; let curruntRecord;
-    let colIDRevue=-1,colAnnee=-1,colPrix=-1,colNote=-1;
+    let colIDRevue=-1,colAnnee=-1,colPrix=-1,colISSN=-1,colEISSN=-1,colNote=-1;
     //prendre le numero des colons selon le nom d'entete
     for(let i=0;i<headersRow.length;i++){
       switch (headersRow[i].trim()){
         case 'IDRevue':
           colIDRevue=i
+          break;
+        case 'ISSN':
+          colISSN=i
+          break;
+        case 'EISSN':
+          colEISSN=i
           break;
         case 'annee':
           colAnnee=i
@@ -154,16 +160,16 @@ export class MiseAJourPrixComponent implements OnInit {
         this.annee=document.getElementById('annee').value;
 
         curruntRecord = (<string>csvRecordsArray[i]).split(separator);
-        if(curruntRecord[colIDRevue]!='') {
           csvRecord = {
-            idRevue: curruntRecord[colIDRevue],
+            idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIDRevue]),
+            ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colISSN]),
+            EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colEISSN]),
             // @ts-ignore
             annee: this.annee,
-            prix: curruntRecord[colPrix],
-            note:curruntRecord[colNote]
+            prix: this.methodesGlobal.returnCharIfNull(curruntRecord[colPrix]),
+            note:this.methodesGlobal.returnCharIfNull(curruntRecord[colNote])
           }
           csvArr.push(csvRecord);
-        }
     }
      //console.log(csvArr)
     return csvArr;
@@ -201,10 +207,10 @@ export class MiseAJourPrixComponent implements OnInit {
     this.dateStart=this.methodesGlobal.dateCreator();
     let postLigne : any = {}
     for (let val of records) {
-        i++;
-
-        if(val.idRevue!=''){
+          i++;
           postLigne.idRevue=val.idRevue;
+          postLigne.issn=val.ISSN;
+          postLigne.eissn=val.EISSN;
           postLigne.abonnement=val.annee;
           postLigne.bdd=val.prix;
           postLigne.note=val.note;
@@ -217,7 +223,6 @@ export class MiseAJourPrixComponent implements OnInit {
             //console.log('fin processus');
             this.addProcessus(this.dateStart);
 
-          }
 
         }
 

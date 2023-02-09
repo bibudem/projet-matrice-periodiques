@@ -23,7 +23,7 @@ export class ListeProcessusDelailsComponent implements OnInit {
   codes:any=[]
 
   //les entêts du tableau
-  displayedColumns = ['numero','idRevue','titre','dateA','fiche','supprimer'];
+  displayedColumns = ['numero','idRevue','ISSN','EISSN','titre','dateA','fiche','supprimer'];
   listeProcessus: any = [];
   // @ts-ignore
   dataSource: MatTableDataSource<any>;
@@ -83,8 +83,10 @@ export class ListeProcessusDelailsComponent implements OnInit {
         for (let i = 0; i < res.length; i++) {
           this.listeProcessus[i]={
             "numero":i+1,
-            "id_details":res[i].id_details,
+            "id_details":res[i].id_detai3ls,
             "idRevue":res[i].idRevue,
+            "ISSN":res[i].ISSN,
+            "EISSN":res[i].EISSN,
             "titre":res[i].titre,
             "dateA":res[i].dateA
           }

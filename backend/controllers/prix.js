@@ -50,7 +50,7 @@ exports.putPrix = async (req, res, next) => {
     let values=Object.values(req.body);
     //console.log(Object.values(values));
     //console.log(req.body.idNote);
-    const putResponse = await Prix.update(req.body.idPrix, values);
+    const putResponse = await Prix.update(values);
     res.status(200).json(putResponse);
   } catch (err) {
     if (!err.statusCode) {

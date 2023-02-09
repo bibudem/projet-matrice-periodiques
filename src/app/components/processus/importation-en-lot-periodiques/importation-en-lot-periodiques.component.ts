@@ -194,7 +194,6 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
 
     for (let i = 1; i < csvRecordsArray.length; i++) {
         curruntRecord = (<string>csvRecordsArray[i]).split(separator);
-        if(curruntRecord[colIDRevue]!='') {
 
           csvRecord = {
             idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIDRevue]),
@@ -221,7 +220,7 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
             essentiel2022:this.methodesGlobal.returnCharIfNull(curruntRecord[colEssentiel2022])
           }
           csvArr.push(csvRecord);
-        }
+
     }
      //console.log(csvArr)
     return csvArr;
@@ -257,7 +256,6 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
     this.dateStart=this.methodesGlobal.dateCreator();
     let postLigne : any = {}
     for (let val of records) {
-      if(val.idRevue!='-'){
         i++;
           postLigne.idRevue=val.idRevue;
           postLigne.titre=val.titre;
@@ -291,7 +289,6 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
             //console.log('fin processus');
             this.addProcessus(this.dateStart);
           }
-      }
     }
   }
   //fonction pour inserer

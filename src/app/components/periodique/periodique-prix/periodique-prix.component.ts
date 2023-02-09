@@ -21,11 +21,11 @@ export class PeriodiquePrixComponent implements OnInit {
 
   //creation d'objet avec la liste des periodiques
   // @ts-ignore
-  prixObj: Prix = {};
+  prixObj: any = {};
   id: string | null | undefined ;
   //les entêts du tableau
-  displayedColumns = ['idPrix','annee', 'prix','modiffier','supprimer'];
-  listePrix: listePrix[] = [];
+  displayedColumns = ['nrPrix','annee', 'prix','modiffier','supprimer'];
+  listePrix: any[] = [];
   // @ts-ignore
   dataSource: MatTableDataSource<listePrix>;
   @ViewChild(MatPaginator) paginator: paginationPersonnalise | any;
@@ -74,7 +74,7 @@ export class PeriodiquePrixComponent implements OnInit {
         this.prix$ = await this.fetchAll(this.methodesGlobal.convertNumber(this.id));
         await this.prix$.toPromise().then(res => {
           for (let i = 0; i < res.length; i++) {
-            this.listePrix.push(createListePrix(i+1,res[i].annee,res[i].prix,res[i].note));
+            this.listePrix.push(createListePrix(i,res[i].idPrix,res[i].annee,res[i].prix,res[i].note));
           }
           // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
           this.dataSource = new MatTableDataSource(this.listePrix);
@@ -95,8 +95,13 @@ export class PeriodiquePrixComponent implements OnInit {
     this.methodesGlobal.afficher('save-boutton');
     //changer l'action
     this.action='save'
-
-    this.prix$ = this.consulter(idPrix);
+    console.log(this.listePrix[idPrix]);
+    this.prixObj =this.listePrix[idPrix];
+    //changer le texte pour le boutton
+    this.translate.get('btn-enregistrer').subscribe((res: string) => {
+      this.bouttonAction=res;
+    });
+   /* this.prix$ = this.consulter(idPrix);
     this.prix$.subscribe(res => {
       this.prixObj =res[0];
       //console.log(this.prixObj);
@@ -105,7 +110,7 @@ export class PeriodiquePrixComponent implements OnInit {
       this.translate.get('btn-enregistrer').subscribe((res: string) => {
         this.bouttonAction=res;
       });
-    });
+    });*/
   }
 
   //retour sur le profil periodique
@@ -226,8 +231,9 @@ export class PeriodiquePrixComponent implements OnInit {
 }
 /** Fonction pour remplire le tableau de la liste des periodiques */
 
-function createListePrix(idPrixP:number,newAnnee: string,newPrix: string,newNote: string): listePrix {
+function createListePrix(nrP:number,idPrixP:number,newAnnee: string,newPrix: string,newNote: string): listePrix {
   return {
+    nrPrix:nrP,
     idPrix:idPrixP,
     annee: newAnnee,
     prix: newPrix,
@@ -238,6 +244,7 @@ function createListePrix(idPrixP:number,newAnnee: string,newPrix: string,newNote
 }
 /** Class utilisée pour remplire le tableau avec la liste des périodiques**/
 export interface listePrix {
+  nrPrix:number;
   idPrix:number;
   annee: string;
   prix: string;

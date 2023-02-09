@@ -34,8 +34,8 @@
 
           <!-- ID Column -->
           <ng-container matColumnDef="idRevue" >
-            <th  *matHeaderCellDef #idRevue mat-sort-header  class="font-weight-bold w-5 "> {{ 'labels-rapport-periodique.id' | translate}} </th>
-            <td *matCellDef="let row" class="w-5" > {{row.idRevue}} </td>
+            <th  *matHeaderCellDef #idRevue mat-sort-header  class="font-weight-bold w-10 "> {{ 'labels-rapport-periodique.id' | translate}} </th>
+            <td *matCellDef="let row" class="w-10" > {{row.idRevue}} </td>
           </ng-container>
 
           <!-- Titre Column -->
@@ -97,8 +97,8 @@
               </ng-container>
               <!-- Consulter Column -->
               <ng-container matColumnDef="consulter" >
-                <th *matHeaderCellDef   class="font-weight-bold w-5"> {{ 'consulter' | translate}} </th>
-                <td  *matCellDef="let row" class="w-5 text-center ">
+                <th *matHeaderCellDef   class="font-weight-bold w-10"> {{ 'consulter' | translate}} </th>
+                <td  *matCellDef="let row" class="w-10 text-center ">
                   <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter la fiche"  routerLink="/periodique/{{ row.idRevue }}">
                     <i class="icon-note"></i>
                   </button>

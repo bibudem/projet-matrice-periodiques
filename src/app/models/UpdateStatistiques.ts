@@ -1,5 +1,7 @@
 export interface UpdateStatistiques {
   idRevue:string;
+  ISSN:string;
+  EISSN:string;
   annee:string;
   Total_Item_Requests: string;
   Unique_Item_Requests : string;

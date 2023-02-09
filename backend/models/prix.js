@@ -24,22 +24,24 @@ module.exports = class Prix {
    // console.log(date);
     //ajouter la date dans le tableau des données
     prix.push(date);
+    //console.log(prix)
     //afficher la requette
     /*let sql = "INSERT INTO tbl_prix_periodiques SET annee = ?,prix =?,note =?,idRevue = ?,dateA =? "
     console.log('sql: ', SqlString.format(sql,[prix]));*/
     return db.execute('INSERT INTO tbl_prix_periodiques SET annee = ?,prix =?,note =?,idRevue = ?,dateA =? ', prix );
   }
 
-  static update(idPrix, prix) {
+  static update(prix) {
     //creation de la date
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
     //afficher la requette
+    //console.log(prix);
     /*let sql = "UPDATE tbl_prix_periodiques SET idRevue = ?,annee = ?,prix =?,note =?,dateM =? WHERE idPrix  = ?"
-    console.log('sql: ', SqlString.format(sql,[prix[1],prix[2],prix[3],prix[4],date, idPrix]));*/
+    console.log('sql: ', SqlString.format(sql,[prix[7],prix[2],prix[3],prix[4],date, prix[1]]));*/
 
     return db.execute('UPDATE tbl_prix_periodiques SET idRevue = ?,annee = ?,prix =?,note =?,dateM =? WHERE idPrix  = ?',
-      [prix[1],prix[2],prix[3],prix[4],date, idPrix]);
+      [prix[7],prix[2],prix[3],prix[4],date, prix[1]]);
 
   }
 

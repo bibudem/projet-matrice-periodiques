@@ -42,7 +42,7 @@ export class MiseAJourStatistiquesComponent implements OnInit {
   reponseUpdate = 0
 
   //les entêts du tableau
-  displayedColumns = ['IDRevue','annee', 'Total_Item_Requests','Unique_Item_Requests','No_License','citations','articlesUdem','JR5COURANT','JR5INTER','JR5RETRO','JR3OAGOLD','PlateformeID'];
+  displayedColumns = ['IDRevue','ISSN','EISSN','annee', 'Total_Item_Requests','Unique_Item_Requests','No_License','citations','articlesUdem','JR5COURANT','JR5INTER','JR5RETRO','JR3OAGOLD','PlateformeID'];
   // last id Processus
   lastIdProcessus$: Observable<any[]> | undefined;
 
@@ -166,13 +166,19 @@ export class MiseAJourStatistiquesComponent implements OnInit {
     let csvArr: UpdateStatistiques[] = [];
     // @ts-ignore
     let csvRecord: UpdateStatistiques = []; let curruntRecord;
-    let colIDRevue=-1,colTotal_Item_Requests=-1,colUnique_Item_Requests=-1
+    let colIDRevue=-1,colISSN=-1,colEISSN=-1,colTotal_Item_Requests=-1,colUnique_Item_Requests=-1
         ,colNo_License=-1,colCitations=-1,colArticlesUdem=-1,colJR5COURANT=-1,colJR5INTER=-1,colJR5RETRO=-1,colJR3OAGOLD=-1,colPlateformeID=-1;
     //prendre le numero des colons selon le nom d'entete
     for(let i=0;i<headersRow.length;i++){
       switch (headersRow[i].trim()){
         case 'IDRevue':
           colIDRevue=i
+          break;
+        case 'ISSN':
+          colISSN=i
+          break;
+        case 'EISSN':
+          colEISSN=i
           break;
         case 'Total_Item_Requests':
           colTotal_Item_Requests=i
@@ -213,10 +219,11 @@ export class MiseAJourStatistiquesComponent implements OnInit {
         this.annee=document.getElementById('annee').value;
 
         curruntRecord = (<string>csvRecordsArray[i]).split(separator);
-        if(curruntRecord[colIDRevue]!='') {
 
           csvRecord = {
-            idRevue: curruntRecord[colIDRevue],
+            idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIDRevue]),
+            ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colISSN]),
+            EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colEISSN]),
             // @ts-ignore
             annee: this.annee,
             Total_Item_Requests: this.methodesGlobal.returnCharIfNull(curruntRecord[colTotal_Item_Requests]),
@@ -231,7 +238,6 @@ export class MiseAJourStatistiquesComponent implements OnInit {
             PlateformeID:this.plateforme
           }
           csvArr.push(csvRecord);
-        }
     }
      //console.log(csvArr)
     return csvArr;
@@ -275,6 +281,8 @@ export class MiseAJourStatistiquesComponent implements OnInit {
           return
         }
           postLigne.idRevue=val.idRevue;
+          postLigne.ISSN=val.ISSN;
+          postLigne.EISSN=val.EISSN;
           postLigne.annee=val.annee;
           postLigne.Total_Item_Requests=val.Total_Item_Requests;
           postLigne.Unique_Item_Requests=val.Unique_Item_Requests;

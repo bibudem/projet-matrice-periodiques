@@ -36,7 +36,7 @@ export class MiseAJourAbonnementComponent implements OnInit {
   lastIdProccessus =0;
 
   //les entêts du tableau
-  displayedColumns = ['IDRevue', 'abonnement','bdd','note'];
+  displayedColumns = ['IDRevue','ISSN','EISSN', 'abonnement','bdd','note'];
 
   // @ts-ignore
   dataSource: MatTableDataSource<any>;
@@ -125,12 +125,18 @@ export class MiseAJourAbonnementComponent implements OnInit {
     let csvArr: UpdateAbonnement[] = [];
     // @ts-ignore
     let csvRecord: UpdateAbonnement = []; let curruntRecord;
-    let colIDRevue=-1,colAbonnement=-1,colBDD=-1,colNote=-1;
+    let colIDRevue=-1,colAbonnement=-1,colISSN=-1,colEISSN=-1,colBDD=-1,colNote=-1;
     //prendre le numero des colons selon le nom d'entete
     for(let i=0;i<headersRow.length;i++){
       switch (headersRow[i].trim()){
         case 'IDRevue':
           colIDRevue=i
+          break;
+        case 'ISSN':
+          colISSN=i
+          break;
+        case 'EISSN':
+          colEISSN=i
           break;
         case 'abonnement':
           colAbonnement=i
@@ -151,17 +157,18 @@ export class MiseAJourAbonnementComponent implements OnInit {
 
       curruntRecord = (<string>csvRecordsArray[i]).split(separator);
 
-      if(curruntRecord[colIDRevue]!='') {
         csvRecord = {
-          idRevue: curruntRecord[colIDRevue],
+          idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIDRevue]),
           // @ts-ignore
           annee: this.annee,
-          abonnement: curruntRecord[colAbonnement],
-          bdd: curruntRecord[colBDD],
-          note:curruntRecord[colNote]
+          ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colISSN]),
+          EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colEISSN]),
+          abonnement: this.methodesGlobal.returnCharIfNull(curruntRecord[colAbonnement]),
+          bdd: this.methodesGlobal.returnCharIfNull(curruntRecord[colBDD]),
+          note:this.methodesGlobal.returnCharIfNull(curruntRecord[colNote])
         }
         csvArr.push(csvRecord);
-      }
+
     }
     //console.log(csvArr)
     return csvArr;
@@ -198,9 +205,10 @@ export class MiseAJourAbonnementComponent implements OnInit {
     let postLigne : any = {};
 
     for (let val of records) {
-      if(val.idRevue!=''){
           i++;
           postLigne.idRevue=val.idRevue;
+          postLigne.issn=val.ISSN;
+          postLigne.eissn=val.EISSN;
           postLigne.abonnement=val.abonnement;
           postLigne.bdd=val.bdd;
           postLigne.note=val.note;
@@ -210,13 +218,11 @@ export class MiseAJourAbonnementComponent implements OnInit {
           await this.methodesGlobal.delay(1000);
 
           if(i==records.length){
-            await this.methodesGlobal.delay(5000);
+            await this.methodesGlobal.delay(3000);
             //console.log('fin processus');
             await this.addProcessus(this.dateStart);
 
           }
-
-        }
     }
   }
   //fonction pour inserer
