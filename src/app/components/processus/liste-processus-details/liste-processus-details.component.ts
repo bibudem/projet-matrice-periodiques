@@ -83,7 +83,7 @@ export class ListeProcessusDelailsComponent implements OnInit {
         for (let i = 0; i < res.length; i++) {
           this.listeProcessus[i]={
             "numero":i+1,
-            "id_details":res[i].id_detai3ls,
+            "id_details":res[i].id_details,
             "idRevue":res[i].idRevue,
             "ISSN":res[i].ISSN,
             "EISSN":res[i].EISSN,

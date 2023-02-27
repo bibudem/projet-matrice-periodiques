@@ -34,6 +34,14 @@ module.exports = class Processus {
     if(values[0]=='-' && values[1]=='-' && values[2]=='-'){
       return [];
     }
+    //si non valid idRevue
+    if(values[0]!='-' ){
+       let valid= await this.valideIdRevue(values[0]);
+       if(!valid){
+         await this.ajoutProcessusDetails(values[0],'-1','')
+         return []
+       }
+    }
     //ajouter la date dans le tableau des données
     const tabValue = [];
     tabValue['idRevue'] = values[0];
@@ -42,29 +50,81 @@ module.exports = class Processus {
     tabValue['annee'] = values[3];
     tabValue['prix'] = values[4];
     tabValue['note'] = values[5];
-    tabValue['idProcessus'] = Number(values[6])+1;
     tabValue['date'] = date;
 
     //chercher l'id du revue
     if(values[0]=='-'){
-      let idRevue= await db.execute("SELECT idRevue as id  FROM tbl_periodiques  WHERE  (ISSN = ? AND EISSN =?) or (EISSN = ? AND ISSN =?) LIMIT 0,1",[tabValue['ISSN'],tabValue['EISSN'],tabValue['ISSN'],tabValue['EISSN']]);
-
-      tabValue['idRevue']=idRevue[0]['0']['id'];
+      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'autre');
+    }
+    //si non match
+    if(tabValue['idRevue']=='-1'){
+      return []
     }
 
         let prixAnnee= await db.execute("SELECT Count(idRevue) as count  FROM tbl_prix_periodiques  WHERE idRevue = ? and  annee=?",[tabValue['idRevue'],tabValue['annee']]);
          //console.log(prixAnnee[0]['0']['count']);
-
-        /** Ajout details processus*/
-        await db.execute('INSERT INTO lst_processus_details SET idRevue =?,ISSN=?, EISSN=?,id_processus=?,dateA =?', [tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],tabValue['idProcessus'],date] );
-
-
         if(prixAnnee[0]['0']['count']==0){
-          return   db.execute('INSERT INTO tbl_prix_periodiques SET prix = ?,note = ?,dateA = ?,annee= ? ,idRevue= ?', [tabValue['prix'],tabValue['note'],tabValue['date'],tabValue['annee'],tabValue['idRevue']] );
+          await db.execute('INSERT INTO tbl_prix_periodiques SET prix = ?,note = ?,dateA = ?,annee= ? ,idRevue= ?', [tabValue['prix'],tabValue['note'],tabValue['date'],tabValue['annee'],tabValue['idRevue']] );
          }
         else {
-          return   db.execute('UPDATE tbl_prix_periodiques SET prix =?,note =?,dateM =? WHERE idRevue=? and annee=?', [tabValue['prix'],tabValue['note'],tabValue['date'],tabValue['idRevue'],tabValue['annee']] );
+          await db.execute('UPDATE tbl_prix_periodiques SET prix =?,note =?,dateM =? WHERE idRevue=? and annee=?', [tabValue['prix'],tabValue['note'],tabValue['date'],tabValue['idRevue'],tabValue['annee']] );
         }
+    /** Ajout details processus*/
+    await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN']);
+  }
+
+  static async postArchives(values) {
+    //creation de la date
+    let dt = datetime.create();
+    let date = dt.format('Y-m-d H:M:S');
+    console.log(values);
+    if(values[0]=='-' && values[1]=='-' && values[2]=='-'){
+      return [];
+    }
+    //si non valid idRevue
+    if(values[0]!='-' ){
+      let valid= await this.valideIdRevue(values[0]);
+      if(!valid){
+        await this.ajoutProcessusDetails(values[0],'-1','')
+        return []
+      }
+    }
+    //ajouter la date dans le tableau des données
+    const tabValue = [];
+    tabValue['idRevue'] = values[0];
+    tabValue['ISSN'] = values[1];
+    tabValue['EISSN'] = values[2];
+    tabValue['perennite'] = values[3];
+    tabValue['conserverPap'] = values[4];
+    tabValue['anneeDebut'] = values[5];
+    tabValue['anneeFin'] = values[6];
+    tabValue['volDebut'] = values[7];
+    tabValue['volFin'] = values[8];
+    tabValue['embargo'] = values[9];
+    tabValue['fournisseur'] = values[10];
+    tabValue['date'] = date;
+
+    //chercher l'id du revue
+    if(values[0]=='-'){
+      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'autre');
+    }
+    //si non match
+    if(tabValue['idRevue']=='-1'){
+      return []
+    }
+
+    let archives= await db.execute("SELECT Count(idRevue) as count  FROM tbl_archives  WHERE idRevue = ? and  anneeDebut=? and anneeFin=?",[tabValue['idRevue'],tabValue['anneeDebut'],tabValue['anneeFin']]);
+    //console.log(prixAnnee[0]['0']['count']);
+    if(archives[0]['0']['count']==0){
+      /*let sql1= 'INSERT INTO tbl_archives SET idRevue = ?,perennite = ?,conserverPap = ?,anneeDebut= ? ,anneeFin= ?,volDebut= ?,volFin= ?,embargo= ?,fournisseur= ?,dateA=?';
+      console.log('sql1: ', SqlString.format(sql1,[tabValue['idRevue'],tabValue['perennite'],tabValue['conserverPap'],tabValue['anneeDebut'],tabValue['anneeFin'],tabValue['volDebut'],tabValue['volFin'],tabValue['embargo'],tabValue['fournisseur'],tabValue['date']]));*/
+      await db.execute('INSERT INTO tbl_archives SET idRevue = ?,perennite = ?,conserverPap = ?,anneeDebut= ? ,anneeFin= ?,volDebut= ?,volFin= ?,embargo= ?,fournisseur= ?,dateA=?', [tabValue['idRevue'],tabValue['perennite'],tabValue['conserverPap'],tabValue['anneeDebut'],tabValue['anneeFin'],tabValue['volDebut'],tabValue['volFin'],tabValue['embargo'],tabValue['fournisseur'],tabValue['date']] );
+    }
+    else {
+      await db.execute('UPDATE tbl_archives SET perennite =?,conserverPap =?,volDebut =?,volFin =?,embargo =?,fournisseur =?,dateM =? WHERE idRevue=? and anneeDebut=? and anneeFin=?', [tabValue['perennite'],tabValue['conserverPap'],tabValue['volDebut'],tabValue['volFin'],tabValue['embargo'],tabValue['fournisseur'],tabValue['date'],tabValue['idRevue'],tabValue['anneeDebut'],tabValue['anneeFin']] );
+    }
+    /** Ajout details processus*/
+    await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN']);
   }
 
   static async postStatistiques(values) {
@@ -74,13 +134,27 @@ module.exports = class Processus {
     //ajouter la date dans le tableau des données
     const tabValue = [];
     let condSql = '', condSqlPlateforme = "";
-
+    if(values[0]=='-' && values[1]=='-' && values[2]=='-'){
+      return [];
+    }
     tabValue['idRevue'] = values[0];
+    tabValue['ISSN'] = values[1];
+    tabValue['EISSN'] = values[2];
+    //si non valid idRevue
+    if(values[0]!='-' ){
+      let valid= await this.valideIdRevue(values[0]);
+      if(!valid){
+        await this.ajoutProcessusDetails(values[0],'-1','')
+        return []
+      }
+    }
     //chercher l'id du revue
     if(values[0]=='-'){
-      let idRevue= await db.execute("SELECT idRevue as id  FROM tbl_periodiques  WHERE  (ISSN = ? AND EISSN =?) or (EISSN = ? AND ISSN =?) LIMIT 0,1",[values[1],values[2],values[1],values[2]]);
-
-       tabValue['idRevue']=idRevue[0]['0']['id'];
+      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'autre');
+    }
+    //si non match
+    if(tabValue['idRevue']=='-1'){
+      return []
     }
 
     tabValue['annee'] = values[3];
@@ -127,7 +201,6 @@ module.exports = class Processus {
       tabValue.push(values[13]);
     }
 
-    tabValue['idProcessus'] = Number(values[14])+1;
 
     // si tous les champs sont '-'
     if(condSql==''){
@@ -139,9 +212,6 @@ module.exports = class Processus {
 
     //console.log(tabValue)
     let count= await db.execute('SELECT COUNT(idStatistique) AS count FROM tbl_statistiques  WHERE idRevue = ? and annee = ?  ' + condSqlPlateforme + ' ',[tabValue['idRevue'],tabValue['annee']])
-    /** Ajout details processus*/
-    await db.execute('INSERT INTO lst_processus_details SET idRevue =?,id_processus=?,ISSN = ?,EISSN =?,dateA =?', [tabValue['idRevue'],tabValue['idProcessus'],values[1],values[2],date] );
-
 
     if(count[0]['0']['count']>0){
       tabValue.push(date);
@@ -149,16 +219,20 @@ module.exports = class Processus {
       tabValue.push(tabValue['annee']);
       /*let sql1= 'UPDATE tbl_statistiques SET ' + condSql + ' ,dateM =? WHERE idRevue=? and annee=?';
       console.log('sql1: ', SqlString.format(sql1,tabValue));*/
-      return   db.execute('UPDATE tbl_statistiques SET ' + condSql + ' ,dateM =? WHERE idRevue=? and annee=?', tabValue );
-    }
-    condSql += ', annee = ?';
-    tabValue.push(tabValue['annee']);
-    tabValue.push(date);
-    tabValue.push(tabValue['idRevue']);
+      await db.execute('UPDATE tbl_statistiques SET ' + condSql + ' ,dateM =? WHERE idRevue=? and annee=?', tabValue );
+    } else {
+      condSql += ', annee = ?';
+      tabValue.push(tabValue['annee']);
+      tabValue.push(date);
+      tabValue.push(tabValue['idRevue']);
 
-     /*let sql1= 'INSERT INTO tbl_statistiques SET ' + condSql + ',dateA =?,idRevue=?';
-     console.log('sql1: ', SqlString.format(sql1,tabValue));*/
-    return    db.execute('INSERT INTO tbl_statistiques SET ' + condSql + ',dateA =?,idRevue=?', tabValue );
+      /*let sql1= 'INSERT INTO tbl_statistiques SET ' + condSql + ',dateA =?,idRevue=?';
+      console.log('sql1: ', SqlString.format(sql1,tabValue));*/
+      await  db.execute('INSERT INTO tbl_statistiques SET ' + condSql + ',dateA =?,idRevue=?', tabValue );
+    }
+
+    /** Ajout details processus*/
+    await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN']);
 
   }
 // procedure pour la mise a jour manuellement des periodique
@@ -170,13 +244,13 @@ module.exports = class Processus {
     //console.log(values);
     const tabValue = [];
     let condSql = '';
-    tabValue['idRevue'] = values[0];
-    //chercher l'id du revue
-    if(tabValue['idRevue']=='-'){
-      let idRevue= await db.execute("SELECT idRevue as id  FROM tbl_periodiques  WHERE  (ISSN = ? AND EISSN =?) or (EISSN = ? AND ISSN =?) LIMIT 0,1",[values[2],values[3],values[2],values[3]]);
-
-      tabValue['idRevue']=idRevue[0]['0']['id'];
+    if(values[0]=='-' && values[2]=='-' && values[3]=='-'){
+      return [];
     }
+    tabValue['idRevue'] = values[0];
+    tabValue['ISSN'] = values[2];
+    tabValue['EISSN'] = values[3];
+
     // verifier les champs sur lequels on doit faire la mise a jour
     if(values[1]!='-'){
       condSql += ', titre = ?';
@@ -284,7 +358,6 @@ module.exports = class Processus {
       condSql += ', essentiel2022 = ?';
       tabValue.push(values[21]);
     }
-    tabValue['idProcessus'] = Number(values[22])+1;
 
     // si tous les champs sont '-'
     if(condSql==''){
@@ -295,27 +368,33 @@ module.exports = class Processus {
     tabValue.push(date);
     tabValue.push(tabValue['idRevue']);
 
-    /** Ajout details processus*/
-    await db.execute('INSERT INTO lst_processus_details SET idRevue =?,id_processus=?,ISSN=?,EISSN=?,dateA =?', [tabValue['idRevue'],tabValue['idProcessus'],values[2],values[3],date] );
 
-    /*let sql = 'SELECT COUNT(idRevue) AS count FROM tbl_periodiques  WHERE idRevue = ?'
-    console.log('sql-count: ', SqlString.format(sql,[values[0]]));*/
-    let count= await db.execute('SELECT COUNT(idRevue) AS count FROM tbl_periodiques  WHERE idRevue = ?  ',[tabValue['idRevue']])
+    //si non valid idRevue
+    if(tabValue['idRevue']!='-' ){
+      let valid= await this.valideIdRevue(values[0]);
+      if(valid){
+        await  db.execute('UPDATE tbl_periodiques SET ' + condSql + ' ,dateM =? WHERE idRevue=? ', tabValue );
+      }
+    }
+    if(tabValue['idRevue']=='-'){
+      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'fiche');
+      //si non match ajouter une nouvelle fiche
+      if(tabValue['idRevue']=='-1'){
+        tabValue.pop();
+        tabValue.push(null)
+        /*let sql1= 'INSERT INTO tbl_periodiques SET ' + condSql + ',dateA =?,idRevue=?';
+        console.log('sql1: ', SqlString.format(sql1,tabValue));*/
+        await db.execute('INSERT INTO tbl_periodiques SET ' + condSql + ',dateA =?,idRevue=?', tabValue);
+        let lastId= await db.execute('SELECT MAX(idRevue) as idRevue FROM tbl_periodiques');
+        tabValue['idRevue']=lastId[0]['0']['idRevue'];
+      } else {
+        await  db.execute('UPDATE tbl_periodiques SET ' + condSql + ' ,dateM =? WHERE idRevue=? ', tabValue );
+      }
 
-
-    if(count[0]['0']['count']>0){
-      /*let sql2 = 'UPDATE tbl_periodiques SET ' + condSql + ',dateM =? WHERE idRevue=? '
-      console.log('sql2: ', SqlString.format(sql2,tabValue));*/
-      return   db.execute('UPDATE tbl_periodiques SET ' + condSql + ' ,dateM =? WHERE idRevue=? ', tabValue );
     }
 
-
-    tabValue.pop();
-    tabValue.push(null)
-    /*let sql1= 'INSERT INTO tbl_periodiques SET ' + condSql + ',dateA =?,idRevue=?';
-     console.log('sql1: ', SqlString.format(sql1,tabValue));*/
-    return    db.execute('INSERT INTO tbl_periodiques SET ' + condSql + ',dateA =?,idRevue=?', tabValue);
-
+    /** Ajout details processus*/
+    await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN']);
   }
 
   static async postAbonnement(values) {
@@ -330,6 +409,16 @@ module.exports = class Processus {
     if(values[0]=='-' & values[1]=='-' & values[2]=='-'){
       return [];
     }
+
+    //si non valid idRevue
+    if(values[0]!='-' ){
+      let valid= await this.valideIdRevue(values[0]);
+      if(!valid){
+        await this.ajoutProcessusDetails(values[0],'-1','')
+        return []
+      }
+    }
+
     tabValue['idRevue'] = values[0];
     tabValue['ISSN'] = values[1];
     tabValue['EISSN'] = values[2];
@@ -345,35 +434,30 @@ module.exports = class Processus {
     // supprimer ',' du debut de la condition
     condSql = condSql.slice(1);
     tabValue['note'] = values[5];
-    tabValue['idProcessus'] = Number(values[6])+1;
     tabValue['date'] = date;
     updateValues.push(date);
     //console.log(values)
-    /*let sql = 'SELECT idRevue  FROM tbl_periodiques  WHERE idRevue = ? or (ISSN = ? AND EISSN =?) or (EISSN = ? AND ISSN =?)'
-    console.log('sql: ', SqlString.format(sql,[tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],tabValue['ISSN'],tabValue['EISSN']]));*/
-    let id= await db.execute("SELECT idRevue as id  FROM tbl_periodiques  WHERE idRevue = ? or (ISSN = ? AND EISSN =?) or (EISSN = ? AND ISSN =?)",[tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],tabValue['ISSN'],tabValue['EISSN']]);
-
-    let idRevue=id[0]['0']['id'];
-
-    tabValue['idRevue'] = idRevue;
-    updateValues.push(idRevue);
-    /** Ajout details processus*/
-    /*let sql1= 'INSERT INTO lst_processus_details SET idRevue =?,ISSN =?, EISSN =?,id_processus=?,dateA =?';
-    console.log('sql1: ', SqlString.format(sql1,[tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],tabValue['idProcessus'],date]));*/
-    await db.execute('INSERT INTO lst_processus_details SET idRevue =?,ISSN =?, EISSN =?,id_processus=?,dateA =?', [tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],tabValue['idProcessus'],date] );
-
-    //si l'id est trouvé
-    if(idRevue!=null){
-        tabValue['idRevue'] = idRevue;
-        //si on doit ajouter une note
-        if(tabValue['note']!='-'){
-          await db.execute('INSERT INTO tbl_notes SET idRevue =?,note=?,dateA =?', [idRevue ,tabValue['note'],tabValue['date']] );
-        }
-        return db.execute('UPDATE tbl_periodiques SET ' + condSql + ' ,dateM =? WHERE idRevue=?', updateValues );
-      }
-    else {
+    //chercher l'id du revue
+    if(values[0]=='-'){
+      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'autre');
+    }
+    //si non match
+    if(tabValue['idRevue']=='-1'){
       return []
     }
+    updateValues.push(tabValue['idRevue']);
+    //console.log(tabValue)
+
+        //si on doit ajouter une note
+        if(tabValue['note']!='-'){
+          await db.execute('INSERT INTO tbl_notes SET idRevue =?,note=?,dateA =?', [tabValue['idRevue'] ,tabValue['note'],tabValue['date']] );
+        }
+
+        await db.execute('UPDATE tbl_periodiques SET ' + condSql + ' ,dateM =? WHERE idRevue=?', updateValues );
+
+        /** Ajout details processus*/
+        await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN']);
+
   }
 
   static delete(id) {
@@ -381,6 +465,7 @@ module.exports = class Processus {
   }
 
   static deleteProcessusDetails(id) {
+
     return db.execute('DELETE FROM lst_processus_details WHERE id_details  = ?', [id]);
   }
 
@@ -390,9 +475,74 @@ module.exports = class Processus {
     let date = dt.format('d/m/Y H:M:S');
     let statut = 'Terminé';
     values.push(date);
-    let sql1= 'INSERT INTO lst_processus SET titre =?,statut =?,admin =?,h_debut =?,h_fin =?';
-    console.log('sql1: ', SqlString.format(sql1,[values[0],statut,values[1],values[2],date]));
-    return db.execute('INSERT INTO lst_processus SET titre =?,type =?,statut =?,admin =?,h_debut =?,h_fin =? ', [values[0],values[1],statut,values[2],values[3],date] );
+    /*let sql1= 'INSERT INTO lst_processus SET titre =?,statut =?,admin =?,h_debut =?,h_fin =?';
+    console.log('sql1: ', SqlString.format(sql1,[values[0],statut,values[1],values[2],date]));*/
+    return db.execute('INSERT INTO lst_processus SET titre =?,type =?,statut =?,admin =?,note =?,h_debut =?,h_fin =? ', [values[0],values[1],statut,values[2],values[3],values[4],date] );
+  }
+
+  static async ajoutProcessusDetails(id,issn,eissn) {
+    let dt = datetime.create();
+    let values=[];
+    values.push((id));
+    values.push((issn));
+    values.push((eissn));
+    let date = dt.format('d/m/Y H:M:S');
+    let lastId= await db.execute('SELECT MAX(id_processus) as id_processus FROM lst_processus');
+    let idPr=lastId[0]['0']['id_processus']+1;
+    values.push(idPr);
+    values.push(date);
+    //console.log(values);
+    /*let sql1= 'INSERT INTO lst_processus_details SET idRevue =?,ISSN =?, EISSN =?,id_processus=?,dateA =?';
+    console.log('sql1: ', SqlString.format(sql1,values));*/
+    return db.execute('INSERT INTO lst_processus_details SET idRevue =?,ISSN =?, EISSN =?,id_processus=?,dateA =?', values );
+  }
+
+  static async matchIdRevue(issn,eissn,processus){
+    let valIdMatch=[];
+    let sqlMatch='';
+    if(issn=='-' && eissn!='-'){
+      sqlMatch=' ISSN =?  OR   EISSN=? ';
+      valIdMatch.push(eissn)
+      valIdMatch.push(eissn)
+    }
+    if(issn!='-' && eissn=='-'){
+      sqlMatch=' ISSN =?  OR   EISSN=? ';
+      valIdMatch.push(issn)
+      valIdMatch.push(issn)
+    }
+    if(issn!='-' && eissn!='-'){
+      sqlMatch=' ( ISSN =? AND  EISSN=? ) OR  ( ISSN =? AND  EISSN=? )';
+      valIdMatch.push(issn)
+      valIdMatch.push(eissn)
+      valIdMatch.push(eissn)
+      valIdMatch.push(issn)
+    }
+
+    /*let sql1= "SELECT idRevue as id  FROM tbl_periodiques  WHERE  " +sqlMatch+"  LIMIT 0,1";
+    console.log('sql1: ', SqlString.format(sql1,valIdMatch));*/
+    let idRevue= await db.execute("SELECT idRevue as id  FROM tbl_periodiques  WHERE  " +sqlMatch+"  LIMIT 0,1",valIdMatch);
+    //si non match
+    //console.log(idRevue[0].length)
+    if (idRevue[0].length==0){
+      if(processus!='fiche'){
+        await this.ajoutProcessusDetails(-1,issn,eissn);
+      }
+      return '-1';
+    }
+    else
+       return idRevue[0]['0']['id'];
+  }
+
+  static async valideIdRevue(idRevue){
+    //console.log(idRevue)
+
+    let count= await db.execute('SELECT COUNT(idRevue) AS count FROM tbl_periodiques  WHERE idRevue = ?  ',[idRevue])
+
+    if (count[0]['0']['count']==0){
+      return false;
+    }
+    else
+      return true;
   }
 
 };

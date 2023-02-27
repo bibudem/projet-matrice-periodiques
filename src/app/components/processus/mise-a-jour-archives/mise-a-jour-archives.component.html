@@ -1,16 +1,16 @@
 <!-- Integrer le top de chaque page -->
 <app-header></app-header>
 <!-- Integrer le carcase de chaque page -->
-<div class="container-fluid page-body-wrapper" >
+<div class="container-fluid page-body-wrapper">
   <app-menu></app-menu>
   <div class="main-panel">
     <!-- div animation -->
-    <div class="content-wrapper b-white">
+    <div class="content-wrapper b-white" >
       <!-- Contenu de la page liste des periodiques -->
       <!-- Quick Action Toolbar Ends-->
       <div class="page-header pt-3">
         <div  class="d-sm-flex align-items-baseline report-summary-header w-100 mt-2">
-          <h4 class="font-weight-semibold text-uppercase ">{{ 'processus.mise-a-jour-abonnement' | translate}}</h4>
+          <h4 class="font-weight-semibold text-uppercase ">{{ 'processus.mise-a-jour-archives' | translate}}</h4>
           <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/processus">
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
               </span>
@@ -25,7 +25,7 @@
         <!-- Alert notification div -->
         <div>
           <blockquote class="blockquote blockquote-success">
-            <p>{{ 'importation.form-description-csv-abonnement' | translate}}</p>
+            <p>{{ 'importation.form-description-csv-archives' | translate}}</p>
           </blockquote>
         </div>
         <form  #importationForm="ngForm" >
@@ -44,7 +44,6 @@
                   {{ 'btn-annuler' | translate}}</button>
                 <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
                   <i class="fa fa-send btn-icon-prepend mr-2"></i> {{ 'importation.csv-send' | translate}}</button>
-
                 <div class="col-md-12 p-2">
                   <div class="collapse" id="collapseExample">
                     <textarea id="note" class="form-control" spellcheck="false" placeholder="{{ 'label-ajouter-note' | translate}}"></textarea>
@@ -52,6 +51,7 @@
                 </div>
               </div>
             </div>
+
           </div>
           <!-- Modal pour modifier-->
           <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
@@ -74,6 +74,9 @@
           </div>
         </form>
       </div>
+      <!-- progresse bar -->
+
+      <!-- fin progresse bar -->
       <!-- fin contenu form -->
       <div id="contenu-resultat" class="cacherVisible">
         <div class="table-responsive p-3">
@@ -85,8 +88,8 @@
 
             <!-- ID Column -->
             <ng-container matColumnDef="IDRevue" >
-              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'IDRevue' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-10" > {{row.idRevue}} </td>
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'IDRevue' | translate}} </th>
+              <td *matCellDef="let row" class="mat-w-5" > {{row.idRevue}} </td>
             </ng-container>
 
             <!-- ISSN Column -->
@@ -95,28 +98,59 @@
               <td *matCellDef="let row" class="mat-w-10" > {{row.ISSN}} </td>
             </ng-container>
 
-            <!-- ID Column -->
+            <!-- EISSN Column -->
             <ng-container matColumnDef="EISSN" >
               <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'EISSN' | translate}} </th>
               <td *matCellDef="let row" class="mat-w-10" > {{row.EISSN}} </td>
             </ng-container>
 
-            <!-- abonnement Column -->
-            <ng-container matColumnDef="abonnement">
-              <th *matHeaderCellDef mat-sort-header class="mat-w-20"> {{ 'abonnement' | translate}} </th>
-              <td  *matCellDef="let row" class="mat-w-20" > {{row.abonnement}} </td>
+            <!-- Année Column -->
+            <ng-container matColumnDef="perennite">
+              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'perennite' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10" > {{row.perennite}} </td>
             </ng-container>
 
-            <!-- bdd Column -->
-            <ng-container matColumnDef="bdd">
-              <th *matHeaderCellDef mat-sort-header class="mat-w-20"> {{ 'bdd' | translate}} </th>
-              <td  *matCellDef="let row" class="mat-w-20" > {{row.bdd}} </td>
+            <!-- prix Column -->
+            <ng-container matColumnDef="conserverPap">
+              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'conserverPap' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10" > {{row.conserverPap}} </td>
             </ng-container>
 
-            <!-- note Column -->
-            <ng-container matColumnDef="note">
-              <th *matHeaderCellDef mat-sort-header  class="mat-w-20"> {{ 'note' | translate}} </th>
-              <td  *matCellDef="let row" class="mat-w-20"> {{row.note }} </td>
+
+            <!-- anneeDebut Column -->
+            <ng-container matColumnDef="anneeDebut">
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'anneeDebut' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.anneeDebut }} </td>
+            </ng-container>
+
+            <!-- anneeFin Column -->
+            <ng-container matColumnDef="anneeFin">
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'anneeFin' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.anneeFin }} </td>
+            </ng-container>
+
+            <!-- volDebut Column -->
+            <ng-container matColumnDef="volDebut">
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'volDebut' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.volDebut }} </td>
+            </ng-container>
+
+            <!-- volFin Column -->
+            <ng-container matColumnDef="volFin">
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'volFin' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.volFin }} </td>
+            </ng-container>
+
+            <!-- embargo Column -->
+            <ng-container matColumnDef="embargo">
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'embargo' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-5"> {{row.embargo }} </td>
+            </ng-container>
+
+            <!-- fournisseur Column -->
+            <ng-container matColumnDef="fournisseur">
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'fournisseur' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.fournisseur }} </td>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -126,7 +160,7 @@
 
           <mat-paginator [pageSizeOptions]="[25, 50, 75, 100]"></mat-paginator>
           <ul class="cacherVisible">
-            <li *ngFor="let record of inUpdateAbonnement$ |async">{{record}}</li>
+            <li *ngFor="let record of inUpdateArchives$ |async">{{record}}</li>
           </ul>
           <ul class="cacherVisible">
             <li *ngFor="let proc of addProcessus$ |async">{{processus}}</li>

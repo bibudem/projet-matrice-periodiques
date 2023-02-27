@@ -5,18 +5,19 @@ import {MatPaginator} from "@angular/material/paginator";
 import {paginationPersonnalise} from "../../../lib/paginationPersonnalise";
 import {MatSort} from "@angular/material/sort";
 import {MethodesGlobal} from "../../../lib/MethodesGlobal";
-import {UpdateAbonnement} from "../../../models/UpdateAbonnement";
+import {UpdateArchives} from '../../../models/UpdateArchives';
 import {Router} from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
-import {ProcessusService} from "../../../services/processus.service";
 import {tap} from "rxjs/operators";
+import {ProcessusService} from "../../../services/processus.service";
+
 
 @Component({
-  selector: 'app-mise-a-jour-abonnement',
-  templateUrl: './mise-a-jour-abonnement.component.html',
-  styleUrls: ['./mise-a-jour-abonnement.component.css']
+  selector: 'app-mise-a-jour-archives',
+  templateUrl: './mise-a-jour-archives.component.html',
+  styleUrls: ['./mise-a-jour-archives.component.css']
 })
-export class MiseAJourAbonnementComponent implements OnInit {
+export class MiseAJourArchivesComponent implements OnInit {
 
   //Initialiser le tableau d'annee'
   arrayAnnee:any[]=[];
@@ -24,36 +25,35 @@ export class MiseAJourAbonnementComponent implements OnInit {
 
   annee = '';
 
-  inUpdateAbonnement$: Observable<any[]> | undefined;
+  inUpdateArchives$: Observable<any[]> | undefined;
 
   addProcessus$: Observable<any[]> | undefined;
+  //importer les fonctions global
+
+  //reponse pour la mise a jour des données
+  reponsesUpdate$: Observable<any[]> | undefined;
 
   reponseUpdate = 0
 
-  // last id Processus
-  lastIdProcessus$: Observable<any[]> | undefined;
-
-  lastIdProccessus =0;
-
   //les entêts du tableau
-  displayedColumns = ['IDRevue','ISSN','EISSN', 'abonnement','bdd','note'];
+  displayedColumns = ['IDRevue','ISSN','EISSN','perennite', 'conserverPap','anneeDebut','anneeFin','volDebut','volFin','embargo','fournisseur'];
 
 
   // @ts-ignore
-  dataSource: MatTableDataSource<any>;
+  dataSource: MatTableDataSource<InCites>;
   @ViewChild(MatPaginator) paginator: paginationPersonnalise | any;
 
   @ViewChild(MatSort)  matSort : MatSort | any;
 
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
 
-  records: UpdateAbonnement[] = [];
+  records: UpdateArchives[] = [];
 
   separator = ';';
 
   admin = '';
 
-  note ='';
+  note='';
 
   processus:any = {};
 
@@ -67,18 +67,9 @@ export class MiseAJourAbonnementComponent implements OnInit {
               private csvService: ProcessusService) { }
 
   ngOnInit(): void {
-    //remplire la liste des annees
-    this.anneeOptions();
+
   }
-  //creation du select d'année a partir de 2019
-  anneeOptions(){
-    let anneeNow=new Date().getFullYear();
-    let i=0
-    while(i <=(anneeNow-2019)){
-      this.arrayAnnee[i]=anneeNow-i
-      i++
-    }
-  }
+
 
   uploadListener($event: any): void {
     let text = [];
@@ -118,10 +109,10 @@ export class MiseAJourAbonnementComponent implements OnInit {
 
 
   async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator:string) {
-    let csvArr: UpdateAbonnement[] = [];
+    let csvArr: UpdateArchives[] = [];
     // @ts-ignore
-    let csvRecord: UpdateAbonnement = []; let curruntRecord;
-    let colIDRevue=-1,colAbonnement=-1,colISSN=-1,colEISSN=-1,colBDD=-1,colNote=-1;
+    let csvRecord: Archive = []; let curruntRecord;
+    let colIDRevue=-1,colPerennite=-1,colConserverPap=-1,colISSN=-1,colEISSN=-1,colAnneeDebut=-1,colAnneeFin=-1,colVolDebut=-1,colVolFin=-1,colEmbargo=-1,colFournisseur=-1;
     //prendre le numero des colons selon le nom d'entete
     for(let i=0;i<headersRow.length;i++){
       switch (headersRow[i].trim()){
@@ -134,14 +125,29 @@ export class MiseAJourAbonnementComponent implements OnInit {
         case 'EISSN':
           colEISSN=i
           break;
-        case 'abonnement':
-          colAbonnement=i
+        case 'perennite':
+          colPerennite=i
           break;
-        case 'BDD':
-          colBDD=i
+        case 'conserverPap':
+          colConserverPap=i
           break;
-        case 'note':
-          colNote=i
+        case 'anneeDebut':
+          colAnneeDebut=i
+          break;
+        case 'anneeFin':
+          colAnneeFin=i
+          break;
+        case 'volDebut':
+          colVolDebut=i
+          break;
+        case 'volFin':
+          colVolFin=i
+          break;
+        case 'embargo':
+          colEmbargo=i
+          break;
+        case 'fournisseur':
+          colFournisseur=i
           break;
       }
     }
@@ -151,22 +157,23 @@ export class MiseAJourAbonnementComponent implements OnInit {
         // @ts-ignore
         this.annee=document.getElementById('annee').value;
 
-      curruntRecord = (<string>csvRecordsArray[i]).split(separator);
-
-        csvRecord = {
-          idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIDRevue]),
-          // @ts-ignore
-          annee: this.annee,
-          ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colISSN]),
-          EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colEISSN]),
-          abonnement: this.methodesGlobal.returnCharIfNull(curruntRecord[colAbonnement]),
-          bdd: this.methodesGlobal.returnCharIfNull(curruntRecord[colBDD]),
-          note:this.methodesGlobal.returnCharIfNull(curruntRecord[colNote])
-        }
-        csvArr.push(csvRecord);
-
+        curruntRecord = (<string>csvRecordsArray[i]).split(separator);
+          csvRecord = {
+            idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIDRevue]),
+            ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colISSN]),
+            EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colEISSN]),
+            perennite: this.methodesGlobal.returnCharIfNull(curruntRecord[colPerennite]),
+            conserverPap:this.methodesGlobal.returnCharIfNull(curruntRecord[colConserverPap]),
+            anneeDebut:this.methodesGlobal.returnCharIfNull(curruntRecord[colAnneeDebut]),
+            anneeFin:this.methodesGlobal.returnCharIfNull(curruntRecord[colAnneeFin]),
+            volDebut:this.methodesGlobal.returnCharIfNull(curruntRecord[colVolDebut]),
+            volFin:this.methodesGlobal.returnCharIfNull(curruntRecord[colVolFin]),
+            embargo:this.methodesGlobal.returnCharIfNull(curruntRecord[colEmbargo]),
+            fournisseur:this.methodesGlobal.returnCharIfNull(curruntRecord[colFournisseur])
+          }
+          csvArr.push(csvRecord);
     }
-    //console.log(csvArr)
+     //console.log(csvArr)
     return csvArr;
   }
 
@@ -190,42 +197,39 @@ export class MiseAJourAbonnementComponent implements OnInit {
 
 
   //inserer les données
-  async postArray(records:UpdateAbonnement[]): Promise<void> {
+  async postArray(records:UpdateArchives[]){
     //console.log(records)
     this.processousEnCours();
+    let that=this
+    let n: any;
     if (records.length == 0) return;
     let i =0;
     this.dateStart=this.methodesGlobal.dateCreator();
-    let postLigne : any = {};
-
+    let postLigne : any = {}
     for (let val of records) {
           i++;
-          postLigne.idRevue=val.idRevue;
-          postLigne.issn=val.ISSN;
-          postLigne.eissn=val.EISSN;
-          postLigne.abonnement=val.abonnement;
-          postLigne.bdd=val.bdd;
-          postLigne.note=val.note;
-          this.post(postLigne)
-
+          postLigne=val
+          this.post(postLigne);
           await this.methodesGlobal.delay(100);
 
           if(i==records.length){
             await this.methodesGlobal.delay(1000);
             //console.log('fin processus');
-            await this.addProcessus(this.dateStart);
+            this.addProcessus(this.dateStart);
 
-          }
+        }
+
+
     }
   }
   //fonction pour inserer
-  post( postLigne:any) {
-    this.inUpdateAbonnement$ = this.csvService
-      .updateAbonnement(postLigne);
+  post( postLigne: string) {
+    this.inUpdateArchives$ = this.csvService
+      .updateArchives(postLigne)
       //.pipe(tap(() => ()));
   }
 
-  async addProcessus(dateStart:string){
+  addProcessus(dateStart:string){
     // creer la date du début
 
     if(sessionStorage.getItem('prenomAdmin')){
@@ -237,13 +241,14 @@ export class MiseAJourAbonnementComponent implements OnInit {
       // @ts-ignore
       this.note=document.getElementById('note').value.toString();
     }
-      this.processus = {'titre':'Mise à jour des abonnements/BDD','type':'abonnements','admin':this.admin,'note':this.note,'dateStart':dateStart}
-      this.addProcessus$ = await this.csvService
+    this.processus = {'titre':'Mise à jour des archives','type':'prix','admin':this.admin,'note':this.note,'dateStart':dateStart}
+    this.addProcessus$ = this.csvService
       .addProcessus(this.processus)
-        .pipe(tap(() => (this.finImportation())));
+      .pipe(tap(() => (this.finImportation())));
   }
 
-//cacher l'animation pour la mise a jour des données
+
+  //cacher l'animation pour la mise a jour des données
   finImportation(){
     this.methodesGlobal.nonAfficher('load-import');
     document.getElementsByTagName("body")[0].style.setProperty('pointer-events','auto');

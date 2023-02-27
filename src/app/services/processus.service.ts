@@ -83,6 +83,16 @@ export class ProcessusService {
       .pipe(catchError(this.errorHandlerService.handleError<any>("update prix")));
   }
 
+  /******************Section mise a jour des archives*******************/
+
+  updateArchives(archives: any): Observable<any[]> {
+    const url = `/api/processus/save-archives`;
+    //console.log(archives)
+    return this.http
+      .put<any>(url, archives, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("update archives")));
+  }
+
   /******************Section mise a jour des statistiques*******************/
 
   updateStatistiques(statistiques: any): Observable<any[]> {

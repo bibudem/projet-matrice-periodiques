@@ -119,88 +119,58 @@
         </form>
         <hr>
       <!-- Garder pour post action -->
-      <div class="noVisible" *ngFor="let archive of archives$ | async"></div>
-        <div class="card-title ml-3">
-            <h4 class="mt-3 titre-initial mb-3"> {{'liste.liste-archive'| translate }}</h4>
-        </div>
-        <div class="table-responsive ml-3" *ngIf="listeArchives">
-            <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100"  >
-              <!-- ID Column -->
-              <ng-container matColumnDef="idArchive" >
-                <th *matHeaderCellDef class="w-5 pl-2"> {{'numero'| translate }} </th>
-                <td *matCellDef="let row " class="w-5 p-3" > {{row.idArchive}} </td>
-              </ng-container>
-              <!-- Titre Column -->
-              <ng-container matColumnDef="perennite">
-                <th *matHeaderCellDef mat-sort-header class="w-15" > {{'perennite'| translate }} </th>
-                <td  *matCellDef="let row" class="w-15" > {{row.perennite}} </td>
-              </ng-container>
-
-              <!-- ISSN Column -->
-              <ng-container matColumnDef="conserverPap">
-                <th *matHeaderCellDef mat-sort-header class="w-15" > {{'type'| translate }} </th>
-                <td  *matCellDef="let row" class="w-15"> {{row.conserverPap}} </td>
-              </ng-container>
-
-              <!-- EISSN Column -->
-              <ng-container matColumnDef="anneeDebut">
-                <th *matHeaderCellDef mat-sort-header class="w-5" > {{'debut'| translate }} </th>
-                <td  *matCellDef="let row" class="w-5"> {{row.anneeDebut}} </td>
-              </ng-container>
-
-              <!-- Abonnement Column -->
-              <ng-container matColumnDef="anneeFin">
-                <th *matHeaderCellDef mat-sort-header  class="w-5" > {{'fin'| translate }} </th>
-                <td  *matCellDef="let row" class="w-5"> {{row.anneeFin}} </td>
-              </ng-container>
-              <!-- Volume Column -->
-              <ng-container matColumnDef="volDebut">
-                <th *matHeaderCellDef mat-sort-header class="w-10" > {{'v-debut'| translate }} </th>
-                <td  *matCellDef="let row" class="w-10"> {{row.volDebut}} </td>
-              </ng-container>
-              <!-- Volume Column -->
-              <ng-container matColumnDef="volFin">
-                <th *matHeaderCellDef mat-sort-header class="w-10" > {{'v-fin'| translate }} </th>
-                <td  *matCellDef="let row" class="w-10"> {{row.volFin}} </td>
-              </ng-container>
-              <!-- Embargo Column -->
-              <ng-container matColumnDef="embargo">
-                <th *matHeaderCellDef mat-sort-header  class="w-10"> {{'embargo'| translate }} </th>
-                <td  *matCellDef="let row" class="w-10"> {{row.embargo}} </td>
-              </ng-container>
-              <!-- Embargo Column -->
-              <ng-container matColumnDef="fournisseur">
-                <th *matHeaderCellDef mat-sort-header  class="w-15"> {{'fournisseur'| translate }} </th>
-                <td  *matCellDef="let row" class="w-15"> {{row.fournisseur}} </td>
-              </ng-container>
-              <!-- Consulter Column -->
-              <ng-container matColumnDef="modiffier" >
-                <th *matHeaderCellDef mat-sort-header  class=" w-5 "> {{'btn-modifier'| translate }} </th>
-                <td  *matCellDef="let row" class="w-5  ">
-                  <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="{{'btn-modifier'| translate }}"  (click)="apliquerModifier(row.idArchive)">
-                    <i class="icon-note"></i>
-                  </button>
-                </td>
-              </ng-container>
-              <!-- Supprimer Column -->
-              <ng-container matColumnDef="supprimer" >
-                <th *matHeaderCellDef mat-sort-header  class=" w-5 text-center"> {{'btn-supprimer'| translate }} </th>
-                <td  *matCellDef="let row" class="w-5 text-center">
-                  <button  mat-icon-button (click)="delete(row.idArchive)">
-                    <mat-icon  color="warn">
-                      delete
-                    </mat-icon>
-                  </button>
-                </td>
-              </ng-container>
-
-              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: displayedColumns;">
-              </mat-row>
-            </table>
-
-            <mat-paginator [pageSizeOptions]="[15, 25, 50, 100]"></mat-paginator>
-          </div>
+      <div class="noVisible" *ngFor="let statistique of archives$ | async"></div>
+      <div class="card-title ml-3">
+        <h4 class="mt-3 titre-initial mb-3"> {{'liste.liste-archive'| translate }}</h4>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover w-100 table-bordered">
+          <thead>
+          <tr>
+            <th class="font-weight-bold w-5">{{ 'id' | translate}}</th>
+            <th class="font-weight-bold w-5">{{ 'perennite' | translate}}</th>
+            <th class="font-weight-bold w-10">{{ 'conserverPap' | translate}}</th>
+            <th class="font-weight-bold w-5">{{ 'anneeDebut.' | translate}}</th>
+            <th class="font-weight-bold">{{ 'anneeFin' | translate}}</th>
+            <th class="font-weight-bold w-5">{{ 'volDebut' | translate}}</th>
+            <th class="font-weight-bold w-5">{{ 'volFin' | translate}}</th>
+            <th class="font-weight-bold w-5">{{ 'embargo' | translate}}</th>
+            <th class="font-weight-bold ">{{ 'fournisseur' | translate}}</th>
+            <th class="font-weight-bold w-10">{{ 'dateA' | translate}}</th>
+            <th class="font-weight-bold w-10">{{ 'dateM' | translate}}</th>
+            <th class="font-weight-bold ">{{ 'btn-modifier' | translate}}</th>
+            <th class="font-weight-bold ">{{ 'btn-supprimer' | translate}}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let rep of this.tableauArchives" >
+            <td>{{rep.idArchive}}</td>
+            <td>{{rep.perennite}}</td>
+            <td>{{rep.conserverPap}}</td>
+            <td>{{rep.anneeDebut}}</td>
+            <td>{{rep.anneeFin}}</td>
+            <td>{{rep.volDebut}}</td>
+            <td>{{rep.volFin}}</td>
+            <td>{{rep.embargo}}</td>
+            <td>{{ rep.fournisseur}}</td>
+            <td>{{ rep.dateA | date:'short': 'fr' }}</td>
+            <td>{{ rep.dateM | date:'short': 'fr' }}</td>
+            <td class="text-center">
+              <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm " title="Modifier"  (click)="apliquerModifier(rep.idArchive)">
+                <i class="icon-note"></i>
+              </button>
+            </td>
+            <td class="text-center">
+              <button  mat-icon-button (click)="delete(rep.idArchive)">
+                <mat-icon  color="warn">
+                  delete
+                </mat-icon>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
       <!-- fin contenu page -->
       <!-- Contenu footer -->

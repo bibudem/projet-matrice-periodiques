@@ -16,6 +16,9 @@ router.get('/last-processus', processusController.getLastIdProcessus);
 router.put('/save-prix', processusController.postPrix);
 
 
+router.put('/save-archives', processusController.postArchives);
+
+
 router.put('/update-statistiques', processusController.postStatistiques);
 
 

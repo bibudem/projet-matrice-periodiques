@@ -60,5 +60,11 @@ export class ListeChoixOptions  {
     {id: 3, name: 'Hybride'},
   ];
 
+  //objet pour les sujets
+  essentiel = [
+    {id: 1, name: 'Oui'},
+    {id: 2, name: 'Non'}
+  ];
+
 
 }

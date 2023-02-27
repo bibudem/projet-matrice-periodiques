@@ -32,10 +32,7 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
 
   //les entêts du tableau
   displayedColumns = ['IDRevue','titre', 'ISSN','EISSN','statut','abonnement','bdd','fonds','fournisseur','plateformePrincipale','autrePlateforme','format','libreAcces','domaine','secteur','sujets','duplication','duplicationCourant','duplicationEmbargo1','duplicationEmbargo2','essentiel2014','essentiel2022'];
-  // last id Processus
-  lastIdProcessus$: Observable<any[]> | undefined;
 
-  lastIdProccessus =0;
 
   // @ts-ignore
   dataSource: MatTableDataSource<any>;
@@ -50,6 +47,8 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
   separator = ';';
 
   admin = '';
+
+  note = '';
 
   processus:any = {};
 
@@ -106,13 +105,6 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
 
 
   async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator:string) {
-    // last idProcessus
-    this.lastIdProcessus$ = await this.csvService.lastIdProcessus();
-    await this.lastIdProcessus$.toPromise().then(res => {
-      console.log(res[0].max)
-      if(res[0].max!=null)
-        this.lastIdProccessus=res[0].max;
-    });
     let csvArr: UpdatePeriodiquesLot[] = [];
     // @ts-ignore
     let csvRecord: UpdatePeriodiquesLot = []; let curruntRecord;
@@ -248,9 +240,7 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
   //inserer les données
   async postArray(records:any){
     //console.log(records)
-    this.methodesGlobal.nonAfficher('contenu-form')
-    this.methodesGlobal.nonAfficher('contenu-resultat')
-    this.methodesGlobal.afficher('load-import')
+    this.processousEnCours();
     if (records.length == 0) return;
     let i =0;
     this.dateStart=this.methodesGlobal.dateCreator();
@@ -279,13 +269,12 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
           postLigne.duplicationEmbargo2=val.duplicationEmbargo2;
           postLigne.essentiel2014=val.essentiel2014;
           postLigne.essentiel2022=val.essentiel2022;
-          postLigne.lastIdProcc=this.lastIdProccessus;
           this.post(postLigne);
 
-          await this.methodesGlobal.delay(3000);
+          await this.methodesGlobal.delay(100);
 
           if(i==records.length){
-            await this.methodesGlobal.delay(5000);
+            await this.methodesGlobal.delay(1000);
             //console.log('fin processus');
             this.addProcessus(this.dateStart);
           }
@@ -305,17 +294,30 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
       // @ts-ignore
       this.admin = sessionStorage.getItem('prenomAdmin')+' '+sessionStorage.getItem('nomAdmin');
     }
-    this.processus = {'titre':'Mise à jour de la liste de périodiques','type':'periodiques','admin':this.admin,'dateStart':dateStart}
+    // @ts-ignore
+    if(document.getElementById('note').value!=''){
+      // @ts-ignore
+      this.note=document.getElementById('note').value.toString();
+    }
+    this.processus = {'titre':'Mise à jour de la liste de périodiques','type':'periodiques','admin':this.admin,'note':this.note,'dateStart':dateStart}
     this.addProcessus$ = this.csvService
       .addProcessus(this.processus)
-      .pipe(tap(() => (this.router.navigate(['/processus/add']))));
+      .pipe(tap(() => (this.finImportation())));
   }
 
-  //cacher l'animation pour la mise a jour des données
+//cacher l'animation pour la mise a jour des données
   finImportation(){
-    this.methodesGlobal.nonAfficher('load-import')
-    this.methodesGlobal.afficher('updateStatistiques')
+    this.methodesGlobal.nonAfficher('load-import');
+    document.getElementsByTagName("body")[0].style.setProperty('pointer-events','auto');
+    this.router.navigate(['/processus/add']);
+
+
   }
-
-
+  processousEnCours(){
+    this.methodesGlobal.nonAfficher('contenu-form');
+    this.methodesGlobal.nonAfficher('contenu-resultat');
+    this.methodesGlobal.afficher('load-import');
+    //desactiver les actions durant le processous
+    document.getElementsByTagName("body")[0].style.setProperty('pointer-events','none');
+  }
 }

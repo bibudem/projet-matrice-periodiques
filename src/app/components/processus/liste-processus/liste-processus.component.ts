@@ -23,7 +23,7 @@ export class ListeProcessusComponent implements OnInit {
   codes:any=[]
 
   //les entêts du tableau
-  displayedColumns = ['id_processus','titre','admin','h_debut','h_fin','statut','details','supprimer'];
+  displayedColumns = ['id_processus','titre','admin','h_debut','h_fin','statut','note','details','supprimer'];
   listeProcessus: any = [];
   // @ts-ignore
   dataSource: MatTableDataSource<any>;
@@ -77,7 +77,8 @@ export class ListeProcessusComponent implements OnInit {
             "admin":res[i].admin,
             "h_debut":res[i].h_debut,
             "h_fin":res[i].h_fin,
-            "statut":res[i].statut
+            "statut":res[i].statut,
+            "note":res[i].note
           }
         }
         // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
@@ -107,6 +108,11 @@ export class ListeProcessusComponent implements OnInit {
 
   detailsProcessous(id:string){
     this.router.navigate(['/processus/details/'+id])
+  }
+
+  addContenuNote(note:string){
+    // @ts-ignore
+    document.getElementById("note-contenu").innerHTML = note.toString();
   }
 
 }

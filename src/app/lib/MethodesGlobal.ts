@@ -100,7 +100,7 @@ export class MethodesGlobal  {
       }
       // @ts-ignore
       input.style.setProperty('border', '1px solid #aab2bd');
-      console.log(input);
+      //console.log(input);
 
     return true;
   }

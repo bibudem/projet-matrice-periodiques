@@ -43,10 +43,6 @@ export class MiseAJourStatistiquesComponent implements OnInit {
 
   //les entêts du tableau
   displayedColumns = ['IDRevue','ISSN','EISSN','annee', 'Total_Item_Requests','Unique_Item_Requests','No_License','citations','articlesUdem','JR5COURANT','JR5INTER','JR5RETRO','JR3OAGOLD','PlateformeID'];
-  // last id Processus
-  lastIdProcessus$: Observable<any[]> | undefined;
-
-  lastIdProccessus =0;
 
   // @ts-ignore
   dataSource: MatTableDataSource<InCites>;
@@ -61,6 +57,8 @@ export class MiseAJourStatistiquesComponent implements OnInit {
   separator = ';';
 
   admin = '';
+
+  note = '';
 
   processus:any = {};
 
@@ -156,13 +154,6 @@ export class MiseAJourStatistiquesComponent implements OnInit {
 
 
   async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator:string) {
-    // last idProcessus
-    this.lastIdProcessus$ = await this.csvService.lastIdProcessus();
-    await this.lastIdProcessus$.toPromise().then(res => {
-      //console.log(res[0].max)
-      if(res[0].max!=null)
-        this.lastIdProccessus=res[0].max;
-    });
     let csvArr: UpdateStatistiques[] = [];
     // @ts-ignore
     let csvRecord: UpdateStatistiques = []; let curruntRecord;
@@ -265,9 +256,7 @@ export class MiseAJourStatistiquesComponent implements OnInit {
   //inserer les données
   async postArray(records:any){
     //console.log(records)
-    this.methodesGlobal.nonAfficher('contenu-form')
-    this.methodesGlobal.nonAfficher('contenu-resultat')
-    this.methodesGlobal.afficher('load-import')
+    this.processousEnCours();
     let that=this
     let n: any;
     if (records.length == 0) return;
@@ -294,13 +283,12 @@ export class MiseAJourStatistiquesComponent implements OnInit {
           postLigne.JR5RETRO=val.JR5RETRO;
           postLigne.JR3OAGOLD=val.JR3OAGOLD;
           postLigne.PlateformeID=val.PlateformeID;
-          postLigne.lastIdProcc=this.lastIdProccessus;
           this.post(postLigne)
 
-         await this.methodesGlobal.delay(1000);
+         await this.methodesGlobal.delay(100);
 
           if(i==records.length){
-            await this.methodesGlobal.delay(5000);
+            await this.methodesGlobal.delay(1000);
             //console.log('fin processus');
             await this.addProcessus(this.dateStart);
 
@@ -322,17 +310,31 @@ export class MiseAJourStatistiquesComponent implements OnInit {
       // @ts-ignore
       this.admin = sessionStorage.getItem('prenomAdmin')+' '+sessionStorage.getItem('nomAdmin');
     }
-    this.processus = {'titre':'Mise à jour des statistiques','type':'statistiques','admin':this.admin,'dateStart':dateStart}
+    // @ts-ignore
+    if(document.getElementById('note').value!=''){
+      // @ts-ignore
+      this.note=document.getElementById('note').value.toString();
+    }
+    this.processus = {'titre':'Mise à jour des statistiques','type':'statistiques','admin':this.admin,'note':this.note,'dateStart':dateStart}
     this.addProcessus$ = await this.csvService
       .addProcessus(this.processus)
-      .pipe(tap(() => (this.router.navigate(['/processus/add']))));;
+      .pipe(tap(() => (this.finImportation())));
   }
 
-
-  //cacher l'animation pour la mise a jour des données
+//cacher l'animation pour la mise a jour des données
   finImportation(){
-    this.methodesGlobal.nonAfficher('load-import')
-    this.methodesGlobal.afficher('updateStatistiques')
+    this.methodesGlobal.nonAfficher('load-import');
+    document.getElementsByTagName("body")[0].style.setProperty('pointer-events','auto');
+    this.router.navigate(['/processus/add']);
+
+
+  }
+  processousEnCours(){
+    this.methodesGlobal.nonAfficher('contenu-form');
+    this.methodesGlobal.nonAfficher('contenu-resultat');
+    this.methodesGlobal.afficher('load-import');
+    //desactiver les actions durant le processous
+    document.getElementsByTagName("body")[0].style.setProperty('pointer-events','none');
   }
 
 

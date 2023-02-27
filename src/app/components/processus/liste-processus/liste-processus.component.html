@@ -46,6 +46,9 @@
                 <option  value="mise-a-jour-statistiques" >
                   {{'processus.mise-a-jour-statistiques'| translate}}
                </option>
+                <option  value="mise-a-jour-archives" >
+                  {{'processus.mise-a-jour-archives'| translate}}
+                </option>
                 <option  value="mise-a-jour-periodiques" >
                   {{'processus.mise-a-jour-periodiques'| translate}}
                 </option>
@@ -70,14 +73,14 @@
             <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 p-5" >
               <!-- ID Column -->
               <ng-container matColumnDef="id_processus" >
-                <th *matHeaderCellDef mat-sort-header class="mat-w-10 pl-2"> {{ 'processus.id_processus' | translate}} </th>
-                <td *matCellDef="let row" class="mat-w-10 pl-2" > {{row.id_processus}} </td>
+                <th *matHeaderCellDef mat-sort-header class="mat-w-5 pl-2"> {{ 'Nr.' | translate}} </th>
+                <td *matCellDef="let row" class="mat-w-5 pl-2" > {{row.id_processus}} </td>
               </ng-container>
 
               <!-- plateforme Column -->
               <ng-container matColumnDef="titre">
-                <th *matHeaderCellDef mat-sort-header class="mat-w-20"> {{ 'processus.titre' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-20" > {{row.titre}} </td>
+                <th *matHeaderCellDef mat-sort-header class="mat-w-15"> {{ 'processus.titre' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-15" > {{row.titre}} </td>
               </ng-container>
 
               <!-- EISSN Column -->
@@ -102,8 +105,18 @@
 
               <!-- statut Column -->
               <ng-container matColumnDef="statut">
-                <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'statut' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-5"> {{row.statut}} </td>
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'statut' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-10"> {{row.statut}} </td>
+              </ng-container>
+
+              <!-- statut Column -->
+              <ng-container matColumnDef="note">
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-5 align-items-center"> {{ 'note' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-5 align-items-center">
+                  <button *ngIf="row.note"  type="button" class="btn btn-outline-primary  btn-icon btn-sm" title="{{'note'| translate}}" data-toggle="modal" data-target="#modal-note" (click)="addContenuNote(row.note)">
+                  <i class="icon-info"></i>
+                  </button>
+                </td>
               </ng-container>
 
               <!-- consoulter Column -->
@@ -153,6 +166,25 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary btn-sm"  data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i> {{'btn-annuler'| translate}}</button>
             <button type="button" class="btn btn-danger btn-sm" (click)="deleteProcessus(this.methodesGlobal.getValue(id_processus.value))" data-dismiss="modal" ><i class="fa fa-trash btn-icon-prepend"></i> {{'btn-supprimer'| translate}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal pour note-->
+    <div class="modal fade" id="modal-note" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="modal-note-Label">{{'details-note'| translate}}</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body" id="note-contenu">
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm"  data-dismiss="modal">  {{'btn-fermer'| translate}}</button>
           </div>
         </div>
       </div>

@@ -21,15 +21,15 @@ import {TranslateService} from "@ngx-translate/core";
 })
 
 export class PeriodiqueArchiveComponent implements OnInit {
-  archives$: Observable<Archive[]> | undefined;
+  archives$: Observable<any[]> | undefined;
 
   //creation d'objet avec la liste des periodiques
   // @ts-ignore
-  archive: Archive = {};
+  archive: any = {};
   id: string | null | undefined ;
   //les entêts du tableau
-  displayedColumns = ['idArchive','perennite', 'conserverPap', 'anneeDebut', 'anneeFin','volDebut','volFin','embargo','fournisseur','modiffier','supprimer'];
-  listeArchives: ListeArchive[] = [];
+  displayedColumns = ['idArchive','perennite', 'conserverPap', 'anneeDebut', 'anneeFin','volDebut','volFin','embargo','fournisseur','dateA','dateM','modiffier','supprimer'];
+  tableauArchives: any = [];
   // @ts-ignore
   dataSource: MatTableDataSource<ListeArchive>;
   @ViewChild(MatPaginator) paginator: paginationPersonnalise | any;
@@ -79,10 +79,23 @@ export class PeriodiqueArchiveComponent implements OnInit {
         this.archives$ = await this.fetchAll(this.methodesGlobal.convertNumber(this.id));
         await this.archives$.toPromise().then(res => {
           for (let i = 0; i < res.length; i++) {
-            this.listeArchives.push(createListeArchive(res[i].idArchive,res[i].perennite,res[i].conserverPap,res[i].anneeDebut,res[i].anneeFin,res[i].volDebut,res[i].volFin,res[i].embargo,res[i].fournisseur));
+            this.tableauArchives[i]={
+              "idArchive":res[i].idArchive,
+              "perennite":res[i].perennite,
+              "conserverPap":res[i].conserverPap,
+              "anneeDebut":res[i].anneeDebut,
+              "anneeFin":res[i].anneeFin,
+              "volDebut":res[i].volDebut,
+              "volFin":res[i].volFin,
+              "embargo":res[i].embargo,
+              "fournisseur":res[i].fournisseur,
+              "dateA":res[i].dateA,
+              "dateM":res[i].dateM,
+            }
+
           }
           // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
-          this.dataSource = new MatTableDataSource(this.listeArchives);
+          this.dataSource = new MatTableDataSource(this.tableauArchives);
           this.dataSource.paginator = this.paginator;
           //console.log(this.dataSource);
         });
@@ -146,7 +159,6 @@ export class PeriodiqueArchiveComponent implements OnInit {
 
   //fonction pour inserer
   post( archive:Archive): void {
-
     this.archives$ = this.periodiqueArchiveService
       .post(archive)
       .pipe(tap(() => (this.afficherNotification('periodique/archive/'+archive.idRevue))));
@@ -162,14 +174,15 @@ export class PeriodiqueArchiveComponent implements OnInit {
 
   }
 
-  delete(id: number): void {
+  async delete(id: number) {
+
     let textAlert:string='';
     //changer le texte pour le boutton
     this.translate.get('message.supprimer-text').subscribe((res: string) => {
       textAlert=res;
     });
     if(window.confirm(textAlert)) {
-      this.archives$ = this.periodiqueArchiveService
+      this.archives$ = await this.periodiqueArchiveService
         .delete(id)
         .pipe(tap(() => (this.archives$ = this.fetchAll(id))));
         //afficher notification
@@ -177,13 +190,13 @@ export class PeriodiqueArchiveComponent implements OnInit {
         let that=this;
         setTimeout(function(){
           that.methodesGlobal.nonAfficher('alert-archive-sup');
-          that.reload('periodique/archive/'+that.idRevue);
-        }, 2500);
+          that.reload('periodique/archive/'+that.id);
+        }, 1500);
     }
   }
   //consulter fiche
   consulter(id: number) {
-    console.log(id);
+    //console.log(id);
     return this.periodiqueArchiveService.consulter(id);
 
   }
@@ -214,44 +227,18 @@ export class PeriodiqueArchiveComponent implements OnInit {
     let action = document.getElementById('action').value
     //recouperer les donnes pour creer l'objet
 
-    if(f.value.perennite)
-      this.archive.perennite=f.value.perennite
-    else this.archive.perennite=''
-
-    if(f.value.conserverPap)
-      this.archive.conserverPap=f.value.conserverPap
-    else this.archive.conserverPap=''
-
-    if(f.value.anneeDebut)
-      this.archive.anneeDebut=f.value.anneeDebut
-    else this.archive.anneeDebut=''
-
-    if(f.value.anneeFin)
-      this.archive.anneeFin=f.value.anneeFin
-    else this.archive.anneeFin=''
-
-    if(f.value.volDebut)
-      this.archive.volDebut=f.value.volDebut
-    else this.archive.volDebut=''
-
-    if(f.value.volFin)
-      this.archive.volFin=f.value.volFin
-    else this.archive.volFin=''
-
-    if(f.value.embargo)
-      this.archive.embargo=f.value.embargo
-    else this.archive.embargo=''
-
-    if(f.value.embargo)
-      this.archive.embargo=f.value.embargo
-    else this.archive.embargo=''
-
-    if(f.value.fournisseur)
-      this.archive.fournisseur=f.value.fournisseur
-    else this.archive.fournisseur=''
-
-
-    this.archive.idRevue=Number(this.id)
+    this.archive = {
+      idRevue: this.id,
+      perennite: this.methodesGlobal.returnCharIfNull(f.value.perennite),
+      conserverPap: this.methodesGlobal.returnCharIfNull(f.value.conserverPap),
+      anneeDebut: this.methodesGlobal.returnCharIfNull(f.value.anneeDebut),
+      anneeFin: this.methodesGlobal.returnCharIfNull(f.value.anneeFin),
+      volDebut:this.methodesGlobal.returnCharIfNull(f.value.volDebut),
+      volFin:this.methodesGlobal.returnCharIfNull(f.value.volFin),
+      embargo:this.methodesGlobal.returnCharIfNull(f.value.embargo),
+      fournisseur:this.methodesGlobal.returnCharIfNull(f.value.fournisseur),
+      idArchives:this.methodesGlobal.returnCharIfNull(f.value.idArchive),
+    }
 
    //definir les champs obligatoire
     let donnesValider:any={'anneeDebut':this.archive.anneeDebut}
@@ -279,35 +266,4 @@ export class PeriodiqueArchiveComponent implements OnInit {
   }
 
 
-}
-/** Fonction pour remplire le tableau de la liste des periodiques */
-
-function createListeArchive(idArchiveP:number,perenniteP:string,conserverPapP:string,anneeDebutP:string,anneeFinP:string,volDebutP:string,volFinP:string,embargoP:string,fournisseurP:string): ListeArchive {
-  return {
-    idArchive:idArchiveP,
-    perennite: perenniteP,
-    conserverPap: conserverPapP,
-    anneeDebut: anneeDebutP,
-    anneeFin: anneeFinP,
-    volDebut: volDebutP,
-    volFin: volFinP,
-    embargo: embargoP,
-    fournisseur:fournisseurP,
-    modifier: '',
-    supprimer: '',
-  };
-}
-/** Class utilisée pour remplire le tableau avec la liste des périodiques**/
-export interface ListeArchive {
-  idArchive:number;
-  perennite: string;
-  conserverPap: string;
-  anneeDebut: string;
-  anneeFin: string;
-  volDebut: string;
-  volFin: string;
-  embargo:string;
-  fournisseur:string;
-  modifier:string;
-  supprimer:string;
 }

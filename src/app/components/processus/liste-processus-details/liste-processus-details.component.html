@@ -35,13 +35,19 @@
               <!-- plateforme Column -->
               <ng-container matColumnDef="idRevue">
                 <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'idRevue' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-10" > {{row.idRevue}} </td>
+                <td  *matCellDef="let row" class="mat-w-10" >
+                  <span class="text-danger" *ngIf="row.idRevue==-1">!!!</span>
+                  <span  *ngIf="row.idRevue!=-1">{{row.idRevue}}</span>
+                   </td>
               </ng-container>
 
               <!-- ISSN Column -->
               <ng-container matColumnDef="ISSN">
                 <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'ISSN' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-10" > {{row.ISSN}} </td>
+                <td  *matCellDef="let row" class="mat-w-10" >
+                  <span class="text-danger" *ngIf="row.ISSN==-1">{{'non-periodique' | translate}}</span>
+                  <span  *ngIf="row.ISSN!=-1">{{row.ISSN}}</span>
+                 </td>
               </ng-container>
 
               <!-- EISSN Column -->
@@ -54,8 +60,8 @@
               <ng-container matColumnDef="titre">
                 <th *matHeaderCellDef mat-sort-header  class="mat-w-20"> {{ 'titre' | translate}} </th>
                 <td  *matCellDef="let row" class="mat-w-20">
-                  <span class="text-danger" *ngIf="!row.idRevue">{{'non-periodique' | translate}}</span>
-                  {{row.titre}}
+                  <span class="text-danger" *ngIf="row.idRevue==-1">{{'non-periodique' | translate}}</span>
+                  <span  *ngIf="row.idRevue!=-1">{{row.titre}}</span>
                 </td>
               </ng-container>
 

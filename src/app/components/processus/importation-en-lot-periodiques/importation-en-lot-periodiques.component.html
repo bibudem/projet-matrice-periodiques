@@ -39,12 +39,6 @@
               </ul>
           </div>
           <div class="col-md-2">
-            <h6 class="card-title">{{ 'statut' | translate}}</h6>
-            <ul class="list-ticked">
-              <li *ngFor="let rep of this.listeChoixOptions.listStatut" [value]="rep.name">{{rep.name}}</li>
-            </ul>
-          </div>
-          <div class="col-md-2">
             <h6 class="card-title">{{ 'format' | translate}}</h6>
             <ul class="list-ticked">
               <li *ngFor="let rep of this.listeChoixOptions.listFormat" [value]="rep.name">{{rep.name}}</li>
@@ -68,6 +62,18 @@
               <li *ngFor="let rep of this.listeChoixOptions.listeAcces" [value]="rep.name">{{rep.name}}</li>
             </ul>
           </div>
+          <div class="col-md-2">
+            <h6 class="card-title">{{ 'statut' | translate}}</h6>
+            <ul class="list-ticked">
+              <li *ngFor="let rep of this.listeChoixOptions.listStatut" [value]="rep.name">{{rep.name}}</li>
+            </ul>
+          </div>
+          <div class="col-md-2">
+            <h6 class="card-title">{{ 'Essentiel' | translate}}</h6>
+            <ul class="list-ticked">
+              <li *ngFor="let rep of this.listeChoixOptions.essentiel" [value]="rep.name">{{rep.name}}</li>
+            </ul>
+          </div>
         </div>
         <form  #importationForm="ngForm" >
           <div class="row mt-2">
@@ -76,12 +82,20 @@
                 <input type="file" class="form-control mt-4" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".csv">
               </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-8">
               <div class="form-group cacherVisible"  id="addCsv">
+                <a class="btn btn-primary mt-4 mr-2" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                  <i class="fa fa-pencil"></i> {{ 'ajouter-note' | translate}}
+                </a>
+                <button type="button" class="btn btn-outline-dark mt-4 mr-2 cacherVisible" (click)="methodesGlobal.viderInput('csvFile');methodesGlobal.nonAfficher('contenu-resultat')">
+                  {{ 'btn-annuler' | translate}}</button>
                 <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
                   <i class="fa fa-send btn-icon-prepend mr-2 "></i> {{ 'importation.csv-send' | translate}}</button>
-                <button type="button" class="btn btn-outline-dark mt-4 ml-2 cacherVisible" (click)="methodesGlobal.viderInput('csvFile');methodesGlobal.nonAfficher('contenu-resultat')">
-                   {{ 'btn-annuler' | translate}}</button>
+                <div class="col-md-12 p-2">
+                  <div class="collapse" id="collapseExample">
+                    <textarea id="note" class="form-control" spellcheck="false" placeholder="{{ 'label-ajouter-note' | translate}}"></textarea>
+                  </div>
+                </div>
               </div>
             </div>
 

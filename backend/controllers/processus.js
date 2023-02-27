@@ -71,6 +71,25 @@ exports.postPrix= async (req, res, next) => {
     next(err);
   }
 };
+exports.postArchives= async (req, res, next) => {
+  try {
+    //retourner vers la connexion si on n'an une bonne session pour cet user
+    if(Lib.userConnect(req).length==0){
+      res.redirect('/api/logout');
+    }
+    let values=Object.values(req.body);
+    //console.log(req.body)
+    //console.log('update prix')
+    const postResponse = await Processus.postArchives(values);
+    res.status(201).json(postResponse);
+  } catch (err) {
+    //console.log('controleur not ok');
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
 exports.postStatistiques= async (req, res, next) => {
   try {
     //retourner vers la connexion si on n'an une bonne session pour cet user

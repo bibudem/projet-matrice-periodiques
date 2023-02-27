@@ -23,22 +23,24 @@ module.exports = class Archive {
     //console.log(date);
     //ajouter la date dans le tableau des données
     archive.push(date);
+    //console.log(archive);
     //afficher la requette
-    let sql = "INSERT INTO tbl_archives SET perennite = ?,conserverPap =?,embargo = ?,fournisseur = ?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,idRevue = ?,dateA =? '"
-    console.log('sql: ', SqlString.format(sql,[archive[0],archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],archive[9]]));
-    return db.execute('INSERT INTO tbl_archives SET perennite = ?,conserverPap =?,embargo = ?,fournisseur = ?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,idRevue = ?,dateA =? ', [archive[0],archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],archive[9]] );
+    /*let sql = "INSERT INTO tbl_archives SET idRevue = ?,perennite = ?,conserverPap =?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,embargo = ?,fournisseur = ?,dateA =?"
+    console.log('sql: ', SqlString.format(sql,[archive[0],archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],date]));*/
+    return db.execute('INSERT INTO tbl_archives SET idRevue = ?,perennite = ?,conserverPap =?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,embargo = ?,fournisseur = ?,dateA =? ', [archive[0],archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],date]);
   }
 
   static update(archive) {
     //creation de la date
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
+    //console.log(archive);
     //afficher la requette
-    let sql = "UPDATE tbl_archives SET idRevue = ?,perennite = ?,conserverPap=?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,embargo = ?,fournisseur = ?,dateM =? WHERE idArchive  = ?"
-    console.log('sql: ', SqlString.format(sql,[archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],archive[11],date, archive[0]]));
+    /*let sql = "UPDATE tbl_archives SET idRevue = ?,perennite = ?,conserverPap=?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,embargo = ?,fournisseur = ?,dateM =? WHERE idArchive  = ?"
+    console.log('sql: ', SqlString.format(sql,[archive[0],archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],date, archive[9]]));*/
 
     return db.execute('UPDATE tbl_archives SET idRevue = ?,perennite = ?,conserverPap=?,anneeDebut = ?,anneeFin = ?,volDebut =?,volFin =?,embargo = ?,fournisseur = ?,dateM =? WHERE idArchive  = ?',
-      [archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],archive[11],date, archive[0]]);
+      [archive[0],archive[1],archive[2],archive[3],archive[4],archive[5],archive[6],archive[7],archive[8],date, archive[9]]);
 
   }
 
