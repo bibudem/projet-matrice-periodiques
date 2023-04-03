@@ -66,7 +66,7 @@
                   <button type="button" class="btn btn-dark mr-2" (click)="this.methodesGlobal.afficher('contenu-resultat')"><i class="icon-list btn-icon-prepend"></i> {{ 'importation.afficher-resultats' | translate}}</button>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                  <button type="button" class="btn btn-dark mr-2" (click)="updateStatistiques(this.methodesGlobal.getValue(annee.value))"><i class="fa fa-save btn-icon-prepend"></i> {{ 'importation.mis-a-jour-statistiques' | translate}}</button>
+                  <button type="button" class="btn btn-primary mr-2" (click)="updateStatistiques(this.methodesGlobal.getValue(annee.value))"><i class="fa fa-save btn-icon-prepend"></i> {{ 'importation.mis-a-jour-statistiques' | translate}}</button>
                 </li>
               </ol>
             </nav>
@@ -113,9 +113,9 @@
                         matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre>
               </mat-form-field>
             </li>
-            <li class="list-inline-item" ><button class="btn btn-outline-dark btn-sm ml-5" (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j1')">{{ 'importation.rapportJ1' | translate}}</button></li>
-            <li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j2')">{{ 'importation.rapportJ2' | translate}}</button> </li>
-            <li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j3')">{{ 'importation.rapportJ3' | translate}}</button> </li>
+            <li class="list-inline-item" ><button class="btn btn-outline-dark btn-sm ml-5" (click)="this.methodesGlobal.nonAfficher('tableauResult');creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j1')">{{ 'importation.rapportJ1' | translate}}</button></li>
+            <li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="this.methodesGlobal.nonAfficher('tableauResult');creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j2')">{{ 'importation.rapportJ2' | translate}}</button> </li>
+            <li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="this.methodesGlobal.nonAfficher('tableauResult');creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j3')">{{ 'importation.rapportJ3' | translate}}</button> </li>
             <!--<li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j4')">{{ 'importation.rapportJ4' | translate}}</button></li>-->
             <li class="list-inline-item" ><button class="btn btn-primary btn-sm" title="{{ 'btn-export' | translate}}" (click)="ExportTOExcel()"><i class="fa fa-file-excel-o"></i></button></li>
             <li class="list-inline-item ml-2" ><button class="btn btn-dark btn-sm" (click)="methodesGlobal.nonAfficher('contenu-resultat')"><i class="fa fa-eye-slash"></i></button></li>

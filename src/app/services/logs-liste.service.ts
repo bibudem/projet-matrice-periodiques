@@ -27,9 +27,9 @@ export class LogsListeServiceService {
 
 
   //chercher la liste des logs des periodiques
-  getAllLogsRevue(): Observable<any[]> {
+  getAllLogsRevue(annee:string): Observable<any[]> {
     return this.http
-      .get<any[]>(this.url+'/revue', { responseType: "json" })
+      .get<any[]>(this.url+`/all/${annee}`, { responseType: "json" })
       .pipe(
         tap((_) => console.log("liste logs revue")),
         catchError(

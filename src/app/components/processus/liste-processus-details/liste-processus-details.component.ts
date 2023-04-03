@@ -80,12 +80,21 @@ export class ListeProcessusDelailsComponent implements OnInit {
       // @ts-ignore
       await this.processus$.toPromise().then(res => {
         //console.log(res);
+        let idVal='',issnVal='';
         for (let i = 0; i < res.length; i++) {
+          idVal=res[i].idRevue;
+          issnVal=res[i].ISSN;
+          if(res[i].ISSN=='-1'){
+            issnVal='!!!';
+          }
+          if(res[i].idRevue=='-1'){
+            idVal='!!!';
+          }
           this.listeProcessus[i]={
             "numero":i+1,
             "id_details":res[i].id_details,
-            "idRevue":res[i].idRevue,
-            "ISSN":res[i].ISSN,
+            "idRevue":idVal,
+            "ISSN":issnVal,
             "EISSN":res[i].EISSN,
             "titre":res[i].titre,
             "dateA":res[i].dateA

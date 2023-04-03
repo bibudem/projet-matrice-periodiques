@@ -212,7 +212,6 @@ export class MiseAJourPrixComponent implements OnInit {
             //console.log('fin processus');
             this.addProcessus(this.dateStart);
 
-
         }
 
 

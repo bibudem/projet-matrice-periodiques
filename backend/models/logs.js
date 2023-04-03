@@ -8,9 +8,11 @@ module.exports = class Logs {
   }
 
 
-  static fetchAllLogsRevue() {
+  static fetchAllLogsRevue(annee) {
+    /*let sql = "SELECT * FROM lst_logsrevues  where annee=? order by Title"
+    console.log('sql: ', SqlString.format(sql,[annee]));*/
 
-    return db.execute('SELECT * FROM lst_logsrevues order by Title');
+    return db.execute('SELECT * FROM lst_logsrevues  where annee=? order by Title',[annee]);
   }
 
   static fetchAllLogsPlateforme() {

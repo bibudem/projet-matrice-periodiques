@@ -46,6 +46,8 @@ export class ImportationInCitesComponent implements OnInit {
   @ViewChild('InCites') InCites: any;
   csvReader: any;
 
+  separator=';';
+
   constructor( private router: Router,
                private translate: TranslateService,
                private csvService: ImportationCsvService) { }
@@ -124,23 +126,23 @@ export class ImportationInCitesComponent implements OnInit {
       if(document.getElementById('annee'))
         // @ts-ignore
         annee=document.getElementById('annee').value
-      curruntRecord = (<string>csvRecordsArray[i]).split(',');
+      curruntRecord = (<string>csvRecordsArray[i]).split(this.separator);
       //if (curruntRecord[colName]) {
         csvRecord = {
           numero: j,
           // @ts-ignore
           annee: annee,
-          Name: curruntRecord[colName],
-          ArticlesUdeM: curruntRecord[colArUdem],
-          Citations: curruntRecord[colCitation],
-          EISSN: curruntRecord[colEISSN],
-          ISSN:curruntRecord[colISSN]
+          Name: this.methodesGlobal.returnCharIfNull(curruntRecord[colName]),
+          ArticlesUdeM: this.methodesGlobal.returnCharIfNull(curruntRecord[colArUdem]),
+          Citations: this.methodesGlobal.returnCharIfNull(curruntRecord[colCitation]),
+          EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colEISSN]),
+          ISSN:this.methodesGlobal.returnCharIfNull(curruntRecord[colISSN])
         }
         csvArr.push(csvRecord);
         j++
       //}
     }
-    // console.log(csvArr)
+     console.log(csvArr)
     return csvArr;
   }
 
@@ -149,7 +151,7 @@ export class ImportationInCitesComponent implements OnInit {
   }
 
   getHeaderArray(csvRecordsArr: any) {
-    let headers = (<string>csvRecordsArr[0]).split(',');
+    let headers = (<string>csvRecordsArr[0]).split(this.separator);
     let headerArray = [];
     for (let j = 0; j < headers.length; j++) {
       headerArray.push(headers[j]);
@@ -164,43 +166,49 @@ export class ImportationInCitesComponent implements OnInit {
 
 
   //inserer les données
- async postArray(records:InCites[]){
+ async postArray(records:any[]){
    //console.log(records)
-   this.methodesGlobal.nonAfficher('contenu-form')
-   this.methodesGlobal.nonAfficher('contenu-resultat')
-   this.methodesGlobal.afficher('load-import')
-   let that=this
+   this.methodesGlobal.nonAfficher('contenu-form');
+   this.methodesGlobal.nonAfficher('contenu-resultat');
+   this.methodesGlobal.afficher('load-import');
+   // desactiver tous les actions
+   document.getElementsByTagName("body")[0].style.setProperty('pointer-events','none');
 
-   let n: any;
+   let postLigne : any = {};
+   let i=0;
     for (let val of records) {
-      n = setTimeout(async function () {
-        await that.post(0,val.annee,val.Name,val.ArticlesUdeM,val.Citations,val.ISSN,val.EISSN)
-      }, 5000);
+              i++;
+              postLigne.numero=0,
+              postLigne.annee=val.annee,
+              postLigne.Name=val.Name,
+              postLigne.ArticlesUdeM=val.ArticlesUdeM,
+              postLigne.Citations=val.Citations,
+              postLigne.ISSN=val.ISSN,
+              postLigne.EISSN=val.EISSN
+
+              this.post(postLigne);
+              await this.methodesGlobal.delay(100);
+
+            if(i==records.length){
+              this.finImportation();
+            }
+
     }
 
  }
   //fonction pour inserer
-  async post( newNumero:number,newAnnee: string,newName: string,
-        newArticlesUdeM: string,newCitations: string,
-        newISSN: string,newEISSN: string) {
-    if (!newName) return;
+    post( values:any) {
+    if (values.Name=='-') return;
 
-    this.inCites$ = await this.csvService
-      .post({
-        newNumero,
-        newAnnee,
-        newName,
-        newArticlesUdeM,
-        newCitations,
-        newISSN,
-        newEISSN
-      })
-      .pipe(tap(() => (this.finImportation())));
+    this.inCites$ = this.csvService
+      .post(values);
+      //.pipe(tap(() => (this.finImportation())));
   }
   //cacher l'animation pour la mise a jour des données
   finImportation(){
-    this.methodesGlobal.nonAfficher('load-import')
-    this.methodesGlobal.afficher('updateStatistique')
+    this.methodesGlobal.nonAfficher('load-import');
+    this.methodesGlobal.afficher('updateStatistique');
+    document.getElementsByTagName("body")[0].style.setProperty('pointer-events','auto');
   }
 
   //mise a jour des statistique

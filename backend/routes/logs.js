@@ -4,7 +4,7 @@ const logsController = require('../controllers/logs');
 
 const router = express.Router();
 
-router.get('/revue', logsController.getAllLogsRevue);
+router.get('/all/:annee', logsController.getAllLogsRevue);
 
 router.get('/plateforme', logsController.getAllLogsPlateforme);
 

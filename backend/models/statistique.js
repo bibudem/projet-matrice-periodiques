@@ -15,21 +15,32 @@ module.exports = class Statistique {
 
 
   static fetchAll(idRevue) {
-
     return db.execute('SELECT * FROM `tbl_statistiques` WHERE `idRevue`=? order by annee Desc',[idRevue]);
   }
 
-  static post(statistique) {
+  static async post(statistique) {
     //creation de la date
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
-    //console.log(statistique);
-    //ajouter la date dans le tableau des données
+    let idRevue = statistique[statistique.length - 1];
+    let idStatistique;
+
+    if(statistique.length==13){
+      //delete first element
+      statistique.shift();
+    }
+    idStatistique= await this.validerOperation(idRevue,statistique[0],statistique[1]);
     statistique.push(date);
-    //afficher la requette
-    let sql = "INSERT INTO tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,Unique_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR5COURANT =?,JR5INTER =?,JR5RETRO =?,JR3OAGOLD =?,idRevue = ?,dateA =? "
-    console.log('sql: ', SqlString.format(sql,[statistique]));
-    return db.execute('INSERT INTO tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,Unique_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR5COURANT =?,JR5INTER =?,JR5RETRO =?,JR3OAGOLD =?,idRevue = ?,dateA =? ', statistique );
+
+    if(idStatistique==-1){
+
+      return db.execute('INSERT INTO tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,Unique_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR5COURANT =?,JR5INTER =?,JR5RETRO =?,JR3OAGOLD =?,idRevue = ?,dateA =? ', statistique );
+    }else {
+      statistique.push(idStatistique);
+      return db.execute('UPDATE tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,Unique_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR5COURANT =?,JR5INTER =?,JR5RETRO =?,JR3OAGOLD =?,idRevue = ?,dateM =? WHERE idStatistique  = ?',
+        statistique);
+    }
+
   }
 
   static update( statistique) {
@@ -37,8 +48,8 @@ module.exports = class Statistique {
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
     //afficher la requette
-    let sql = "UPDATE tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,Unique_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR5COURANT =?,JR5INTER =?,JR5RETRO =?,JR3OAGOLD =?,idRevue = ?,dateM =? WHERE idStatistique  = ?"
-    console.log('sql: ', SqlString.format(sql,[statistique[1],statistique[2],statistique[3],statistique[4],statistique[5],statistique[6],statistique[7],statistique[8],statistique[9],statistique[10],statistique[11],statistique[12],date, statistique[0]]));
+    /*let sql = "UPDATE tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,Unique_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR5COURANT =?,JR5INTER =?,JR5RETRO =?,JR3OAGOLD =?,idRevue = ?,dateM =? WHERE idStatistique  = ?"
+    console.log('sql: ', SqlString.format(sql,[statistique[1],statistique[2],statistique[3],statistique[4],statistique[5],statistique[6],statistique[7],statistique[8],statistique[9],statistique[10],statistique[11],statistique[12],date, statistique[0]]));*/
 
     return db.execute('UPDATE tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,Unique_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR5COURANT =?,JR5INTER =?,JR5RETRO =?,JR3OAGOLD =?,idRevue = ?,dateM =? WHERE idStatistique  = ?',
       [statistique[1],statistique[2],statistique[3],statistique[4],statistique[5],statistique[6],statistique[7],statistique[8],statistique[9],statistique[10],statistique[11],statistique[12],date, statistique[0]]);
@@ -50,6 +61,16 @@ module.exports = class Statistique {
 //recouperer la fiche
   static consulter(idStatistique){
     return db.execute('SELECT * FROM tbl_statistiques WHERE idStatistique  = ?', [idStatistique]);
+  }
+
+  //recouperer l'id de la revue
+  static async validerOperation(idRevue,annee,PlatformID){
+    let result = -1;
+    let id=await db.execute("SELECT idStatistique AS id FROM tbl_statistiques WHERE idRevue=? and plateforme=? and annee=? ",[idRevue,PlatformID,annee]);
+    if(id[0].length!=0){
+      result= id[0]['0']['id']
+    }
+    return result;
   }
 
 };

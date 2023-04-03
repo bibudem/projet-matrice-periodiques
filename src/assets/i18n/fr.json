@@ -124,6 +124,7 @@
   "label-ajouter-note": "Veillez saisir la note",
   "btn-fermer": "Fermer",
   "details-note": "Contenu de la note",
+  "date-dernier-modif": "Dernière modif.",
 
   "message": {
     "confirmer-titre": "Confirmer votre action",
@@ -229,7 +230,9 @@
     "csv-import-provisoire": "Veuillez vérifier les données dans le résultat provisoire.",
     "result-update": "Vous avez fait une demande de la mise à jour des données statistiques dont les délais peuvent être très long. Vous serez avisé par courriel quand le processus sera fini. Pour des problèmes techniques, veuillez nous écrire au service@bib.umontreal.ca ",
     "demande-importation": "Vous avez fait une demande d'importation des données SUSHI dont les délais peuvent être très long. Vous serez avisé par courriel quand le processus sera fini. Pour des problèmes techniques, veuillez nous écrire au service@bib.umontreal.ca ",
-    "message-brute":"Les résultat brute peuvent contenir une grande quantité de données, nous vous suggérons de choisir une plateforme dans le filtre. "
+    "message-brute":"Les résultat brute peuvent contenir une grande quantité de données, nous vous suggérons de choisir une plateforme dans le filtre. ",
+    "csv-titre-mise-a-jour-incites":"Mise à jour de statistiques",
+    "csv-update-titre-incites":"Mise à jour de statistiques avec les données inCites existantes."
   },
   "rapport":{
     "titre-periodique": "Rapport sur les périodiques",

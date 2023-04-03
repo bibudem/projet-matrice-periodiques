@@ -1,0 +1,9 @@
+{
+  "/rest": {
+    "target": "https://matrice-dev.bib.umontreal.ca/api",
+    "pathRewrite": {
+      "^/rest": ""
+    },
+    "secure": false
+  }
+}

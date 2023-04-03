@@ -9,7 +9,7 @@ exports.getCount = async (req, res, next) => {
       res.redirect('/api/logout');
     }
     const [allLogsRevue] = await Logs.fetchCount();
-    //console.log('Logs revues'+ [allLogsRevue] )
+
     res.status(200).json(allLogsRevue);
 
   } catch (err) {
@@ -26,8 +26,8 @@ exports.getAllLogsRevue = async (req, res, next) => {
       res.redirect('/api/logout');
     }
 
-    const [allLogsRevue] = await Logs.fetchAllLogsRevue();
-    //console.log('all ok')
+    const [allLogsRevue] = await Logs.fetchAllLogsRevue(req.params.annee);
+    //console.log('Logs revues'+ req.params.annee )
     res.status(200).json(allLogsRevue);
 
   } catch (err) {

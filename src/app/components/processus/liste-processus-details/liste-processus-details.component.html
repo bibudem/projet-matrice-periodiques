@@ -12,8 +12,11 @@
           <h4 class="font-weight-semibold text-initial ">{{ 'processus.titre-processus-details' | translate}}  </h4>
           <span  class="ml-auto ">
             <button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/processus">
-                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
-              </span>
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}}
+            </button>
+            <button class="btn btn-info ml-1 btn-sm mb-1" (click)="methodesGlobal.ExportTOExcel('tableau-processus','liste-processus-details.xlsx');"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}
+            </button>
+          </span>
         </div>
       </div>
       <div class="row">
@@ -36,8 +39,8 @@
               <ng-container matColumnDef="idRevue">
                 <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'idRevue' | translate}} </th>
                 <td  *matCellDef="let row" class="mat-w-10" >
-                  <span class="text-danger" *ngIf="row.idRevue==-1">!!!</span>
-                  <span  *ngIf="row.idRevue!=-1">{{row.idRevue}}</span>
+                  <span  *ngIf="row.idRevue=='!!!'" class="text-danger">{{row.idRevue}}</span>
+                  <span  *ngIf="row.idRevue!='!!!'" >{{row.idRevue}}</span>
                    </td>
               </ng-container>
 
@@ -45,8 +48,8 @@
               <ng-container matColumnDef="ISSN">
                 <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'ISSN' | translate}} </th>
                 <td  *matCellDef="let row" class="mat-w-10" >
-                  <span class="text-danger" *ngIf="row.ISSN==-1">{{'non-periodique' | translate}}</span>
-                  <span  *ngIf="row.ISSN!=-1">{{row.ISSN}}</span>
+                  <span class="text-danger" *ngIf="row.ISSN=='!!!'">{{row.ISSN}}</span>
+                  <span  *ngIf="row.ISSN!='!!!'">{{row.ISSN}}</span>
                  </td>
               </ng-container>
 
@@ -60,8 +63,8 @@
               <ng-container matColumnDef="titre">
                 <th *matHeaderCellDef mat-sort-header  class="mat-w-20"> {{ 'titre' | translate}} </th>
                 <td  *matCellDef="let row" class="mat-w-20">
-                  <span class="text-danger" *ngIf="row.idRevue==-1">{{'non-periodique' | translate}}</span>
-                  <span  *ngIf="row.idRevue!=-1">{{row.titre}}</span>
+                  <span class="text-danger" *ngIf="row.idRevue=='!!!'">{{'non-periodique' | translate}}</span>
+                  <span  *ngIf="row.idRevue!='!!!'">{{row.titre}}</span>
                 </td>
               </ng-container>
 

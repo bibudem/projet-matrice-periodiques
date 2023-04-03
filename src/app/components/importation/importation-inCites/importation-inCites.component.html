@@ -10,7 +10,6 @@
       <!-- Quick Action Toolbar Ends-->
       <div class="page-header pt-3">
         <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
-          <h4 class="font-weight-semibold text-initial ">{{ 'importation.csv-titre' | translate}}</h4>
           <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
               </span>
@@ -22,55 +21,93 @@
         <div id="load">{{ 'importation.attendre' | translate}}</div>
       </div>
       <div id="contenu-form">
-        <!-- Alert notification div -->
-        <div>
-          <blockquote class="blockquote blockquote-danger">
-            <p>{{ 'importation.form-description-csv' | translate}}</p>
-          </blockquote>
-        </div>
-        <form  #importationForm="ngForm" >
-          <div class="row mt-5">
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
-                <select name="plateforme" id="annee"  class="form-control" #annee >
-                  <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <input type="file" class="form-control mt-4" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".csv">
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group cacherVisible"  id="addCsv">
-                <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
-                  <i class="fa fa-file-excel-o btn-icon-prepend"></i> {{ 'importation.csv-titre' | translate}}</button>
-              </div>
-            </div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+          <li class="nav-item p-2">
+            <a class="nav-link text-uppercase text-dark active" data-toggle="tab" href="#home">
+              <h4 class="text-success ">{{ 'importation.csv-titre' | translate}}</h4>
+            </a>
+          </li>
+          <li class="nav-item p-2" (click)="methodesGlobal.viderInput('csvFile');methodesGlobal.nonAfficher('contenu-resultat')">
+            <a class="nav-link text-uppercase text-dark" data-toggle="tab" href="#statistiqueUpdateForm">
+              <h4 class="font-weight-semibold text-initial ">{{ 'importation.csv-titre-mise-a-jour-incites' | translate}}</h4>
+            </a>
+          </li>
+        </ul>
 
-          </div>
-          <!-- Modal pour modifier-->
-          <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">{{ 'importation.titre-csv' | translate}}</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                  </button>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div class="tab-pane mt-3 active" id="home">
+            <!-- Alert notification div -->
+            <div>
+              <blockquote class="blockquote blockquote-danger">
+                <p>{{ 'importation.form-description-csv' | translate}}</p>
+              </blockquote>
+            </div>
+            <form  #importationForm="ngForm" >
+              <div class="row mt-5">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
+                    <select name="plateforme" id="annee"  class="form-control" #annee >
+                      <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="modal-body">
-                  {{ 'importation.confirmer-text' | translate}}
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <input type="file" class="form-control mt-4" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".csv">
+                  </div>
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i>{{'btn-annuler'| translate}}</button>
-                  <button type="button" class="btn btn-primary btn-sm "  data-dismiss="modal" id="add-boutton" (click)="postArray(records)" ><i class="fa fa-file-excel-o btn-icon-prepend"></i> {{'importation.btn-csv'| translate }}</button></div>
+                <div class="col-md-5">
+                  <div class="form-group cacherVisible"  id="addCsv">
+                    <button type="button" class="btn btn-outline-dark mt-4 mr-2 cacherVisible" (click)="methodesGlobal.viderInput('csvFile');methodesGlobal.nonAfficher('contenu-resultat')">
+                      {{ 'btn-annuler' | translate}}</button>
+                    <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
+                      <i class="fa fa-file-excel-o btn-icon-prepend"></i> {{ 'importation.csv-titre' | translate}}</button>
+                  </div>
+                </div>
               </div>
+              <!-- Modal pour modifier-->
+              <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">{{ 'importation.titre-csv' | translate}}</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      {{ 'importation.confirmer-text' | translate}}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i>{{'btn-annuler'| translate}}</button>
+                      <button type="button" class="btn btn-primary btn-sm "  data-dismiss="modal" id="add-boutton" (click)="postArray(records)" ><i class="fa fa-file-excel-o btn-icon-prepend"></i> {{'importation.btn-csv'| translate }}</button></div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="tab-pane fade " id="statistiqueUpdateForm">
+            <div class="row mt-3">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
+                  <select name="anneeM" id="anneeM"  class="form-control" #anneeM >
+                    <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
+                  </select>
+                </div>
+              </div>
+                <div class="col-md-7">
+                  <div class="form-group">
+                    <button type="button" class="btn btn-primary mt-4" (click)="this.methodesGlobal.nonAfficher('statistiqueUpdateForm');updateStatistique(methodesGlobal.getValue(anneeM.value))">
+                      <i class="fa fa-save btn-icon-prepend"></i> {{ 'importation.csv-update-titre-incites' | translate}}</button>
+                  </div>
+                </div>
             </div>
           </div>
-        </form>
+        </div>
       </div>
       <!-- progresse bar -->
 

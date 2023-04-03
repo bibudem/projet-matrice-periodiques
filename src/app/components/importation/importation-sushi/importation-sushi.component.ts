@@ -144,6 +144,8 @@ export class ImportationSushiComponent implements OnInit {
           this.dataSource = new MatTableDataSource(this.tableauRapports);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.matSort;
+
+          this.methodesGlobal.afficher('tableauResult')
         }
       });
     } catch(err) {
@@ -198,7 +200,6 @@ export class ImportationSushiComponent implements OnInit {
   //exporter les données en format xlsx
   async ExportTOExcel()
   {
-
     setTimeout(async function () {
       let dateNow=new Date().getUTCDate();
       /* table id is passed over here */

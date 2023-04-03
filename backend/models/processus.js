@@ -511,7 +511,7 @@ module.exports = class Processus {
       valIdMatch.push(issn)
     }
     if(issn!='-' && eissn!='-'){
-      sqlMatch=' ( ISSN =? AND  EISSN=? ) OR  ( ISSN =? AND  EISSN=? )';
+      sqlMatch=' ( ISSN =? OR  EISSN=? ) OR  ( ISSN =? OR  EISSN=? )';
       valIdMatch.push(issn)
       valIdMatch.push(eissn)
       valIdMatch.push(eissn)

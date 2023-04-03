@@ -209,7 +209,7 @@ module.exports = class Sushi {
     let idRevue
 
     // idRevue=await db.execute("SELECT idRevue FROM tbl_periodiques WHERE  titre LIKE ? OR  ISSN=? OR EISSN=?",[Title,ISSN,EISSN])
-      idRevue=await db.execute("SELECT idRevue FROM tbl_periodiques WHERE  (ISSN=? AND EISSN=?) OR (ISSN=? OR EISSN=?)",[ISSN,EISSN,EISSN,ISSN])
+      idRevue=await db.execute("SELECT idRevue FROM tbl_periodiques WHERE  ( ISSN =? OR  EISSN=? ) OR  ( ISSN =? OR  EISSN=? )",[ISSN,EISSN,EISSN,ISSN])
     if(idRevue[0]!=''){
       return idRevue[0]['0']['idRevue']
     }

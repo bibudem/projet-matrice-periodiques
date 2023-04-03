@@ -139,20 +139,20 @@
         <!-- Garder pour post action -->
         <div class="noVisible" *ngFor="let statistique of statistiques$ | async"></div>
         <div class="table-responsive">
-          <table class="table table-hover w-100 table-bordered">
+          <table class="table table-hover table-mat-100 table-bordered p-2">
             <thead>
             <tr>
-              <th class="font-weight-bold w-5">{{ 'numero' | translate}}</th>
-              <th class="font-weight-bold w-5">{{ 'annee' | translate}}</th>
-              <th class="font-weight-bold w-10">{{ 'plateforme' | translate}}</th>
-              <th class="font-weight-bold w-5">{{ 'telech.' | translate}}</th>
-              <th class="font-weight-bold">{{ 'unique-telechargements' | translate}}</th>
-              <th class="font-weight-bold w-5">{{ 'refus' | translate}}</th>
-              <th class="font-weight-bold w-5">{{ 'citations' | translate}}</th>
-              <th class="font-weight-bold w-5">{{ 'art.-udem' | translate}}</th>
-              <th class="font-weight-bold ">{{ 'date-ajout' | translate}}</th>
-              <th class="font-weight-bold w-8">{{ 'btn-modifier' | translate}}</th>
-              <th class="font-weight-bold w-8">{{ 'btn-supprimer' | translate}}</th>
+              <th class="mat-w-5">{{ 'numero' | translate}}</th>
+              <th class="mat-w-5">{{ 'annee' | translate}}</th>
+              <th class="mat-w-10">{{ 'plateforme' | translate}}</th>
+              <th class="mat-w-10">{{ 'telech.' | translate}}</th>
+              <th class="mat-w-10">{{ 'unique-telechargements' | translate}}</th>
+              <th class="mat-w-5">{{ 'refus' | translate}}</th>
+              <th class="mat-w-5">{{ 'citations' | translate}}</th>
+              <th class="mat-w-5">{{ 'art.-udem' | translate}}</th>
+              <th class="mat-w-10 ">{{ 'date-dernier-modif' | translate}}</th>
+              <th class="mat-w-10">{{ 'btn-modifier' | translate}}</th>
+              <th class="mat-w-10">{{ 'btn-supprimer' | translate}}</th>
             </tr>
             </thead>
             <tbody>
@@ -165,7 +165,8 @@
               <td>{{rep.No_License}}</td>
               <td>{{rep.citations}}</td>
               <td>{{rep.articlesUdem}}</td>
-              <td>{{ rep.dateA | date:'short': 'fr' }}</td>
+              <td *ngIf="rep.dateM">{{ rep.dateM | date:'short': 'fr' }}</td>
+              <td *ngIf="!rep.dateM">{{ rep.dateA | date:'short': 'fr' }}</td>
               <td class="text-center">
                 <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm " title="Modifier"  (click)="apliquerModifier(rep.idStatistique)">
                 <i class="icon-note"></i>

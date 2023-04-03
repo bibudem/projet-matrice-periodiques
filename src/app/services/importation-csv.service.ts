@@ -26,16 +26,14 @@ export class ImportationCsvService {
   ngOnInit() {}
 
   post(csvImport: any): Observable<any> {
-
     return this.http
-      .post<Partial<InCites>>(this.url+'/add', csvImport, this.httpOptions)
+      .post<Partial<any>>(this.url+'/add', csvImport, this.httpOptions)
       .pipe(catchError(this.errorHandlerService.handleError<any>("post")));
   }
 
   updateStatistique(annee: string): Observable<any> {
-     console.log(annee)
     return this.http
-      .get<any[]>(`/api/import-csv/update/${annee}`, { responseType: "json" })
+      .get<any[]>(this.url+`/update/${annee}`, { responseType: "json" })
       .pipe(
         tap((_) => console.log("inCites update statistique")),
         catchError(
