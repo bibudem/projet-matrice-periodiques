@@ -50,6 +50,7 @@ export class LoginComponent implements OnInit {
 
   // Logout l'utilisateur
   async logout() {
+    localStorage.clear();
     await this.authService.logout();
   }
 

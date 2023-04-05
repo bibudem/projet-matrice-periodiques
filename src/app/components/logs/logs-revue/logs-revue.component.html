@@ -18,13 +18,21 @@
         </div>
       </div>
       <div class="row">
-        <div class="example-container w-100">
-          <div class="card-header b-white">
-            <mat-form-field class="w-75">
-              <input (keyup)="applyFilter(methodesGlobal.getValue(texteFiltre.value))"
-                     matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre >
-            </mat-form-field>
-          </div>
+        <div class="col-md-2">
+          <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
+          <select name="annee" id="annee"  class="form-control" #annee (change)="getAllLogsRevue(this.methodesGlobal.getValue(annee.value))">
+            <option value="">{{ 'choisissez' | translate}}</option>
+            <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
+          </select>
+        </div>
+        <div class="col-md-10">
+          <mat-form-field class="w-50 mt-4">
+            <input (keyup)="applyFilter(methodesGlobal.getValue(texteFiltre.value))"
+                   matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre >
+          </mat-form-field>
+        </div>
+
+        <div class="example-container w-100  mt-3">
           <!-- section pour afficher les url des logs -->
           <div class="alert alert-success cacherVisible" id="alert-urlLog">
             <button type="button" (click)="methodesGlobal.nonAfficher('alert-urlLog')" class="alert-dismissible close">&times;</button>

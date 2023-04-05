@@ -66,5 +66,12 @@ export class ListeChoixOptions  {
     {id: 2, name: 'Non'}
   ];
 
+  //objet pour les essentiel
+  essentielListe14 = [
+    {id: 1, name: 'Oui'}
+  ];
+  essentielListe22 = [
+    {id: 1, name: 'Oui'}
+  ];
 
 }

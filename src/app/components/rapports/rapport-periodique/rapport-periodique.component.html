@@ -12,7 +12,7 @@
           <h4 class="font-weight-semibold titre-initial ">{{ 'rapport.titre-periodique' | translate}}  </h4>
           <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
-            <button *ngIf="(totalDonnees > 0)" class="btn btn-info btn-sm mb-1 ml-2" (click)="ExportTOExcel();"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}</button>
+            <button *ngIf="(totalDonnees > 0)" class="btn btn-info btn-sm mb-1 ml-2" (click)="methodesGlobal.ExportTOExcel('table-rapport','rapport-periodiques');"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}</button>
               </span>
         </div>
       </div>
@@ -23,26 +23,37 @@
       <div id="page-rapport">
       <form  #rapportForm="ngForm" >
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-3">
             <div class="form-group">
               <label for="plateformePrincipale">{{ 'plateforme' | translate}}</label>
               <select name="plateformePrincipale" id="plateformePrincipale" name="plateformePrincipale"  class="form-control" #plateformePrincipale (change)="this.implimentationFiltre($event)">
-                <option value="">{{ 'Tous les plateformes' | translate}}</option>
-                <option *ngFor="let rep of this.listePlateforme" [value]="rep.idPlateforme">{{rep.titrePlateforme}}</option>
+                <option value="">{{ 'choisissez' | translate}}</option>
+                <option *ngFor="let rep of this.listePlateforme" [value]="rep.titrePlateforme">{{rep.titrePlateforme}}</option>
               </select>
             </div>
           </div>
-
-          <div class="col-md-2">
+          <div class="col-md-3">
             <div class="form-group">
-              <label for="ISSN">{{ 'ISSN' | translate}} </label>
-              <input type="text" class="form-control" name="ISSN" id="ISSN" #ISSN (keyup)="this.implimentationFiltre($event)">
+              <label for="autrePlateforme">{{ 'plateforme-autre' | translate}}</label>
+              <select name="autrePlateforme" id="autrePlateforme" name="autrePlateforme"  class="form-control" #autrePlateforme (change)="this.implimentationFiltre($event)">
+                <option value="">{{ 'choisissez' | translate}}</option>
+                <option *ngFor="let rep of this.listePlateforme" [value]="rep.titrePlateforme">{{rep.titrePlateforme}}</option>
+              </select>
             </div>
           </div>
           <div class="col-md-2">
             <div class="form-group">
-              <label for="EISSN">{{ 'EISSN' | translate}} </label>
-              <input type="text" name="EISSN" id="EISSN"  class="form-control" #EISSN  (keyup)="this.implimentationFiltre($event)">
+              <label for="statut">{{ 'statut' | translate}} </label>
+              <select name="statut" id="statut" class="form-control" #statut (change)="this.implimentationFiltre($event)">
+                <option value="">{{ 'choisissez' | translate}}</option>
+                <option *ngFor="let rep of this.listeChoixOptions.listStatut" [value]="rep.name">{{rep.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="fournisseur">{{ 'fournisseur' | translate}}</label>
+              <input type="text" class="form-control" id="fournisseur" name="fournisseur" placeholder="{{ 'fournisseur' | translate}}" #fournisseur (change)="this.implimentationFiltre($event)">
             </div>
           </div>
           <div class="col-md-2">
@@ -62,15 +73,6 @@
               <select name="bdd" id="bdd"  class="form-control" #bdd  (change)="this.implimentationFiltre($event)">
                 <option value="">{{ 'choisissez' | translate}}</option>
                 <option *ngFor="let rep of this.listeChoixOptions.bdd" [value]="rep.name">{{rep.name}}</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-2">
-            <div class="form-group">
-              <label for="statut">{{ 'statut' | translate}} </label>
-              <select name="statut" id="statut" class="form-control" #statut (change)="this.implimentationFiltre($event)">
-                <option value="">{{ 'choisissez' | translate}}</option>
-                <option *ngFor="let rep of this.listeChoixOptions.listStatut" [value]="rep.name">{{rep.name}}</option>
               </select>
             </div>
           </div>
@@ -103,13 +105,31 @@
           </div>
           <div class="col-md-2">
             <div class="form-group">
+              <label for="essentiel2014">{{ 'Essentiel 2014' | translate}}</label>
+              <select name="essentiel2014" id="essentiel2014" name="essentiel2014"  class="form-control" #essentiel2014 (change)="this.implimentationFiltre($event)">
+                <option value="">{{ 'choisissez' | translate}}</option>
+                <option *ngFor="let rep of this.listeChoixOptions.essentielListe14" [value]="rep.name">{{rep.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="essentiel2022">{{ 'Essentiel 2022' | translate}}</label>
+              <select name="essentiel2022" id="essentiel2022" name="essentiel2022"  class="form-control" #essentiel2022 (change)="this.implimentationFiltre($event)">
+                <option value="">{{ 'choisissez' | translate}}</option>
+                <option *ngFor="let rep of this.listeChoixOptions.essentielListe22" [value]="rep.name">{{rep.name}}</option>
+              </select>
+            </div>
+          </div>
+          <!--<div class="col-md-2">
+            <div class="form-group">
               <label for="format">{{ 'format' | translate}}</label>
               <select name="format" id="format" class="form-control" #format (change)="this.implimentationFiltre($event)">
                 <option value="">{{ 'choisissez' | translate}}</option>
                 <option *ngFor="let rep of this.listeChoixOptions.listFormat" [value]="rep.name">{{rep.name}}</option>
               </select>
             </div>
-          </div>
+          </div>-->
         </div>
       </form>
         <div class="visible border-top border-bottom mt-2 pt-2 mb-2 pb-2" id="champs-default">

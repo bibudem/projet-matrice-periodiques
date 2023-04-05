@@ -19,7 +19,12 @@ export class LogsRevueComponent implements OnInit {
 
   logs$: Observable<any[]> | undefined;
 
-  codes:any=[]
+  codes:any=[];
+
+  //Initialiser le tableau d'annee'
+  arrayAnnee:any[]=[];
+
+  annee = new Date().getFullYear()-1;
 
   //les entêts du tableau
   displayedColumns = ['numero', 'ISSN','EISSN','Title','rapport','annee','fournisseur','dateA','supprimer'];
@@ -46,13 +51,15 @@ export class LogsRevueComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAllLogsRevue()
+    this.getAllLogsRevue(this.annee.toString());
+    //remplire la liste des annees
+    this.anneeOptions();
 
   }
-  async getAllLogsRevue() {
+  async getAllLogsRevue(annee:string) {
     try {
       this.listeLogs=[]
-      this.logs$ = this.logsService.getAllLogsRevue();
+      this.logs$ = this.logsService.getAllLogsRevue(annee);
       // @ts-ignore
       await this.logs$.toPromise().then(res => {
         for (let i = 0; i < res.length; i++) {
@@ -72,7 +79,7 @@ export class LogsRevueComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.listeLogs);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
-        //console.log(this.dataSource);
+        console.log(this.dataSource);
       });
     } catch(err) {
       console.error(`Error : ${err.Message}`);
@@ -83,7 +90,15 @@ export class LogsRevueComponent implements OnInit {
     let idP=Number(id)
     this.logs$ = this.logsService
       .deleteLogsRevue(idP)
-      .pipe(tap(() => (this.getAllLogsRevue())));
+      .pipe(tap(() => (this.getAllLogsRevue(this.annee.toString()))));
   }
-
+  //creation du select d'année a partir de 2019
+  anneeOptions(){
+    let anneeNow=new Date().getFullYear();
+    let i=0
+    while(i <=(anneeNow-2019)){
+      this.arrayAnnee[i]=anneeNow-i
+      i++
+    }
+  }
 }

@@ -282,7 +282,6 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
   }
   //fonction pour inserer
   post( postLigne : any) {
-
     this.inUpdatePeriodiques$ = this.csvService
       .updateLotPeriodiques(postLigne)
       //.toPromise(tap(() => (this.finImportation())));
@@ -310,8 +309,6 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
     this.methodesGlobal.nonAfficher('load-import');
     document.getElementsByTagName("body")[0].style.setProperty('pointer-events','auto');
     this.router.navigate(['/processus/add']);
-
-
   }
   processousEnCours(){
     this.methodesGlobal.nonAfficher('contenu-form');

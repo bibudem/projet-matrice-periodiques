@@ -14,6 +14,7 @@ import {MatSort} from "@angular/material/sort";
 import {ListePeriodique} from "../../periodique/periodique-liste/periodique-liste.component";
 import { MatTableExporterModule } from 'mat-table-exporter';
 import {NgForm} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-rapport-periodique',
@@ -79,7 +80,8 @@ export class RapportPeriodiqueComponent implements OnInit {
               private periodiqueServices: PeriodiqueListeService,
               public dialog: MatDialog,
               public exporter: MatTableExporterModule,
-              private translate:TranslateService) { }
+              private translate:TranslateService,
+              private router: Router,) { }
 
   async ngOnInit() {
     //remplire la liste des plateforme
@@ -121,9 +123,6 @@ export class RapportPeriodiqueComponent implements OnInit {
     return result
   }
 
-
-
-
   async creerTableauPlateforme() {
     try {
       this.plateformes$ = this.plateformeService.fetchAll();
@@ -141,92 +140,74 @@ export class RapportPeriodiqueComponent implements OnInit {
       console.error(`Error : ${err.Message}`);
     }
   }
-  //retourner un titre d'une plateforme selon son id
-   chercherTitrePlateforme(id:string): string{
-    let titre='';
-      for(let i=0; i < this.listePlateforme.length; i++){
-        if(this.listePlateforme[i]['idPlateforme']==id){
-          titre+=this.listePlateforme[i]['titrePlateforme'];
-        }
-      }
-
-    return titre;
-  }
 
 //liste des periodique
   async creerTableauPeriodique(plateforme: string) {
     try {
       this.listePeriodique=[]
       this.afficherAnimation()
-      let j=0,k
       let result = Object.entries(this.filtres);
 
       this.periodiques$ = this.periodiqueServices.fetchRapportAll(plateforme);
+        //chercher les autres champs
+        await this.remplireAutresChampsPeriodiques(plateforme);
 
-      //chercher les autres champs
-      await this.remplireAutresChampsPeriodiques(plateforme);
-
-      // @ts-ignore
-      await this.periodiques$.toPromise().then(res => {
-        console.log(res)
-        for (let i = 0; i < res.length; i++) {
-          k=0
-          for ( let [key,elem] of result){
-            if(elem=== res[i][key]) {
-              k++
+        // @ts-ignore
+         this.periodiques$.toPromise().then(res => {
+          let k,j=0;
+          for (let i = 0; i < res.length; i++) {
+            k=0;
+            for ( let [key,elem] of result){
+              if( res[i][key]!==null && res[i][key].includes(elem)){
+              //if(elem=== res[i][key]) {
+                k++
+              }
+            }
+            if(k==result.length){
+              this.listePeriodique[j]={
+                "No":j+1,
+                "id":res[i].idP,
+                "titre":res[i].titre,
+                "ISSN":res[i].ISSN,
+                "EISSN":res[i].EISSN,
+                "statut":res[i].statut,
+                "abonnement":res[i].abonnement,
+                "libreAcces":res[i].libreAcces,
+                "domaine":res[i].domaine,
+                "secteur":res[i].secteur,
+                "sujets":res[i].sujets,
+                "fonds":res[i].fonds,
+                "fournisseur":res[i].fournisseur,
+                "plateformePrincipale":res[i].plateformePrincipale,
+                "autrePlateforme":res[i].autrePlateforme,
+                "format":res[i].format,
+                "duplication":res[i].duplication,
+                "duplicationCourant":res[i].duplicationCourant,
+                "duplicationEmbargo1":res[i].duplicationEmbargo1,
+                "duplicationEmbargo2":res[i].duplicationEmbargo2,
+                "prixUtil":res[i].prixUtil,
+                "essentiel2014":res[i].essentiel2014,
+                "essentiel2022":res[i].essentiel2022,
+                "notes":this.donneesAutresChamps(this.notesPeriodique,res[i].idP,'notes'),
+                "prix":this.donneesAutresChamps(this.prixPeriodique,res[i].idP,'prix'),
+                "cores":this.donneesAutresChamps(this.coresPeriodique,res[i].idP,'cores'),
+                "archives":this.donneesAutresChamps(this.archivesPeriodique,res[i].idP,'archives'),
+                "dateA":res[i].dateA,
+                "dateM":res[i].dateM
+              }
+              j++
             }
           }
+          // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
+          this.dataSourcesCreation(this.listePeriodique);
+        });
 
-          if(k==result.length){
-            let plateformePrincipaleTitre = this.chercherTitrePlateforme(res[i].plateformePrincipale);
-
-          this.listePeriodique[j]={
-            "No":j+1,
-            "id":res[i].idP,
-            "titre":res[i].titre,
-            "ISSN":res[i].ISSN,
-            "EISSN":res[i].EISSN,
-            "statut":res[i].statut,
-            "abonnement":res[i].abonnement,
-            "libreAcces":res[i].libreAcces,
-            "domaine":res[i].domaine,
-            "secteur":res[i].secteur,
-            "sujets":res[i].sujets,
-            "fonds":res[i].fonds,
-            "fournisseur":res[i].fournisseur,
-            "plateformePrincipale":plateformePrincipaleTitre,
-            "format":res[i].format,
-            "duplication":res[i].duplication,
-            "duplicationCourant":res[i].duplicationCourant,
-            "duplicationEmbargo1":res[i].duplicationEmbargo1,
-            "duplicationEmbargo2":res[i].duplicationEmbargo2,
-            "prixUtil":res[i].prixUtil,
-            "essentiel2014":res[i].essentiel2014,
-            "essentiel2022":res[i].essentiel2022,
-            "notes":this.donneesAutresChamps(this.notesPeriodique,res[i].idP,'notes'),
-            "prix":this.donneesAutresChamps(this.prixPeriodique,res[i].idP,'prix'),
-            "cores":this.donneesAutresChamps(this.coresPeriodique,res[i].idP,'cores'),
-            "archives":this.donneesAutresChamps(this.archivesPeriodique,res[i].idP,'archives'),
-            "dateA":res[i].dateA,
-            "dateM":res[i].dateM
-          }
-
-
-            j++
-          }
-        }
-
-        // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
-        this.dataSource = new MatTableDataSource(this.listePeriodique);
-        this.dataSource.paginator = this.paginator;
-        this.totalDonnees=this.listePeriodique.length;
-        this.dataSource.sort = this.matSort;
-        //afficher le tableau
-        this.nonAfficherAnimation()
-      });
       //console.log(this.listePeriodique)
     } catch(err) {
       console.error(`Error : ${err.Message}`);
+      //afficher le tableau
+      this.nonAfficherAnimation();
+
     }
   }
 
@@ -245,38 +226,14 @@ export class RapportPeriodiqueComponent implements OnInit {
       }
   }
 
-  //exporter les données en format xlsx
-  async ExportTOExcel()
-  {
-    let that=this
-    that.afficherAnimation()
-    this.isLoadingResults=true
-    setTimeout(async function () {
-        that.nonAfficherAnimation()
-        let dateNow=new Date().getUTCDate();
-        /* table id is passed over here */
-        let element = document.getElementById('table-rapport');
-        const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
-
-        /* generate workbook and add the worksheet */
-        const wb: XLSX.WorkBook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Rapport-periodique-'+dateNow);
-
-        /* save to file */
-        XLSX.writeFile(wb, that.fileName);
-    }, 3000);
-
-        //console.log(this.dataSource);
-
-  }
 //apliquer les filtre pour le rapport
   implimentationFiltre($event: any){
     if($event.target.value!=''){
-      this.filtres[$event.target.id]=$event.target.value
+      this.filtres[$event.target.id]=$event.target.value;
     }else{
       delete this.filtres[$event.target.id];
     }
-   console.log(this.filtres)
+   //console.log(this.filtres)
   }
 
   //afficher animation
@@ -323,6 +280,13 @@ export class RapportPeriodiqueComponent implements OnInit {
   }
 
 
-
+  dataSourcesCreation(liste:any){
+    this.dataSource = new MatTableDataSource(liste);
+    this.dataSource.paginator = this.paginator;
+    this.totalDonnees=liste.length;
+    this.dataSource.sort = this.matSort;
+    //afficher le tableau
+    this.nonAfficherAnimation();
+  }
 
 }

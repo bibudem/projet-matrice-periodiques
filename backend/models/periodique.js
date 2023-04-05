@@ -17,18 +17,13 @@ static fetchAll() {
   static  fetchRapportAll(plateforme) {
     let i=0,sqlCondition=''
     let dt = datetime.create();
-    let anneeFormat = dt.format('Y');
     let valPlateforme=plateforme.split('=')[1];
 
     if(valPlateforme!='vide'){
+      valPlateforme=valPlateforme.toString();
       sqlCondition=" WHERE `plateformePrincipale`='"+valPlateforme+"'"
     }
-    /*let sql = 'SELECT `titre`,`EISSN`,`ISSN`,`statut`,`abonnement`,`fonds`,`fournisseur`,`plateformePrincipale`,`autrePlateforme`,`format`,`libreAcces`,`domaine`,`secteur`,`sujets`,`duplication`,`duplicationCourant`,`duplicationEmbargo1`,`duplicationEmbargo2`,`bdd`,`idRevue` as `idP`, ((SELECT SUM(prix) FROM tbl_prix_periodiques where (`annee`="'+(anneeFormat-1)+'" OR `annee`="'+(anneeFormat-2)+'") AND idRevue=idP) /(SELECT SUM(Total_Item_Requests) FROM tbl_statistiques where (`annee`="'+(anneeFormat-1)+'" OR `annee`="'+(anneeFormat-2)+'") AND idRevue=idP)) as prixUtil, (SELECT GROUP_CONCAT("Année:", annee, ", Prix: ", prix, ", ") from tbl_prix_periodiques WHERE `idRevue`=idP ) as prix FROM `tbl_periodiques` '+sqlCondition+'  order by idRevue';
-    console.log('sql: ', SqlString.format(sql));*/
-    //let result= db.execute('SELECT `titre`,`EISSN`,`ISSN`,`statut`,`abonnement`,`fonds`,`fournisseur`,`plateformePrincipale`,`autrePlateforme`,`format`,`libreAcces`,`domaine`,`secteur`,`sujets`,`duplication`,`duplicationCourant`,`duplicationEmbargo1`,`duplicationEmbargo2`,`bdd`,`idRevue` as `idP`, ((SELECT SUM(prix) FROM tbl_prix_periodiques where (`annee`="'+(anneeFormat-1)+'" OR `annee`="'+(anneeFormat-2)+'") AND idRevue=idP) /(SELECT SUM(Total_Item_Requests) FROM tbl_statistiques where (`annee`="'+(anneeFormat-1)+'" OR `annee`="'+(anneeFormat-2)+'") AND idRevue=idP)) as prixUtil, (SELECT GROUP_CONCAT("Année:", annee, ", Prix: ", prix, ", ") from tbl_prix_periodiques WHERE `idRevue`=idP ) as prix FROM `tbl_periodiques` '+sqlCondition+'  order by idRevue');
-   // console.log(periodique)
-    let result= db.execute('SELECT `titre`,`EISSN`,`ISSN`,`statut`,`abonnement`,`fonds`,`fournisseur`,`plateformePrincipale`,`autrePlateforme`,`format`,`libreAcces`,`domaine`,`secteur`,`sujets`,`duplication`,`duplicationCourant`,`duplicationEmbargo1`,`duplicationEmbargo2`,`essentiel2014`,`essentiel2022`,`bdd`,`dateA`,`dateM`,`idRevue` as `idP`  FROM `tbl_periodiques` '+sqlCondition+'  order by idP');
-    return result
+    return db.execute('SELECT *  FROM `view_rapport_periodiques_all` '+sqlCondition+'  order by idP');
   }
 
   static  async fetchRapportAutres(plateforme) {
@@ -40,11 +35,6 @@ static fetchAll() {
     if(valPlateforme!='vide'){
       sqlCondition=" and `plateformePrincipale`='"+valPlateforme+"'"
     }
-    /*let sql = 'SELECT `titre`,`EISSN`,`ISSN`,`abonnement`,`plateformePrincipale`,`autrePlateforme`,`idRevue` as `idP`, (SELECT GROUP_CONCAT("Année:", annee, ", Prix: ", prix, ", ") from tbl_prix_periodiques WHERE `idRevue`=idP ) as prix,(SELECT GROUP_CONCAT("Note:", note, ", Date: ", dateA, "; ") from tbl_notes WHERE `idRevue`=idP ) as note,(SELECT GROUP_CONCAT("Année:", annee, ", Core: ", core, ", Date: ", dateA, "; ") from tbl_cores WHERE `idRevue`=idP ) as note FROM `tbl_periodiques` '+sqlCondition+'  order by idRevue';
-    , ((SELECT SUM(prix) FROM tbl_prix_periodiques where (`annee`="'+(anneeFormat-1)+'" OR `annee`="'+(anneeFormat-2)+'") AND idRevue=idP) /(SELECT SUM(Total_Item_Requests) FROM tbl_statistiques where (`annee`="'+(anneeFormat-1)+'" OR `annee`="'+(anneeFormat-2)+'") AND idRevue=idP)) as prixUtil
-    console.log('sql: ', SqlString.format(sql));*/
-    /*let sql= 'SELECT `titre`,`EISSN`,`ISSN`,`abonnement`,`plateformePrincipale`,`autrePlateforme`,`idRevue` as `idP`, (SELECT GROUP_CONCAT("Année:", annee, ", Prix: ", prix, ", ") from tbl_prix_periodiques WHERE `idRevue`=idP ) as prix,(SELECT GROUP_CONCAT("Note:", note, ", Date: ", dateA, "; ") from tbl_notes WHERE `idRevue`=idP ) as note,(SELECT GROUP_CONCAT("Année:", annee, ", Core: ", core, ", Date: ", dateA, "; ") from tbl_cores WHERE `idRevue`=idP ) as note FROM `tbl_periodiques` '+sqlCondition+'  order by idRevue';
-    console.log('sql: ', SqlString.format(sql));*/
     let autresChamps = {};
     let notes= await db.execute('Select tbl_periodiques.idRevue as idP,GROUP_CONCAT(tbl_notes.note,";",tbl_notes.dateA) AS notes  from tbl_periodiques left join tbl_notes on tbl_periodiques.idRevue=tbl_notes.idRevue where note is not null '+sqlCondition+'  GROUP BY tbl_periodiques.idRevue   order by idP');
     let prix= await db.execute('Select tbl_periodiques.idRevue as idP,GROUP_CONCAT(tbl_prix_periodiques.prix, ";",tbl_prix_periodiques.annee) AS prix from tbl_periodiques left join tbl_prix_periodiques on tbl_periodiques.idRevue=tbl_prix_periodiques.idRevue where prix is not null '+sqlCondition+'  GROUP BY tbl_periodiques.idRevue   order by idP');
