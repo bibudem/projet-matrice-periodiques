@@ -65,10 +65,14 @@
   "prix": "Prix",
   "telechargements": "Téléchargements",
   "telech.": "Téléch.",
+  "total-telech.": "Total téléch.",
   "unique-telechargements": "Tél. uniques",
   "refus": "Refus",
+  "total-refus": "Total refus",
   "citations": "Citations",
+  "total-citations": "Total citations",
   "articles-udem": "Articles de l'UdeM",
+  "total-art.-udem": "Total art. de l'UdeM",
   "art.-udem": "Art. UdeM",
   "jr5-courant": "TRJ4-COURANT",
   "jr5-inter": "TRJ4-INTER",
@@ -125,6 +129,8 @@
   "btn-fermer": "Fermer",
   "details-note": "Contenu de la note",
   "date-dernier-modif": "Dernière modif.",
+  "text-moyenne": "Moyenne sur 5 dernières années :",
+  "text-moyenne-5-ref": "Moyenne des refus d'accès des 5 dernières années :",
 
   "message": {
     "confirmer-titre": "Confirmer votre action",
@@ -159,6 +165,7 @@
     "processus": "Processus",
     "rapport-periodique": "sur les périodiques",
     "rapport-statistique": "sur les statistiques",
+    "rapport-moyenne": "moyenne des statis.",
     "rapport-plateforme": "sur les plateformes",
     "outils": "Configuration",
     "list-plateforme": "Liste des plateformes",
@@ -237,6 +244,7 @@
   "rapport":{
     "titre-periodique": "Rapport sur les périodiques",
     "titre-statistique": "Rapport sur les statistiques",
+    "titre-moyenne": "Moyenne des statistiques sur 5 dernières années",
     "titre-plateforme": "Rapport sur les plateformes",
     "filtre-text": "Choisissez vos filtres pour votre rapport",
     "cols-gauche": "Champs possibles",
@@ -307,7 +315,6 @@
     "essentiel2022": "Essentiel 2022",
     "notes": "Notes",
     "archives": "Archives",
-    "cores": "Core",
     "prix": "Prix",
     "dateM": "Date de modif.",
     "dateA": "Date d'ajout"
@@ -333,12 +340,7 @@
     "JR5COURANT": "TR_J4-Courant",
     "JR5INTER": "TR_J4-Inter",
     "JR5RETRO": "TR_J4-Retro",
-    "JR3OAGOLD": "TR_J3-OA Gold",
-    "tele_moyenne": "Téléch. (moy.)",
-    "unique_moyenne": "Téléch. uniques (moy.)",
-    "refus_moyenn": "Refus (moy.)",
-    "citation_moyenn": "Citations (moy.)",
-    "articlesUdem_moyenn": "Articles Udem (moy.)"
+    "JR3OAGOLD": "TR_J3-OA Gold"
   },
   "labels-rapport-plateforme":{
     "PlatformID": "Code",
@@ -349,6 +351,21 @@
     "refus": "Refus",
     "dateA": "Date d'ajout",
     "dateM": "Date de modif."
+  },
+  "labels-rapport-moyenne":{
+    "idRevue": "ID Revue",
+    "titre": "Titre",
+    "ISSN": "ISSN",
+    "EISSN": "EISSN",
+    "statut": "Statut",
+    "essentiel2014": "Essentiel 2014",
+    "essentiel2022": "Essentiel 2022",
+    "plateforme": "Plateformes",
+    "annees": "Années",
+    "total_tel": "Total téléch.",
+    "total_ref": "Total refus",
+    "total_cit": "Total citations",
+    "total_artU": "Total art. de l'UdeM"
   },
   "routes":{
     "accueil": "Page d'accueil",
@@ -365,5 +382,10 @@
   },
   "options":{
     "title": "Les options possibles pour les caractéristiques suivantes"
-  }
+  },
+  "tele_moyenne": "Téléch. (moy.)",
+  "unique_moyenne": "Téléch. uniques (moy.)",
+  "refus_moyenn": "Refus (moy.)",
+  "citation_moyenn": "Citations (moy.)",
+  "articlesUdem_moyenn": "Articles Udem (moy.)"
 }

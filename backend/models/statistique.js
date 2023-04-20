@@ -18,6 +18,15 @@ module.exports = class Statistique {
     return db.execute('SELECT * FROM `tbl_statistiques` WHERE `idRevue`=? order by annee Desc',[idRevue]);
   }
 
+  static fetchAllResume(idRevue) {
+    return db.execute("SELECT SUM(Total_Item_Requests) as Total_Item_Requests,SUM(No_License) as No_License,SUM(citations) as citations,SUM(articlesUdem) as articlesUdem, annee, group_concat(plateforme,' ') as plateforme from tbl_statistiques WHERE `idRevue`=? group by annee DESC",[idRevue]);
+  }
+
+///Moyenne des téléchargements des 5 dernières années
+  static mayenneStatistiques(idRevue) {
+    return db.execute("SELECT SUM(Total_Item_Requests)/5 as moyenn_t,SUM(No_License)/5 as moyenn_r,SUM(citations)/5 as moyenn_c,SUM(articlesUdem)/5 as moyenn_a, group_concat(annee,' ') from tbl_statistiques where annee >= year(now()) - 5 and idRevue = ? ",[idRevue]);
+  }
+
   static async post(statistique) {
     //creation de la date
     let dt = datetime.create();

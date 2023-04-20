@@ -12,7 +12,7 @@
           <h4 class="font-weight-semibold titre-initial ">{{ 'rapport.titre-periodique' | translate}}  </h4>
           <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
-            <button *ngIf="(totalDonnees > 0)" class="btn btn-info btn-sm mb-1 ml-2" (click)="methodesGlobal.ExportTOExcel('table-rapport','rapport-periodiques');"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}</button>
+            <button *ngIf="(totalDonnees > 0)" class="btn btn-info btn-sm mb-1 ml-2" (click)="methodesGlobal.ExportTOExcel('table-rapport',fileName);"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}</button>
               </span>
         </div>
       </div>
@@ -181,7 +181,8 @@
       </div>
     </div>
     <!-- creation  du tableau pour export-->
-    <table *ngIf="isLoadingResults" class="table cacherVisible"  id="table-rapport" >
+    <div class="noVisible" *ngFor="let s of periodiques$ | async"></div>
+    <table  class="table cacherVisible"  id="table-rapport" >
       <tr><th *ngFor="let th of thTableau ">{{champsTitre[th]}}</th></tr>
       <tr *ngFor="let periodique of listePeriodique">
         <td *ngFor="let th of thTableau">{{periodique[th]}}</td></tr>

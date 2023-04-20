@@ -130,3 +130,15 @@
   margin-top: 50px;
   margin-left: -65px;
 }
+  th, td  {
+    min-height: 40px;
+    height: auto;
+    border-right: 1px solid #d5d0d0;
+}
+mat-row {
+  height: auto;
+  min-height: 40px!important;
+}
+mat-header-row {
+  background: #b3b0b045;
+}

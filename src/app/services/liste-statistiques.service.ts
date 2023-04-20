@@ -49,39 +49,14 @@ export class ListeStatistiquesService {
       params=new HttpParams().set('periode', paramAnnees);
     }
 
-    //console.log(paramAnnees);
-    //console.log('/api/liste-statistique/rapport/'+params);
+    console.log(paramAnnees);
+    console.log('/api/liste-statistique/rapport/'+params);
     return this.http
       .get<any[]>(`/api/liste-statistique/rapport/${params}`, { responseType: "json" })
       .pipe(
         tap((_) => console.log("rapport statistiques")),
         catchError(
           this.errorHandlerService.handleError<any[]>("rapportStatistiques", [])
-        )
-      );
-  }
-
-  //chercher toute la liste des statistiques
-  rapportStatistiquesPlateforme(annees:any,plateforme:string): Observable<any[]> {
-    let params,paramAnnees='';
-
-    if(annees!=''){
-      params=new HttpParams()
-      for(let i=0;i<annees.length;i++){
-        paramAnnees+=annees[i]+'='
-      }
-      if(plateforme!=''){
-        paramAnnees+='&'+plateforme;
-      }
-      params=new HttpParams().set('periode', paramAnnees)
-    }
-    //console.log(paramAnnees)
-    return this.http
-      .get<any[]>(`/api/liste-statistique/plateforme-rapport/${params}`, { responseType: "json" })
-      .pipe(
-        tap((_) => console.log("rapport statistiques plateforme")),
-        catchError(
-          this.errorHandlerService.handleError<any[]>("rapportStatistiquesPlateforme", [])
         )
       );
   }

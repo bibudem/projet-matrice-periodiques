@@ -56,6 +56,29 @@ export class PeriodiqueStatistiquesService {
         )
       );
   }
+
+  fetchAllResume(idRevue: number): Observable<any[]> {
+    return this.http
+      .get<any[]>(this.url+'/resume-all/'+idRevue, { responseType: "json" })
+      .pipe(
+        tap((_) => console.log("Résumé des statistique pour une periodique")),
+        catchError(
+          this.errorHandlerService.handleError<any[]>("Résumé", [])
+        )
+      );
+  }
+
+  mayenneStatistiques(idRevue: number): Observable<any[]> {
+    return this.http
+      .get<any[]>(this.url+'/moyenne/'+idRevue, { responseType: "json" })
+      .pipe(
+        tap((_) => console.log("Moyenne des téléchargements des 5 dernières années")),
+        catchError(
+          this.errorHandlerService.handleError<any[]>("Moyenne", [])
+        )
+      );
+  }
+
   //consulter les données d'une archive
   consulter(id: number): Observable<any> {
     const url = `/api/statistique/fiche/${id}`;

@@ -6,6 +6,10 @@ const router = express.Router();
 
 router.get('/all/:id', statistiqueController.getAllStatistique);
 
+router.get('/resume-all/:id', statistiqueController.getAllResumeStatistique);
+
+router.get('/moyenne/:id', statistiqueController.mayenneStatistiques);
+
 router.post('/add', statistiqueController.postStatistique);
 
 router.put('/save', statistiqueController.putStatistique);

@@ -20,6 +20,42 @@ exports.getAllStatistique = async (req, res, next) => {
   }
 };
 
+exports.getAllResumeStatistique = async (req, res, next) => {
+  try {
+    //retourner vers la connexion si on n'an une bonne session pour cet user
+    if(Lib.userConnect(req).length==0){
+      res.redirect('/api/logout');
+    }
+    const [allStatistique] = await Statistique.fetchAllResume(req.params.id);
+    //console.log('all ok')
+    res.status(200).json(allStatistique);
+
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.mayenneStatistiques = async (req, res, next) => {
+  try {
+    //retourner vers la connexion si on n'an une bonne session pour cet user
+    if(Lib.userConnect(req).length==0){
+      res.redirect('/api/logout');
+    }
+    const [allStatistique] = await Statistique.mayenneStatistiques(req.params.id);
+    //console.log('all ok')
+    res.status(200).json(allStatistique);
+
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
 
 exports.postStatistique= async (req, res, next) => {
   try {

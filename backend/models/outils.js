@@ -55,9 +55,14 @@ module.exports = class Outils {
   //creer le rapport des plateformes
   static getAllRapportPlateforme(annee) {
     //afficher la requette
-    let sql = "SELECT PlatformID AS acronyme,titrePlateforme,SUSHIURL,ConsortiumCustID,ConsortiumRequestorID,ConsortiumApiKey,(SELECT SUM(Reporting_Period_Total) FROM `tbl_results_j1`  WHERE Metric_Type='Total_Item_Requests' AND PlatformID=acronyme and annee=annee) as total_tel,(SELECT SUM(Reporting_Period_Total) FROM `tbl_results_j1`  WHERE Metric_Type='Unique_Item_Requests' AND PlatformID=acronyme and annee=annee) as unique_tel,(SELECT SUM(Reporting_Period_Total) FROM `tbl_results_j2`  WHERE Metric_Type='No_License' AND PlatformID=acronyme and annee=annee) as refus FROM lst_plateformes order by titrePlateforme"
-    //console.log('sql: ', SqlString.format(sql));
     return db.execute("SELECT PlatformID AS acronyme,titrePlateforme,SUSHIURL,ConsortiumCustID,ConsortiumRequestorID,ConsortiumApiKey,dateA,dateM,(SELECT SUM(Reporting_Period_Total) FROM `tbl_results_j1`  WHERE Metric_Type='Total_Item_Requests' AND PlatformID=acronyme and annee=?) as total_tel,(SELECT SUM(Reporting_Period_Total) FROM `tbl_results_j1`  WHERE Metric_Type='Unique_Item_Requests' AND PlatformID=acronyme and annee=?) as unique_tel,(SELECT SUM(Reporting_Period_Total) FROM `tbl_results_j2`  WHERE Metric_Type='No_License' AND PlatformID=acronyme and annee=?) as refus FROM lst_plateformes order by titrePlateforme",[annee,annee,annee]);
+  }
+
+
+  //creer le rapport des plateformes
+  static rapportMoyenne() {
+    //afficher la requette
+    return db.execute("SELECT titre,ISSN,EISSN,essentiel2014,essentiel2022,statut,tbl_statistiques.idRevue as IdS,group_concat(plateforme,' ') as plateforme,SUM(Total_Item_Requests)/5 as moyenn_t,SUM(No_License)/5 as moyenn_r,SUM(citations)/5 as moyenn_c,SUM(articlesUdem)/5 as moyenn_a, group_concat(annee,' ') as annees FROM `tbl_periodiques` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue where annee >= year(now()) - 5 group by IdS");
   }
 
   //creer des view pour les rapports j1,j2,j4

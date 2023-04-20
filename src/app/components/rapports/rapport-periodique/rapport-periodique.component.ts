@@ -190,7 +190,7 @@ export class RapportPeriodiqueComponent implements OnInit {
                 "essentiel2022":res[i].essentiel2022,
                 "notes":this.donneesAutresChamps(this.notesPeriodique,res[i].idP,'notes'),
                 "prix":this.donneesAutresChamps(this.prixPeriodique,res[i].idP,'prix'),
-                "cores":this.donneesAutresChamps(this.coresPeriodique,res[i].idP,'cores'),
+                //"cores":this.donneesAutresChamps(this.coresPeriodique,res[i].idP,'cores'),
                 "archives":this.donneesAutresChamps(this.archivesPeriodique,res[i].idP,'archives'),
                 "dateA":res[i].dateA,
                 "dateM":res[i].dateM

@@ -214,14 +214,17 @@ export class ImportationInCitesComponent implements OnInit {
   //mise a jour des statistique
   async updateStatistique(annee:string){
         try {
-          this.methodesGlobal.afficher('load-import')
-          this.methodesGlobal.nonAfficher('updateStatistique')
+          this.methodesGlobal.afficher('load-import');
+          //desactiver les actions durant le processous
+          document.getElementsByTagName("body")[0].style.setProperty('pointer-events','none');
+          this.methodesGlobal.nonAfficher('updateStatistique');
           this.reponsesUpdate$ = this.csvService.updateStatistique(annee);
           await this.reponsesUpdate$.toPromise().then(res => {
               if (res){
-                this.methodesGlobal.nonAfficher('load-import')
-                this.methodesGlobal.afficher('resultUpdate')
-                this.reponseUpdate = res[0]
+                this.methodesGlobal.nonAfficher('load-import');
+                this.methodesGlobal.afficher('resultUpdate');
+                this.reponseUpdate = res[0];
+                document.getElementsByTagName("body")[0].style.setProperty('pointer-events','auto');
               }
             }
           );

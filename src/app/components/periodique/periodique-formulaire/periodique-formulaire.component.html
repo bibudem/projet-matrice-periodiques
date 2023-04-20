@@ -213,11 +213,11 @@
                   <h6 class="text-uppercase">{{ 'tab-archives' | translate}}</h6>
                 </a>
               </li>
-              <li class="nav-item" *ngIf="periodique.idRevue">
+              <!--<li class="nav-item" *ngIf="periodique.idRevue">
                 <a class="nav-link font-weight-bold" id="tab-3" data-toggle="tab" href="#tab-page-3" role="tab" aria-controls="tab-page-3" aria-selected="false">
                   <h6 class="text-uppercase">{{ 'tab-core' | translate}}</h6>
                 </a>
-              </li>
+              </li>-->
               <li class="nav-item" *ngIf="periodique.idRevue">
                 <a class="nav-link font-weight-bold" id="tab-4" data-toggle="tab" href="#tab-page-4" role="tab" aria-controls="tab-page-4" aria-selected="false">
                   <h6 class="text-uppercase">{{ 'tab-statistique' | translate}}</h6>
@@ -384,63 +384,90 @@
                 </div>
                 <!-- fin archives-->
               </div>
-              <div class="tab-pane fade p-3" id="tab-page-3" role="tabpanel" aria-labelledby="tab-page-3">
+              <!--<div class="tab-pane fade p-3" id="tab-page-3" role="tabpanel" aria-labelledby="tab-page-3">-->
                 <!-- Section Historique-->
-                <div class="card-title row">
-                  <div class="col-md-9">
-                  </div>
-                  <div class="col-md-3 w-100">
-                    <button *ngIf="ifAdmin" class="btn btn-dark w-100" (click)="reload('/periodique/historique/'+periodique.idRevue)"><i class="icon-note btn-icon-prepend"></i> {{ 'gestion-core' | translate}}</button>
-                  </div>
+              <!--<div class="card-title row">
+                <div class="col-md-9">
                 </div>
-                <div class="table-responsive" *ngIf="periodique.idRevue">
-                  <table class="table table-hover w-100 table-bordered">
-                    <thead>
-                    <tr>
-                      <th class="font-weight-bold w-8">{{ 'numero' | translate}}</th>
-                      <th class="font-weight-bold">{{ 'annee' | translate}}</th>
-                      <th class="font-weight-bold">{{ 'core' | translate}}</th>
-                      <th class="font-weight-bold">{{ 'choix-secteur' | translate}}</th>
-                      <th class="font-weight-bold w-10">{{ 'date-ajout' | translate}}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let rep of this.tableauHistorique" >
-                      <td>{{rep.numero}}</td>
-                      <td>{{rep.annee}}</td>
-                      <td>{{rep.core}}</td>
-                      <td>{{rep.secteur}}</td>
-                      <td>{{ rep.dateA | date:'short': 'fr' }}</td>
-                    </tr>
-                    </tbody>
-                  </table>
+                <div class="col-md-3 w-100">
+                  <button *ngIf="ifAdmin" class="btn btn-dark w-100" (click)="reload('/periodique/historique/'+periodique.idRevue)"><i class="icon-note btn-icon-prepend"></i> {{ 'gestion-core' | translate}}</button>
                 </div>
-                <!-- fin historique-->
               </div>
+              <div class="table-responsive" *ngIf="periodique.idRevue">
+                <table class="table table-hover w-100 table-bordered">
+                  <thead>
+                  <tr>
+                    <th class="font-weight-bold w-8">{{ 'numero' | translate}}</th>
+                    <th class="font-weight-bold">{{ 'annee' | translate}}</th>
+                    <th class="font-weight-bold">{{ 'core' | translate}}</th>
+                    <th class="font-weight-bold">{{ 'choix-secteur' | translate}}</th>
+                    <th class="font-weight-bold w-10">{{ 'date-ajout' | translate}}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let rep of this.tableauHistorique" >
+                    <td>{{rep.numero}}</td>
+                    <td>{{rep.annee}}</td>
+                    <td>{{rep.core}}</td>
+                    <td>{{rep.secteur}}</td>
+                    <td>{{ rep.dateA | date:'short': 'fr' }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              </div>-->
               <div class="tab-pane fade p-3" id="tab-page-4" role="tabpanel" aria-labelledby="tab-page-4">
                 <!-- Section Statistique-->
                 <div class="card-title row">
-                  <div class="col-md-8">
+                  <div class="col-md-9">
+                      <blockquote *ngIf="tableauMoyenne.moyenn_t" class="blockquote blockquote-success">
+                        <div class="row">
+                          <div class="col-md-3 d-flex align-items-center ">
+                            <h5 class="text-success">{{'text-moyenne'| translate}}</h5>
+                          </div>
+                          <div class="col-md-3 d-flex align-items-center">
+                            <div class="d-flex flex-row align-items-center">
+                              <i class="icon-cloud-download icon-sm text-success"></i>
+                              <p class="mb-0 ml-1"> {{'telechargements'| translate}}<br> <strong>{{tableauMoyenne.moyenn_t}}</strong> </p>
+                            </div>
+                          </div>
+                          <div class="col-md-2 d-flex align-items-center">
+                            <div class="d-flex flex-row align-items-center">
+                              <i class="icon-close  icon-sm text-success"></i>
+                              <p class="mb-0 ml-1">{{'refus'| translate}}<br> <strong>{{tableauMoyenne.moyenn_r}}</strong></p>
+                            </div>
+                          </div>
+                          <div class="col-md-2 d-flex align-items-center">
+                            <div class="d-flex flex-row align-items-center">
+                              <i class="icon-pin icon-sm text-success"></i>
+                              <p class="mb-0 ml-1"> {{'citations'| translate}}<br> <strong>{{tableauMoyenne.moyenn_c}}</strong></p>
+                            </div>
+                          </div>
+                          <div class="col-md-2 d-flex align-items-center">
+                            <div class="d-flex flex-row align-items-center">
+                              <i class="icon-paper-clip icon-sm text-success"></i>
+                              <p class="mb-0 ml-1">{{'art.-udem'| translate}}<br> <strong>{{tableauMoyenne.moyenn_c}}</strong></p>
+                            </div>
+                          </div>
+                        </div>
+                      </blockquote>
                   </div>
-                  <div class="col-md-4 w-100">
+                  <div class="col-md-3">
                     <button *ngIf="ifAdmin" class="btn btn-dark" (click)="reload('/periodique/statistiques/'+periodique.idRevue)"><i class="icon-note btn-icon-prepend"></i> {{ 'gestion-statistique' | translate}}</button>
                   </div>
                 </div>
                 <div class="table-responsive">
                   <table class="table table-hover table-bordered" *ngIf="periodique.idRevue">
                     <thead>
-                    <tr>
-                      <th class="font-weight-bold w-5">{{ 'numero' | translate}}</th>
-                      <th class="font-weight-bold w-5">{{ 'annee' | translate}}</th>
-                      <th class="font-weight-bold">{{ 'plateforme' | translate}}</th>
-                      <th class="font-weight-bold">{{ 'telech.' | translate}}</th>
-                      <th class="font-weight-bold">{{ 'unique-telechargements' | translate}}</th>
-                      <th class="font-weight-bold w-5">{{ 'refus' | translate}}</th>
-                      <th class="font-weight-bold w-5">{{ 'citations' | translate}}</th>
-                      <th class="font-weight-bold w-5">{{ 'art.-udem' | translate}}</th>
-                      <th class="font-weight-bold">{{ 'jr5-courant' | translate}}</th>
-                      <th class="font-weight-bold">{{ 'date-ajout' | translate}}</th>
-                    </tr>
+                      <tr>
+                        <th class="font-weight-bold w-5">{{ 'numero' | translate}}</th>
+                        <th class="font-weight-bold ">{{ 'annee' | translate}}</th>
+                        <th class="font-weight-bold">{{ 'plateforme' | translate}}</th>
+                        <th class="font-weight-bold">{{ 'total-telech.' | translate}}</th>
+                        <th class="font-weight-bold ">{{ 'total-refus' | translate}}</th>
+                        <th class="font-weight-bold ">{{ 'total-citations' | translate}}</th>
+                        <th class="font-weight-bold ">{{ 'total-art.-udem' | translate}}</th>
+                      </tr>
                     </thead>
                     <tbody>
                     <tr *ngFor="let rep of this.tableauStatistique" >
@@ -448,12 +475,9 @@
                       <td>{{rep.annee}}</td>
                       <td>{{rep.plateforme}}</td>
                       <td>{{rep.Total_Item_Requests}}</td>
-                      <td>{{rep.Unique_Item_Requests}}</td>
                       <td>{{rep.No_License}}</td>
                       <td>{{rep.citations}}</td>
                       <td>{{rep.articlesUdem}}</td>
-                      <td>{{rep.JR5COURANT}}</td>
-                      <td>{{ rep.dateA | date:'short': 'fr' }}</td>
                     </tr>
                     </tbody>
                   </table>

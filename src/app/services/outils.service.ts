@@ -68,6 +68,17 @@ export class OutilsService {
         )
       );
   }
+
+  rapportMoyenne(): Observable<any[]> {
+    return this.http
+      .get<any[]>(`/api/outils/rapport-moyenne`, { responseType: "json" })
+      .pipe(
+        tap((_) => console.log("rapport moyenne")),
+        catchError(
+          this.errorHandlerService.handleError<any[]>("moyenne", [])
+        )
+      );
+  }
   //consulter les données d'une archive
   consulter(id: number): Observable<any> {
     const url = `/api/plateforme/fiche/${id}`;
@@ -136,4 +147,6 @@ export class OutilsService {
       .get<any>(url, { responseType: "json" })
       .pipe(catchError(this.errorHandlerService.handleError<any>("consulter données brutes")));
   }
+
+
 }

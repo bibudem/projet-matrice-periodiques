@@ -36,15 +36,15 @@ static fetchAll() {
       sqlCondition=" and `plateformePrincipale`='"+valPlateforme+"'"
     }
     let autresChamps = {};
-    let notes= await db.execute('Select tbl_periodiques.idRevue as idP,GROUP_CONCAT(tbl_notes.note,";",tbl_notes.dateA) AS notes  from tbl_periodiques left join tbl_notes on tbl_periodiques.idRevue=tbl_notes.idRevue where note is not null '+sqlCondition+'  GROUP BY tbl_periodiques.idRevue   order by idP');
-    let prix= await db.execute('Select tbl_periodiques.idRevue as idP,GROUP_CONCAT(tbl_prix_periodiques.prix, ";",tbl_prix_periodiques.annee) AS prix from tbl_periodiques left join tbl_prix_periodiques on tbl_periodiques.idRevue=tbl_prix_periodiques.idRevue where prix is not null '+sqlCondition+'  GROUP BY tbl_periodiques.idRevue   order by idP');
-    let cores= await db.execute('Select tbl_periodiques.idRevue as idP,GROUP_CONCAT(tbl_cores.annee, ";",tbl_cores.core, ";",tbl_cores.secteur) AS cores from tbl_periodiques left join tbl_cores on tbl_periodiques.idRevue=tbl_cores.idRevue where core is not null '+sqlCondition+'  GROUP BY tbl_periodiques.idRevue   order by idP');
-    let archives= await db.execute('Select tbl_periodiques.idRevue as idP,GROUP_CONCAT(tbl_archives.perennite, ";",tbl_archives.conserverPap, ";",tbl_archives.anneeDebut, ";",tbl_archives.anneeFin, ";",tbl_archives.volDebut, ";",tbl_archives.volFin, ";",tbl_archives.embargo) AS archives from tbl_periodiques left join tbl_archives on tbl_periodiques.idRevue=tbl_archives.idRevue  '+sqlCondition+'  GROUP BY tbl_periodiques.idRevue   order by idP');
+    let notes= await db.execute('Select tbl_periodiques.idRevue as idP,GROUP_CONCAT(tbl_notes.note," ",tbl_notes.dateA) AS notes  from tbl_periodiques left join tbl_notes on tbl_periodiques.idRevue=tbl_notes.idRevue where note is not null '+sqlCondition+'  GROUP BY tbl_periodiques.idRevue   order by idP');
+    let prix= await db.execute('Select tbl_periodiques.idRevue as idP,GROUP_CONCAT(tbl_prix_periodiques.prix, " ",tbl_prix_periodiques.annee) AS prix from tbl_periodiques left join tbl_prix_periodiques on tbl_periodiques.idRevue=tbl_prix_periodiques.idRevue where prix is not null '+sqlCondition+'  GROUP BY tbl_periodiques.idRevue   order by idP');
+    //let cores= await db.execute('Select tbl_periodiques.idRevue as idP,GROUP_CONCAT(tbl_cores.annee, ";",tbl_cores.core, ";",tbl_cores.secteur) AS cores from tbl_periodiques left join tbl_cores on tbl_periodiques.idRevue=tbl_cores.idRevue where core is not null '+sqlCondition+'  GROUP BY tbl_periodiques.idRevue   order by idP');
+    let archives= await db.execute('Select tbl_periodiques.idRevue as idP,GROUP_CONCAT(tbl_archives.perennite, " ",tbl_archives.conserverPap, " ",tbl_archives.anneeDebut, " ",tbl_archives.anneeFin, " ",tbl_archives.volDebut, " ",tbl_archives.volFin, " ",tbl_archives.embargo) AS archives from tbl_periodiques left join tbl_archives on tbl_periodiques.idRevue=tbl_archives.idRevue  '+sqlCondition+'  GROUP BY tbl_periodiques.idRevue   order by idP');
     //let prixUtil = await db.execute('SELECT tbl_prix_periodiques.idRevue as idP, (SELECT SUM(prix) FROM tbl_prix_periodiques where (`annee`="'+(anneeFormat-1)+'" OR `annee`="'+(anneeFormat-2)+'") AND idRevue=idP) /(SELECT SUM(Total_Item_Requests) FROM tbl_statistiques where (`annee`="'+(anneeFormat-1)+'" OR `annee`="'+(anneeFormat-2)+'") AND idRevue=idP) as prixUtil from tbl_prix_periodiques where prix is not null order by idP');
     //let sql = 'SELECT tbl_prix_periodiques.idRevue as idP, (SELECT SUM(prix) FROM tbl_prix_periodiques where (`annee`="'+(anneeFormat-1)+'" OR `annee`="'+(anneeFormat-2)+'") AND idRevue=idP) /(SELECT SUM(Total_Item_Requests) FROM tbl_statistiques where (`annee`="'+(anneeFormat-1)+'" OR `annee`="'+(anneeFormat-2)+'") AND idRevue=idP) as prixUtil from tbl_prix_periodiques where annee <> '-' or annee is not null order by idP';
     //console.log('sql: ', SqlString.format(sql));
 
-    autresChamps={"notes": notes[0],"prix":prix[0],"cores":cores[0],"archives":archives[0]};
+    autresChamps={"notes": notes[0],"prix":prix[0],"archives":archives[0]};
     return [autresChamps]
   }
 

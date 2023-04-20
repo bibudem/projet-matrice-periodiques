@@ -16,6 +16,8 @@ router.get('/fiche-fond/:id', outilsController.consulterFond);
 
 router.get('/rapport-plateformes/:annee', outilsController.rapportPlateformes);
 
+router.get('/rapport-moyenne', outilsController.rapportMoyenne);
+
 router.get('/brut/:result', outilsController.getAllResultRapport);
 
 module.exports = router;

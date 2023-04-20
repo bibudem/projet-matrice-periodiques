@@ -56,6 +56,9 @@ export class PeriodiqueFormulaireComponent implements OnInit {
   statistiques$: Observable<any> | undefined;
   tableauStatistique: any = [];
 
+  moyennes$: Observable<any> | undefined;
+  tableauMoyenne: any = [];
+
   prix$: Observable<any> | undefined;
   tableauPrix: any = [];
 
@@ -188,6 +191,8 @@ export class PeriodiqueFormulaireComponent implements OnInit {
     this.creerTableauStatistique(id);
 
     this.creerTableauPrix(id);
+
+    this.creerTableauMoyenne(id);
 
   }
   async creerTableauPlateforme() {
@@ -327,7 +332,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
   //tableau des note
   async creerTableauStatistique(idRevue: number) {
     try {
-      this.statistiques$ = this.statistiqueService.fetchAll(idRevue);
+      this.statistiques$ = this.statistiqueService.fetchAllResume(idRevue);
       await this.statistiques$.toPromise().then(res => {
         for (let i = 0; i < res.length; i++) {
           this.tableauStatistique[i]={
@@ -336,17 +341,31 @@ export class PeriodiqueFormulaireComponent implements OnInit {
             "annee":res[i].annee,
             "plateforme":res[i].plateforme,
             "Total_Item_Requests":res[i].Total_Item_Requests,
-            "Unique_Item_Requests":res[i].Unique_Item_Requests,
             "No_License":res[i].No_License,
             "citations":res[i].citations,
-            "articlesUdem":res[i].articlesUdem,
-            "JR5COURANT":res[i].JR5COURANT,
-            "JR5INTER":res[i].JR5INTER,
-            "JR5RETRO":res[i].JR5RETRO,
-            "dateA":res[i].dateA,
-            "dateM":res[i].dateM
+            "articlesUdem":res[i].articlesUdem
           }
         }
+      });
+    } catch(err) {
+      console.error(`Error : ${err.Message}`);
+    }
+  }
+
+  //tableau des moyennes
+  async creerTableauMoyenne(idRevue: number) {
+    try {
+      this.moyennes$ = this.statistiqueService.mayenneStatistiques(idRevue);
+      await this.moyennes$.toPromise().then(res => {
+        if(res!==undefined){
+          this.tableauMoyenne={
+            "moyenn_t":res[0].moyenn_t,
+            "moyenn_r":res[0].moyenn_r,
+            "moyenn_c":res[0].moyenn_c,
+            "moyenn_a":res[0].moyenn_a
+          }
+        }
+
       });
     } catch(err) {
       console.error(`Error : ${err.Message}`);

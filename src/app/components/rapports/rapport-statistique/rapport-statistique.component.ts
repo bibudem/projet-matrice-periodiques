@@ -51,7 +51,7 @@ export class RapportStatistiqueComponent implements OnInit {
   filtres:any=[]
 
   /*name of the excel-file which will be downloaded. */
-  fileName= 'rapport-logs-revues.xlsx';
+  fileName= 'rapport-statistiques.xlsx';
 
   totalDonnees=0
 
@@ -86,7 +86,7 @@ export class RapportStatistiqueComponent implements OnInit {
     }
   }
 //liste des statistiques générales
-  async creerTableauStatistique(annees:any,type:string,plateforme:string) {
+  async creerTableauStatistique(annees:any,plateforme:string) {
     try {
       // @ts-ignore
       if(annees.length==0){
@@ -101,7 +101,7 @@ export class RapportStatistiqueComponent implements OnInit {
       this.totalDonnees=this.listeStatistique.length;
       this.afficherAnimation();
 
-      let j=0,k,tele_moyenne,unique_moyenne,refus_moyenn,citation_moyenn,articlesUdem_moyenn,annee=''
+      let j=0,k,annee=''
       let resultFiltre = Object.entries(this.filtres);
         for(let k=0; k<annees.length;k++) {
           annee += annees[k]
@@ -109,15 +109,13 @@ export class RapportStatistiqueComponent implements OnInit {
             annee+=", "
           }
         }
-        if(type=='plateforme'){
-          this.statistiques$ = this.statistiqueService.rapportStatistiquesPlateforme(annees,plateforme);
-        } else this.statistiques$ = this.statistiqueService.rapportStatistiques(annees,plateforme);
+        this.statistiques$ = this.statistiqueService.rapportStatistiques(annees,plateforme);
 
               // @ts-ignore
               await this.statistiques$.toPromise().then(res => {
                 //console.log(res)
                 for (let val of res) {
-                  k=0
+                  k=0;
                   for ( let [key,elem] of resultFiltre){
                     //console.log(key);
                     if(elem== val[key]) {
@@ -126,20 +124,6 @@ export class RapportStatistiqueComponent implements OnInit {
                   }
 
                   if(k==resultFiltre.length){
-                    if(type=='plateforme'){
-                      tele_moyenne='-'
-                      unique_moyenne='-'
-                      refus_moyenn='-'
-                      citation_moyenn='-'
-                      articlesUdem_moyenn='-'
-                    }else {
-                    //chercher les donnees statistiques
-                    tele_moyenne=parseFloat((val.Total_Item_Requests/annees.length).toFixed(2))
-                    unique_moyenne=parseFloat((val.Unique_Item_Requests/annees.length).toFixed(2))
-                    refus_moyenn=parseFloat((val.No_License/annees.length).toFixed(2))
-                    citation_moyenn=parseFloat((val.citations/annees.length).toFixed(2))
-                    articlesUdem_moyenn=parseFloat((val.articlesUdem/annees.length).toFixed(2))
-                    }
 
                     this.listeStatistique[j]={
                       "Nr":j+1,
@@ -152,7 +136,7 @@ export class RapportStatistiqueComponent implements OnInit {
                       "secteur":val.secteur,
                       "abonnement":val.abonnement,
                       "fournisseur":val.fournisseur,
-                      "annee":annee,
+                      "annee":val.annee,
                       "plateforme":val.plateforme,
                       "Total_Item_Requests":val.Total_Item_Requests,
                       "Unique_Item_Requests":val.Unique_Item_Requests,
@@ -163,11 +147,6 @@ export class RapportStatistiqueComponent implements OnInit {
                       "JR5INTER":val.JR5INTER,
                       "JR5RETRO":val.JR5RETRO,
                       "JR3OAGOLD":val.JR3OAGOLD,
-                      "tele_moyenne":tele_moyenne,
-                      "unique_moyenne":unique_moyenne,
-                      "refus_moyenn":refus_moyenn,
-                      "citation_moyenn":citation_moyenn,
-                      "articlesUdem_moyenn":articlesUdem_moyenn,
                       "dateA":'-',
                       "dateM":'-',
                       "bdd":val.bdd
@@ -209,30 +188,6 @@ export class RapportStatistiqueComponent implements OnInit {
     }
   }
 
-  //exporter les données en format xlsx
-  async ExportTOExcel()
-  {
-    let that=this
-    that.afficherAnimation()
-    this.isLoadingResults=true
-    setTimeout(async function () {
-      that.nonAfficherAnimation()
-      let dateNow=new Date().getUTCDate();
-      /* table id is passed over here */
-      let element = document.getElementById('table-rapport');
-      const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
-
-      /* generate workbook and add the worksheet */
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Rapport-statistique-'+dateNow);
-
-      /* save to file */
-      XLSX.writeFile(wb, that.fileName);
-    }, 3000);
-
-    //console.log(this.dataSource);
-
-  }
 //apliquer les filtre pour le rapport
   implimentationFiltre($event: any){
     if($event.target.value!=''){

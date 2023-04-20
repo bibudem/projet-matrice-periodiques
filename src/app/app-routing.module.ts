@@ -34,6 +34,7 @@ import {MiseAJourStatistiquesComponent} from "./components/processus/mise-a-jour
 import {MiseEnLotPeriodiquesComponent} from "./components/processus/importation-en-lot-periodiques/importation-en-lot-periodiques.component";
 import {ListeProcessusDelailsComponent} from "./components/processus/liste-processus-details/liste-processus-details.component";
 import {MiseAJourArchivesComponent} from "./components/processus/mise-a-jour-archives/mise-a-jour-archives.component";
+import {RapportMoyenneComponent} from "./components/rapports/rapport-moyenne/rapport-moyenne.component";
 
 const routes: Routes = [
   { path: '', component: AccueilComponent, canActivate: [AuthGuard] },
@@ -56,6 +57,7 @@ const routes: Routes = [
   { path: 'liste-statistique/:annee', component: StatistiqueListeComponent, canActivate: [AuthGuard] },
   { path: 'rapport-periodique', component: RapportPeriodiqueComponent, canActivate: [AuthGuard] },
   { path: 'rapport-statistique', component: RapportStatistiqueComponent, canActivate: [AuthGuard] },
+  { path: 'rapport-moyenne', component: RapportMoyenneComponent, canActivate: [AuthGuard] },
   { path: 'rapport-plateforme', component: RapportPlateformesComponent, canActivate: [AuthGuard] },
   { path: 'logs-menu', component: LogsMenuComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'logs-revue', component: LogsRevueComponent, canActivate: [AuthGuard,AdminGuard] },

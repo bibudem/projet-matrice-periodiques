@@ -15,6 +15,7 @@ module.exports = class InCites {
     let date = dt.format('Y-m-d H:M:S');
     const tabValue = [];
     let condSql = '';
+    let count=0;
 
     if(InCites[1]!='-'){
       condSql += ', annee = ?';
@@ -50,15 +51,17 @@ module.exports = class InCites {
     if(id_incites[0].length>0){
       id_incites=id_incites[0]['0']['id'];
       tabValue.push(id_incites);
+      count++;
      /* let sql = "UPDATE tbl_incites SET ArticlesUdeM =?,Citations =?,ISSN =?,EISSN =?,dateM =? WHERE Name=? AND  annee=?  "
       console.log('sql: ', SqlString.format(sql,[InCites[3],InCites[4],InCites[5],InCites[6],date,InCites[2],InCites[1]]));*/
-      return db.execute('UPDATE tbl_incites SET '+condSql+' ,dateM=? WHERE id_incites=?  ', tabValue );
+      await db.execute('UPDATE tbl_incites SET '+condSql+' ,dateM=? WHERE id_incites=?  ', tabValue );
     }
     else {
+      count++;
        tabValue.push(0);
-      return db.execute('INSERT INTO tbl_incites SET  '+condSql+' ,dateA=?, id_incites=?', tabValue );
+      await  db.execute('INSERT INTO tbl_incites SET  '+condSql+' ,dateA=?, id_incites=?', tabValue );
     }
-
+     return [count];
   }
   static async update(annee) {
     //creation de la date
@@ -71,7 +74,25 @@ module.exports = class InCites {
      //console.log(donnees[0])
     for(let d of donnees[0]){
       i++;
-      //console.log(d.ISSN)
+      const tabValue = [];
+      let condSql = '';
+      if(d.ArticlesUdeM){
+        condSql += ', ArticlesUdeM = ?';
+        tabValue.push(d.ArticlesUdeM);
+      }
+      if(d.Citations){
+        condSql += ', Citations = ?';
+        tabValue.push(d.Citations);
+      }
+
+      // si tous les champs sont '-'
+      if(condSql==''){
+        return []
+      }
+      // supprimer ',' du debut de la condition
+      condSql = condSql.slice(1);
+
+      tabValue.push(date);
       if(d.Name){
         Name=d.Name
           if(d.ISSN)
@@ -92,10 +113,16 @@ module.exports = class InCites {
               console.log('sql: ', SqlString.format(sql,[idRevue,annee]));*/
               action= await db.execute("SELECT idRevue  FROM tbl_statistiques  WHERE idRevue= ? AND annee=?  ",[idRevue,annee])
              if(action[0].length>0){
-                await db.execute("UPDATE tbl_statistiques SET articlesUdem=?,citations=?,dateM=?   WHERE idRevue= ? AND annee=?",[ArticlesUdeM,Citations,date,idRevue,annee])
+                tabValue.push(idRevue);
+                tabValue.push(annee);
+                /*let sql = "UPDATE tbl_statistiques SET " + condSql + " ,dateM=?   WHERE idRevue= ? AND annee=?"
+                console.log('sql: ', SqlString.format(sql,tabValue));*/
+                await db.execute("UPDATE tbl_statistiques SET " + condSql + " ,dateM=?   WHERE idRevue= ? AND annee=?",tabValue)
               }
             else {
-                await db.execute("INSERT INTO tbl_statistiques SET idRevue=?,annee=?, articlesUdem=?,citations=?,dateA=? ",[0,annee,ArticlesUdeM,Citations,date])
+                tabValue.push(0);
+                tabValue.push(annee);
+                await db.execute("INSERT INTO tbl_statistiques SET  " + condSql + " ,dateA=?,idRevue=?,annee=? ",tabValue)
               }
 
           }

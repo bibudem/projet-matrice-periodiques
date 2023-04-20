@@ -78,6 +78,7 @@ import {MiseAJourStatistiquesComponent} from "./components/processus/mise-a-jour
 import {MiseEnLotPeriodiquesComponent} from "./components/processus/importation-en-lot-periodiques/importation-en-lot-periodiques.component";
 import {ListeProcessusDelailsComponent} from "./components/processus/liste-processus-details/liste-processus-details.component";
 import {MiseAJourArchivesComponent} from "./components/processus/mise-a-jour-archives/mise-a-jour-archives.component";
+import {RapportMoyenneComponent} from "./components/rapports/rapport-moyenne/rapport-moyenne.component";
 
 const maskConfig: Partial<IConfig> = {
   validation: false,
@@ -106,6 +107,7 @@ const maskConfig: Partial<IConfig> = {
     ImportationInCitesComponent,
     RapportPeriodiqueComponent,
     RapportStatistiqueComponent,
+    RapportMoyenneComponent,
     LogsRevueComponent,
     LogsPlateformeComponent,
     LogsMenuComponent,
