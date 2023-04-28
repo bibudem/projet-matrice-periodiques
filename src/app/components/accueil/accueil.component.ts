@@ -83,11 +83,14 @@ export class AccueilComponent implements OnInit {
       this.counts$ = this.homeService.getCount();
       // @ts-ignore
       await this.counts$.toPromise().then(res => {
-        console.log(res)
-        this.totalRevue=res.totalRevue.toLocaleString()
-        this.totalTele=res.totalTele.toLocaleString()
-        this.totalCitation=res.totalCitation.toLocaleString()
-        this.totalArticleUdem=res.totalArticleUdem.toLocaleString()
+        //console.log(res);
+        for(let i=0;i<res.length;i++){
+          this.totalRevue=res[0].count;
+          this.totalTele=res[1].count;
+          this.totalCitation=res[2].count;
+          this.totalArticleUdem=res[3].count;
+        }
+
       });
     } catch(err) {
       console.error(`Error : ${err.Message}`);
