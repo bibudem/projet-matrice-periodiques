@@ -47,7 +47,7 @@ export class PeriodiqueListeService implements OnInit {
   }
   //chercher toute la liste des periodiques avec les champs par defaut
   fetchRapportAll(plateforme:string): Observable<any[]> {
-    if(plateforme=='')
+    if(plateforme=='' || plateforme==undefined)
       plateforme='vide'
 
     let params=new HttpParams().set('plateforme', plateforme)

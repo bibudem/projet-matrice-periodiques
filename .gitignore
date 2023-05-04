@@ -1,6 +1,11 @@
+.DS_Store
+Thumbs.db
+/.angular
 /node_modules/*
 /logs-ng
-/backend/node_modules
 /backend/config
 /backend/logs
+/backend/node_modules
 .idea
+.gitignore
+/backend/scratch

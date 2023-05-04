@@ -193,3 +193,7 @@ th,td {
 .table-mat-100{
   width: 100%!important;
 }
+.mat-form-field-type-mat-select:not(.mat-form-field-disabled) .mat-form-field-flex {
+  background: #f8f9fa;
+  padding-left: 5px;
+}

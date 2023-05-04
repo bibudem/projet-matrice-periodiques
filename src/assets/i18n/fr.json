@@ -18,6 +18,7 @@
   "choisissez": "Choisissez",
   "numero": "No",
   "titre": "Titre",
+  "accesCourant": "Accès courant",
   "abonnement": "Abonnement",
   "abonnem": "Abonnem.",
   "statut": "Statut",
@@ -296,6 +297,7 @@
     "ISSN": "ISSN",
     "EISSN": "EISSN",
     "statut": "Statut",
+    "accesCourant": "Accès courant",
     "abonnement": "Abonnement",
     "bdd": "BDD",
     "libreAcces": "Libre accès",
@@ -314,7 +316,6 @@
     "essentiel2014": "Essentiel 2014",
     "essentiel2022": "Essentiel 2022",
     "notes": "Notes",
-    "archives": "Archives",
     "prix": "Prix",
     "dateM": "Date de modif.",
     "dateA": "Date d'ajout"

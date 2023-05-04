@@ -134,7 +134,7 @@ export class OutilsService {
 
   //consulter les données importés par SUSHI selon le rapport
   resultatRapport(annee:string, plateforme:string,rapport:string): Observable<any> {
-      if(plateforme=='')
+      if(plateforme=='' || plateforme == undefined )
          plateforme='vide'
 
     let paramResults=annee+'='+''+plateforme+'='+rapport

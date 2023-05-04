@@ -41,12 +41,25 @@ module.exports = class ListeStatistique {
        i++
      }
     if(plateforme){
-      sqlPlateforme=" AND `tbl_statistiques`.plateforme LIKE'%" + plateforme.toString() + "%'"
+      let platformes=plateforme.split(',');
+      if(platformes.length>0){
+        sqlPlateforme=" AND ( ";
+        for (let i=0;i<platformes.length;i++){
+          sqlPlateforme+="  `tbl_statistiques`.plateforme LIKE'%" + platformes[i].toString() + "%' ";
+          if(i<platformes.length-1){
+            sqlPlateforme+=" OR ";
+          }
+        }
+        sqlPlateforme+=" )";
+      } else {
+        sqlPlateforme=" AND `tbl_statistiques`.plateforme LIKE'%" + plateforme.toString() + "%'";
+      }
+
     }
     //console.log(annees);
-    /*let sql = "SELECT titre,ISSN,EISSN,statut,abonnement,bdd,domaine,fournisseur,tbl_periodiques.idRevue as idP,annee,Total_Item_Requests,Unique_Item_Requests,No_License, citations , articlesUdem,  JR5COURANT,  JR5INTER,  JR5RETRO,  JR3OAGOLD,plateforme FROM `tbl_periodiques` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue where annee IN ("+ annees.toString() +") "+ sqlPlateforme +" order by idP ";
-    console.log('sql: ', SqlString.format(sql))*/
-    return  db.execute("SELECT titre,ISSN,EISSN,statut,abonnement,bdd,domaine,fournisseur,tbl_periodiques.idRevue as idP,annee,Total_Item_Requests,Unique_Item_Requests,No_License, citations , articlesUdem,  JR5COURANT,  JR5INTER,  JR5RETRO,  JR3OAGOLD,plateforme FROM `tbl_periodiques` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue where annee IN ("+ annees.toString() +") "+ sqlPlateforme +" order by idP, annee ");
+    /*let sql = "SELECT titre,ISSN,EISSN,statut,abonnement,bdd,domaine,secteur,fournisseur,tbl_periodiques.idRevue as idP,annee,Total_Item_Requests,Unique_Item_Requests,No_License, citations , articlesUdem,  JR5COURANT,  JR5INTER,  JR5RETRO,  JR3OAGOLD,plateforme FROM `tbl_periodiques` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue where annee IN ("+ annees.toString() +") "+ sqlPlateforme +" order by idP ";
+    console.log('sql: ', SqlString.format(sql));*/
+    return  db.execute("SELECT titre,ISSN,EISSN,statut,abonnement,bdd,domaine,secteur,fournisseur,tbl_periodiques.idRevue as idP,annee,Total_Item_Requests,Unique_Item_Requests,No_License, citations , articlesUdem,  JR5COURANT,  JR5INTER,  JR5RETRO,  JR3OAGOLD,plateforme FROM `tbl_periodiques` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue where annee IN ("+ annees.toString() +") "+ sqlPlateforme +" order by idP, annee ");
   }
 
 
