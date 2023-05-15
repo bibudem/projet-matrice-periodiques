@@ -40,10 +40,13 @@ export class RapportPeriodiqueComponent implements OnInit {
   periodiquesAutres$: Observable<any> | undefined;
   listePeriodiqueAutres: any = [];
 
+  fournisseurs$: Observable<any> | undefined;
+  listeFounisseurs: any = [];
+
   notesPeriodique : any = [];
   prixPeriodique : any = [];
-  coresPeriodique : any = [];
-  archivesPeriodique : any = [];
+  //coresPeriodique : any = [];
+  //archivesPeriodique : any = [];
   // @ts-ignore
   dataSource: MatTableDataSource<ListePeriodique>;
 
@@ -57,15 +60,15 @@ export class RapportPeriodiqueComponent implements OnInit {
 
   champsAutresTitre : any = [];
 
-  champsAutres=[]
+  champsAutres=[];
 
 //variable boolean
-  isLoadingResults=false
+  isLoadingResults=false;
 
-  thTableau:any=[]
+  thTableau:any=[];
 
 
-  filtres:any=[]
+  filtres:any=[];
 
   /*name of the excel-file which will be downloaded. */
   fileName= 'rapport-periodique.xlsx';
@@ -87,6 +90,8 @@ export class RapportPeriodiqueComponent implements OnInit {
     //remplire la liste des plateforme
     this.creerTableauPlateforme();
 
+    this.creerTableauFournisseurs();
+
     //cacher le bouton export
     this.methodesGlobal.nonAfficher('contenuRapport');
 
@@ -101,8 +106,8 @@ export class RapportPeriodiqueComponent implements OnInit {
       await this.periodiquesAutres$.toPromise().then(res => {
         this.notesPeriodique = res['notes'];
         this.prixPeriodique = res['prix'];
-        this.coresPeriodique = res['cores'];
-        this.archivesPeriodique = res['archives'];
+        //this.coresPeriodique = res['cores'];
+        //this.archivesPeriodique = res['archives'];
       });
 
     } catch(err) {
@@ -151,16 +156,15 @@ export class RapportPeriodiqueComponent implements OnInit {
       this.periodiques$ = this.periodiqueServices.fetchRapportAll(plateforme);
         //chercher les autres champs
         await this.remplireAutresChampsPeriodiques(plateforme);
-
         // @ts-ignore
          this.periodiques$.toPromise().then(res => {
           let k,j=0;
           for (let i = 0; i < res.length; i++) {
             k=0;
             for ( let [key,elem] of result){
-              if( res[i][key]!==null && res[i][key].includes(elem)){
-              //if(elem=== res[i][key]) {
-                k++
+              // @ts-ignore
+              if( res[i][key]!==null && res[i][key]!=='' && elem.includes(res[i][key])){
+                k++;
               }
             }
             if(k==result.length){
@@ -171,10 +175,12 @@ export class RapportPeriodiqueComponent implements OnInit {
                 "ISSN":res[i].ISSN,
                 "EISSN":res[i].EISSN,
                 "statut":res[i].statut,
+                "accesCourant":res[i].accesCourant,
                 "abonnement":res[i].abonnement,
                 "libreAcces":res[i].libreAcces,
                 "domaine":res[i].domaine,
                 "secteur":res[i].secteur,
+                "bdd":res[i].bdd,
                 "sujets":res[i].sujets,
                 "fonds":res[i].fonds,
                 "fournisseur":res[i].fournisseur,
@@ -191,7 +197,7 @@ export class RapportPeriodiqueComponent implements OnInit {
                 "notes":this.donneesAutresChamps(this.notesPeriodique,res[i].idP,'notes'),
                 "prix":this.donneesAutresChamps(this.prixPeriodique,res[i].idP,'prix'),
                 //"cores":this.donneesAutresChamps(this.coresPeriodique,res[i].idP,'cores'),
-                "archives":this.donneesAutresChamps(this.archivesPeriodique,res[i].idP,'archives'),
+                //"archives":this.donneesAutresChamps(this.archivesPeriodique,res[i].idP,'archives'),
                 "dateA":res[i].dateA,
                 "dateM":res[i].dateM
               }
@@ -235,7 +241,15 @@ export class RapportPeriodiqueComponent implements OnInit {
     }
    //console.log(this.filtres)
   }
-
+  //apliquer les filtre from material
+  implimentationMatFiltre($event: any,id:string){
+    if($event!=''){
+      this.filtres[id]=$event.toString();
+    }else{
+      delete this.filtres[id];
+    }
+    //console.log(this.filtres)
+  }
   //afficher animation
   afficherAnimation(){
     this.methodesGlobal.nonAfficher('page-rapport')
@@ -279,7 +293,6 @@ export class RapportPeriodiqueComponent implements OnInit {
     });
   }
 
-
   dataSourcesCreation(liste:any){
     this.dataSource = new MatTableDataSource(liste);
     this.dataSource.paginator = this.paginator;
@@ -289,4 +302,21 @@ export class RapportPeriodiqueComponent implements OnInit {
     this.nonAfficherAnimation();
   }
 
+  //liste des fournisseurs
+  async creerTableauFournisseurs() {
+    try {
+      this.fournisseurs$ = this.plateformeService.allFournisseurs();
+      // @ts-ignore
+      await this.fournisseurs$.toPromise().then(res => {
+        for (let i = 0; i < res.length; i++) {
+          this.listeFounisseurs[i]={
+            "numero":i+1,
+            "titre":res[i].titre
+          }
+        }
+      });
+    } catch(err) {
+      console.error(`Error : ${err.Message}`);
+    }
+  }
 }

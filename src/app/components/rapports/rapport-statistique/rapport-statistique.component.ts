@@ -59,6 +59,9 @@ export class RapportStatistiqueComponent implements OnInit {
   plateformes$: Observable<any> | undefined;
   listePlateforme: any = [];
 
+  fournisseurs$: Observable<any> | undefined;
+  listeFounisseurs: any = [];
+
   constructor(private translate: TranslateService,
               private statistiqueService: ListeStatistiquesService,
               private plateformeService: OutilsService) { }
@@ -74,6 +77,8 @@ export class RapportStatistiqueComponent implements OnInit {
 
     //remplire la liste des plateforme
     this.creerTableauPlateforme();
+
+    this.creerTableauFournisseurs();
   }
 
   //creation du select d'année a partir de 2019
@@ -102,7 +107,7 @@ export class RapportStatistiqueComponent implements OnInit {
       this.afficherAnimation();
 
       let j=0,k,annee=''
-      let resultFiltre = Object.entries(this.filtres);
+      let result = Object.entries(this.filtres);
         for(let k=0; k<annees.length;k++) {
           annee += annees[k]
           if(k!=annees.length-1){
@@ -110,21 +115,19 @@ export class RapportStatistiqueComponent implements OnInit {
           }
         }
         this.statistiques$ = this.statistiqueService.rapportStatistiques(annees,plateforme);
-
               // @ts-ignore
               await this.statistiques$.toPromise().then(res => {
-                //console.log(res)
-                for (let val of res) {
+                let val;
+                for (let i = 0; i < res.length; i++) {
                   k=0;
-                  for ( let [key,elem] of resultFiltre){
-                    //console.log(key);
-                    if(elem== val[key]) {
-                      k++
+                  val=res[i];
+                  for ( let [key,elem] of result){
+                    // @ts-ignore
+                    if( res[i][key]!==null && res[i][key]!=='' && elem.includes(res[i][key])){
+                      k++;
                     }
                   }
-
-                  if(k==resultFiltre.length){
-
+                  if(k==result.length){
                     this.listeStatistique[j]={
                       "Nr":j+1,
                       "titre":val.titre,
@@ -155,7 +158,6 @@ export class RapportStatistiqueComponent implements OnInit {
                   }
                 }
             // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
-                // console.log(this.listeStatistique)
             this.dataSource = new MatTableDataSource(this.listeStatistique);
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.matSort;
@@ -165,7 +167,6 @@ export class RapportStatistiqueComponent implements OnInit {
 
           });
 
-      //console.log(this.listeStatistique)
     } catch(err) {
       this.nonAfficherAnimation()
       this.methodesGlobal.afficher('alertErreur')
@@ -187,17 +188,22 @@ export class RapportStatistiqueComponent implements OnInit {
       });
     }
   }
-
-//apliquer les filtre pour le rapport
+//apliquer les filtre pour form-control
   implimentationFiltre($event: any){
     if($event.target.value!=''){
       this.filtres[$event.target.id]=$event.target.value
     }else{
       delete this.filtres[$event.target.id];
     }
-    // console.log(this.filtres)
   }
-
+  //apliquer les filtre from material
+  implimentationMatFiltre($event: any,id:string){
+    if($event!=''){
+      this.filtres[id]=$event.toString();
+    }else{
+      delete this.filtres[id];
+    }
+  }
   //afficher animation
   afficherAnimation(){
     this.methodesGlobal.nonAfficher('page-rapport')
@@ -238,7 +244,6 @@ export class RapportStatistiqueComponent implements OnInit {
   titreChamp(){
     this.translate.get('labels-rapport-statistique').subscribe((res: any) => {
       let result = Object.entries(res);
-      // console.log(typeof(result))
       for(let [key,val] of result){
         this.champsTitre[key]=val
         // @ts-ignore
@@ -246,5 +251,22 @@ export class RapportStatistiqueComponent implements OnInit {
 
       }
     });
+  }
+  //liste des fournisseurs
+  async creerTableauFournisseurs() {
+    try {
+      this.fournisseurs$ = this.plateformeService.allFournisseurs();
+      // @ts-ignore
+      await this.fournisseurs$.toPromise().then(res => {
+        for (let i = 0; i < res.length; i++) {
+          this.listeFounisseurs[i]={
+            "numero":i+1,
+            "titre":res[i].titre
+          }
+        }
+      });
+    } catch(err) {
+      console.error(`Error : ${err.Message}`);
+    }
   }
 }

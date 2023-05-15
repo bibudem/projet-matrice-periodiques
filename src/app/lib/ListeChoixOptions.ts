@@ -47,11 +47,11 @@ export class ListeChoixOptions  {
     { id: 5, name: "Sciences" }
   ];
   //objet pour les sujets
-  sujetsListe = [
-    {id: 1, name: 'sujet 1'},
-    {id: 2, name: 'sujet 2'},
-    {id: 3, name: 'sujet 3'},
-    {id: 8, name: 'sujet 4'},
+  listFournisseurs = [
+    {id: 1, name: 'Fourniseur 1'},
+    {id: 2, name: 'Fourniseur 2'},
+    {id: 3, name: 'Fourniseur 3'},
+    {id: 8, name: 'Fourniseur 4'},
   ];
   //objet pour les sujets
   listeAcces = [
@@ -62,6 +62,11 @@ export class ListeChoixOptions  {
 
   //objet pour les sujets
   essentiel = [
+    {id: 1, name: 'Oui'},
+    {id: 2, name: 'Non'}
+  ];
+
+  accesCourant = [
     {id: 1, name: 'Oui'},
     {id: 2, name: 'Non'}
   ];

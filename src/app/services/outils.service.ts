@@ -142,11 +142,54 @@ export class OutilsService {
     let params=new HttpParams().set('result', paramResults)
 
     const url = `/api/outils/brut/${params}`;
-    console.log(url)
+    //console.log(url)
     return this.http
       .get<any>(url, { responseType: "json" })
       .pipe(catchError(this.errorHandlerService.handleError<any>("consulter données brutes")));
   }
+  /******************Section pour la gestion des fournisseurs*******************/
 
+  postFournisseur(fond: any): Observable<any> {
+    const url = `/api/outils/add-fournisseur`;
+    //console.log(fond)
+    return this.http
+      .post<Partial<any>>(url, fond, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("post")));
+  }
+
+  updateFournisseur(f: any): Observable<any> {
+    const url = `/api/outils/f-update`;
+    console.log(f)
+    return this.http
+      .post<any>(url, f, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("update")));
+  }
+
+  deleteFournisseur(id: number): Observable<any> {
+    const url = `/api/outils/delete-fournisseur/${id}`;
+    return this.http
+      .delete<any>(url, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("delete")));
+  }
+  //chercher toute la liste des archives
+  allFournisseurs(): Observable<any[]> {
+    const url = `/api/outils/all-fournisseurs`;
+    //console.log(url)
+    return this.http
+      .get<any[]>(url, { responseType: "json" })
+      .pipe(
+        tap((_) => console.log("liste fournisseurs")),
+        catchError(
+          this.errorHandlerService.handleError<any[]>("all fournisseurs", [])
+        )
+      );
+  }
+  //consulter les données d'une archive
+  consulterFournisseur(id: number): Observable<any> {
+    const url = `/api/outils/fiche-fournisseur/${id}`;
+    return this.http
+      .get<any>(url, { responseType: "json" })
+      .pipe(catchError(this.errorHandlerService.handleError<any>("consulter fond")));
+  }
 
 }

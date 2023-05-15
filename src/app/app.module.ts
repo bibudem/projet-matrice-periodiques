@@ -79,6 +79,7 @@ import {MiseEnLotPeriodiquesComponent} from "./components/processus/importation-
 import {ListeProcessusDelailsComponent} from "./components/processus/liste-processus-details/liste-processus-details.component";
 import {MiseAJourArchivesComponent} from "./components/processus/mise-a-jour-archives/mise-a-jour-archives.component";
 import {RapportMoyenneComponent} from "./components/rapports/rapport-moyenne/rapport-moyenne.component";
+import {ListFournisseursComponent} from "./components/outils/list-fournisseurs/list-fournisseurs.component";
 
 const maskConfig: Partial<IConfig> = {
   validation: false,
@@ -112,6 +113,7 @@ const maskConfig: Partial<IConfig> = {
     LogsPlateformeComponent,
     LogsMenuComponent,
     ListFondsComponent,
+    ListFournisseursComponent,
     RapportPlateformesComponent,
     AboutComponent,
     NotUserComponent,

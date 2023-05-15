@@ -83,6 +83,42 @@ module.exports = class Outils {
 
     return db.execute("SELECT * FROM "+table+"  WHERE annee=?  " +plateformeSql+ " order by Title ",[annee])
   }
+  static allFournisseurs() {
+    let sql = "SELECT * FROM lst_fournisseurs  order by titre"
+    console.log('sql: ', SqlString.format(sql));
+    return db.execute('SELECT * FROM lst_fournisseurs  order by titre');
+  }
 
+  static async addFournisseur(value) {
+    //creation de la date
+    let dt = datetime.create();
+    let date = dt.format('Y-m-d H:M:S');
+    //ajouter la date dans le tableau des données
+    value.push(date);
+    //afficher la requette
+    /*let sql = "INSERT INTO lst_fournisseurs SET titre = ?,description =?,dateA =? "
+     console.log('sql: ', SqlString.format(sql,[value[0],value[1],value[2]]));*/
+    return db.execute('INSERT INTO lst_fournisseurs SET titre = ?,description =?,dateA =?', [value[0],value[1],value[2]] );
+
+  }
+
+  static async putFournisseur(value) {
+    //creation de la date
+    let dt = datetime.create();
+    let date = dt.format('Y-m-d H:M:S');
+
+    return db.execute('UPDATE lst_fournisseurs SET titre = ?,description =?,dateM =? WHERE idFournisseurs  = ?',
+      [value[1],value[2],date, value[0]]);
+
+  }
+
+  static async deleteFournisseur(id) {
+    return db.execute('DELETE FROM lst_fournisseurs WHERE idFournisseurs  = ?', [id]);
+  }
+
+//recouperer la fiche
+  static ficheFournisseur(id){
+    return db.execute('SELECT * FROM lst_fournisseurs WHERE idFournisseurs  = ?', [id]);
+  }
 };
 

@@ -60,12 +60,22 @@
             </div>
             <div class="col-md-2">
               <div class="form-group">
+                <label for="accesCourant">{{ 'accesCourant' | translate}}</label>
+                <select name="accesCourant" id="accesCourant" class="form-control" #accesCourant [(ngModel)]="periodique.accesCourant">
+                  <option *ngFor="let rep of this.listeChoixOptions.accesCourant" [value]="rep.name">{{rep.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
                 <label for="abonnement">{{ 'abonnement' | translate}} </label>
                 <select name="abonnement" id="abonnement"  class="form-control" #abonnement  [(ngModel)]="periodique.abonnement">
                   <option *ngFor="let rep of this.listeChoixOptions.listAbonnement" [value]="rep.name">{{rep.name}}</option>
                 </select>
               </div>
             </div>
+          </div>
+          <div class="row">
             <div class="col-md-2">
               <div class="form-group">
                 <label for="bdd">{{ 'BDD' | translate}}</label>
@@ -74,8 +84,6 @@
                 </select>
               </div>
             </div>
-          </div>
-          <div class="row">
             <div class="col-md-2">
               <div class="form-group">
                 <label for="statut">{{ 'statut' | translate}} </label>
@@ -108,7 +116,7 @@
                 </select>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
               <div class="form-group">
                 <label for="secteur">{{ 'secteur' | translate}}</label>
                 <br>
@@ -154,7 +162,9 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label for="fournisseur">{{ 'fournisseur' | translate}}</label>
-                <input type="text" class="form-control" id="fournisseur" name="fournisseur" placeholder="{{ 'fournisseur' | translate}}" #fournisseur="ngModel" [(ngModel)]="periodique.fournisseur">
+                <select name="fournisseur" id="fournisseur"  class="form-control" #fournisseur [(ngModel)]="periodique.fournisseur" >
+                  <option *ngFor="let rep of this.listeFounisseurs" [value]="rep.titre">{{rep.titre}}</option>
+                </select>
               </div>
             </div>
             <div class="col-md-3">

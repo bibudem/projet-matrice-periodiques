@@ -66,6 +66,9 @@ export class PeriodiqueFormulaireComponent implements OnInit {
   plateformes$: Observable<any> | undefined;
   listePlateforme: any = [];
 
+  fournisseurs$: Observable<any> | undefined;
+  listeFounisseurs: any = [];
+
   //creer la liste des plateforme
   fonds$: Observable<any> | undefined;
   listeFonds: any = [];
@@ -106,6 +109,8 @@ export class PeriodiqueFormulaireComponent implements OnInit {
     this.ifAdmin=this.methodesGlobal.ifAdminFunction()
     //remplire la liste des plateforme
     this.creerTableauPlateforme();
+
+    this.creerTableauFournisseurs();
     //remplire la liste des fonds
     this.creerTableauFonds()
 
@@ -208,6 +213,23 @@ export class PeriodiqueFormulaireComponent implements OnInit {
           }
           this.multiListePlateforme.push({ "id": res[i].idPlateforme, "titre": res[i].titrePlateforme })
          }
+      });
+    } catch(err) {
+      console.error(`Error : ${err.Message}`);
+    }
+  }
+
+  async creerTableauFournisseurs() {
+    try {
+      this.fournisseurs$ = this.plateformeService.allFournisseurs();
+      // @ts-ignore
+      await this.fournisseurs$.toPromise().then(res => {
+        for (let i = 0; i < res.length; i++) {
+          this.listeFounisseurs[i]={
+            "numero":i+1,
+            "titre":res[i].titre
+          }
+        }
       });
     } catch(err) {
       console.error(`Error : ${err.Message}`);
@@ -427,6 +449,10 @@ export class PeriodiqueFormulaireComponent implements OnInit {
         this.periodique.statut=f.value.statut
         else this.periodique.statut=''
 
+    if(f.value.accesCourant)
+      this.periodique.accesCourant=f.value.accesCourant
+    else this.periodique.accesCourant=''
+
     if(f.value.abonnement)
       this.periodique.abonnement=f.value.abonnement
     else this.periodique.abonnement=''
@@ -516,20 +542,5 @@ export class PeriodiqueFormulaireComponent implements OnInit {
     this.closebutton.nativeElement.click();
   }
 
-  //fonction pour ajouter une periodique a la consultation 2022
-  ajouterConsultation(){
-    console.log(this.periodique)
-    //données pour ajouter dans la liste de consultation
-    let periodiqueConsultation:any={}
-    periodiqueConsultation.id=this.periodique.idRevue
-    periodiqueConsultation.title=this.periodique.titre
-    periodiqueConsultation.issn=this.periodique.ISSN
-    periodiqueConsultation.eissn=this.periodique.EISSN
-    periodiqueConsultation.domaine=this.periodique.domaine
-
-    this.periodiques$ = this.periodiqueFormulaireService
-      .postConsultation(periodiqueConsultation)
-      .pipe(tap(() => ( this.methodesGlobal.afficher('alert-consultation2022'))));
-  }
 }
 

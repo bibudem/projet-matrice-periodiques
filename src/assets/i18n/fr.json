@@ -132,6 +132,7 @@
   "date-dernier-modif": "Dernière modif.",
   "text-moyenne": "Moyenne sur 5 dernières années :",
   "text-moyenne-5-ref": "Moyenne des refus d'accès des 5 dernières années :",
+  "configuration-fournisseurs": "Configuration fournisseurs",
 
   "message": {
     "confirmer-titre": "Confirmer votre action",
@@ -173,7 +174,8 @@
     "list-domaines": "Liste des domaines",
     "list-secteurs": "Liste des secteurs",
     "logs": "Journaux",
-    "list-fonds": "Liste des fonds"
+    "list-fonds": "Liste des fonds",
+    "list-fournisseur": "Liste des fournisseurs"
   },
   "home": {
     "board": "Quelques statistiques...",

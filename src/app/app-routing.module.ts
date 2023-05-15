@@ -21,6 +21,7 @@ import {LogsMenuComponent} from "./components/logs/logs-menu/logs-menu.component
 import {LogsRevueComponent} from "./components/logs/logs-revue/logs-revue.component";
 import {LogsPlateformeComponent} from "./components/logs/logs-plateforme/logs-plateforme.component";
 import {ListFondsComponent} from "./components/outils/fonds/list-fonds/list-fonds.component";
+import {ListFournisseursComponent} from "./components/outils/list-fournisseurs/list-fournisseurs.component";
 import {RapportPlateformesComponent} from "./components/rapports/rapport-plateformes/rapport-plateformes.component";
 import {AboutComponent} from "./components/about/about.component";
 import {LoginComponent} from "./components/login/login.component";
@@ -70,6 +71,7 @@ const routes: Routes = [
   { path: 'mise-a-jour-statistiques', component: MiseAJourStatistiquesComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'mise-a-jour-abonnement', component: MiseAJourAbonnementComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'list-fonds', component: ListFondsComponent, canActivate: [AuthGuard,AdminGuard] },
+  { path: 'list-fournisseurs', component: ListFournisseursComponent, canActivate: [AuthGuard,AdminGuard] },
   { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
   { path: 'page-not-found', component: PageNotFoundComponent, canActivate: [AuthGuard]  },
   { path: 'not-user', component: NotUserComponent },

@@ -33,7 +33,7 @@
             <div class="col-md-2">
               <div class="form-group">
                 <label for="annee">{{ 'annee' | translate}} <span class="text-danger">*</span></label>
-                <mat-form-field class="w-100 ">
+                <mat-form-field class="w-100 " >
                   <mat-select
                     id="annee"
                     name="annee"
@@ -51,67 +51,159 @@
             <div class="col-md-2">
               <div class="form-group">
                 <label for="domaine">{{ 'domaine' | translate}}</label>
-                <select name="domaine" id="domaine" class="form-control" #domaine (change)="this.implimentationFiltre($event)">
-                  <option value="">{{ 'choisissez' | translate}}</option>
-                  <option *ngFor="let rep of this.listeChoixOptions.listDomaine" [value]="rep.name">{{rep.name}}</option>
-                </select>
+                <mat-form-field class="w-100 " >
+                  <mat-select
+                    id="domaine"
+                    name="domaine"
+                    #domaine
+                    (valueChange)="this.implimentationMatFiltre(domaine.value,'domaine')"
+                    multiple>
+                    <mat-option
+                      *ngFor="let rep of this.listeChoixOptions.listDomaine"
+                      [value]="rep.name">
+                      {{rep.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
-                <label for="secteur">{{ 'secteur' | translate}}</label>
-                <select name="secteur" id="secteur" class="form-control" #secteur (change)="this.implimentationFiltre($event)">
-                  <option value="">{{ 'choisissez' | translate}}</option>
-                  <option *ngFor="let rep of this.listeChoixOptions.listSecteurs" [value]="rep.name">{{rep.name}}</option>
-                </select>
+                <label for="accesCourant">{{ 'accesCourant' | translate}}</label>
+                <mat-form-field class="w-100 " >
+                  <mat-select
+                    id="accesCourant"
+                    name="accesCourant"
+                    #accesCourant
+                    (valueChange)="this.implimentationMatFiltre(accesCourant.value,'accesCourant')"
+                    multiple>
+                    <mat-option
+                      *ngFor="let rep of this.listeChoixOptions.accesCourant"
+                      [value]="rep.name">
+                      {{rep.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
                 <label for="abonnement">{{ 'abonnement' | translate}} </label>
-                <select name="abonnement" id="abonnement"  class="form-control" #abonnement  (change)="this.implimentationFiltre($event)">
-                  <option value="">{{ 'choisissez' | translate}}</option>
-                  <option *ngFor="let rep of this.listeChoixOptions.listAbonnement" [value]="rep.name">{{rep.name}}</option>
-                </select>
+                <mat-form-field class="w-100 " >
+                  <mat-select
+                    id="abonnement"
+                    name="abonnement"
+                    #abonnement
+                    (valueChange)="this.implimentationMatFiltre(abonnement.value,'abonnement')"
+                    multiple>
+                    <mat-option
+                      *ngFor="let rep of this.listeChoixOptions.listAbonnement"
+                      [value]="rep.name">
+                      {{rep.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
                 <label for="bdd">{{ 'BDD' | translate}}</label>
-                <select name="bdd" id="bdd" class="form-control" #bdd (change)="this.implimentationFiltre($event)">
-                  <option value="">{{ 'choisissez' | translate}}</option>
-                  <option *ngFor="let rep of this.listeChoixOptions.bdd" [value]="rep.name">{{rep.name}}</option>
-                </select>
+                <mat-form-field class="w-100 " >
+                  <mat-select
+                    id="bdd"
+                    name="bdd"
+                    #bdd
+                    (valueChange)="this.implimentationMatFiltre(bdd.value,'bdd')"
+                    multiple>
+                    <mat-option
+                      *ngFor="let rep of this.listeChoixOptions.bdd"
+                      [value]="rep.name">
+                      {{rep.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
                 <label for="statut">{{ 'statut' | translate}} </label>
-                <select name="statut" id="statut" class="form-control" #statut (change)="this.implimentationFiltre($event)">
-                  <option value="">{{ 'choisissez' | translate}}</option>
-                  <option *ngFor="let rep of this.listeChoixOptions.listStatut" [value]="rep.name">{{rep.name}}</option>
-                </select>
+                <mat-form-field class="w-100 " >
+                  <mat-select
+                    id="statut"
+                    name="statut"
+                    #statut
+                    (valueChange)="this.implimentationMatFiltre(statut.value,'statut')"
+                    multiple>
+                    <mat-option
+                      *ngFor="let rep of this.listeChoixOptions.listStatut"
+                      [value]="rep.name">
+                      {{rep.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group">
-                <label for="domaine">{{ 'plateforme' | translate}}</label>
-                <select name="plateforme" id="plateforme"   class="form-control " #plateforme>
-                  <option value="">{{ 'choisissez' | translate}} </option>
-                  <option *ngFor="let rep of this.listePlateforme" [value]="rep.acronyme">{{rep.acronyme}}</option>
-                </select>
+                <label for="secteur">{{ 'secteur' | translate}}</label>
+                <mat-form-field class="w-100 " >
+                  <mat-select
+                    id="secteur"
+                    name="secteur"
+                    #secteur
+                    (valueChange)="this.implimentationMatFiltre(secteur.value,'secteur')"
+                    multiple>
+                    <mat-option
+                      *ngFor="let rep of this.listeChoixOptions.listSecteurs"
+                      [value]="rep.name">
+                      {{rep.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="plateforme">{{ 'plateforme' | translate}}</label>
+                <mat-form-field class="w-100 " >
+                  <mat-select
+                    id="plateforme"
+                    name="plateforme"
+                    #plateforme
+                    (valueChange)="this.implimentationMatFiltre(plateforme.value,'plateforme')"
+                    multiple>
+                    <mat-option
+                      *ngFor="let rep of this.listePlateforme"
+                      [value]="rep.acronyme">
+                      {{rep.acronyme}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-md-3">
               <div class="form-group ">
                 <label for="domaine">{{ 'fournisseur' | translate}}</label>
-                <input type="text" class="form-control" id="fournisseur" #fournisseur name="fournisseur" placeholder="{{ 'fournisseur' | translate}}" (change)="this.implimentationFiltre($event)">
+                <mat-form-field class="w-100 " >
+                  <mat-select
+                    id="fournisseur"
+                    name="fournisseur"
+                    #fournisseur
+                    (valueChange)="this.implimentationMatFiltre(fournisseur.value,'fournisseur')"
+                    multiple>
+                    <mat-option
+                      *ngFor="let rep of listeFounisseurs"
+                      [value]="rep.titre">
+                      {{rep.titre}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
             </div>
-            <div class="col-md-4">
-              <button type="button" class="btn btn-success w-100 mt-4 "  (click)="creerTableauStatistique(this.methodesGlobal.getValue(annee.value),this.methodesGlobal.getValue(plateforme.value));" >
+            <div class="col-md-3">
+              <button type="button" class="btn btn-success w-100 mt-4 "  (click)="creerTableauStatistique(this.methodesGlobal.getValue(annee.value),plateforme.value);" >
                 <i class="icon-layers"></i> {{'rapport.rapport-total-statistique'| translate }} </button>
             </div>
           </div>
