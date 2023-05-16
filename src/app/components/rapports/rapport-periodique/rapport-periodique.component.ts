@@ -182,6 +182,7 @@ export class RapportPeriodiqueComponent implements OnInit {
                 "secteur":res[i].secteur,
                 "bdd":res[i].bdd,
                 "sujets":res[i].sujets,
+                "entente_consortiale":res[i].entente_consortiale,
                 "fonds":res[i].fonds,
                 "fournisseur":res[i].fournisseur,
                 "plateformePrincipale":res[i].plateformePrincipale,

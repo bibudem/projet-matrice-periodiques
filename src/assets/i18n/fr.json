@@ -133,6 +133,7 @@
   "text-moyenne": "Moyenne sur 5 dernières années :",
   "text-moyenne-5-ref": "Moyenne des refus d'accès des 5 dernières années :",
   "configuration-fournisseurs": "Configuration fournisseurs",
+  "entente_consortiale": "Entente consortiale",
 
   "message": {
     "confirmer-titre": "Confirmer votre action",
@@ -306,6 +307,7 @@
     "domaine": "Domaine",
     "secteur": "Secteur",
     "sujets": "Sujet",
+    "entente_consortiale": "Entente consortiale",
     "fonds": "Fonds",
     "fournisseur": "Fournisseur",
     "plateformePrincipale": "Platef. principale",

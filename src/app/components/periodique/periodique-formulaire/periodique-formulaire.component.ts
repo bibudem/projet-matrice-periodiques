@@ -226,7 +226,6 @@ export class PeriodiqueFormulaireComponent implements OnInit {
       await this.fournisseurs$.toPromise().then(res => {
         for (let i = 0; i < res.length; i++) {
           this.listeFounisseurs[i]={
-            "numero":i+1,
             "titre":res[i].titre
           }
         }
@@ -270,6 +269,10 @@ export class PeriodiqueFormulaireComponent implements OnInit {
     this.periodiques$ = this.periodiqueFormulaireService
       .update(periodique)
       .pipe(tap(() => (this.methodesGlobal.afficher('alert-periodique'))));
+    setTimeout(() => {
+      this.reload('periodique/'+this.idRevue);
+    }, 2000);
+
   }
 //supprimer un enregistrement
   delete(id: number): void {
@@ -492,6 +495,10 @@ export class PeriodiqueFormulaireComponent implements OnInit {
     if(f.value.sujets)
       this.periodique.sujets=f.value.sujets
     else this.periodique.sujets=''
+
+    if(f.value.entente_consortiale)
+      this.periodique.entente_consortiale=f.value.entente_consortiale
+    else this.periodique.entente_consortiale=''
 
     if(this.methodesGlobal.checkedResult('duplication'))
       this.periodique.duplication='Oui'

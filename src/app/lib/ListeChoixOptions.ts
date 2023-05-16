@@ -60,6 +60,12 @@ export class ListeChoixOptions  {
     {id: 3, name: 'Hybride'},
   ];
 
+  listeEntenteConsortiale = [
+    {id: 1, name: ''},
+    {id: 2, name: 'BCI'},
+    {id: 3, name: 'RCDR'},
+  ];
+
   //objet pour les sujets
   essentiel = [
     {id: 1, name: 'Oui'},

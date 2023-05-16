@@ -16,6 +16,7 @@ export interface Periodique {
   domaine:string;
   secteur:string;
   sujets:string;
+  entente_consortiale:string;
   duplication:string;
   duplicationCourant:string;
   duplicationEmbargo1:string;

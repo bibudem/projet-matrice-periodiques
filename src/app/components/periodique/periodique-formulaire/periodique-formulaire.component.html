@@ -139,7 +139,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="fonds">{{ 'fonds' | translate}}</label>
                 <br>
@@ -159,11 +159,19 @@
                 </mat-form-field>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
               <div class="form-group">
                 <label for="fournisseur">{{ 'fournisseur' | translate}}</label>
                 <select name="fournisseur" id="fournisseur"  class="form-control" #fournisseur [(ngModel)]="periodique.fournisseur" >
                   <option *ngFor="let rep of this.listeFounisseurs" [value]="rep.titre">{{rep.titre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="entente_consortiale">{{ 'entente_consortiale' | translate}}</label>
+                <select name="entente_consortiale" id="entente_consortiale"  class="form-control" #entente_consortiale [(ngModel)]="periodique.entente_consortiale" >
+                  <option *ngFor="let rep of this.listeChoixOptions.listeEntenteConsortiale" [value]="rep.name">{{rep.name}}</option>
                 </select>
               </div>
             </div>

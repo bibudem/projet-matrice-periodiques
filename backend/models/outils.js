@@ -84,8 +84,8 @@ module.exports = class Outils {
     return db.execute("SELECT * FROM "+table+"  WHERE annee=?  " +plateformeSql+ " order by Title ",[annee])
   }
   static allFournisseurs() {
-    let sql = "SELECT * FROM lst_fournisseurs  order by titre"
-    console.log('sql: ', SqlString.format(sql));
+    /*let sql = "SELECT * FROM lst_fournisseurs  order by titre"
+    console.log('sql: ', SqlString.format(sql));*/
     return db.execute('SELECT * FROM lst_fournisseurs  order by titre');
   }
 
