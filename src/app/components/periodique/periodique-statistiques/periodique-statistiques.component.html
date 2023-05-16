@@ -34,25 +34,19 @@
         </div>
         <form   #statistiqueForm="ngForm" name="statistiqueForm" id="statistiqueForm" (ngSubmit)="onSubmit(statistiqueForm)">
           <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="annee">{{ 'annee' | translate}}</label> <span class="text-danger"> *</span>
                 <input type="text" class="form-control" id="annee" name="annee" #annee mask="0000" [(ngModel)]="statistique.annee">
               </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="Total_Item_Requests">{{ 'telechargements' | translate}}</label>
                 <input type="text" class="form-control" id="Total_Item_Requests" name="Total_Item_Requests" #Total_Item_Requests [(ngModel)]="statistique.Total_Item_Requests">
                 <input type="hidden" class="form-control" id="idRevue" name="idRevue" #idRevue value="{{id}}" >
                 <input type="hidden" class="form-control" id="idStatistique" name="idStatistique" #idStatistique  [(ngModel)]="statistique.idStatistique" >
                 <input  class="form-control"  name="action" id="action" type="hidden"  value="{{action}}"  >
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="form-group">
-                <label for="Unique_Item_Requests">{{ 'unique-telechargements' | translate}}</label>
-                <input type="text" class="form-control" id="Unique_Item_Requests" name="Unique_Item_Requests" #Unique_Item_Requests [(ngModel)]="statistique.Unique_Item_Requests">
               </div>
             </div>
             <div class="col-md-2">
@@ -143,16 +137,15 @@
             <thead>
             <tr>
               <th class="mat-w-5">{{ 'numero' | translate}}</th>
-              <th class="mat-w-5">{{ 'annee' | translate}}</th>
+              <th class="mat-w-10">{{ 'annee' | translate}}</th>
               <th class="mat-w-10">{{ 'plateforme' | translate}}</th>
               <th class="mat-w-10">{{ 'telech.' | translate}}</th>
-              <th class="mat-w-10">{{ 'unique-telechargements' | translate}}</th>
-              <th class="mat-w-5">{{ 'refus' | translate}}</th>
-              <th class="mat-w-5">{{ 'citations' | translate}}</th>
-              <th class="mat-w-5">{{ 'art.-udem' | translate}}</th>
+              <th class="mat-w-10">{{ 'refus' | translate}}</th>
+              <th class="mat-w-10">{{ 'citations' | translate}}</th>
+              <th class="mat-w-10">{{ 'art.-udem' | translate}}</th>
               <th class="mat-w-10 ">{{ 'date-dernier-modif' | translate}}</th>
-              <th class="mat-w-10">{{ 'btn-modifier' | translate}}</th>
-              <th class="mat-w-10">{{ 'btn-supprimer' | translate}}</th>
+              <th class="mat-w-5">{{ 'btn-modifier' | translate}}</th>
+              <th class="mat-w-5">{{ 'btn-supprimer' | translate}}</th>
             </tr>
             </thead>
             <tbody>
@@ -161,7 +154,6 @@
               <td>{{rep.annee}}</td>
               <td>{{rep.plateforme}}</td>
               <td>{{rep.Total_Item_Requests}}</td>
-              <td>{{rep.Unique_Item_Requests}}</td>
               <td>{{rep.No_License}}</td>
               <td>{{rep.citations}}</td>
               <td>{{rep.articlesUdem}}</td>

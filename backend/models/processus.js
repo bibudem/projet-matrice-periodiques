@@ -77,7 +77,7 @@ module.exports = class Processus {
     //creation de la date
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
-    console.log(values);
+
     if(values[0]=='-' && values[1]=='-' && values[2]=='-'){
       return [];
     }
@@ -140,12 +140,12 @@ module.exports = class Processus {
     tabValue['idRevue'] = values[0];
     tabValue['ISSN'] = values[1];
     tabValue['EISSN'] = values[2];
-    //si non valid idRevue
+    //si valid idRevue
     if(values[0]!='-' ){
       let valid= await this.valideIdRevue(values[0]);
       if(!valid){
-        await this.ajoutProcessusDetails(values[0],'-1','')
-        return []
+        await this.ajoutProcessusDetails(values[0],'-1','');
+        return [];
       }
     }
     //chercher l'id du revue
@@ -154,7 +154,7 @@ module.exports = class Processus {
     }
     //si non match
     if(tabValue['idRevue']=='-1'){
-      return []
+      return [];
     }
 
     tabValue['annee'] = values[3];
@@ -163,42 +163,39 @@ module.exports = class Processus {
       condSql += ', Total_Item_Requests = ?';
       tabValue.push(values[4]);
     }
+
     if(values[5]!='-'){
-      condSql += ', Unique_Item_Requests = ?';
+      condSql += ', No_License = ?';
       tabValue.push(values[5]);
     }
     if(values[6]!='-'){
-      condSql += ', No_License = ?';
+      condSql += ', citations = ?';
       tabValue.push(values[6]);
     }
     if(values[7]!='-'){
-      condSql += ', citations = ?';
+      condSql += ', articlesUdem = ?';
       tabValue.push(values[7]);
     }
     if(values[8]!='-'){
-      condSql += ', articlesUdem = ?';
+      condSql += ', JR5COURANT = ?';
       tabValue.push(values[8]);
     }
     if(values[9]!='-'){
-      condSql += ', JR5COURANT = ?';
+      condSql += ', JR5INTER = ?';
       tabValue.push(values[9]);
     }
     if(values[10]!='-'){
-      condSql += ', JR5INTER = ?';
-      tabValue.push(values[10]);
-    }
-    if(values[11]!='-'){
       condSql += ', JR5RETRO = ?';
       tabValue.push(values[11]);
     }
-    if(values[12]!='-'){
+    if(values[11]!='-'){
       condSql += ', JR3OAGOLD = ?';
-      tabValue.push(values[12]);
+      tabValue.push(values[11]);
     }
-    if(values[13]!='-'){
+    if(values[12]!='-'){
       condSql += ', plateforme = ?';
-      condSqlPlateforme += " and plateforme = '"+ values[13].toString() +"'";
-      tabValue.push(values[13]);
+      condSqlPlateforme += " and plateforme = '"+ values[12].toString() +"'";
+      tabValue.push(values[12]);
     }
 
 
@@ -210,7 +207,6 @@ module.exports = class Processus {
     // supprimer ',' du debut de la condition
     condSql = condSql.slice(1);
 
-    //console.log(tabValue)
     let count= await db.execute('SELECT COUNT(idStatistique) AS count FROM tbl_statistiques  WHERE idRevue = ? and annee = ?  ' + condSqlPlateforme + ' ',[tabValue['idRevue'],tabValue['annee']])
 
     if(count[0]['0']['count']>0){
@@ -535,7 +531,6 @@ module.exports = class Processus {
 
   static async valideIdRevue(idRevue){
     //console.log(idRevue)
-
     let count= await db.execute('SELECT COUNT(idRevue) AS count FROM tbl_periodiques  WHERE idRevue = ?  ',[idRevue])
 
     if (count[0]['0']['count']==0){

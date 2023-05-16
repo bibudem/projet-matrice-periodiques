@@ -42,7 +42,7 @@ export class MiseAJourStatistiquesComponent implements OnInit {
   reponseUpdate = 0
 
   //les entêts du tableau
-  displayedColumns = ['IDRevue','ISSN','EISSN','annee', 'Total_Item_Requests','Unique_Item_Requests','No_License','citations','articlesUdem','JR5COURANT','JR5INTER','JR5RETRO','JR3OAGOLD','PlateformeID'];
+  displayedColumns = ['IDRevue','ISSN','EISSN','annee', 'Total_Item_Requests','No_License','citations','articlesUdem','JR5COURANT','JR5INTER','JR5RETRO','JR3OAGOLD','PlateformeID'];
 
   // @ts-ignore
   dataSource: MatTableDataSource<InCites>;
@@ -157,7 +157,7 @@ export class MiseAJourStatistiquesComponent implements OnInit {
     let csvArr: UpdateStatistiques[] = [];
     // @ts-ignore
     let csvRecord: UpdateStatistiques = []; let curruntRecord;
-    let colIDRevue=-1,colISSN=-1,colEISSN=-1,colTotal_Item_Requests=-1,colUnique_Item_Requests=-1
+    let colIDRevue=-1,colISSN=-1,colEISSN=-1,colTotal_Item_Requests=-1
         ,colNo_License=-1,colCitations=-1,colArticlesUdem=-1,colJR5COURANT=-1,colJR5INTER=-1,colJR5RETRO=-1,colJR3OAGOLD=-1,colPlateformeID=-1;
     //prendre le numero des colons selon le nom d'entete
     for(let i=0;i<headersRow.length;i++){
@@ -173,9 +173,6 @@ export class MiseAJourStatistiquesComponent implements OnInit {
           break;
         case 'Total_Item_Requests':
           colTotal_Item_Requests=i
-          break;
-        case 'Unique_Item_Requests':
-          colUnique_Item_Requests=i
           break;
         case 'No_License':
           colNo_License=i
@@ -218,7 +215,6 @@ export class MiseAJourStatistiquesComponent implements OnInit {
             // @ts-ignore
             annee: this.annee,
             Total_Item_Requests: this.methodesGlobal.returnCharIfNull(curruntRecord[colTotal_Item_Requests]),
-            Unique_Item_Requests: this.methodesGlobal.returnCharIfNull(curruntRecord[colUnique_Item_Requests]),
             No_License: this.methodesGlobal.returnCharIfNull(curruntRecord[colNo_License]),
             citations: this.methodesGlobal.returnCharIfNull(curruntRecord[colCitations]),
             articlesUdem: this.methodesGlobal.returnCharIfNull(curruntRecord[colArticlesUdem]),
@@ -274,7 +270,6 @@ export class MiseAJourStatistiquesComponent implements OnInit {
           postLigne.EISSN=val.EISSN;
           postLigne.annee=val.annee;
           postLigne.Total_Item_Requests=val.Total_Item_Requests;
-          postLigne.Unique_Item_Requests=val.Unique_Item_Requests;
           postLigne.No_License=val.No_License;
           postLigne.citations=val.citations;
           postLigne.articlesUdem=val.articlesUdem;

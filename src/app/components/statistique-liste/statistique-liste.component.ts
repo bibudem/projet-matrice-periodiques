@@ -89,7 +89,6 @@ export class StatistiqueListeComponent implements OnInit {
           if(!val.citations)val.citations=0
           if(!val.articlesUdem)val.articlesUdem=0
           if(!val.Total_Item_Requests)val.Total_Item_Requests=0
-          if(!val.Unique_Item_Requests)val.Unique_Item_Requests=0
           if(!val.No_License)val.No_License=0
           this.tableauStatistique[i]={
             "numero":i+1,

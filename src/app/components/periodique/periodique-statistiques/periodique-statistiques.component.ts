@@ -98,7 +98,6 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
               "annee":res[i].annee,
               "plateforme":res[i].plateforme,
               "Total_Item_Requests":res[i].Total_Item_Requests,
-              "Unique_Item_Requests":res[i].Unique_Item_Requests,
               "No_License":res[i].No_License,
               "citations":res[i].citations,
               "articlesUdem":res[i].articlesUdem,
@@ -156,8 +155,6 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
       document.getElementById('plateforme').value=res[0].plateforme;
       // @ts-ignore
       document.getElementById('Total_Item_Requests').value=res[0].Total_Item_Requests;
-      // @ts-ignore
-      document.getElementById('Unique_Item_Requests').value=res[0].Unique_Item_Requests;
       // @ts-ignore
       document.getElementById('No_License').value=res[0].No_License;
       // @ts-ignore
@@ -254,8 +251,6 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
     // @ts-ignore
     document.getElementById('Total_Item_Requests').value='';
     // @ts-ignore
-    document.getElementById('Unique_Item_Requests').value='';
-    // @ts-ignore
     document.getElementById('No_License').value='';
     // @ts-ignore
     document.getElementById('citations').value='';
@@ -298,10 +293,6 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
     if(f.value.Total_Item_Requests)
       this.statistique.Total_Item_Requests=f.value.Total_Item_Requests
     else this.statistique.Total_Item_Requests=''
-
-    if(f.value.Unique_Item_Requests)
-      this.statistique.Unique_Item_Requests=f.value.Unique_Item_Requests
-    else this.statistique.Unique_Item_Requests=''
 
     if(f.value.No_License)
       this.statistique.No_License=f.value.No_License
