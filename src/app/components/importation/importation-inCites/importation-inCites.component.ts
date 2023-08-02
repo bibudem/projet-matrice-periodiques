@@ -46,7 +46,7 @@ export class ImportationInCitesComponent implements OnInit {
   @ViewChild('InCites') InCites: any;
   csvReader: any;
 
-  separator=';';
+  separator=',';
 
   constructor( private router: Router,
                private translate: TranslateService,
@@ -76,6 +76,8 @@ export class ImportationInCitesComponent implements OnInit {
       reader.readAsText(input.files[0]);
       reader.onload = async () => {
         let csvData = await reader.result;
+        let ligneHeader=<string>csvData;
+
         let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
         let headersRow = this.getHeaderArray(csvRecordsArray);
         this.records = await this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow);
@@ -101,8 +103,11 @@ export class ImportationInCitesComponent implements OnInit {
     // @ts-ignore
     let csvRecord: InCites = []; let curruntRecord;
     let name='',annee,ArticlesUdeM='0',Citations='0',ISSN='',EISSN=''; let j=1;
-    let colName=0,colArUdem=-1,colCitation=-1,colISSN=-1,colEISSN=-1
+    let colName=-1,colArUdem=-1,colCitation=-1,colISSN=-1,colEISSN=-1
     //prendre le numero des colons selon le nom d'entete
+    if(headersRow.indexOf(';')!=-1){
+      this.separator=';';
+    }
     for(let i=0;i<headersRow.length;i++){
       switch (headersRow[i].trim()){
         case 'Name':
@@ -118,15 +123,21 @@ export class ImportationInCitesComponent implements OnInit {
             colISSN=i
           break;
         case 'eISSN':
+        case 'EISSN':
             colEISSN=i
+          break;
+        default:
           break;
       }
     }
     for (let i = 1; i < csvRecordsArray.length; i++) {
-      if(document.getElementById('annee'))
+      let annee='';
         // @ts-ignore
-        annee=document.getElementById('annee').value
-      curruntRecord = (<string>csvRecordsArray[i]).split(this.separator);
+        annee = document.getElementById('annee').value;
+        if(csvRecordsArray[i].toString().indexOf(';')!=-1){
+          this.separator=';';
+        }
+       curruntRecord = (<string>csvRecordsArray[i]).split(this.separator);
       //if (curruntRecord[colName]) {
         csvRecord = {
           numero: j,
@@ -142,7 +153,7 @@ export class ImportationInCitesComponent implements OnInit {
         j++
       //}
     }
-     console.log(csvArr)
+     //console.log(csvArr)
     return csvArr;
   }
 
@@ -151,6 +162,9 @@ export class ImportationInCitesComponent implements OnInit {
   }
 
   getHeaderArray(csvRecordsArr: any) {
+    if(csvRecordsArr[0].toString().indexOf(';')!=-1){
+      this.separator=';';
+    }
     let headers = (<string>csvRecordsArr[0]).split(this.separator);
     let headerArray = [];
     for (let j = 0; j < headers.length; j++) {

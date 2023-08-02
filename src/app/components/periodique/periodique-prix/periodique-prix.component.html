@@ -9,7 +9,7 @@
       <!-- Quick Action Toolbar Ends-->
       <div class="page-header pt-3">
         <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
-          <h4 class="font-weight-semibold titre-initial ">{{ 'prix-titre' | translate}} « {{titrePeriodique}} » </h4>
+          <h4 class="font-weight-semibold titre-initial ">{{ 'prix-titre' | translate}} « IDRevue: {{id}} »  </h4>
           <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/periodique/{{ id }}">
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
               </span>
@@ -46,7 +46,15 @@
               <input type="text" class="form-control" id="prix" name="prix" #prix [(ngModel)]="prixObj.prix">
             </div>
           </div>
-          <div class="col-md-5">
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="devise">{{'devise'| translate }}</label>
+              <select name="devise" id="devise"  class="form-control" #devise [(ngModel)]="prixObj.devise" >
+                <option *ngFor="let rep of listeChoixOptions.listDevise" [value]="rep.name">{{rep.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
             <div class="form-group">
               <label for="note">{{ 'note' | translate}}</label>
               <textarea class="form-control" id="note" name="note" rows="1" cols="50" #note [(ngModel)]="prixObj.note">
@@ -91,16 +99,22 @@
             <th *matHeaderCellDef class="w-10 pl-2"> {{'numero'| translate }} </th>
             <td *matCellDef="let row " class="w-10 p-3" > {{row.nrPrix+1}} </td>
           </ng-container>
-          <!-- Titre Column -->
+          <!-- annee Column -->
           <ng-container matColumnDef="annee">
             <th *matHeaderCellDef  class="w-35" > {{'annee'| translate }} </th>
             <td  *matCellDef="let row" class="w-35" > {{row.annee}} </td>
           </ng-container>
 
-          <!-- secteur Column -->
+          <!-- prix Column -->
           <ng-container matColumnDef="prix">
             <th *matHeaderCellDef  class=" w-35" > {{'prix'| translate }} </th>
             <td  *matCellDef="let row" class="w-35"> {{row.prix}} </td>
+          </ng-container>
+
+          <!-- devise Column -->
+          <ng-container matColumnDef="devise">
+            <th *matHeaderCellDef  class=" w-35" > {{'devise'| translate }} </th>
+            <td  *matCellDef="let row" class="w-35"> {{row.devise}} </td>
           </ng-container>
 
           <!-- Consulter Column -->

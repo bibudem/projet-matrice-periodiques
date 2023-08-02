@@ -50,7 +50,7 @@
                 <label for="plateforme">{{ 'plateforme' | translate}}</label>
                 <select name="plateforme" id="plateforme"  class="form-control" #plateforme >
                   <option value="">{{ 'importation.tous-plateforme' | translate}}</option>
-                  <option *ngFor="let rep of this.listePlateforme" [value]="rep.PlatformID">{{rep.titrePlateforme}}</option>
+                  <option *ngFor="let rep of this.listePlateforme" [value]="rep.PlatformID">{{rep.PlatformID}}</option>
                 </select>
               </div>
             </div>

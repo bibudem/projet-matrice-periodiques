@@ -41,6 +41,7 @@ export class PeriodiqueArchiveComponent implements OnInit {
   bouttonAction='';
 
   titrePeriodique=localStorage.getItem('titrePeridique');
+
   idRevue=localStorage.getItem('idRevue');
 
   action='add'
@@ -64,7 +65,6 @@ export class PeriodiqueArchiveComponent implements OnInit {
       this.id=this.route.snapshot.paramMap.get("id");
     }else this.id = this.idRevue;
 
-
       this.creerTableau();
   }
 
@@ -80,7 +80,9 @@ export class PeriodiqueArchiveComponent implements OnInit {
         await this.archives$.toPromise().then(res => {
           for (let i = 0; i < res.length; i++) {
             this.tableauArchives[i]={
+              "nr":i+1,
               "idArchive":res[i].idArchive,
+              "idRevue":res[i].idRevue,
               "perennite":res[i].perennite,
               "conserverPap":res[i].conserverPap,
               "anneeDebut":res[i].anneeDebut,
@@ -112,7 +114,7 @@ export class PeriodiqueArchiveComponent implements OnInit {
     this.methodesGlobal.nonAfficher('add-boutton');
     this.methodesGlobal.afficher('save-boutton');
     //changer l'action
-    this.action='save'
+    this.action='save';
 
     this.archives$ = this.consulter(idArchive);
     this.archives$.subscribe(res => {

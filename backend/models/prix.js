@@ -26,9 +26,9 @@ module.exports = class Prix {
     prix.push(date);
     //console.log(prix)
     //afficher la requette
-    /*let sql = "INSERT INTO tbl_prix_periodiques SET annee = ?,prix =?,note =?,idRevue = ?,dateA =? "
+    /*let sql = "INSERT INTO tbl_prix_periodiques SET annee = ?,prix =?,devise =?,note =?,idRevue = ?,dateA =? "
     console.log('sql: ', SqlString.format(sql,[prix]));*/
-    return db.execute('INSERT INTO tbl_prix_periodiques SET annee = ?,prix =?,note =?,idRevue = ?,dateA =? ', prix );
+    return db.execute('INSERT INTO tbl_prix_periodiques SET annee = ?,prix =?,devise =?,note =?,idRevue = ?,dateA =? ', prix );
   }
 
   static update(prix) {
@@ -40,8 +40,8 @@ module.exports = class Prix {
     /*let sql = "UPDATE tbl_prix_periodiques SET idRevue = ?,annee = ?,prix =?,note =?,dateM =? WHERE idPrix  = ?"
     console.log('sql: ', SqlString.format(sql,[prix[7],prix[2],prix[3],prix[4],date, prix[1]]));*/
 
-    return db.execute('UPDATE tbl_prix_periodiques SET idRevue = ?,annee = ?,prix =?,note =?,dateM =? WHERE idPrix  = ?',
-      [prix[7],prix[2],prix[3],prix[4],date, prix[1]]);
+    return db.execute('UPDATE tbl_prix_periodiques SET idRevue = ?,annee = ?,prix =?,devise =?,note =?,dateM =? WHERE idPrix  = ?',
+      [prix[1],prix[2],prix[3],prix[4],prix[5],date, prix[0]]);
 
   }
 

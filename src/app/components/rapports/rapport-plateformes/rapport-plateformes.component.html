@@ -22,7 +22,7 @@
       <div id="page-rapport">
         <form  #rapportForm="ngForm" >
           <div class="row mt-2">
-            <div class="col-md-6">
+            <div class="col-md-8">
               <div class="form-group">
                 <label for="PlatformID">{{ 'plateforme' | translate}}</label>
                 <select name="PlatformID" id="PlatformID" name="PlatformID"  class="form-control" #PlatformID (change)="this.implimentationFiltre($event)">
@@ -31,7 +31,7 @@
                 </select>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
               <div class="form-group">
                 <label for="annee">{{ 'annee' | translate }} </label>
                 <select name="annee" id="annee"  class="form-control" #annee (change)="implimentationFiltre($event)">
@@ -39,17 +39,6 @@
                 </select>
               </div>
             </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label for="ordre">Ordoner par </label>
-                  <select name="ordre" id="ordre" #ordre class="form-control" >
-                    <option value="">{{ 'choisissez' | translate}}</option>
-                    <option value="total_tel">{{ 'telechargements' | translate}}</option>
-                    <option value="unique_tel">{{ 'unique-telechargements' | translate}}</option>
-                    <option value="refus">{{ 'refus' | translate}}</option>
-                  </select>
-            </div>
-          </div>
         </div>
       </form>
 
@@ -66,7 +55,7 @@
         <!-- Tableau contenu formulaire-->
         <div class="row" > <hr>
           <div class="card-header  w-100 b-white">
-            <button type="button" class="btn btn-success  text-uppercase mt-4 p-2 mb-1 mr-5 w-35 d-inline"  (click)="creerTableauRapportPlateforme(this.methodesGlobal.getValue(annee.value),this.methodesGlobal.getValue(ordre.value));" >
+            <button type="button" class="btn btn-success  text-uppercase mt-4 p-2 mb-1 mr-5 w-35 d-inline"  (click)="creerTableauRapportPlateforme(this.methodesGlobal.getValue(annee.value));" >
               <i class="icon-layers"></i> {{'rapport.btn-filtre'| translate }} </button>
           </div>
           <div class="col-md-12 mt-3 " *ngIf="rapportPlateformes$">

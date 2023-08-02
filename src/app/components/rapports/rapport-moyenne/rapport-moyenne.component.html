@@ -42,20 +42,40 @@
             </div>
             <div class="col-md-4">
               <div class="form-group">
-                <label for="essentiel2014">{{ 'Essentiel 2014' | translate}}</label>
-                <select name="essentiel2014" id="essentiel2014" name="essentiel2014"  class="form-control" #essentiel2014 (change)="this.implimentationFiltre($event)">
-                  <option value="">{{ 'choisissez' | translate}}</option>
-                  <option *ngFor="let rep of this.listeChoixOptions.essentielListe14" [value]="rep.name">{{rep.name}}</option>
-                </select>
+                <label>{{ 'fournisseur' | translate}}</label>
+                <mat-form-field class="w-100 " >
+                  <mat-select
+                    id="fournisseur"
+                    name="fournisseur"
+                    #fournisseur
+                    (valueChange)="this.implimentationMatFiltre(fournisseur.value,'fournisseur')"
+                    multiple>
+                    <mat-option
+                      *ngFor="let rep of listeFounisseurs"
+                      [value]="rep.titre">
+                      {{rep.titre}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
-                <label for="essentiel2022">{{ 'Essentiel 2022' | translate}}</label>
-                <select name="essentiel2022" id="essentiel2022" name="essentiel2022"  class="form-control" #essentiel2022 (change)="this.implimentationFiltre($event)">
-                  <option value="">{{ 'choisissez' | translate}}</option>
-                  <option *ngFor="let rep of this.listeChoixOptions.essentielListe22" [value]="rep.name">{{rep.name}}</option>
-                </select>
+                <label>{{ 'plateforme' | translate}}</label>
+                <mat-form-field class="w-100 " >
+                  <mat-select
+                    id="plateforme"
+                    name="plateforme"
+                    #plateforme
+                    (valueChange)="this.implimentationMatFiltre(plateforme.value,'plateforme')"
+                    multiple>
+                    <mat-option
+                      *ngFor="let rep of this.listePlateforme"
+                      [value]="rep.PlatformID">
+                      {{rep.PlatformID}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
             </div>
         </div>

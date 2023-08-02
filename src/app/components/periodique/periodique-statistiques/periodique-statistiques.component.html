@@ -10,7 +10,7 @@
       <div class="row  card p-3">
         <div class="page-header mt-3 p-3">
           <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
-            <h4 class="font-weight-semibold titre-initial ">{{ 'statistique-titre' | translate}} « {{titrePeriodique}} » </h4>
+            <h4 class="font-weight-semibold titre-initial ">{{ 'statistique-titre' | translate}} « IDRevue: {{id}} »  </h4>
               <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="{{ return }}">
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
                <button type="button" *ngIf="bouttonFiche" class="btn btn-primary btn-sm mb-1 ml-2" routerLink="/periodique/{{ id }}">
@@ -74,31 +74,31 @@
                 <label for="plateforme">{{ 'plateforme' | translate}}</label>
                 <select name="plateforme" id="plateforme"  class="form-control" #plateforme [(ngModel)]="statistique.plateforme">
                   <option value="">{{ 'choisissez' | translate}}</option>
-                  <option *ngFor="let rep of this.listePlateforme" [value]="rep.PlatformID">{{rep.titrePlateforme}}</option>
+                  <option *ngFor="let rep of this.listePlateforme" [value]="rep.PlatformID">{{rep.PlatformID}}</option>
                 </select>
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
-                <label for="JR5COURANT">{{ 'jr5-courant' | translate}}</label>
-                <input type="text" class="form-control" id="JR5COURANT" name="JR5COURANT" #JR5COURANT [(ngModel)]="statistique.JR5COURANT">
+                <label for="JR4COURANT">{{ 'jr5-courant' | translate}}</label>
+                <input type="text" class="form-control" id="JR4COURANT" name="JR4COURANT" #JR4COURANT [(ngModel)]="statistique.JR4COURANT">
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
-                <label for="JR5INTER">{{ 'jr5-inter' | translate}}</label>
-                <input type="text" class="form-control" id="JR5INTER" name="JR5INTER" #JR5INTER  [(ngModel)]="statistique.JR5INTER">
+                <label for="JR4INTER">{{ 'jr5-inter' | translate}}</label>
+                <input type="text" class="form-control" id="JR4INTER" name="JR4INTER" #JR4INTER  [(ngModel)]="statistique.JR4INTER">
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
-                <label for="JR5RETRO">{{ 'jr5-retro' | translate}}</label>
-                <input type="text" class="form-control" id="JR5RETRO" name="JR5RETRO" #JR5RETRO [(ngModel)]="statistique.JR5RETRO">
+                <label for="JR4RETRO">{{ 'jr5-retro' | translate}}</label>
+                <input type="text" class="form-control" id="JR4RETRO" name="JR4RETRO" #JR4RETRO [(ngModel)]="statistique.JR4RETRO">
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
-                <label for="JR5RETRO">{{ 'jr3-OAGOLD' | translate}}</label>
+                <label for="JR4RETRO">{{ 'jr3-OAGOLD' | translate}}</label>
                 <input type="text" class="form-control" id="JR3OAGOLD" name="JR3OAGOLD" #JR3OAGOLD [(ngModel)]="statistique.JR3OAGOLD">
               </div>
             </div>
@@ -137,10 +137,11 @@
             <thead>
             <tr>
               <th class="mat-w-5">{{ 'numero' | translate}}</th>
-              <th class="mat-w-10">{{ 'annee' | translate}}</th>
+              <th class="mat-w-5">{{ 'annee' | translate}}</th>
               <th class="mat-w-10">{{ 'plateforme' | translate}}</th>
               <th class="mat-w-10">{{ 'telech.' | translate}}</th>
               <th class="mat-w-10">{{ 'refus' | translate}}</th>
+              <th class="mat-w-10">{{ 'jr3-OAGOLD' | translate}}</th>
               <th class="mat-w-10">{{ 'citations' | translate}}</th>
               <th class="mat-w-10">{{ 'art.-udem' | translate}}</th>
               <th class="mat-w-10 ">{{ 'date-dernier-modif' | translate}}</th>
@@ -155,6 +156,7 @@
               <td>{{rep.plateforme}}</td>
               <td>{{rep.Total_Item_Requests}}</td>
               <td>{{rep.No_License}}</td>
+              <td>{{rep.JR3OAGOLD}}</td>
               <td>{{rep.citations}}</td>
               <td>{{rep.articlesUdem}}</td>
               <td *ngIf="rep.dateM">{{ rep.dateM | date:'short': 'fr' }}</td>

@@ -26,6 +26,10 @@ export class RapportMoyenneComponent implements OnInit {
   plateformes$: Observable<any> | undefined;
   listePlateforme: any = [];
 
+  //creer la liste des fornisseurs
+  fournisseurs$: Observable<any> | undefined;
+  listeFounisseurs: any = [];
+
   //creer la liste des plateforme
   rapport$: Observable<any> | undefined;
   listeRapport: any = [];
@@ -56,11 +60,13 @@ export class RapportMoyenneComponent implements OnInit {
 
   constructor(private moyenneService: OutilsService,
               public exporter: MatTableExporterModule,
-              private translate:TranslateService) { }
+              private translate:TranslateService){ }
 
   async ngOnInit() {
     //remplire la liste des plateforme
     this.creerTableauPlateforme();
+
+    this.creerTableauFournisseurs();
     //cacher le bouton export
     this.methodesGlobal.nonAfficher('contenuRapport');
     this.titreChamp();
@@ -85,6 +91,24 @@ export class RapportMoyenneComponent implements OnInit {
     }
   }
 
+  //liste des fournisseurs
+  async creerTableauFournisseurs() {
+    try {
+      this.fournisseurs$ = this.moyenneService.allFournisseurs();
+      // @ts-ignore
+      await this.fournisseurs$.toPromise().then(res => {
+        for (let i = 0; i < res.length; i++) {
+          this.listeFounisseurs[i]={
+            "numero":i+1,
+            "titre":res[i].titre
+          }
+        }
+      });
+    } catch(err) {
+      console.error(`Error : ${err.Message}`);
+    }
+  }
+
   async creerTableauRapport() {
     try {
       this.rapport$ = this.moyenneService.rapportMoyenne();
@@ -92,14 +116,14 @@ export class RapportMoyenneComponent implements OnInit {
       this.afficherAnimation()
       let resultFiltre = Object.entries(this.filtres);
       let k=0,i=0;
-      // @ts-ignore
       await this.rapport$.toPromise().then(res => {
         if(res!==undefined){
           for (let val of res) {
             k=0;
             for ( let [key,elem] of resultFiltre){
-              if(elem== val[key]) {
-                k++
+              // @ts-ignore
+              if( val[key]!==null && val[key]!=='' && val[key].includes(elem)){
+                k++;
               }
             }
             if(k==resultFiltre.length){
@@ -111,20 +135,20 @@ export class RapportMoyenneComponent implements OnInit {
                 "ISSN":val.ISSN,
                 "EISSN":val.EISSN,
                 "statut":val.statut,
+                "fournisseur":val.fournisseur,
                 "essentiel2014":val.essentiel2014,
                 "essentiel2022":val.essentiel2022,
                 "plateforme":val.plateforme,
-                "total_tel":val.moyenn_t,
-                "total_ref":val.moyenn_r,
-                "total_cit":val.moyenn_c,
-                "total_artU":val.moyenn_a
+                "total_tel":Number(val.moyenn_t).toFixed(2),
+                "total_ref":Number(val.moyenn_r).toFixed(2),
+                "total_cit":Number(val.moyenn_c).toFixed(2),
+                "total_artU":Number(val.moyenn_a).toFixed(2)
               }
               i++;
             }
 
           }
         }
-
         //console.log(this.listeRapport)
         // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
         this.dataSource = new MatTableDataSource(this.listeRapport);
@@ -163,7 +187,15 @@ export class RapportMoyenneComponent implements OnInit {
     }
     //console.log(this.filtres)
   }
-
+  //apliquer les filtre from material
+  implimentationMatFiltre($event: any,id:string){
+    if($event!=''){
+      this.filtres[id]=$event.toString();
+    }else{
+      delete this.filtres[id];
+    }
+    //console.log(this.filtres)
+  }
   //afficher animation
   afficherAnimation(){
     this.methodesGlobal.nonAfficher('page-rapport')

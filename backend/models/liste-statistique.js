@@ -40,7 +40,8 @@ module.exports = class ListeStatistique {
        }
        i++
      }
-    if(plateforme){
+
+    if(plateforme!=='vide'){
       let platformes=plateforme.split(',');
       if(platformes.length>0){
         sqlPlateforme=" AND ( ";
@@ -57,9 +58,9 @@ module.exports = class ListeStatistique {
 
     }
     //console.log(annees);
-    /*let sql = "SELECT titre,ISSN,EISSN,statut,abonnement,bdd,domaine,secteur,fournisseur,tbl_periodiques.idRevue as idP,annee,Total_Item_Requests,Unique_Item_Requests,No_License, citations , articlesUdem,  JR5COURANT,  JR5INTER,  JR5RETRO,  JR3OAGOLD,plateforme FROM `tbl_periodiques` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue where annee IN ("+ annees.toString() +") "+ sqlPlateforme +" order by idP ";
+    /*let sql = "SELECT titre,ISSN,EISSN,statut,abonnement,bdd,domaine,secteur,fournisseur,tbl_periodiques.idRevue as idP,annee,Total_Item_Requests,Unique_Item_Requests,No_License, citations , articlesUdem,  JR4COURANT,  JR4INTER,  JR4RETRO,  JR3OAGOLD,plateforme FROM `tbl_periodiques` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue where annee IN ("+ annees.toString() +") "+ sqlPlateforme +" order by idP ";
     console.log('sql: ', SqlString.format(sql));*/
-    return  db.execute("SELECT titre,ISSN,EISSN,statut,abonnement,bdd,domaine,secteur,fournisseur,tbl_periodiques.idRevue as idP,annee,Total_Item_Requests,Unique_Item_Requests,No_License, citations , articlesUdem,  JR5COURANT,  JR5INTER,  JR5RETRO,  JR3OAGOLD,plateforme FROM `tbl_periodiques` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue where annee IN ("+ annees.toString() +") "+ sqlPlateforme +" order by idP, annee ");
+    return  db.execute("SELECT titre,ISSN,EISSN,statut,abonnement,bdd,domaine,secteur,fournisseur,tbl_periodiques.idRevue as idP,annee,Total_Item_Requests,Unique_Item_Requests,No_License, citations , articlesUdem,  JR4COURANT,  JR4INTER,  JR4RETRO,  JR3OAGOLD,plateforme FROM `tbl_periodiques` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue where annee IN ("+ annees.toString() +") "+ sqlPlateforme +" order by idP, annee ");
   }
 
 

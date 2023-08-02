@@ -105,6 +105,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
               private _location: Location) {}
 
   ngOnInit(): void {
+    localStorage.setItem('titrePeridique','');
     //ajout de niveau de securité
     this.ifAdmin=this.methodesGlobal.ifAdminFunction()
     //remplire la liste des plateforme
@@ -127,7 +128,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
     //console.log(this.id);
     //prendre la fiche
     if(this.idRevue!=null){
-      this.remplireFiche(this.idRevue)
+      this.remplireFiche(this.idRevue);
     }
 
   }
@@ -153,32 +154,51 @@ export class PeriodiqueFormulaireComponent implements OnInit {
       //creation d'objet periodique
       this.periodique =res[0];
       //recouperer les données a multi choix des autres plateformes
-      let autreP=this.periodique.autrePlateforme.split(',')
-      //console.log(this.listePlateforme)
-      for(let at of autreP){
-        if(at!=''){
+      if(res[0].autrePlateforme && res[0].autrePlateforme.indexOf(',')!=-1){
+        for(let at of res[0].autrePlateforme.split(',')){
+          if(at!=''){
             for (let i = 0; i < this.listePlateforme.length; i++) {
-             if(this.listePlateforme[i]['idPlateforme']==at)
-               this.optionAutrePlateforme.push(this.listePlateforme[i]['idPlateforme'])
+              if(this.listePlateforme[i]['idPlateforme']==at)
+                this.optionAutrePlateforme.push(this.listePlateforme[i]['idPlateforme'])
             }
+          }
+        }
+      }else{
+        if(res[0].autrePlateforme){
+          for (let i = 0; i < this.listePlateforme.length; i++) {
+            if(this.listePlateforme[i]['idPlateforme']==res[0].autrePlateforme)
+              this.optionAutrePlateforme.push(this.listePlateforme[i]['idPlateforme'])
+          }
         }
       }
+
       this.periodique.autrePlateforme= this.optionAutrePlateforme
 
       //recouperer les données a multichoix des differents fonds
-        let fondsP=res[0].fonds.split(',')
-        for(let ft of fondsP){
+      if(res[0].fonds && res[0].fonds.indexOf(',')!=-1){
+        for(let ft of res[0].fonds.split(',')){
           if(ft!='')
             this.selectfonds.push(ft)
         }
-        this.periodique.fonds= this.selectfonds
-       //console.log(this.periodique.fonds)
-      //recouperer les données a multichoix des differents secteur
-      let secteurP=res[0].secteur.split(',')
-      for(let ft of secteurP){
-        if(ft!='')
-          this.multiListeSecteur.push(ft)
+      }else{
+        if(res[0].fonds){
+          this.selectfonds.push(res[0].fonds)
+         }
       }
+        this.periodique.fonds= this.selectfonds
+
+      //recouperer les données a multichoix des differents secteur
+        if(res[0].secteur && res[0].secteur.indexOf(',')!=-1){
+          for(let ft of res[0].secteur.split(',')){
+            if(ft!='')
+              this.multiListeSecteur.push(ft)
+          }
+        }else{
+          if(res[0].secteur){
+            this.multiListeSecteur.push(res[0].secteur)
+          }
+        }
+
       this.periodique.secteur= this.multiListeSecteur
 
       //conserver le titre et l'id de la periodique
@@ -367,6 +387,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
             "plateforme":res[i].plateforme,
             "Total_Item_Requests":res[i].Total_Item_Requests,
             "No_License":res[i].No_License,
+            "JR3OAGOLD":res[i].JR3OAGOLD,
             "citations":res[i].citations,
             "articlesUdem":res[i].articlesUdem
           }
@@ -382,12 +403,13 @@ export class PeriodiqueFormulaireComponent implements OnInit {
     try {
       this.moyennes$ = this.statistiqueService.mayenneStatistiques(idRevue);
       await this.moyennes$.toPromise().then(res => {
+
         if(res!==undefined){
           this.tableauMoyenne={
-            "moyenn_t":res[0].moyenn_t,
-            "moyenn_r":res[0].moyenn_r,
-            "moyenn_c":res[0].moyenn_c,
-            "moyenn_a":res[0].moyenn_a
+            "moyenn_t":Number(res[0].moyenn_t).toFixed(2),
+            "moyenn_r":Number(res[0].moyenn_r).toFixed(2),
+            "moyenn_c":Number(res[0].moyenn_c).toFixed(2),
+            "moyenn_a":Number(res[0].moyenn_a).toFixed(2)
           }
         }
 

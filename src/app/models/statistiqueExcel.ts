@@ -8,7 +8,7 @@ export interface statistiqueExcel {
   Total_Item_Requests : string;
   Unique_Item_Requests : string;
   No_License : string;
-  JR5COURANT : string;
-  JR5INTER : string;
-  JR5RETRO : string;
+  JR4COURANT : string;
+  JR4INTER : string;
+  JR4RETRO : string;
 }

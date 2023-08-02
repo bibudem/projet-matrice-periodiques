@@ -114,6 +114,9 @@ export class RapportStatistiqueComponent implements OnInit {
             annee+=", "
           }
         }
+        if(!plateforme){
+          plateforme='vide';
+        }
         this.statistiques$ = this.statistiqueService.rapportStatistiques(annees,plateforme);
               // @ts-ignore
               await this.statistiques$.toPromise().then(res => {
@@ -146,9 +149,9 @@ export class RapportStatistiqueComponent implements OnInit {
                       "No_License":val.No_License,
                       "citations":val.citations,
                       "articlesUdem":val.articlesUdem,
-                      "JR5COURANT":val.JR5COURANT,
-                      "JR5INTER":val.JR5INTER,
-                      "JR5RETRO":val.JR5RETRO,
+                      "JR4COURANT":val.JR4COURANT,
+                      "JR4INTER":val.JR4INTER,
+                      "JR4RETRO":val.JR4RETRO,
                       "JR3OAGOLD":val.JR3OAGOLD,
                       "dateA":'-',
                       "dateM":'-',

@@ -141,7 +141,7 @@ module.exports = class Sushi {
     let totalRequest,donnees;
     let donneesJR=[]
     let table='tbl_results_j4'
-    let champJR=['JR5COURANT','JR5INTER','JR5RETRO']
+    let champJR=['JR4COURANT','JR4INTER','JR4RETRO']
     try {
       donnees= await db.execute("SELECT DISTINCT (Title) AS titre,ISSN,EISSN,PlatformID FROM "+table+"  WHERE annee=? AND Metric_Type=? ",[annee,'Total_Item_Requests'])
       //inserer le Total_Item_Requests dans la table statisque de cette periodique
@@ -201,7 +201,7 @@ module.exports = class Sushi {
 
   //vider la table statistique pour un année donnée avant d'inserer les nouveau data
   static async updateStatistique(annee){
-    await db.execute("UPDATE tbl_statistiques SET Total_Item_Requests='0',Unique_Item_Requests='0',No_License='0',JR5COURANT='0',JR5INTER='0',JR5RETRO='0'  WHERE  annee=?  ",[annee])
+    await db.execute("UPDATE tbl_statistiques SET Total_Item_Requests='0',Unique_Item_Requests='0',No_License='0',JR4COURANT='0',JR4INTER='0',JR4RETRO='0'  WHERE  annee=?  ",[annee])
   }
 
   //recouperer l'id de la revue
@@ -230,7 +230,7 @@ module.exports = class Sushi {
 
   //calculer les JR5 parametres
   static async calculerJR(ISSN,EISSN,Title,annee){
-    let JR5COURANT,JR5INTER,JR5RETRO
+    let JR4COURANT,JR4INTER,JR4RETRO
     let JR5=[],resultat=[]
     if(ISSN==''&& EISSN==''){
       JR5=await db.execute("SELECT * FROM tbl_results_j4 WHERE  Title LIKE ? ",[Title])
@@ -244,32 +244,32 @@ module.exports = class Sushi {
     if(ISSN!=''&& EISSN!='')
       JR5=await db.execute("SELECT * FROM tbl_results_j4 WHERE  ISSN=? and  EISSN=?     ",[ISSN,EISSN])
     //initialisation des jr données
-    JR5COURANT=0
-    JR5INTER=0
-    JR5RETRO=0
+    JR4COURANT=0
+    JR4INTER=0
+    JR4RETRO=0
     //calculer les valeur de JR5
     for(let j of JR5[0]){
 
       if(j.YOP>=(annee-2)){
         if(j.Metric_Type=='Total_Item_Requests')
-          JR5COURANT=j.Reporting_Period_Total
+          JR4COURANT=j.Reporting_Period_Total
       }
       if((annee-2)>j.YOP>(annee-12)){
         if(j.Metric_Type=='Total_Item_Requests')
-          JR5INTER+=Number(j.Reporting_Period_Total)
+          JR4INTER+=Number(j.Reporting_Period_Total)
       }
       if(j.YOP<=(annee-12)){
         if(j.Metric_Type=='Total_Item_Requests')
-          JR5RETRO+=Number(j.Reporting_Period_Total)
+          JR4RETRO+=Number(j.Reporting_Period_Total)
       }
 
     }
 
-    resultat['JR5COURANT']=JR5COURANT
+    resultat['JR4COURANT']=JR4COURANT
 
-    resultat['JR5INTER']=JR5INTER
+    resultat['JR4INTER']=JR4INTER
 
-    resultat['JR5RETRO']=JR5RETRO
+    resultat['JR4RETRO']=JR4RETRO
 
     return resultat
   }

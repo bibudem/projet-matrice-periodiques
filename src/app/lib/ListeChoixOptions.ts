@@ -32,19 +32,24 @@ export class ListeChoixOptions  {
   ];
   //options Domaine
   listDomaine = [
-    { id: 1, name: "DSSH" },
-    { id: 2, name: "HAD" },
-    { id: 3, name: "ScSo" },
-    { id: 4, name: "SNG" },
-    { id: 5, name: "SS" }
+    { id: 1, name: "HAD" },
+    { id: 2, name: "ScSo" },
+    { id: 3, name: "SNG" },
+    { id: 4, name: "SS" }
   ];
   //options SECTEUR
   listSecteurs = [
-    { id: 1, name: "Droit" },
-    { id: 2, name: "EPC-AML" },
-    { id: 3, name: "LSH" },
-    { id: 4, name: "Santé" },
-    { id: 5, name: "Sciences" }
+    { id: 1, name: "LSH" },
+    { id: 2, name: "TGDAMLD" },
+    { id: 3, name: "Santé" },
+    { id: 4, name: "Sciences" }
+  ];
+  //objet pour les sujets
+  listDevise = [
+    {id: 1, name: 'CAD'},
+    {id: 2, name: 'USD'},
+    {id: 3, name: 'EUROS'},
+    {id: 8, name: 'Autres'},
   ];
   //objet pour les sujets
   listFournisseurs = [
@@ -62,7 +67,7 @@ export class ListeChoixOptions  {
 
   listeEntenteConsortiale = [
     {id: 1, name: ''},
-    {id: 2, name: 'BCI'},
+    {id: 2, name: 'PBUB'},
     {id: 3, name: 'RCDR'},
   ];
 

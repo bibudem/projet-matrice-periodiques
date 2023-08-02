@@ -1,25 +1,26 @@
-//class qui regroupes les methodes utilisés souvent
 import {formatDate} from "@angular/common";
 import * as XLSX from "xlsx";
 
 export class MethodesGlobal  {
 
-  //convertir string to int
   private router: any;
+
+  // Convertir une chaîne de caractères en nombre entier (int)
   convertNumber(value: string) {
     return parseInt(value);
   }
-//prendre la valeur d'un input
-  getValue(value:string){
+
+  // Récupérer la valeur d'une chaîne de caractères (retourne simplement la valeur)
+  getValue(value: string){
     return value;
   }
 
-  // Déterminer si le checkbox passé en paramètres est a Oui ou pas.
+  // Vérifier si la valeur est égale à 'Oui' et retourner un booléen
   hasValue(val: string): boolean {
-    if (val =='Oui') return true;
-    return false;
+    return val === 'Oui';
   }
-  // Méthode appelée lorsque l'utilisateur
+
+  // Fonction appelée lorsque la case à cocher est cochée (vérifiée)
   checkedInput($event: any): void {
     let checked = $event.target.checked;
     $event.target.value='';
@@ -28,15 +29,14 @@ export class MethodesGlobal  {
     }
   }
 
+  // Vérifier si la case à cocher (avec l'ID donné en paramètre) est cochée (vérifiée) et retourner un booléen
   checkedResult(id:string): boolean {
     // @ts-ignore
     let checked = document.getElementById(id).checked;
-    if (checked) {
-     return true
-    } else return false
+    return checked;
   }
 
-  //faire visible un element avec id
+  // Afficher un élément en utilisant son ID (en changeant le style "display" à "block")
   afficher(id:string): void {
     let champ=document.getElementById(id);
     if(champ){
@@ -44,137 +44,130 @@ export class MethodesGlobal  {
     }
   }
 
-  //faire invisible un element avec id
+  // Cacher un élément en utilisant son ID (en changeant le style "display" à "none")
   nonAfficher(id:string): void {
     let champ=document.getElementById(id);
     if(champ){
       champ.style.display = 'none';
     }
   }
-  //prendre la valeur de ng-select
-  getValueNgSelect(val: any):any {
-    //console.log("multiselect: ", val);
+
+  // Récupérer la valeur d'un ng-select (retourne simplement la valeur)
+  getValueNgSelect(val: any): any {
     return val;
   }
-  //Changer l'url lors d'un clique
+
+  // Recharger la page en utilisant l'URL donnée en paramètre
   async reload(url: string): Promise<boolean> {
     await this.router.navigateByUrl('.', { skipLocationChange: true });
     return this.router.navigateByUrl(url);
   }
 
-  //convertir format date date jj/mm/aaaa to aaaa-mm-jj
-  convertDate(dateString:string){
+  // Convertir un format de date de jj/mm/aaaa à aaaa-mm-jj
+  convertDate(dateString: string) {
     var splitted = dateString.split("/", 3);
-    let newDate=splitted[2]+'-'+splitted[1]+'-'+splitted[0]
-      return newDate;
+    let newDate = splitted[2] + '-' + splitted[1] + '-' + splitted[0];
+    return newDate;
   }
-//validation des données dans les champs
-  validationDonneesForm(values:any){
-    let count=0
-    let result =true
-    for(let [key,value] of Object.entries(values)){
-      // @ts-ignore
-      if(value == ''){
-        // @ts-ignore
-         document.getElementById(key).style.borderColor='red'
-         count++
-         console.log(key)
-      }
-      else
-        // @ts-ignore
-        document.getElementById(key).style.borderColor='#aab2bd'
-    }
-    if(count>0)
-      result=false
-    return result
-  }
-  //valide la valeur si non null d'un cahmp
-  isValueChamp(value:string, id:string):boolean{
-      // @ts-ignore
-      let input = document.getElementById(id);
-      // @ts-ignore
+
+  // Valider les données dans les champs d'un formulaire (changer la bordure des champs vides en rouge)
+  validationDonneesForm(values: any) {
+    let count = 0;
+    let result = true;
+    for (let [key,value] of Object.entries(values)) {
       if (value == '') {
         // @ts-ignore
-        input.style.setProperty('border', '1px solid red');
-        return false
+        document.getElementById(key).style.borderColor='red';
+        count++;
+        console.log(key);
+      } else {
+        // @ts-ignore
+        document.getElementById(key).style.borderColor='#aab2bd';
       }
-      // @ts-ignore
-      input.style.setProperty('border', '1px solid #aab2bd');
-      //console.log(input);
+    }
+    if (count > 0) {
+      result = false;
+    }
+    return result;
+  }
 
+  // Vérifier si la valeur d'un champ (avec l'ID donné en paramètre) est vide et changer la bordure en rouge si c'est le cas
+  isValueChamp(value: string, id: string): boolean {
+    let input = document.getElementById(id);
+    if (value == '') {
+      // @ts-ignore
+      input.style.setProperty('border', '1px solid red');
+      return false;
+    }
+    // @ts-ignore
+    input.style.setProperty('border', '1px solid #aab2bd');
     return true;
   }
-//mask pour l'annees
+
+  // Masque pour le format 'année' (utilisé pour un guide dans un champ)
   mask = {
-    "annee":{
+    "annee": {
       guide: true,
       showMask: true,
       mask: [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]
     }
-
   };
 
-  //exporter les données en format xlsx
-  async ExportTOExcel(nomTableau:string, nomFile:string)
-  {
-
+  // Exporter les données du tableau donné (avec le nom de tableau et le nom de fichier donnés en paramètres) au format xlsx
+  async ExportTOExcel(nomTableau: string, nomFile: string) {
     setTimeout(async function () {
-      let dateNow=new Date().getUTCDate();
-      /* table id is passed over here */
+      let dateNow = new Date().getUTCDate();
       let element = document.getElementById(nomTableau);
-      const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+      const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
 
-      /* generate workbook and add the worksheet */
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, nomTableau+dateNow);
+      XLSX.utils.book_append_sheet(wb, ws, nomTableau + dateNow);
 
-      /* save to file */
       XLSX.writeFile(wb, nomFile);
     }, 3000);
-
-    //console.log(this.dataSource);
-
-  }
-  //cacher le menu pour non-admin
-  ifAdminFunction(): boolean{
-    let ifAdmin=sessionStorage.getItem('role');
-    if (ifAdmin=='Admin') { return true; }
-    else return false
   }
 
-  //Ajouter la valeur pour l'input
-  addValueInput(val:string,idInput:string){
-    let id_log=document.getElementById(idInput)
-    if(id_log)
-    { // @ts-ignore
-      id_log.value=val
+  // Vérifier si l'utilisateur est un administrateur (en se basant sur la valeur stockée dans la session)
+  ifAdminFunction(): boolean {
+    let ifAdmin = sessionStorage.getItem('role');
+    return ifAdmin === 'Admin';
+  }
+
+  // Ajouter la valeur donnée dans l'input avec l'ID donné en paramètre
+  addValueInput(val: string, idInput: string) {
+    let id_log = document.getElementById(idInput);
+    if (id_log) {
+      // @ts-ignore
+      id_log.value = val;
     }
   }
 
-  //creation de la date yyyy-mm-dd H:M:S
-
-  dateCreator(){
-    let dateStart = new Date().toLocaleDateString()+' '+new Date().getHours().toLocaleString()+':'+new Date().getUTCMinutes()+':'+new Date().getUTCSeconds()
-    //let dateStart =new Date().getFullYear()+'-'+ new Date().getMonth()+'-'+new Date().getDay()+' '+new Date().getHours()+':'+new Date().getMinutes()+':'+new Date().getSeconds();
+  // Créer une date au format yyyy-mm-dd H:M:S
+  dateCreator() {
+    let dateStart = new Date().toLocaleDateString() + ' ' + new Date().getHours().toLocaleString() + ':' + new Date().getUTCMinutes() + ':' + new Date().getUTCSeconds();
     return dateStart;
   }
 
-  //si vide retourne '-'
-  returnCharIfNull(val:string){
-    if(!val)
-       val='-';
-    return val.toString()
+  // Retourner '-' si la valeur donnée est null, sinon retourner la valeur elle-même
+  returnCharIfNull(val: string) {
+    if (!val) {
+      val = '-';
+    }
+    return val.toString();
   }
 
-  //si vide retourne '-'
-  viderInput(id:string){
-    if(id)
+  // Vider le champ de l'input avec l'ID donné en paramètre (en le remplaçant par une chaîne vide)
+  viderInput(id: string) {
+    if (id) {
       // @ts-ignore
-      document.getElementById(id).value='';
+      document.getElementById(id).value = '';
+    }
   }
-  //fonction utilise pour ajouté une pause dans les operations
+
+  // Fonction utilisée pour ajouter une pause dans les opérations (retourne une promesse qui se résout après un certain temps donné en paramètre)
   delay(timeInMillis: number): Promise<void> {
     return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
   }
+
 
 }

@@ -7,8 +7,8 @@ export interface Statistique {
   No_License : string;
   citations : string;
   articlesUdem : string;
-  JR5COURANT : string;
-  JR5INTER : string;
-  JR5RETRO : string;
+  JR4COURANT : string;
+  JR4INTER : string;
+  JR4RETRO : string;
   JR3OAGOLD : string;
 }

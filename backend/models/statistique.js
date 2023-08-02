@@ -3,13 +3,13 @@ let SqlString = require('sqlstring'); //global declare
 let datetime = require('node-datetime');
 
 module.exports = class Statistique {
-  constructor(annee,citations,articlesUdem,JR5COURANT,JR5RETRO,JR3OAGOLD) {
+  constructor(annee,citations,articlesUdem,JR4COURANT,JR4RETRO,JR3OAGOLD) {
     this.annee = annee;
     this.citations = citations;
     this.articlesUdem=articlesUdem;
-    this.JR5COURANT=JR5COURANT;
-    this.JR5INTER=JR5INTER;
-    this.JR5RETRO=JR5RETRO;
+    this.JR4COURANT=JR4COURANT;
+    this.JR4INTER=JR4INTER;
+    this.JR4RETRO=JR4RETRO;
     this.JR3OAGOLD=JR3OAGOLD;
   }
 
@@ -19,12 +19,12 @@ module.exports = class Statistique {
   }
 
   static fetchAllResume(idRevue) {
-    return db.execute("SELECT SUM(Total_Item_Requests) as Total_Item_Requests,SUM(No_License) as No_License,SUM(citations) as citations,SUM(articlesUdem) as articlesUdem, annee, group_concat(plateforme,' ') as plateforme from tbl_statistiques WHERE `idRevue`=? group by annee DESC",[idRevue]);
+    return db.execute("SELECT SUM(Total_Item_Requests) as Total_Item_Requests,SUM(No_License) as No_License,SUM(JR3OAGOLD) as JR3OAGOLD,SUM(citations) as citations,SUM(articlesUdem) as articlesUdem, annee, group_concat(plateforme,' ') as plateforme from tbl_statistiques WHERE `idRevue`=? group by annee DESC",[idRevue]);
   }
 
 ///Moyenne des téléchargements des 5 dernières années
   static mayenneStatistiques(idRevue) {
-    return db.execute("SELECT SUM(Total_Item_Requests)/5 as moyenn_t,SUM(No_License)/5 as moyenn_r,SUM(citations)/5 as moyenn_c,SUM(articlesUdem)/5 as moyenn_a, group_concat(annee,' ') from tbl_statistiques where annee >= year(now()) - 5 and idRevue = ? ",[idRevue]);
+    return db.execute("SELECT SUM(Total_Item_Requests)/COUNT(DISTINCT annee) as moyenn_t,SUM(No_License)/COUNT(DISTINCT annee) as moyenn_r,SUM(citations)/COUNT(DISTINCT annee) as moyenn_c,SUM(articlesUdem)/COUNT(DISTINCT annee) as moyenn_a, group_concat(annee,' ') from tbl_statistiques where annee >= year(now()) - 5 and idRevue = ? ",[idRevue]);
   }
 
   static async post(statistique) {
@@ -43,10 +43,10 @@ module.exports = class Statistique {
 
     if(idStatistique==-1){
 
-      return db.execute('INSERT INTO tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR5COURANT =?,JR5INTER =?,JR5RETRO =?,JR3OAGOLD =?,idRevue = ?,dateA =? ', statistique );
+      return db.execute('INSERT INTO tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR4COURANT =?,JR4INTER =?,JR4RETRO =?,JR3OAGOLD =?,idRevue = ?,dateA =? ', statistique );
     }else {
       statistique.push(idStatistique);
-      return db.execute('UPDATE tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR5COURANT =?,JR5INTER =?,JR5RETRO =?,JR3OAGOLD =?,idRevue = ?,dateM =? WHERE idStatistique  = ?',
+      return db.execute('UPDATE tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR4COURANT =?,JR4INTER =?,JR4RETRO =?,JR3OAGOLD =?,idRevue = ?,dateM =? WHERE idStatistique  = ?',
         statistique);
     }
 
@@ -57,10 +57,10 @@ module.exports = class Statistique {
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
     //afficher la requette
-    /*let sql = "UPDATE tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR5COURANT =?,JR5INTER =?,JR5RETRO =?,JR3OAGOLD =?,idRevue = ?,dateM =? WHERE idStatistique  = ?"
+    /*let sql = "UPDATE tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR4COURANT =?,JR4INTER =?,JR4RETRO =?,JR3OAGOLD =?,idRevue = ?,dateM =? WHERE idStatistique  = ?"
     console.log('sql: ', SqlString.format(sql,[statistique[1],statistique[2],statistique[3],statistique[4],statistique[5],statistique[6],statistique[7],statistique[8],statistique[9],statistique[10],statistique[11],date, statistique[0]]));*/
 
-    return db.execute('UPDATE tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR5COURANT =?,JR5INTER =?,JR5RETRO =?,JR3OAGOLD =?,idRevue = ?,dateM =? WHERE idStatistique  = ?',
+    return db.execute('UPDATE tbl_statistiques SET annee =?,plateforme=?,Total_Item_Requests =?,No_License =?,citations =?,articlesUdem =?,JR4COURANT =?,JR4INTER =?,JR4RETRO =?,JR3OAGOLD =?,idRevue = ?,dateM =? WHERE idStatistique  = ?',
       [statistique[1],statistique[2],statistique[3],statistique[4],statistique[5],statistique[6],statistique[7],statistique[8],statistique[9],statistique[10],statistique[11],date, statistique[0]]);
   }
 

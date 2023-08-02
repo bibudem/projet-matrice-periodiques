@@ -96,97 +96,74 @@ export class RapportPlateformesComponent implements OnInit {
     }
   }
 
-  async creerTableauRapportPlateforme(annee:string,ordre:string) {
+  async creerTableauRapportPlateforme(annee: string) {
     try {
       this.rapportPlateformes$ = this.plateformeService.rapportPlateformes(annee);
-      this.listeRapport=[]
-      this.afficherAnimation()
+      this.listeRapport = [];
+      this.afficherAnimation();
 
-      // @ts-ignore
-      await this.rapportPlateformes$.toPromise().then(res => {
-        console.log(res)
-        console.log(this.filtres)
-        for (let i = 0; i < res.length; i++) {
-          if(!res[i].total_tel)res[i].total_tel=0
-          if(!res[i].unique_tel)res[i].unique_tel=0
-          if(!res[i].refus)res[i].refus=0
+      const res = await this.rapportPlateformes$.toPromise();
+      const filteredRes = this.filtres.PlatformID
+        ? res.filter((item: { PlatformID: any; }) => item.PlatformID === this.filtres.PlatformID)
+        : res;
 
-          if(this.filtres.PlatformID){
-              if(this.filtres.PlatformID==res[i].acronyme){
-                this.listeRapport[0]={
-                  "Nr":1,
-                  "annee":annee,
-                  "PlatformID":res[i].acronyme,
-                  "titrePlateforme":res[i].titrePlateforme,
-                  "SUSHIURL":res[i].SUSHIURL,
-                  "ConsortiumCustID":res[i].ConsortiumCustID,
-                  "ConsortiumRequestorID":res[i].ConsortiumRequestorID,
-                  "ConsortiumApiKey":res[i].ConsortiumApiKey,
-                  "total_tel":res[i].total_tel,
-                  "unique_tel":res[i].unique_tel,
-                  "refus":res[i].refus,
-                  "dateA":res[i].dateA,
-                  "dateM":res[i].dateM
-                }
-              }
-          }else {
-            this.listeRapport[i]={
-              "Nr":i+1,
-              "annee":annee,
-              "PlatformID":res[i].acronyme,
-              "titrePlateforme":res[i].titrePlateforme,
-              "SUSHIURL":res[i].SUSHIURL,
-              "ConsortiumCustID":res[i].ConsortiumCustID,
-              "ConsortiumRequestorID":res[i].ConsortiumRequestorID,
-              "ConsortiumApiKey":res[i].ConsortiumApiKey,
-              "total_tel":res[i].total_tel,
-              "unique_tel":res[i].unique_tel,
-              "refus":res[i].refus,
-              "dateA":res[i].dateA,
-              "dateM":res[i].dateM
-            }
-          }
-        }
-        //mettre l'ordre s'il existe
-        if(ordre!=''){
-          this.ordonerArray(this.listeRapport,ordre)
-        }
-        //console.log(this.listeRapport)
-        // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
-        this.dataSource = new MatTableDataSource(this.listeRapport);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.matSort;
-        this.totalDonnees=this.listeRapport.length
-        //afficher le tableau
-        this.nonAfficherAnimation()
-      });
-    } catch(err) {
-      console.error(`Error : ${err.Message}`);
+      this.listeRapport = filteredRes.map((item: { PlatformID: any; titrePlateforme: any; SUSHIURL: any; ConsortiumCustID: any; ConsortiumRequestorID: any; ConsortiumApiKey: any; Total_Item_Requests: any; No_License: any; citations: any; articlesUdem: any; JR3OAGOLD: any; dateA: any; dateM: any; }, index: number) => ({
+        Nr: this.filtres.PlatformID ? 1 : index + 1,
+        annee,
+        PlatformID: item.PlatformID,
+        titrePlateforme: item.titrePlateforme,
+        SUSHIURL: item.SUSHIURL,
+        ConsortiumCustID: item.ConsortiumCustID,
+        ConsortiumRequestorID: item.ConsortiumRequestorID,
+        ConsortiumApiKey: item.ConsortiumApiKey,
+        Total_Item_Requests: item.Total_Item_Requests || 0,
+        No_License: item.No_License || 0,
+        citations: item.citations || 0,
+        articlesUdem: item.articlesUdem || 0,
+        JR3OAGOLD: item.JR3OAGOLD || 0,
+        JR4COURANT: item.JR3OAGOLD || 0,
+        JR4INTER: item.JR3OAGOLD || 0,
+        JR4RETRO: item.JR3OAGOLD || 0,
+        dateA: item.dateA,
+        dateM: item.dateM
+      }));
+
+      // Redéfinir le contenu de la table avec la pagination et la recherche une fois que le résultat de la base de données est retourné
+      this.dataSource = new MatTableDataSource(this.listeRapport);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.matSort;
+      this.totalDonnees = this.listeRapport.length;
+      // Afficher le tableau
+      this.nonAfficherAnimation();
+    } catch (err) {
+      console.error(`Error: ${err.Message}`);
     }
   }
+
   //creation du select d'année a partir de 2019
   anneeOptions(){
     let anneeNow=new Date().getFullYear();
     let i=0
-    while(i <=(anneeNow-2019)){
+    while(i <=(anneeNow-2018)){
       this.arrayAnnee[i]=anneeNow-i
       i++
     }
   }
   //creation des th selon les case qui sont cauchée
-  creationThTable($event: any): void{
-    let checked
-    checked = $event.target.checked;
-    //si cauché
+  creationThTable($event: any): void {
+    const checked = $event.target.checked;
+    const value = $event.target.value;
+
+    //si coché
     if (checked) {
-      this.thTableau.push( $event.target.value)
+      if (!this.thTableau.includes(value)) {
+        this.thTableau.push(value);
+      }
     } else {
-      // @ts-ignore
-      this.thTableau.forEach((element,index)=>{
-        if(element==$event.target.value) this.thTableau.splice(index,1);
-      });
+      this.thTableau = this.thTableau.filter((element: any) => element !== value);
     }
   }
+
 
   //exporter les données en format xlsx
   async ExportTOExcel()
@@ -241,24 +218,12 @@ export class RapportPlateformesComponent implements OnInit {
   titreChamp(){
     this.translate.get('labels-rapport-plateforme').subscribe((res: any) => {
       let result = Object.entries(res);
-      // console.log(typeof(result))
       for(let [key,val] of result){
-        //console.log(typeof(val))
         this.champsTitre[key]=val
         // @ts-ignore
         this.champs.push(key)
 
       }
-    });
-  }
-  //appliquer le sort ASC
-  ordonerArray(array:any,keySort:string){
-    // @ts-ignore
-    return array.sort((a, b) => {
-      let x = Number(a[keySort]);
-      let y = Number(b[keySort]);
-      //console.log(keySort)
-      return ((x >y ) ? -1 : ((x <  y) ? 1 : 0));
     });
   }
 }

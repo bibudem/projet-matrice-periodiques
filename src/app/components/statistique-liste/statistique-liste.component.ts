@@ -89,6 +89,7 @@ export class StatistiqueListeComponent implements OnInit {
           if(!val.citations)val.citations=0
           if(!val.articlesUdem)val.articlesUdem=0
           if(!val.Total_Item_Requests)val.Total_Item_Requests=0
+          if(!val.Unique_Item_Requests)val.Unique_Item_Requests=0
           if(!val.No_License)val.No_License=0
           this.tableauStatistique[i]={
             "numero":i+1,
@@ -126,7 +127,7 @@ export class StatistiqueListeComponent implements OnInit {
   anneeOptions(){
     let anneeNow=new Date().getFullYear();
     let i=0
-    while(i <=(anneeNow-2019)){
+    while(i <=(anneeNow-2018)){
       this.arrayAnnee[i]=anneeNow-i
       i++
     }

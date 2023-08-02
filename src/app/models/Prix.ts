@@ -1,7 +1,8 @@
 export interface Prix {
   idPrix: number;
-  idRevue : number;
+  idRevue : string;
   annee  : string;
   prix : string;
+  devise : string;
   note : string;
 }

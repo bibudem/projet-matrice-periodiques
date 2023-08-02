@@ -5,6 +5,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {paginationPersonnalise} from "../../../lib/paginationPersonnalise";
 import {MethodesGlobal} from "../../../lib/MethodesGlobal";
+import {ListeChoixOptions} from "../../../lib/ListeChoixOptions";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PeriodiquePrixService} from "../../../services/periodique-prix.service";
 import {TranslateService} from "@ngx-translate/core";
@@ -22,9 +23,9 @@ export class PeriodiquePrixComponent implements OnInit {
   //creation d'objet avec la liste des periodiques
   // @ts-ignore
   prixObj: any = {};
-  id: string | null | undefined ;
+  id: string  | null='';
   //les entêts du tableau
-  displayedColumns = ['nrPrix','annee', 'prix','modiffier','supprimer'];
+  displayedColumns = ['nrPrix','annee', 'prix','devise','modiffier','supprimer'];
   listePrix: any[] = [];
   // @ts-ignore
   dataSource: MatTableDataSource<listePrix>;
@@ -32,12 +33,16 @@ export class PeriodiquePrixComponent implements OnInit {
 
   //importer les fonctions global
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
+  //importer les liste des choix
+  listeChoixOptions: ListeChoixOptions = new ListeChoixOptions();
 
   //definir le text pour les boutons
   bouttonAction='';
 
   titrePeriodique=localStorage.getItem('titrePeridique');
-  idRevue=localStorage.getItem('idRevue');
+
+  idRevue: string | null ='';
+
 
   action='add'
 
@@ -49,7 +54,7 @@ export class PeriodiquePrixComponent implements OnInit {
               private translate: TranslateService) { }
 
   ngOnInit(): void {
-
+    this.idRevue=localStorage.getItem('idRevue');
     //afficher le bon bouton
     this.methodesGlobal.afficher('add-boutton');
     this.methodesGlobal.nonAfficher('save-boutton');
@@ -58,7 +63,9 @@ export class PeriodiquePrixComponent implements OnInit {
 
     if(this.route.snapshot.paramMap.get("id")){
       this.id=this.route.snapshot.paramMap.get("id");
-    }else this.id = this.idRevue;
+    }else {
+      this.id = this.idRevue;
+    }
 
     this.creerTableau();
   }
@@ -74,7 +81,7 @@ export class PeriodiquePrixComponent implements OnInit {
         this.prix$ = await this.fetchAll(this.methodesGlobal.convertNumber(this.id));
         await this.prix$.toPromise().then(res => {
           for (let i = 0; i < res.length; i++) {
-            this.listePrix.push(createListePrix(i,res[i].idPrix,res[i].annee,res[i].prix,res[i].note));
+            this.listePrix.push(createListePrix(i,res[i].idPrix,res[i].annee,res[i].prix,res[i].devise,res[i].note));
           }
           // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
           this.dataSource = new MatTableDataSource(this.listePrix);
@@ -197,12 +204,16 @@ export class PeriodiquePrixComponent implements OnInit {
       this.prixObj.prix=f.value.prix
     else this.prixObj.prix=''
 
+    if(f.value.devise)
+      this.prixObj.devise=f.value.devise
+    else this.prixObj.devise=''
+
     if(f.value.note)
       this.prixObj.note=f.value.note
     else this.prixObj.note=''
 
 
-    this.prixObj.idRevue=Number(this.id)
+    this.prixObj.idRevue=Number(this.id);
 
     //definir les champs obligatoire
     let donnesValider:any={'annee':this.prixObj.annee,'prix':this.prixObj.prix}
@@ -210,8 +221,16 @@ export class PeriodiquePrixComponent implements OnInit {
     switch (action){
       case 'save':
         if(this.methodesGlobal.validationDonneesForm(donnesValider)){
-          this.onFermeModal()
-          this.update(this.prixObj)
+          this.onFermeModal();
+          this.update(
+            {
+              'idPrix':this.prixObj.idPrix,
+              // @ts-ignore
+              'idRevue':this.id,
+              'annee':this.prixObj.annee,
+              'prix':this.prixObj.prix,
+              'devise':this.prixObj.devise,
+              'note':this.prixObj.note})
         }
         //this.remplireFiche(this.idRevue)
         break
@@ -231,12 +250,13 @@ export class PeriodiquePrixComponent implements OnInit {
 }
 /** Fonction pour remplire le tableau de la liste des periodiques */
 
-function createListePrix(nrP:number,idPrixP:number,newAnnee: string,newPrix: string,newNote: string): listePrix {
+function createListePrix(nrP:number,idPrixP:number,newAnnee: string,newPrix: string,newDevise:string,newNote: string): listePrix {
   return {
     nrPrix:nrP,
     idPrix:idPrixP,
     annee: newAnnee,
     prix: newPrix,
+    devise: newDevise,
     note: newNote,
     modifier: '',
     supprimer: '',
@@ -248,6 +268,7 @@ export interface listePrix {
   idPrix:number;
   annee: string;
   prix: string;
+  devise: string;
   note: string;
   modifier:string;
   supprimer:string;

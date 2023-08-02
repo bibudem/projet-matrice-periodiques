@@ -101,9 +101,9 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
               "No_License":res[i].No_License,
               "citations":res[i].citations,
               "articlesUdem":res[i].articlesUdem,
-              "JR5COURANT":res[i].JR5COURANT,
-              "JR5INTER":res[i].JR5INTER,
-              "JR5RETRO":res[i].JR5RETRO,
+              "JR4COURANT":res[i].JR4COURANT,
+              "JR4INTER":res[i].JR4INTER,
+              "JR4RETRO":res[i].JR4RETRO,
               "JR3OAGOLD":res[i].JR3OAGOLD,
               "dateA":res[i].dateA,
               "dateM":res[i].dateM
@@ -162,11 +162,11 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
       // @ts-ignore
       document.getElementById('articlesUdem').value=res[0].articlesUdem;
       // @ts-ignore
-      document.getElementById('JR5COURANT').value=res[0].JR5COURANT;
+      document.getElementById('JR4COURANT').value=res[0].JR4COURANT;
       // @ts-ignore
-      document.getElementById('JR5INTER').value=res[0].JR5INTER;
+      document.getElementById('JR4INTER').value=res[0].JR4INTER;
       // @ts-ignore
-      document.getElementById('JR5RETRO').value=res[0].JR5RETRO;
+      document.getElementById('JR4RETRO').value=res[0].JR4RETRO;
       // @ts-ignore
       document.getElementById('JR3OAGOLD').value=res[0].JR3OAGOLD;
 
@@ -257,11 +257,11 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
     // @ts-ignore
     document.getElementById('articlesUdem').value='';
     // @ts-ignore
-    document.getElementById('JR5COURANT').value='';
+    document.getElementById('JR4COURANT').value='';
     // @ts-ignore
-    document.getElementById('JR5INTER').value='';
+    document.getElementById('JR4INTER').value='';
     // @ts-ignore
-    document.getElementById('JR5RETRO').value='';
+    document.getElementById('JR4RETRO').value='';
     // @ts-ignore
     document.getElementById('JR3OAGOLD').value='';
     //cacher bouton save
@@ -306,17 +306,17 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
       this.statistique.articlesUdem=f.value.articlesUdem
     else this.statistique.articlesUdem=''
 
-    if(f.value.JR5COURANT)
-      this.statistique.JR5COURANT=f.value.JR5COURANT
-    else this.statistique.JR5COURANT=''
+    if(f.value.JR4COURANT)
+      this.statistique.JR4COURANT=f.value.JR4COURANT
+    else this.statistique.JR4COURANT=''
 
-    if(f.value.JR5INTER)
-      this.statistique.JR5INTER=f.value.JR5INTER
-    else this.statistique.JR5INTER=''
+    if(f.value.JR4INTER)
+      this.statistique.JR4INTER=f.value.JR4INTER
+    else this.statistique.JR4INTER=''
 
-    if(f.value.JR5RETRO)
-      this.statistique.JR5RETRO=f.value.JR5RETRO
-    else this.statistique.JR5RETRO=''
+    if(f.value.JR4RETRO)
+      this.statistique.JR4RETRO=f.value.JR4RETRO
+    else this.statistique.JR4RETRO=''
 
     if(f.value.JR3OAGOLD)
       this.statistique.JR3OAGOLD=f.value.JR3OAGOLD

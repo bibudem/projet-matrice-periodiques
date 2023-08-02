@@ -53,16 +53,83 @@ module.exports = class Outils {
   }
 
   //creer le rapport des plateformes
-  static getAllRapportPlateforme(annee) {
+ /* static getAllRapportPlateforme(annee) {
     //afficher la requette
     return db.execute("SELECT PlatformID AS acronyme,titrePlateforme,SUSHIURL,ConsortiumCustID,ConsortiumRequestorID,ConsortiumApiKey,dateA,dateM,(SELECT SUM(Reporting_Period_Total) FROM `tbl_results_j1`  WHERE Metric_Type='Total_Item_Requests' AND PlatformID=acronyme and annee=?) as total_tel,(SELECT SUM(Reporting_Period_Total) FROM `tbl_results_j1`  WHERE Metric_Type='Unique_Item_Requests' AND PlatformID=acronyme and annee=?) as unique_tel,(SELECT SUM(Reporting_Period_Total) FROM `tbl_results_j2`  WHERE Metric_Type='No_License' AND PlatformID=acronyme and annee=?) as refus FROM lst_plateformes order by titrePlateforme",[annee,annee,annee]);
+  }*/
+  static getAllRapportPlateforme(annee) {
+    let sql = "SELECT" +
+      "  lst.PlatformID," +
+      "  lst.titrePlateforme," +
+      "  lst.SUSHIURL," +
+      "  lst.ConsortiumCustID," +
+      "  lst.ConsortiumRequestorID," +
+      "  lst.ConsortiumApiKey," +
+      "  lst.dateA," +
+      "  lst.dateM," +
+      "  SUM(s.Total_Item_Requests) AS Total_Item_Requests," +
+      "  SUM(s.No_License) AS No_License," +
+      "  SUM(s.citations) AS citations," +
+      "  SUM(s.articlesUdem) AS articlesUdem," +
+      "  SUM(s.JR3OAGOLD) AS JR3OAGOLD, " +
+      "  SUM(s.JR4COURANT) AS JR4COURANT, " +
+      "  SUM(s.JR4INTER) AS JR4INTER, " +
+      "  SUM(s.JR4RETRO) AS JR4RETRO " +
+      " FROM " +
+      "  lst_plateformes AS lst " +
+      " LEFT JOIN " +
+      "  tbl_statistiques AS s ON lst.PlatformID = s.plateforme AND s.annee = ?" +
+      " GROUP BY " +
+      "  lst.PlatformID," +
+      "  lst.titrePlateforme," +
+      "  lst.SUSHIURL," +
+      "  lst.ConsortiumCustID," +
+      "  lst.ConsortiumRequestorID," +
+      "  lst.ConsortiumApiKey," +
+      "  lst.dateA," +
+      "  lst.dateM" +
+      " ORDER BY " +
+      "  lst.titrePlateforme;"
+    console.log('sql: ', SqlString.format(sql,[annee]));
+    //afficher la requette
+    return db.execute("SELECT" +
+      "  lst.PlatformID ," +
+      "  lst.titrePlateforme," +
+      "  lst.SUSHIURL," +
+      "  lst.ConsortiumCustID," +
+      "  lst.ConsortiumRequestorID," +
+      "  lst.ConsortiumApiKey," +
+      "  lst.dateA," +
+      "  lst.dateM," +
+      "  SUM(s.Total_Item_Requests) AS Total_Item_Requests," +
+      "  SUM(s.No_License) AS No_License," +
+      "  SUM(s.citations) AS citations," +
+      "  SUM(s.articlesUdem) AS articlesUdem," +
+      "  SUM(s.JR3OAGOLD) AS JR3OAGOLD, " +
+      "  SUM(s.JR4COURANT) AS JR4COURANT, " +
+      "  SUM(s.JR4INTER) AS JR4INTER, " +
+      "  SUM(s.JR4RETRO) AS JR4RETRO " +
+      " FROM " +
+      "  lst_plateformes AS lst " +
+      " LEFT JOIN " +
+      "  tbl_statistiques AS s ON lst.PlatformID = s.plateforme AND s.annee = ?" +
+      " GROUP BY " +
+      "  lst.PlatformID," +
+      "  lst.titrePlateforme," +
+      "  lst.SUSHIURL," +
+      "  lst.ConsortiumCustID," +
+      "  lst.ConsortiumRequestorID," +
+      "  lst.ConsortiumApiKey," +
+      "  lst.dateA," +
+      "  lst.dateM" +
+      " ORDER BY " +
+      "  lst.titrePlateforme;",[annee]);
   }
-
 
   //creer le rapport des plateformes
   static rapportMoyenne() {
     //afficher la requette
-    return db.execute("SELECT titre,ISSN,EISSN,essentiel2014,essentiel2022,statut,tbl_statistiques.idRevue as IdS,group_concat(plateforme,' ') as plateforme,SUM(Total_Item_Requests)/5 as moyenn_t,SUM(No_License)/5 as moyenn_r,SUM(citations)/5 as moyenn_c,SUM(articlesUdem)/5 as moyenn_a, group_concat(annee,' ') as annees FROM `tbl_periodiques` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue where annee >= year(now()) - 5 group by IdS");
+    return db.execute("SELECT tbl_periodiques.titre, tbl_periodiques.ISSN, tbl_periodiques.EISSN, tbl_periodiques.essentiel2014, tbl_periodiques.essentiel2022, tbl_periodiques.statut, tbl_statistiques.idRevue AS IdS, GROUP_CONCAT(DISTINCT tbl_statistiques.plateforme, ' ') AS plateforme,GROUP_CONCAT(DISTINCT tbl_periodiques.fournisseur, ' ') AS fournisseur,AVG(tbl_statistiques.Total_Item_Requests) AS moyenn_t,AVG(tbl_statistiques.No_License) AS moyenn_r,AVG(tbl_statistiques.citations) AS moyenn_c,AVG(tbl_statistiques.articlesUdem) AS moyenn_a,GROUP_CONCAT(tbl_statistiques.annee, ' ') AS annees FROM tbl_periodiques LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue = tbl_statistiques.idRevue WHERE tbl_statistiques.annee >= YEAR(NOW()) - 5 GROUP BY IdS");
   }
 
   //creer des view pour les rapports j1,j2,j4
