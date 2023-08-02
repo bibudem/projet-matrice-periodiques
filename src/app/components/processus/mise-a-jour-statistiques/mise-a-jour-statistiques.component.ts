@@ -42,7 +42,7 @@ export class MiseAJourStatistiquesComponent implements OnInit {
   reponseUpdate = 0
 
   //les entêts du tableau
-  displayedColumns = ['IDRevue','ISSN','EISSN','annee', 'Total_Item_Requests','No_License','citations','articlesUdem','JR5COURANT','JR5INTER','JR5RETRO','JR3OAGOLD','PlateformeID'];
+  displayedColumns = ['IDRevue','ISSN','EISSN','annee', 'Total_Item_Requests','No_License','citations','articlesUdem','JR4COURANT','JR4INTER','JR4RETRO','JR3OAGOLD','PlateformeID'];
 
   // @ts-ignore
   dataSource: MatTableDataSource<InCites>;
@@ -82,7 +82,7 @@ export class MiseAJourStatistiquesComponent implements OnInit {
   anneeOptions(){
     let anneeNow=new Date().getFullYear();
     let i=0
-    while(i <=(anneeNow-2019)){
+    while(i <=(anneeNow-2018)){
       this.arrayAnnee[i]=anneeNow-i
       i++
     }
@@ -97,6 +97,7 @@ export class MiseAJourStatistiquesComponent implements OnInit {
           this.listePlateforme[i]={
             "numero":i+1,
             "idPlateforme":res[i].idPlateforme,
+            "PlatformID":res[i].PlatformID,
             "titrePlateforme":res[i].titrePlateforme
           }
         }
@@ -108,15 +109,6 @@ export class MiseAJourStatistiquesComponent implements OnInit {
 
   uploadListener($event: any): void {
     let text = [];
-    // @ts-ignore
-    this.plateforme=document.getElementById('plateforme').value;
-    console.log(this.plateforme)
-    //valider le champ plateforme
-    if(!this.methodesGlobal.isValueChamp(this.plateforme,'plateforme')){
-      // @ts-ignore
-      document.getElementById('csvFile').value=''
-      return;
-    }
 
     let files = $event.srcElement.files;
     if (this.isValidCSVFile(files[0])) {
@@ -158,7 +150,7 @@ export class MiseAJourStatistiquesComponent implements OnInit {
     // @ts-ignore
     let csvRecord: UpdateStatistiques = []; let curruntRecord;
     let colIDRevue=-1,colISSN=-1,colEISSN=-1,colTotal_Item_Requests=-1
-        ,colNo_License=-1,colCitations=-1,colArticlesUdem=-1,colJR5COURANT=-1,colJR5INTER=-1,colJR5RETRO=-1,colJR3OAGOLD=-1,colPlateformeID=-1;
+      ,colNo_License=-1,colCitations=-1,colArticlesUdem=-1,colJR4COURANT=-1,colJR4INTER=-1,colJR4RETRO=-1,colJR3OAGOLD=-1,colPlateformeID=-1;
     //prendre le numero des colons selon le nom d'entete
     for(let i=0;i<headersRow.length;i++){
       switch (headersRow[i].trim()){
@@ -183,14 +175,14 @@ export class MiseAJourStatistiquesComponent implements OnInit {
         case 'articlesUdem':
           colArticlesUdem=i
           break;
-        case 'JR5COURANT':
-          colJR5COURANT=i
+        case 'JR4COURANT':
+          colJR4COURANT=i
           break;
-        case 'JR5INTER':
-          colJR5INTER=i
+        case 'JR4INTER':
+          colJR4INTER=i
           break;
-        case 'JR5RETRO':
-          colJR5RETRO=i
+        case 'JR4RETRO':
+          colJR4RETRO=i
           break;
         case 'JR3OAGOLD':
           colJR3OAGOLD=i
@@ -202,33 +194,38 @@ export class MiseAJourStatistiquesComponent implements OnInit {
     }
 
     for (let i = 1; i < csvRecordsArray.length; i++) {
-      if(document.getElementById('annee'))
+      if(document.getElementById('annee')){
         // @ts-ignore
         this.annee=document.getElementById('annee').value;
+      }
 
-        curruntRecord = (<string>csvRecordsArray[i]).split(separator);
 
-          csvRecord = {
-            idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIDRevue]),
-            ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colISSN]),
-            EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colEISSN]),
-            // @ts-ignore
-            annee: this.annee,
-            Total_Item_Requests: this.methodesGlobal.returnCharIfNull(curruntRecord[colTotal_Item_Requests]),
-            No_License: this.methodesGlobal.returnCharIfNull(curruntRecord[colNo_License]),
-            citations: this.methodesGlobal.returnCharIfNull(curruntRecord[colCitations]),
-            articlesUdem: this.methodesGlobal.returnCharIfNull(curruntRecord[colArticlesUdem]),
-            JR5COURANT: this.methodesGlobal.returnCharIfNull(curruntRecord[colJR5COURANT]),
-            JR5INTER: this.methodesGlobal.returnCharIfNull(curruntRecord[colJR5INTER]),
-            JR5RETRO: this.methodesGlobal.returnCharIfNull(curruntRecord[colJR5RETRO]),
-            JR3OAGOLD:this.methodesGlobal.returnCharIfNull(curruntRecord[colJR3OAGOLD]),
-            PlateformeID:this.plateforme
-          }
-          csvArr.push(csvRecord);
+      curruntRecord = (<string>csvRecordsArray[i]).split(separator);
+
+      csvRecord = {
+        idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIDRevue]),
+        ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colISSN]),
+        EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colEISSN]),
+        // @ts-ignore
+        annee: this.annee,
+        Total_Item_Requests: this.methodesGlobal.returnCharIfNull(curruntRecord[colTotal_Item_Requests]),
+        No_License: this.methodesGlobal.returnCharIfNull(curruntRecord[colNo_License]),
+        citations: this.methodesGlobal.returnCharIfNull(curruntRecord[colCitations]),
+        articlesUdem: this.methodesGlobal.returnCharIfNull(curruntRecord[colArticlesUdem]),
+        JR4COURANT: this.methodesGlobal.returnCharIfNull(curruntRecord[colJR4COURANT]),
+        JR4INTER: this.methodesGlobal.returnCharIfNull(curruntRecord[colJR4INTER]),
+        JR4RETRO: this.methodesGlobal.returnCharIfNull(curruntRecord[colJR4RETRO]),
+        JR3OAGOLD:this.methodesGlobal.returnCharIfNull(curruntRecord[colJR3OAGOLD]),
+        //PlateformeID:this.plateforme
+        PlateformeID:this.methodesGlobal.returnCharIfNull(curruntRecord[colPlateformeID])
+      }
+      csvArr.push(csvRecord);
     }
-     //console.log(csvArr)
+    //console.log(csvArr)
     return csvArr;
   }
+
+
 
   isValidCSVFile(file: any) {
     return file.name.endsWith(".csv");
@@ -261,10 +258,6 @@ export class MiseAJourStatistiquesComponent implements OnInit {
     let postLigne : any = {}
     for (let val of records) {
         i++;
-        if(val.PlateformeID=='-'){
-          alert('Opération interrompue, certaines règles ont été mal respecté');
-          return
-        }
           postLigne.idRevue=val.idRevue;
           postLigne.ISSN=val.ISSN;
           postLigne.EISSN=val.EISSN;
@@ -273,14 +266,14 @@ export class MiseAJourStatistiquesComponent implements OnInit {
           postLigne.No_License=val.No_License;
           postLigne.citations=val.citations;
           postLigne.articlesUdem=val.articlesUdem;
-          postLigne.JR5COURANT=val.JR5COURANT;
-          postLigne.JR5INTER=val.JR5INTER;
-          postLigne.JR5RETRO=val.JR5RETRO;
+          postLigne.JR4COURANT=val.JR4COURANT;
+          postLigne.JR4INTER=val.JR4INTER;
+          postLigne.JR4RETRO=val.JR4RETRO;
           postLigne.JR3OAGOLD=val.JR3OAGOLD;
           postLigne.PlateformeID=val.PlateformeID;
           this.post(postLigne)
 
-         await this.methodesGlobal.delay(100);
+         await this.methodesGlobal.delay(150);
 
           if(i==records.length){
             await this.methodesGlobal.delay(1000);
@@ -310,7 +303,7 @@ export class MiseAJourStatistiquesComponent implements OnInit {
       // @ts-ignore
       this.note=document.getElementById('note').value.toString();
     }
-    this.processus = {'titre':'Mise à jour des statistiques','type':'statistiques','admin':this.admin,'note':this.note,'dateStart':dateStart}
+    this.processus = {'titre':'Mise à jour des statistiques','type':'statistiques','annee':this.annee,'admin':this.admin,'note':this.note,'dateStart':dateStart}
     this.addProcessus$ = await this.csvService
       .addProcessus(this.processus)
       .pipe(tap(() => (this.finImportation())));

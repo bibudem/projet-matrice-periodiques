@@ -40,10 +40,10 @@
             </div>
             <div class="col-md-3">
               <div class="form-group">
-                <label for="plateforme">{{ 'plateforme' | translate}} <span class="text-danger"> *</span></label>
+                <label for="plateforme">{{ 'plateforme' | translate}} </label>
                 <select name="plateforme" id="plateforme"   class="form-control" #plateforme >
                   <option value="">{{ 'Tous les plateformes' | translate}}</option>
-                  <option *ngFor="let rep of this.listePlateforme" [value]="rep.titrePlateforme">{{rep.titrePlateforme}}</option>
+                  <option *ngFor="let rep of this.listePlateforme" [value]="rep.PlatformID">{{rep.PlatformID}}</option>
                 </select>
               </div>
             </div>
@@ -159,21 +159,21 @@
             </ng-container>
 
             <!-- TR_J4COURANT Column -->
-            <ng-container matColumnDef="JR5COURANT">
-              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.JR5COURANT' | translate}} </th>
-              <td  *matCellDef="let row" class="mat-w-10"> {{row.JR5COURANT }} </td>
+            <ng-container matColumnDef="JR4COURANT">
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.JR4COURANT' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.JR4COURANT }} </td>
             </ng-container>
 
             <!-- TR_J4INTER Column -->
-            <ng-container matColumnDef="JR5INTER">
-              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.JR5INTER' | translate}} </th>
-              <td  *matCellDef="let row" class="mat-w-10"> {{row.JR5INTER }} </td>
+            <ng-container matColumnDef="JR4INTER">
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.JR4INTER' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.JR4INTER }} </td>
             </ng-container>
 
             <!-- TR_J4RETRO Column -->
-            <ng-container matColumnDef="JR5RETRO">
-              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.JR5RETRO' | translate}} </th>
-              <td  *matCellDef="let row" class="mat-w-10"> {{row.JR5RETRO }} </td>
+            <ng-container matColumnDef="JR4RETRO">
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'labels-rapport-statistique.JR4RETRO' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.JR4RETRO }} </td>
             </ng-container>
 
             <!-- TR_J3OAGOLD Column -->

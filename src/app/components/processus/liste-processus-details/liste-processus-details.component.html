@@ -79,7 +79,7 @@
               <ng-container matColumnDef="fiche" >
                 <th *matHeaderCellDef   class="mat-w-10 text-center"> {{ 'consulter' | translate}} </th>
                 <td  *matCellDef="let row" class="mat-w-10 text-center">
-                  <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" *ngIf="row.idRevue" title="{{'fiche-periodique'| translate}}" routerLink="/periodique/{{row.idRevue}}" >
+                  <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" *ngIf="row.idRevue!='!!!'" title="{{'fiche-periodique'| translate}}" routerLink="/periodique/{{row.idRevue}}" >
                     <i class="icon-note"></i>
                   </button>
                 </td>

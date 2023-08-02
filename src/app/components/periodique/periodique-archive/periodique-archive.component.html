@@ -9,7 +9,7 @@
       <!-- Quick Action Toolbar Ends-->
         <div class="page-header pt-4">
           <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
-              <h5 class="font-weight-semibold text-uppercase ">{{ 'archive-titre' | translate}} « {{titrePeriodique}} » </h5>
+              <h5 class="font-weight-semibold text-uppercase ">{{ 'archive-titre' | translate}} « IDRevue: {{id}} » </h5>
               <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/periodique/{{ id }}">
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
               </span>
@@ -54,7 +54,7 @@
             </div>
             <div class="col-md-3">
               <div class="form-group">
-                <label for="embargo">{{'fournisseur'| translate }} </label>
+                <label for="fournisseur">{{'fournisseur'| translate }} </label>
                 <input type="text" class="form-control" id="fournisseur" name="fournisseur" #fournisseur [(ngModel)]="archive.fournisseur">
               </div>
             </div>
@@ -127,7 +127,7 @@
         <table class="table table-hover w-100 table-bordered">
           <thead>
           <tr>
-            <th class="font-weight-bold w-5">{{ 'id' | translate}}</th>
+            <th class="font-weight-bold w-5">{{ 'No' | translate}}</th>
             <th class="font-weight-bold w-5">{{ 'perennite' | translate}}</th>
             <th class="font-weight-bold w-10">{{ 'conserverPap' | translate}}</th>
             <th class="font-weight-bold w-5">{{ 'anneeDebut.' | translate}}</th>
@@ -144,7 +144,7 @@
           </thead>
           <tbody>
           <tr *ngFor="let rep of this.tableauArchives" >
-            <td>{{rep.idArchive}}</td>
+            <td>{{rep.nr}}</td>
             <td>{{rep.perennite}}</td>
             <td>{{rep.conserverPap}}</td>
             <td>{{rep.anneeDebut}}</td>

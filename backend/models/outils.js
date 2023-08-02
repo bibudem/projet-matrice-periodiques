@@ -22,8 +22,6 @@ module.exports = class Outils {
     //ajouter la date dans le tableau des données
     fond.push(date);
     //afficher la requette
-   /*let sql = "INSERT INTO lst_fonds SET titre = ?,description =?,dateA =? "
-    console.log('sql: ', SqlString.format(sql,[fond[0],fond[1],fond[2]]));*/
     return db.execute('INSERT INTO lst_fonds SET titre = ?,description =?,dateA =?', [fond[0],fond[1],fond[2]] );
 
   }
@@ -53,45 +51,8 @@ module.exports = class Outils {
   }
 
   //creer le rapport des plateformes
- /* static getAllRapportPlateforme(annee) {
-    //afficher la requette
-    return db.execute("SELECT PlatformID AS acronyme,titrePlateforme,SUSHIURL,ConsortiumCustID,ConsortiumRequestorID,ConsortiumApiKey,dateA,dateM,(SELECT SUM(Reporting_Period_Total) FROM `tbl_results_j1`  WHERE Metric_Type='Total_Item_Requests' AND PlatformID=acronyme and annee=?) as total_tel,(SELECT SUM(Reporting_Period_Total) FROM `tbl_results_j1`  WHERE Metric_Type='Unique_Item_Requests' AND PlatformID=acronyme and annee=?) as unique_tel,(SELECT SUM(Reporting_Period_Total) FROM `tbl_results_j2`  WHERE Metric_Type='No_License' AND PlatformID=acronyme and annee=?) as refus FROM lst_plateformes order by titrePlateforme",[annee,annee,annee]);
-  }*/
   static getAllRapportPlateforme(annee) {
-    let sql = "SELECT" +
-      "  lst.PlatformID," +
-      "  lst.titrePlateforme," +
-      "  lst.SUSHIURL," +
-      "  lst.ConsortiumCustID," +
-      "  lst.ConsortiumRequestorID," +
-      "  lst.ConsortiumApiKey," +
-      "  lst.dateA," +
-      "  lst.dateM," +
-      "  SUM(s.Total_Item_Requests) AS Total_Item_Requests," +
-      "  SUM(s.No_License) AS No_License," +
-      "  SUM(s.citations) AS citations," +
-      "  SUM(s.articlesUdem) AS articlesUdem," +
-      "  SUM(s.JR3OAGOLD) AS JR3OAGOLD, " +
-      "  SUM(s.JR4COURANT) AS JR4COURANT, " +
-      "  SUM(s.JR4INTER) AS JR4INTER, " +
-      "  SUM(s.JR4RETRO) AS JR4RETRO " +
-      " FROM " +
-      "  lst_plateformes AS lst " +
-      " LEFT JOIN " +
-      "  tbl_statistiques AS s ON lst.PlatformID = s.plateforme AND s.annee = ?" +
-      " GROUP BY " +
-      "  lst.PlatformID," +
-      "  lst.titrePlateforme," +
-      "  lst.SUSHIURL," +
-      "  lst.ConsortiumCustID," +
-      "  lst.ConsortiumRequestorID," +
-      "  lst.ConsortiumApiKey," +
-      "  lst.dateA," +
-      "  lst.dateM" +
-      " ORDER BY " +
-      "  lst.titrePlateforme;"
-    console.log('sql: ', SqlString.format(sql,[annee]));
-    //afficher la requette
+
     return db.execute("SELECT" +
       "  lst.PlatformID ," +
       "  lst.titrePlateforme," +
@@ -145,14 +106,10 @@ module.exports = class Outils {
     if(plateforme!='vide'){
        plateformeSql=" and PlatformID='"+plateforme+"'"
     }
-    /*let sql = "SELECT * FROM "+table+"  WHERE annee=?  " +plateformeSql+ " order by PlatformID "
-    console.log('sql: ', SqlString.format(sql,[annee]));*/
 
     return db.execute("SELECT * FROM "+table+"  WHERE annee=?  " +plateformeSql+ " order by Title ",[annee])
   }
   static allFournisseurs() {
-    /*let sql = "SELECT * FROM lst_fournisseurs  order by titre"
-    console.log('sql: ', SqlString.format(sql));*/
     return db.execute('SELECT * FROM lst_fournisseurs  order by titre');
   }
 
@@ -162,9 +119,7 @@ module.exports = class Outils {
     let date = dt.format('Y-m-d H:M:S');
     //ajouter la date dans le tableau des données
     value.push(date);
-    //afficher la requette
-    /*let sql = "INSERT INTO lst_fournisseurs SET titre = ?,description =?,dateA =? "
-     console.log('sql: ', SqlString.format(sql,[value[0],value[1],value[2]]));*/
+
     return db.execute('INSERT INTO lst_fournisseurs SET titre = ?,description =?,dateA =?', [value[0],value[1],value[2]] );
 
   }

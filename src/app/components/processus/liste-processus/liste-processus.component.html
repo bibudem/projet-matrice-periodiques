@@ -83,6 +83,22 @@
                 <td  *matCellDef="let row" class="mat-w-15" > {{row.titre}} </td>
               </ng-container>
 
+              <!-- annee Column -->
+              <ng-container matColumnDef="annee">
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-5"> {{ 'annee' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-5">
+                  {{row.annee}}
+                </td>
+              </ng-container>
+
+              <!-- plateforme Column -->
+              <ng-container matColumnDef="plateforme">
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'plateforme' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-15">
+                  {{row.plateforme}}
+                </td>
+              </ng-container>
+
               <!-- EISSN Column -->
               <ng-container matColumnDef="admin">
                 <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'processus.admin' | translate}} </th>
@@ -93,14 +109,14 @@
 
               <!-- Title Column -->
               <ng-container matColumnDef="h_debut">
-                <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'processus.h_debut' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-15"> {{row.h_debut}} </td>
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'processus.h_debut' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-10"> {{row.h_debut}} </td>
               </ng-container>
 
               <!-- rapport Column -->
               <ng-container matColumnDef="h_fin">
-                <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'processus.h_fin' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-15"> {{row.h_fin}} </td>
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'processus.h_fin' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-10"> {{row.h_fin}} </td>
               </ng-container>
 
               <!-- statut Column -->
@@ -123,7 +139,7 @@
               <ng-container matColumnDef="details" >
                 <th *matHeaderCellDef   class="mat-w-10 text-center"> {{ 'details' | translate}} </th>
                 <td  *matCellDef="let row" class="mat-w-10 text-center">
-                  <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="{{'details'| translate}}" (click)="detailsProcessous(row.id_processus)" >
+                  <button  type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="{{'details'| translate}}" (click)="detailsProcessous(row.id_processus)" >
                     <i class="icon-folder-alt"></i>
                   </button>
                 </td>

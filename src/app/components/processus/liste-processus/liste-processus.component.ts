@@ -23,7 +23,7 @@ export class ListeProcessusComponent implements OnInit {
   codes:any=[]
 
   //les entêts du tableau
-  displayedColumns = ['id_processus','titre','admin','h_debut','h_fin','statut','note','details','supprimer'];
+  displayedColumns = ['id_processus','titre','annee','plateforme','admin','h_debut','h_fin','statut','note','details','supprimer'];
   listeProcessus: any = [];
   // @ts-ignore
   dataSource: MatTableDataSource<any>;
@@ -72,8 +72,10 @@ export class ListeProcessusComponent implements OnInit {
         //console.log(res);
         for (let i = 0; i < res.length; i++) {
           this.listeProcessus[i]={
-            "id_processus":res[i].id_processus,
+            "id_processus":res[i].idP,
             "titre":res[i].titre,
+            "annee":res[i].annee,
+            "plateforme":res[i].plateforme,
             "admin":res[i].admin,
             "h_debut":res[i].h_debut,
             "h_fin":res[i].h_fin,
@@ -85,7 +87,6 @@ export class ListeProcessusComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.listeProcessus);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
-        //console.log(this.dataSource);
       });
     } catch(err) {
       console.error(`Error : ${err.Message}`);
