@@ -3,9 +3,9 @@ const Lib = require("../util/lib");
 
 exports.getAllProcessus = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
+    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
+    if (!Lib.userConnect(req)) {
+      return res.redirect('/api/logout');
     }
 
     const [allProcessus] = await Processus.fetchAll();
@@ -21,9 +21,9 @@ exports.getAllProcessus = async (req, res, next) => {
 };
 exports.getAllDetailsProcessus = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
+    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
+    if (!Lib.userConnect(req)) {
+      return res.redirect('/api/logout');
     }
 
     const [allProcessusDetails] = await Processus.getAllDetailsProcessus(req.params.id);
@@ -39,9 +39,9 @@ exports.getAllDetailsProcessus = async (req, res, next) => {
 };
 exports.getLastIdProcessus = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
+    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
+    if (!Lib.userConnect(req)) {
+      return res.redirect('/api/logout');
     }
     const [lastIdProcessus] = await Processus.getLastIdProcessus();
     res.status(200).json(lastIdProcessus);
@@ -54,9 +54,9 @@ exports.getLastIdProcessus = async (req, res, next) => {
 };
 exports.postPrix= async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
+    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
+    if (!Lib.userConnect(req)) {
+      return res.redirect('/api/logout');
     }
     let values=Object.values(req.body);
     //console.log(req.body)
@@ -73,9 +73,9 @@ exports.postPrix= async (req, res, next) => {
 };
 exports.postArchives= async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
+    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
+    if (!Lib.userConnect(req)) {
+      return res.redirect('/api/logout');
     }
     let values=Object.values(req.body);
     //console.log(req.body)
@@ -90,18 +90,17 @@ exports.postArchives= async (req, res, next) => {
     next(err);
   }
 };
-exports.postStatistiques= async (req, res, next) => {
+exports.postStatistiques = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
+    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
+    if (!Lib.userConnect(req)) {
+      return res.redirect('/api/logout');
     }
-    let values=Object.values(req.body);
-    //console.log('statistiques update');
+
+    const values = Object.values(req.body);
     const postResponse = await Processus.postStatistiques(values);
     res.status(201).json(postResponse);
   } catch (err) {
-    //console.log('controleur not ok');
     if (!err.statusCode) {
       err.statusCode = 500;
     }
@@ -110,9 +109,9 @@ exports.postStatistiques= async (req, res, next) => {
 };
 exports.postLotPeriodiques= async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
+    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
+    if (!Lib.userConnect(req)) {
+      return res.redirect('/api/logout');
     }
     let values=Object.values(req.body);
     //console.log(values);
@@ -127,9 +126,9 @@ exports.postLotPeriodiques= async (req, res, next) => {
 };
 exports.ajoutProcessus=  async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
+    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
+    if (!Lib.userConnect(req)) {
+      return res.redirect('/api/logout');
     }
     let values=Object.values(req.body);
     //console.log(req.body)
@@ -144,9 +143,9 @@ exports.ajoutProcessus=  async (req, res, next) => {
 };
 exports.postAbonnement= async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
+    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
+    if (!Lib.userConnect(req)) {
+      return res.redirect('/api/logout');
     }
     let values=Object.values(req.body);
     //console.log('controleur ok');
@@ -162,9 +161,9 @@ exports.postAbonnement= async (req, res, next) => {
 };
 exports.deleteProcessus = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
+    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
+    if (!Lib.userConnect(req)) {
+      return res.redirect('/api/logout');
     }
     //console.log(req.params.id);
     const deleteResponse = await Processus.delete(req.params.id);
@@ -178,9 +177,9 @@ exports.deleteProcessus = async (req, res, next) => {
 };
 exports.deleteProcessusDetails = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
+    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
+    if (!Lib.userConnect(req)) {
+      return res.redirect('/api/logout');
     }
     //console.log(req.params.id);
     const deleteDetails = await Processus.deleteProcessusDetails(req.params.id);

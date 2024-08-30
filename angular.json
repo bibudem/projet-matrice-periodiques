@@ -20,6 +20,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "xlsx"
+            ],
             "outputPath": "dist/projet-matrice-periodiques",
             "index": "src/index.html",
             "main": "src/main.ts",

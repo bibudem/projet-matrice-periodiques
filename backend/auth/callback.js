@@ -51,7 +51,6 @@ module.exports = class UserAuth {
 
 
     }
-      //console.log(userConnect)
 
       return [userConnect]
 

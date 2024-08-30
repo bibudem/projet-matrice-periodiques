@@ -185,18 +185,10 @@ module.exports = class Sushi {
   }
 
   //faire un select avant de définir l'action
-  static async verifierDonneesExist(annee,idRevue,Metric_Type){
-    let  total
-    /*let sql = "SELECT "+Metric_Type+" AS total FROM tbl_statistiques  WHERE idRevue= "+idRevue+" AND annee=? "
-    console.log('sql: ', SqlString.format(sql,[annee]));*/
-    total= await db.execute("SELECT "+Metric_Type+" AS total FROM tbl_statistiques  WHERE idRevue= "+idRevue+" AND annee=?  ",[annee])
-
-    if(total[0]!=''){
-      return total[0]['0']['total']
-    }
-    else
-      return -1
-
+  static async verifierDonneesExist(annee, idRevue, Metric_Type) {
+    const sql = `SELECT ${Metric_Type} AS total FROM tbl_statistiques WHERE idRevue = ? AND annee = ?`;
+    const [rows] = await db.execute(sql, [idRevue, annee]);
+    return rows.length > 0 ? rows[0].total : -1;
   }
 
   //vider la table statistique pour un année donnée avant d'inserer les nouveau data

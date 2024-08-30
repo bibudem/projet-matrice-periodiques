@@ -144,86 +144,99 @@ export class MiseAJourStatistiquesComponent implements OnInit {
     }
   }
 
-
-  async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator:string) {
+  async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator: string) {
     let csvArr: UpdateStatistiques[] = [];
-    // @ts-ignore
-    let csvRecord: UpdateStatistiques = []; let curruntRecord;
-    let colIDRevue=-1,colISSN=-1,colEISSN=-1,colTotal_Item_Requests=-1
-      ,colNo_License=-1,colCitations=-1,colArticlesUdem=-1,colJR4COURANT=-1,colJR4INTER=-1,colJR4RETRO=-1,colJR3OAGOLD=-1,colPlateformeID=-1;
-    //prendre le numero des colons selon le nom d'entete
-    for(let i=0;i<headersRow.length;i++){
-      switch (headersRow[i].trim()){
+    let csvRecord: UpdateStatistiques;
+    let currentRecord: string[];
+    let colIDRevue = -1, colISSN = -1, colEISSN = -1, colTotal_Item_Requests = -1,
+      colNo_License = -1, colCitations = -1, colArticlesUdem = -1, colJR4COURANT = -1,
+      colJR4INTER = -1, colJR4RETRO = -1, colJR3OAGOLD = -1, colPlateformeID = -1;
+
+    // Prendre le numéro des colonnes selon le nom d'en-tête
+    for (let i = 0; i < headersRow.length; i++) {
+      switch (headersRow[i].trim()) {
         case 'IDRevue':
-          colIDRevue=i
+          colIDRevue = i;
           break;
         case 'ISSN':
-          colISSN=i
+          colISSN = i;
           break;
         case 'EISSN':
-          colEISSN=i
+          colEISSN = i;
           break;
         case 'Total_Item_Requests':
-          colTotal_Item_Requests=i
+          colTotal_Item_Requests = i;
           break;
         case 'No_License':
-          colNo_License=i
+          colNo_License = i;
           break;
         case 'citations':
-          colCitations=i
+          colCitations = i;
           break;
         case 'articlesUdem':
-          colArticlesUdem=i
+          colArticlesUdem = i;
           break;
         case 'JR4COURANT':
-          colJR4COURANT=i
+          colJR4COURANT = i;
           break;
         case 'JR4INTER':
-          colJR4INTER=i
+          colJR4INTER = i;
           break;
         case 'JR4RETRO':
-          colJR4RETRO=i
+          colJR4RETRO = i;
           break;
         case 'JR3OAGOLD':
-          colJR3OAGOLD=i
+          colJR3OAGOLD = i;
           break;
         case 'PlateformeID':
-          colPlateformeID=i
+          colPlateformeID = i;
           break;
       }
     }
 
     for (let i = 1; i < csvRecordsArray.length; i++) {
-      if(document.getElementById('annee')){
+      // Ignorer les lignes vides ou non valides
+      if (!csvRecordsArray[i] || csvRecordsArray[i].trim() === '') continue;
+
+      if (document.getElementById('annee')) {
         // @ts-ignore
-        this.annee=document.getElementById('annee').value;
+        this.annee = (document.getElementById('annee') as HTMLInputElement).value;
       }
 
+      currentRecord = (csvRecordsArray[i] as string).split(separator);
 
-      curruntRecord = (<string>csvRecordsArray[i]).split(separator);
-
-      csvRecord = {
-        idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIDRevue]),
-        ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colISSN]),
-        EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colEISSN]),
-        // @ts-ignore
-        annee: this.annee,
-        Total_Item_Requests: this.methodesGlobal.returnCharIfNull(curruntRecord[colTotal_Item_Requests]),
-        No_License: this.methodesGlobal.returnCharIfNull(curruntRecord[colNo_License]),
-        citations: this.methodesGlobal.returnCharIfNull(curruntRecord[colCitations]),
-        articlesUdem: this.methodesGlobal.returnCharIfNull(curruntRecord[colArticlesUdem]),
-        JR4COURANT: this.methodesGlobal.returnCharIfNull(curruntRecord[colJR4COURANT]),
-        JR4INTER: this.methodesGlobal.returnCharIfNull(curruntRecord[colJR4INTER]),
-        JR4RETRO: this.methodesGlobal.returnCharIfNull(curruntRecord[colJR4RETRO]),
-        JR3OAGOLD:this.methodesGlobal.returnCharIfNull(curruntRecord[colJR3OAGOLD]),
-        //PlateformeID:this.plateforme
-        PlateformeID:this.methodesGlobal.returnCharIfNull(curruntRecord[colPlateformeID])
+      const plateformeElement = document.getElementById('plateforme') as HTMLInputElement | null;
+      if (plateformeElement) {
+        this.plateforme = plateformeElement.value;
+      } else {
+        this.plateforme = this.methodesGlobal.returnCharIfNull(currentRecord[colPlateformeID]);
       }
-      csvArr.push(csvRecord);
+
+      // Assurez-vous que toutes les colonnes nécessaires sont présentes dans la ligne actuelle
+      if (currentRecord.length > Math.max(colIDRevue, colISSN, colEISSN, colTotal_Item_Requests, colNo_License, colCitations, colArticlesUdem, colJR4COURANT, colJR4INTER, colJR4RETRO, colJR3OAGOLD, colPlateformeID)) {
+        csvRecord = {
+          idRevue: this.methodesGlobal.returnCharIfNull(currentRecord[colIDRevue]),
+          ISSN: this.methodesGlobal.returnCharIfNull(currentRecord[colISSN]),
+          EISSN: this.methodesGlobal.returnCharIfNull(currentRecord[colEISSN]),
+          // @ts-ignore
+          annee: this.annee,
+          Total_Item_Requests: this.methodesGlobal.returnCharIfNull(currentRecord[colTotal_Item_Requests]),
+          No_License: this.methodesGlobal.returnCharIfNull(currentRecord[colNo_License]),
+          citations: this.methodesGlobal.returnCharIfNull(currentRecord[colCitations]),
+          articlesUdem: this.methodesGlobal.returnCharIfNull(currentRecord[colArticlesUdem]),
+          JR4COURANT: this.methodesGlobal.returnCharIfNull(currentRecord[colJR4COURANT]),
+          JR4INTER: this.methodesGlobal.returnCharIfNull(currentRecord[colJR4INTER]),
+          JR4RETRO: this.methodesGlobal.returnCharIfNull(currentRecord[colJR4RETRO]),
+          JR3OAGOLD: this.methodesGlobal.returnCharIfNull(currentRecord[colJR3OAGOLD]),
+          PlateformeID: this.plateforme
+        };
+        csvArr.push(csvRecord);
+      }
     }
     //console.log(csvArr)
     return csvArr;
   }
+
 
 
 
