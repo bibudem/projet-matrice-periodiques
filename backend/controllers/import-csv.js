@@ -1,12 +1,7 @@
 const InCites = require('../models/import-csv');
-const Lib = require("../util/lib");
 
 exports.postInCites= async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
     //console.log(values)
     const postResponse = await InCites.post(values);
@@ -22,10 +17,6 @@ exports.postInCites= async (req, res, next) => {
 
   exports.updateInCites= async (req, res, next) => {
     try {
-      //retourner vers la connexion si on n'an une bonne session pour cet user
-      if(Lib.userConnect(req).length==0){
-        res.redirect('/api/logout');
-      }
      // console.log('contr update');
       let annee=req.params.annee
      // console.log(annee);

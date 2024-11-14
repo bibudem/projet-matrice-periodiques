@@ -1,17 +1,10 @@
 const Sushi = require('../models/sushi');
-const auth = require("../auth/auth");
 const Mail = require("../config/mail")
-const Lib  = require("../util/lib");
-const text = require("../util/string");
 
 
 
 exports.getAllSushi =  async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     //dans la réponse d'authentification le paramettre upn represente le courriel de la personne connecté
     let courriel=Lib.userConnect(req).upn;
     Sushi.fetchAll(req.params.date).then(reponse => {

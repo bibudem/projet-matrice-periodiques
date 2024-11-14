@@ -1,12 +1,7 @@
 const Processus = require('../models/processus');
-const Lib = require("../util/lib");
 
 exports.getAllProcessus = async (req, res, next) => {
   try {
-    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
-    if (!Lib.userConnect(req)) {
-      return res.redirect('/api/logout');
-    }
 
     const [allProcessus] = await Processus.fetchAll();
 
@@ -21,11 +16,6 @@ exports.getAllProcessus = async (req, res, next) => {
 };
 exports.getAllDetailsProcessus = async (req, res, next) => {
   try {
-    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
-    if (!Lib.userConnect(req)) {
-      return res.redirect('/api/logout');
-    }
-
     const [allProcessusDetails] = await Processus.getAllDetailsProcessus(req.params.id);
 
     res.status(200).json(allProcessusDetails);
@@ -39,10 +29,6 @@ exports.getAllDetailsProcessus = async (req, res, next) => {
 };
 exports.getLastIdProcessus = async (req, res, next) => {
   try {
-    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
-    if (!Lib.userConnect(req)) {
-      return res.redirect('/api/logout');
-    }
     const [lastIdProcessus] = await Processus.getLastIdProcessus();
     res.status(200).json(lastIdProcessus);
   } catch (err) {
@@ -54,10 +40,6 @@ exports.getLastIdProcessus = async (req, res, next) => {
 };
 exports.postPrix= async (req, res, next) => {
   try {
-    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
-    if (!Lib.userConnect(req)) {
-      return res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
     //console.log(req.body)
     //console.log('update prix')
@@ -73,10 +55,6 @@ exports.postPrix= async (req, res, next) => {
 };
 exports.postArchives= async (req, res, next) => {
   try {
-    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
-    if (!Lib.userConnect(req)) {
-      return res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
     //console.log(req.body)
     //console.log('update prix')
@@ -92,11 +70,6 @@ exports.postArchives= async (req, res, next) => {
 };
 exports.postStatistiques = async (req, res, next) => {
   try {
-    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
-    if (!Lib.userConnect(req)) {
-      return res.redirect('/api/logout');
-    }
-
     const values = Object.values(req.body);
     const postResponse = await Processus.postStatistiques(values);
     res.status(201).json(postResponse);
@@ -109,10 +82,6 @@ exports.postStatistiques = async (req, res, next) => {
 };
 exports.postLotPeriodiques= async (req, res, next) => {
   try {
-    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
-    if (!Lib.userConnect(req)) {
-      return res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
     //console.log(values);
     const postResponse = await Processus.postPeriodiques(values);
@@ -126,10 +95,6 @@ exports.postLotPeriodiques= async (req, res, next) => {
 };
 exports.ajoutProcessus=  async (req, res, next) => {
   try {
-    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
-    if (!Lib.userConnect(req)) {
-      return res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
     //console.log(req.body)
     const addProcessus = await Processus.ajoutProcessus(values);
@@ -143,10 +108,6 @@ exports.ajoutProcessus=  async (req, res, next) => {
 };
 exports.postAbonnement= async (req, res, next) => {
   try {
-    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
-    if (!Lib.userConnect(req)) {
-      return res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
     //console.log('controleur ok');
     const postResponse = Processus.postAbonnement(values);
@@ -161,10 +122,6 @@ exports.postAbonnement= async (req, res, next) => {
 };
 exports.deleteProcessus = async (req, res, next) => {
   try {
-    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
-    if (!Lib.userConnect(req)) {
-      return res.redirect('/api/logout');
-    }
     //console.log(req.params.id);
     const deleteResponse = await Processus.delete(req.params.id);
     res.status(200).json(deleteResponse);
@@ -177,10 +134,6 @@ exports.deleteProcessus = async (req, res, next) => {
 };
 exports.deleteProcessusDetails = async (req, res, next) => {
   try {
-    // Redirige vers la déconnexion si l'utilisateur n'est pas connecté
-    if (!Lib.userConnect(req)) {
-      return res.redirect('/api/logout');
-    }
     //console.log(req.params.id);
     const deleteDetails = await Processus.deleteProcessusDetails(req.params.id);
     res.status(200).json(deleteDetails);

@@ -1,14 +1,8 @@
 const Periodique = require('../models/periodique');
-const auth = require("../auth/auth");
-const Lib = require("../util/lib");
-const request = require("request");
 
 exports.getAllPeriodiques = async (req, res, next) => {
   try {
-   //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
+
     const [allPeriodiques] = await Periodique.fetchAll();
     res.status(200).json(allPeriodiques);
 
@@ -23,10 +17,7 @@ exports.getAllPeriodiques = async (req, res, next) => {
 
 exports.getAllRapport = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
+
     const [allPeriodiques] = await Periodique.fetchRapportAll(req.params.plateforme);
     res.status(200).json(allPeriodiques);
 
@@ -40,10 +31,7 @@ exports.getAllRapport = async (req, res, next) => {
 
 exports.getAutresRapport = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
+
     const [allPeriodiques] = await Periodique.fetchRapportAutres(req.params.plateforme);
     res.status(200).json(allPeriodiques);
 
@@ -56,10 +44,7 @@ exports.getAutresRapport = async (req, res, next) => {
 };
 exports.postPeriodique = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
+
     let values=Object.values(req.body);
     //console.log(Object.values(values));
     const postResponse = await Periodique.post(values);
@@ -74,10 +59,7 @@ exports.postPeriodique = async (req, res, next) => {
 
 exports.putPeriodique = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
+
     let values=Object.values(req.body);
     //console.log(Object.values(values));
     const putResponse = await Periodique.update(values);
@@ -92,10 +74,6 @@ exports.putPeriodique = async (req, res, next) => {
 
 exports.deletePeriodique = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     //console.log(req.params.id);
     const deleteResponse = await Periodique.delete(req.params.id);
     res.status(200).json(deleteResponse);
@@ -108,10 +86,6 @@ exports.deletePeriodique = async (req, res, next) => {
 };
 exports.consulterPeriodique = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     //console.log('consulter'+req.params.id);
     const [fichePeriodiques] = await Periodique.consulter(req.params.id);
     res.status(200).json(fichePeriodiques);
@@ -124,7 +98,6 @@ exports.consulterPeriodique = async (req, res, next) => {
 };
 exports.postPeriodiqueConsultation2022 = async (req, res, next) => {
   try {
-
     let values=Object.values(req.body);
     let periodique= {}
     periodique.id=values[0]

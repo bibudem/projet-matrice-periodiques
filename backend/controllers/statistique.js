@@ -1,13 +1,7 @@
 const Statistique = require('../models/statistique');
-const auth = require("../auth/auth");
-const Lib = require("../util/lib");
 
 exports.getAllStatistique = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     const [allStatistique] = await Statistique.fetchAll(req.params.id);
     //console.log('all ok')
     res.status(200).json(allStatistique);
@@ -22,10 +16,6 @@ exports.getAllStatistique = async (req, res, next) => {
 
 exports.getAllResumeStatistique = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     const [allStatistique] = await Statistique.fetchAllResume(req.params.id);
     //console.log('all ok')
     res.status(200).json(allStatistique);
@@ -40,10 +30,6 @@ exports.getAllResumeStatistique = async (req, res, next) => {
 
 exports.mayenneStatistiques = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     const [allStatistique] = await Statistique.mayenneStatistiques(req.params.id);
     //console.log('all ok')
     res.status(200).json(allStatistique);
@@ -59,10 +45,6 @@ exports.mayenneStatistiques = async (req, res, next) => {
 
 exports.postStatistique= async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
    // console.log('controleur ok');
     const postResponse = await Statistique.post(values);
@@ -78,10 +60,6 @@ exports.postStatistique= async (req, res, next) => {
 
 exports.putStatistique = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
     console.log(Object.values(values));
     //console.log(req.body.idStatistique);
@@ -97,10 +75,6 @@ exports.putStatistique = async (req, res, next) => {
 
 exports.deleteStatistique = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     //console.log(req.params.id);
     const deleteResponse = await Statistique.delete(req.params.id);
     res.status(200).json(deleteResponse);
@@ -113,10 +87,6 @@ exports.deleteStatistique = async (req, res, next) => {
 };
 exports.consulterStatistique = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     //console.log('consulter'+req.params.id);
     const [ficheStatistique] = await Statistique.consulter(req.params.id);
     res.status(200).json(ficheStatistique);

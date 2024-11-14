@@ -2,13 +2,15 @@ const express = require('express');
 
 const homeController = require('../controllers/home');
 
+const authMiddleware = require('../auth/authMiddleware');
+
 const router = express.Router();
 
 
 
-router.get('/count', homeController.getCount);
+router.get('/count', authMiddleware, homeController.getCount);
 
-router.get('/graphique', homeController.getGraphiqueDonnees);
+router.get('/graphique', authMiddleware, homeController.getGraphiqueDonnees);
 
 
 module.exports = router;

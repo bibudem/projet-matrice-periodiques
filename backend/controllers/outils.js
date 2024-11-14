@@ -1,13 +1,7 @@
 const Outils = require('../models/outils');
-const auth = require("../auth/auth");
-const Lib = require("../util/lib");
 
 exports.getAllFonds = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     const [donnees] = await Outils.getAllFonds();
       //console.log('all ok')
     res.status(200).json(donnees);
@@ -22,10 +16,6 @@ exports.getAllFonds = async (req, res, next) => {
 
 exports.postFond= async (req, res, next) => {
   try {
-      //retourner vers la connexion si on n'an une bonne session pour cet user
-      if(Lib.userConnect(req).length==0){
-        res.redirect('/api/logout');
-      }
       let values=Object.values(req.body);
       //console.log(values);
       const postResponse = await Outils.postFond(values);
@@ -42,10 +32,6 @@ exports.postFond= async (req, res, next) => {
 
 exports.putFond = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
     //console.log(Object.values(values));
     //console.log(values);
@@ -61,10 +47,6 @@ exports.putFond = async (req, res, next) => {
 
 exports.deleteFond = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     //console.log(req.params.id);
     const deleteResponse = await Outils.deleteFond(req.params.id);
     res.status(200).json(deleteResponse);
@@ -77,10 +59,6 @@ exports.deleteFond = async (req, res, next) => {
 };
 exports.consulterFond = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     //console.log('consulter'+req.params.id);
     const [ficheOutils] = await Outils.consulterFond(req.params.id);
     res.status(200).json(ficheOutils);
@@ -93,11 +71,6 @@ exports.consulterFond = async (req, res, next) => {
 };
 exports.rapportPlateformes = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
-
     const [donnees] = await Outils.getAllRapportPlateforme(req.params.annee);
     //console.log('all ok')
     res.status(200).json(donnees);
@@ -111,11 +84,6 @@ exports.rapportPlateformes = async (req, res, next) => {
 };
 exports.rapportMoyenne = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
-
     const [donnees] = await Outils.rapportMoyenne();
     //console.log('all ok')
     res.status(200).json(donnees);
@@ -129,10 +97,6 @@ exports.rapportMoyenne = async (req, res, next) => {
 };
 exports.getAllResultRapport = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     const [donnees] = await Outils.getAllResultRapport(req.params.result);
     //console.log('all ok')
     res.status(200).json(donnees);

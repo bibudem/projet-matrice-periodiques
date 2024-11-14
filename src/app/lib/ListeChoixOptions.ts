@@ -44,8 +44,7 @@ export class ListeChoixOptions  {
     { id: 3, name: "Santé" },
     { id: 4, name: "Sciences" }
   ];
-  //objet pour les sujets
-  listDevise = [
+   listDevise = [
     {id: 1, name: 'CAD'},
     {id: 2, name: 'USD'},
     {id: 3, name: 'EUROS'},
@@ -67,8 +66,8 @@ export class ListeChoixOptions  {
 
   listeEntenteConsortiale = [
     {id: 1, name: ''},
-    {id: 2, name: 'PBUB'},
-    {id: 3, name: 'RCDR'},
+    {id: 2, name: 'RCDR'},
+    {id: 3, name: 'PBUQ'},
   ];
 
   //objet pour les sujets

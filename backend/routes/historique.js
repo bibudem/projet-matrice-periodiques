@@ -2,16 +2,18 @@ const express = require('express');
 
 const historiqueController = require('../controllers/historique');
 
+const authMiddleware = require('../auth/authMiddleware');
+
 const router = express.Router();
 
-router.get('/all/:id', historiqueController.getAllHistorique);
+router.get('/all/:id', authMiddleware, historiqueController.getAllHistorique);
 
-router.post('/add', historiqueController.postHistorique);
+router.post('/add', authMiddleware, historiqueController.postHistorique);
 
-router.put('/save', historiqueController.putHistorique);
+router.put('/save', authMiddleware, historiqueController.putHistorique);
 
-router.delete('/delete/:id', historiqueController.deleteHistorique);
+router.delete('/delete/:id', authMiddleware, historiqueController.deleteHistorique);
 
-router.get('/fiche/:id', historiqueController.consulterHistorique);
+router.get('/fiche/:id', authMiddleware, historiqueController.consulterHistorique);
 
 module.exports = router;

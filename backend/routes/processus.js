@@ -2,39 +2,41 @@ const express = require('express');
 
 const processusController = require('../controllers/processus');
 
+const authMiddleware = require('../auth/authMiddleware');
+
 const router = express.Router();
 
-router.get('/all', processusController.getAllProcessus);
+router.get('/all', authMiddleware, processusController.getAllProcessus);
 
 
-router.get('/liste-details/:id', processusController.getAllDetailsProcessus);
+router.get('/liste-details/:id', authMiddleware, processusController.getAllDetailsProcessus);
 
 
-router.get('/last-processus', processusController.getLastIdProcessus);
+router.get('/last-processus', authMiddleware, processusController.getLastIdProcessus);
 
 
-router.put('/save-prix', processusController.postPrix);
+router.put('/save-prix', authMiddleware, processusController.postPrix);
 
 
-router.put('/save-archives', processusController.postArchives);
+router.put('/save-archives', authMiddleware, processusController.postArchives);
 
 
-router.put('/update-statistiques', processusController.postStatistiques);
+router.put('/update-statistiques', authMiddleware, processusController.postStatistiques);
 
 
-router.post('/lot-periodiques', processusController.postLotPeriodiques);
+router.post('/lot-periodiques', authMiddleware, processusController.postLotPeriodiques);
 
 
-router.put('/add', processusController.ajoutProcessus);
+router.put('/add', authMiddleware, processusController.ajoutProcessus);
 
 
-router.put('/save-abonnement', processusController.postAbonnement);
+router.put('/save-abonnement', authMiddleware, processusController.postAbonnement);
 
 
-router.delete('/delete/:id', processusController.deleteProcessus);
+router.delete('/delete/:id', authMiddleware, processusController.deleteProcessus);
 
 
-router.delete('/details/delete/:id', processusController.deleteProcessusDetails);
+router.delete('/details/delete/:id', authMiddleware, processusController.deleteProcessusDetails);
 
 
 module.exports = router;

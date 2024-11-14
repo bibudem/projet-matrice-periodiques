@@ -2,16 +2,18 @@ const express = require('express');
 
 const archiveController = require('../controllers/archive');
 
+const authMiddleware = require('../auth/authMiddleware');
+
 const router = express.Router();
 
-router.get('/all/:id', archiveController.getAllArchive);
+router.get('/all/:id', authMiddleware, archiveController.getAllArchive);
 
-router.post('/add', archiveController.postArchive);
+router.post('/add', authMiddleware, archiveController.postArchive);
 
-router.put('/save', archiveController.putArchive);
+router.put('/save', authMiddleware, archiveController.putArchive);
 
-router.delete('/delete/:id', archiveController.deleteArchive);
+router.delete('/delete/:id', authMiddleware, archiveController.deleteArchive);
 
-router.get('/fiche/:id', archiveController.consulterArchive);
+router.get('/fiche/:id', authMiddleware, archiveController.consulterArchive);
 
 module.exports = router;

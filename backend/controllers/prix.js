@@ -1,14 +1,7 @@
 const Prix = require('../models/prix');
-const auth = require("../auth/auth");
-const Lib = require("../util/lib");
 
 exports.getAllPrix = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
-
     const [allPrix] = await Prix.fetchAll(req.params.id);
     //console.log('all ok')
     res.status(200).json(allPrix);
@@ -24,10 +17,6 @@ exports.getAllPrix = async (req, res, next) => {
 
 exports.postPrix= async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
     //console.log('controleur ok');
     const postResponse = await Prix.post(values);
@@ -43,10 +32,6 @@ exports.postPrix= async (req, res, next) => {
 
 exports.putPrix = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
     //console.log(Object.values(values));
     //console.log(req.body.idNote);
@@ -62,10 +47,6 @@ exports.putPrix = async (req, res, next) => {
 
 exports.deletePrix = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     //console.log(req.params.id);
     const deleteResponse = await Prix.delete(req.params.id);
     res.status(200).json(deleteResponse);
@@ -78,10 +59,6 @@ exports.deletePrix = async (req, res, next) => {
 };
 exports.consulterPrix = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     //console.log('consulter'+req.params.id);
     const [fichePrix] = await Prix.consulter(req.params.id);
     res.status(200).json(fichePrix);

@@ -1,13 +1,7 @@
 const Note = require('../models/note');
-const auth = require("../auth/auth");
-const Lib = require("../util/lib");
 
 exports.getAllNote = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     const [allArchive] = await Note.fetchAll(req.params.id);
     //console.log('all ok')
     res.status(200).json(allArchive);
@@ -23,10 +17,6 @@ exports.getAllNote = async (req, res, next) => {
 
 exports.postNote= async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
     //console.log('controleur ok');
     const postResponse = await Note.post(values);
@@ -42,10 +32,6 @@ exports.postNote= async (req, res, next) => {
 
 exports.putNote = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     let values=Object.values(req.body);
     const putResponse = await Note.update(values);
     res.status(200).json(putResponse);
@@ -59,10 +45,6 @@ exports.putNote = async (req, res, next) => {
 
 exports.deleteNote = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     //console.log(req.params.id);
     const deleteResponse = await Note.delete(req.params.id);
     res.status(200).json(deleteResponse);
@@ -75,10 +57,6 @@ exports.deleteNote = async (req, res, next) => {
 };
 exports.consulterNote = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     //console.log('consulter'+req.params.id);
     const [ficheNote] = await Note.consulter(req.params.id);
     res.status(200).json(ficheNote);

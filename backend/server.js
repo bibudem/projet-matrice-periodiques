@@ -49,15 +49,12 @@ const ports = process.env.PORT || config.serverPort;
 
 const auth      = require("./auth/auth")
 
-const bs = require('browser-storage')
-
-const Lib  = require("./util/lib")
-
-const request = require("request")
 
 //******proxy configuration global************//
 
 const proxy = require("node-global-proxy").default;
+
+const MemoryStore = require('memorystore')(session);
 
 proxy.setConfig(config.proxy);
 
@@ -67,7 +64,6 @@ proxy.start();
 
 app.use(bodyParser.json());
 
-
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
@@ -75,49 +71,40 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use( session( { secret: 'matrice-dev-periodique-2022!!',
-      cookie: { maxAge: 3600000 },
-      rolling: true,
-      resave: true,
-      saveUninitialized: false
-    }
-  )
-);
+app.use(session({
+  store: new MemoryStore({ checkPeriod: 3600000 }),
+  secret: 'AB3X9-YG2KD-Q4PL6-MN7TS-WZ8FV-YT9KD-Q4PL98',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    maxAge: 3600000, // Durée du cookie de session (par exemple 1 heure)
+  }
+}));
+
 
 app.use(bodyParser.urlencoded({ extended : true }));
 app.use(auth.passport.initialize());
 app.use(auth.passport.session());
 
 
-app.use(function (req, res, next) {
-  if (!req.session.views) {
-    req.session.views = {}
-  }
-  // get the url pathname
-  const pathname = parseurl(req).pathname
+app.get('/logout', (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.error('Erreur lors de la déconnexion :', err);
+      return res.status(500).send({ message: 'Erreur lors de la déconnexion' });
+    }
 
-  // count the views
-  req.session.views[pathname] = (req.session.views[pathname] || 0) + 1
-
-  next()
-})
-
-
-app.get('/logout', function(req, res) {
-  req.logOut()  // <-- not req.logout();
-  if(Lib.userConnect(req)){
-    Lib.userConnect(req)==[]
-  }
-  req.session.destroy(function() {
-    res.clearCookie('connect.sid');
-    res.redirect('/not-user')
+    // Détruire la session et envoyer une réponse
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).send({ message: 'Erreur lors de la destruction de la session' });
+      }
+      res.clearCookie('connect.sid');
+      //res.send({ message: 'User logout' });
+      res.redirect('/not-user');
+    });
   });
-});
-//redirection pour se connecter
-app.get('/', function(req, res) {
-  if(!Lib.userConnect(req)|| Lib.userConnect(req).length==0){
-    res.redirect('/not-user')
-  }
 });
 
 
@@ -125,8 +112,6 @@ app.get('/', function(req, res) {
 app.use('/auth', userUdemRoutes);
 
 //app.use('', userUdemRoutes);
-
-
 
 // Definir proxy url dans la creation du serveur
 app.set('trust proxy', '10.139.33.12');
@@ -152,9 +137,7 @@ app.use('/prix', prixRoutes);
 //controlleur plateforme
 app.use('/plateforme', plateformeRoutes);
 
-
 app.use('/importation', sushiRoutes);
-
 
 //controlleur mise a jour statistique selon données soushi
 app.use('/update-statistique', updateStatistiqueRoutes);
@@ -182,9 +165,13 @@ app.use('/user-udem', userUdemRoutes);
 
 //passport user
 app.get('/connect-user', function (req, res, next) {
-  res.status(200).json(auth.passport.session.userConnect);
-})
-
+  const user = req.session.user;
+  if (user) {
+    res.status(200).json(user);
+  } else {
+    res.status(401).json({ message: 'User not connected' });
+  }
+});
 
 app.use(errorController.get404);
 

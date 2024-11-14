@@ -1,16 +1,16 @@
 const UpdateStatistique = require('../models/update-statistique');
 const Mail = require("../config/mail");
-const Lib  = require("../util/lib");
-const bs = require('browser-storage')
+const UserAuth = require("../auth/callback");
+const auth = require("../auth/auth");
+
 exports.getAllStatistique = async (req, res, next) => {
   try {
-    //retourner vers la connexion si on n'an une bonne session pour cet user
-    if(Lib.userConnect(req).length==0){
-      res.redirect('/api/logout');
-    }
     //dans la réponse d'authentification le paramettre upn represente le courriel de la personne connecté
-    let courriel = Lib.userConnect(req).upn;
-    //console.log(res);
+    const token = req.session ? req.session.token : null;
+    const user = auth.passport.session.userConnect[token];
+    const ficheUser = await UserAuth.returnUserUdem(user);
+    let courriel = ficheUser[0]['courriel'];
+
     UpdateStatistique.getAllStatistique(req.params.annee).then( reponse => {
       let htmlContenu = "<p> La procédure de la mise à jour des statistiques est terminée! </p>" +
         "<p>Pour l'année choisie : <strong>" + req.params.annee + "</strong> le systéme a modifié les données statistiques pour  <strong>" + reponse + "</strong> des périodiques. </p>" +
