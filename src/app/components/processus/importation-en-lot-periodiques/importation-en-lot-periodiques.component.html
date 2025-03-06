@@ -69,6 +69,22 @@
             </ul>
           </div>
           <div class="col-md-2">
+            <h6 class="card-title">{{ 'accesCourant' | translate}}</h6>
+            <ul class="list-ticked">
+              <li *ngFor="let rep of this.listeChoixOptions.accesCourant" [value]="rep.name">{{rep.name}}</li>
+            </ul>
+          </div>
+          <div class="col-md-2">
+            <h6 class="card-title">{{ 'entente_consortiale' | translate}}</h6>
+            <ul class="list-ticked">
+              <ng-container *ngFor="let rep of this.listeChoixOptions.listeEntenteConsortiale">
+                <li *ngIf="rep.name" [value]="rep.name">
+                  {{ rep.name }}
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+          <div class="col-md-2">
             <h6 class="card-title">{{ 'Essentiel' | translate}}</h6>
             <ul class="list-ticked">
               <li *ngFor="let rep of this.listeChoixOptions.essentiel" [value]="rep.name">{{rep.name}}</li>
@@ -162,6 +178,12 @@
               <td  *matCellDef="let row" class="mat-w-5" > {{row.statut}} </td>
             </ng-container>
 
+            <!-- accesCourant Column -->
+            <ng-container matColumnDef="accesCourant">
+              <th *matHeaderCellDef mat-sort-header class="mat-w-5"> {{ 'accesCourant' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-5" > {{row.accesCourant}} </td>
+            </ng-container>
+
 
             <!-- abonnement Column -->
             <ng-container matColumnDef="abonnement">
@@ -227,6 +249,12 @@
             <ng-container matColumnDef="sujets">
               <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'sujets' | translate}} </th>
               <td  *matCellDef="let row" class="mat-w-10"> {{row.sujets }} </td>
+            </ng-container>
+
+            <!-- sujets Column -->
+            <ng-container matColumnDef="entente_consortiale">
+              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'entente_consortiale' | translate}} </th>
+              <td  *matCellDef="let row" class="mat-w-10"> {{row.entente_consortiale }} </td>
             </ng-container>
 
             <!-- duplication Column -->

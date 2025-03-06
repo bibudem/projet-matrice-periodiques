@@ -1,19 +1,23 @@
 const Sushi = require('../models/sushi');
-const Mail = require("../config/mail")
+const Mail = require("../config/mail");
 
 
 
 exports.getAllSushi =  async (req, res, next) => {
   try {
-    //dans la réponse d'authentification le paramettre upn represente le courriel de la personne connecté
-    let courriel=Lib.userConnect(req).upn;
+    //console.log(req);
+    // Récupérer l'utilisateur connecté
+    const userEmail =req.user.email;
+
+    // Extraire le courriel de l'utilisateur connecté
     Sushi.fetchAll(req.params.date).then(reponse => {
+        console.log(reponse);
         let anneePost=req.params.date.split('=')[1]
         let htmlContenu = "<p> La procédure d'importation sushi est terminée! </p>" +
           "<p>Pour la période choisie : <strong>" + anneePost + "</strong> le systéme a importé des données SUSHI. </p>" +
           "<p>Vous pouvez vérifier les données dans la liste des statistiques ou dans les rapports des statistiques.</p>";
-          //console.log('End update'+Lib.dateNow('d-m-Y H:M:S'));
-          Mail.mailEnvoyer(courriel,'Statistique',htmlContenu);
+
+          Mail.mailEnvoyer(userEmail,'Statistique',htmlContenu);
         });
          res.status(200).json(['successful'])
 

@@ -1,0 +1,8 @@
+.nav-item.open > .collapse {
+  display: block !important;
+}
+
+.nav-item.open > a {
+  font-weight: bold;
+  color: #007bff;
+}

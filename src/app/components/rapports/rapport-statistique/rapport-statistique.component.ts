@@ -43,7 +43,7 @@ export class RapportStatistiqueComponent implements OnInit {
   champs=[]
 
 //variable boolean
-  isLoadingResults=false
+  isLoadingResults=false;
 
   thTableau:any=[]
 

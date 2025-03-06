@@ -62,6 +62,7 @@
               <div class="form-group">
                 <label for="accesCourant">{{ 'accesCourant' | translate}}</label>
                 <select name="accesCourant" id="accesCourant" class="form-control" #accesCourant [(ngModel)]="periodique.accesCourant">
+                  <option value=""></option>
                   <option *ngFor="let rep of this.listeChoixOptions.accesCourant" [value]="rep.name">{{rep.name}}</option>
                 </select>
               </div>
@@ -70,6 +71,7 @@
               <div class="form-group">
                 <label for="abonnement">{{ 'abonnement' | translate}} </label>
                 <select name="abonnement" id="abonnement"  class="form-control" #abonnement  [(ngModel)]="periodique.abonnement">
+                  <option value=""></option>
                   <option *ngFor="let rep of this.listeChoixOptions.listAbonnement" [value]="rep.name">{{rep.name}}</option>
                 </select>
               </div>
@@ -80,6 +82,7 @@
               <div class="form-group">
                 <label for="bdd">{{ 'BDD' | translate}}</label>
                 <select name="bdd" id="bdd" class="form-control" #bdd [(ngModel)]="periodique.bdd">
+                  <option value=""></option>
                   <option *ngFor="let rep of this.listeChoixOptions.bdd" [value]="rep.name">{{rep.name}}</option>
                 </select>
               </div>
@@ -88,6 +91,7 @@
               <div class="form-group">
                 <label for="statut">{{ 'statut' | translate}} </label>
                 <select name="statut" id="statut" class="form-control" #statut [(ngModel)]="periodique.statut">
+                  <option value=""></option>
                   <option *ngFor="let rep of this.listeChoixOptions.listStatut" [value]="rep.name">{{rep.name}}</option>
                 </select>
               </div>
@@ -96,6 +100,7 @@
               <div class="form-group">
                 <label for="libreAcces">{{ 'libre-acces' | translate}}</label>
                 <select name="libreAcces" id="libreAcces" class="form-control" #libreAcces [(ngModel)]="periodique.libreAcces">
+                  <option value=""></option>
                   <option *ngFor="let rep of this.listeChoixOptions.listeAcces" [value]="rep.name">{{rep.name}}</option>
                 </select>
               </div>
@@ -104,6 +109,7 @@
               <div class="form-group">
                 <label for="abonnement">{{ 'format' | translate}}</label>
                 <select name="format" id="format" class="form-control" #format [(ngModel)]="periodique.format">
+                  <option value=""></option>
                   <option *ngFor="let rep of this.listeChoixOptions.listFormat" [value]="rep.name">{{rep.name}}</option>
                 </select>
               </div>
@@ -112,6 +118,7 @@
               <div class="form-group">
                 <label for="domaine">{{ 'domaine' | translate}}</label>
                 <select name="domaine" id="domaine" class="form-control" #domaine [(ngModel)]="periodique.domaine">
+                  <option value=""></option>
                   <option *ngFor="let rep of this.listeChoixOptions.listDomaine" [value]="rep.name">{{rep.name}}</option>
                 </select>
               </div>
@@ -163,6 +170,7 @@
               <div class="form-group">
                 <label for="fournisseur">{{ 'fournisseur' | translate}}</label>
                 <select name="fournisseur" id="fournisseur"  class="form-control" #fournisseur [(ngModel)]="periodique.fournisseur" >
+                  <option value=""></option>
                   <option *ngFor="let rep of this.listeFounisseurs" [value]="rep.titre">{{rep.titre}}</option>
                 </select>
               </div>

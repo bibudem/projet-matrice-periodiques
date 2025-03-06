@@ -113,6 +113,14 @@
         </div>
       </div>
     </div>
+    <!-- Animation de chargement -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="spinner">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="20" />
+        </svg>
+      </div>
+    </div>
     <!-- Contenu footer -->
     <app-footer></app-footer>
   </div>

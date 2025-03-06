@@ -34,7 +34,7 @@ export class ImportationSushiService implements OnInit {
     let paramResults=begin_date+'='+''+end_date+'='+plateforme
 
     let params=new HttpParams().set('date', paramResults)
-
+    //console.log(params);
     return this.http
       .get<any[]>(`/api/importation/rapports-sushi/${params}`, { responseType: "json" })
       .pipe(

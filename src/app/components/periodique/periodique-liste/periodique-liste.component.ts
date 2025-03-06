@@ -38,7 +38,9 @@ export class PeriodiqueListeComponent implements OnInit{
   }
 
   //garder les titre rechercher dans les filtres
-  textRechercher=''
+  textRechercher='';
+
+  isLoading = true;
 
   ifAdmin=false;
 
@@ -83,7 +85,8 @@ export class PeriodiqueListeComponent implements OnInit{
         }
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
-
+         //Arrêter l'animation de chargement
+        this.isLoading = false;
       });
     } catch(err) {
       console.error(`Error : ${err.Message}`);

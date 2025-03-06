@@ -78,7 +78,8 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    maxAge: 3600000, // Durée du cookie de session (par exemple 1 heure)
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 3600000,
   }
 }));
 
@@ -86,7 +87,6 @@ app.use(session({
 app.use(bodyParser.urlencoded({ extended : true }));
 app.use(auth.passport.initialize());
 app.use(auth.passport.session());
-
 
 app.get('/logout', (req, res) => {
   req.logout((err) => {
@@ -172,6 +172,12 @@ app.get('/connect-user', function (req, res, next) {
     res.status(401).json({ message: 'User not connected' });
   }
 });
+
+/*app.get('/session-info', (req, res) => {
+  console.log('Session Info:', req.session);  // Affiche l'objet complet de la session
+  res.json({ session: req.session });
+});*/
+
 
 app.use(errorController.get404);
 

@@ -33,9 +33,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
 
   periodiques$: Observable<Periodique[]> | undefined;
   //creation d'objet avec la liste des periodiques
-  // @ts-ignore
-  periodique: Periodique = {};
-  idRevue: number = -1;
+  idRevue: number = 0;
 
   //importer les fonctions global
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
@@ -85,9 +83,34 @@ export class PeriodiqueFormulaireComponent implements OnInit {
 
   selectfonds:any=[]
 
-  action='add'
-
-  ifAdmin=false
+  ifAdmin=false;
+  action: string = "add";
+  periodique: Periodique = {
+    idRevue: 0,
+    titre: "",
+    ISSN: "",
+    EISSN: "",
+    accesCourant: "",
+    statut: "",
+    abonnement: "",
+    bdd: "",
+    fonds: "",
+    fournisseur: "",
+    plateformePrincipale: "",
+    autrePlateforme: "",
+    format: "",
+    libreAcces: "",
+    domaine: "",
+    secteur: "",
+    sujets: "",
+    entente_consortiale: "",
+    duplication: "",
+    duplicationCourant: "",
+    duplicationEmbargo1: "",
+    duplicationEmbargo2: "",
+    essentiel2014: "",
+    essentiel2022: ""
+  };
 
   // @ts-ignore
   @ViewChild('closebutton') closebutton:any
@@ -153,6 +176,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
     this.periodiques$.subscribe(res => {
       //creation d'objet periodique
       this.periodique =res[0];
+      console.log(this.periodique);
       //recouperer les données a multi choix des autres plateformes
       if(res[0].autrePlateforme && res[0].autrePlateforme.indexOf(',')!=-1){
         for(let at of res[0].autrePlateforme.split(',')){
@@ -453,123 +477,60 @@ export class PeriodiqueFormulaireComponent implements OnInit {
 //fonction pour valider
   onSubmit(f: NgForm) {
     // @ts-ignore
-    let action=document.getElementById('action').value
+    const action = (document.getElementById('action') as HTMLInputElement)?.value;
 
-        if(f.value.idRevue)
-        this.periodique.idRevue=f.value.idRevue
+    const valeurs = {
+      idRevue: f.value.idRevue ?? 0,
+      titre: f.value.titre ?? "",
+      ISSN: f.value.ISSN ?? "",
+      EISSN: f.value.EISSN ?? "",
+      statut: f.value.statut ?? "",
+      accesCourant: f.value.accesCourant ?? "",
+      abonnement: f.value.abonnement ?? "",
+      fonds: f.value.fonds ? this.multiValeurCreator(f.value.fonds) : "",
+      fournisseur: f.value.fournisseur ?? "",
+      plateformePrincipale: f.value.plateformePrincipale ?? "",
+      autrePlateforme: f.value.autrePlateforme ? this.multiValeurCreator(f.value.autrePlateforme) : "",
+      format: f.value.format ?? "",
+      libreAcces: f.value.libreAcces ?? "",
+      domaine: f.value.domaine ?? "",
+      secteur: f.value.secteur ? this.multiValeurCreator(f.value.secteur) : "",
+      sujets: f.value.sujets ?? "",
+      entente_consortiale: f.value.entente_consortiale ?? "",
+      duplication: this.methodesGlobal.checkedResult('duplication') ? 'Oui' : 'Non',
+      duplicationCourant: this.methodesGlobal.checkedResult('duplicationCourant') ? 'Oui' : 'Non',
+      duplicationEmbargo1: this.methodesGlobal.checkedResult('duplicationEmbargo1') ? 'Oui' : 'Non',
+      duplicationEmbargo2: this.methodesGlobal.checkedResult('duplicationEmbargo2') ? 'Oui' : 'Non',
+      essentiel2014: this.methodesGlobal.checkedResult('essentiel2014') ? 'Oui' : 'Non',
+      essentiel2022: this.methodesGlobal.checkedResult('essentiel2022') ? 'Oui' : 'Non',
+    };
 
-        if(f.value.titre)
-        this.periodique.titre=f.value.titre
-        else this.periodique.titre=''
+    Object.assign(this.periodique, valeurs);
 
-        if(f.value.ISSN)
-        this.periodique.ISSN=f.value.ISSN
-        else this.periodique.ISSN=''
+    console.log(this.periodique);
 
-        if(f.value.EISSN)
-        this.periodique.EISSN=f.value.EISSN
-        else this.periodique.EISSN=''
+    // Définir les champs obligatoires
+    if (!this.methodesGlobal.validationDonneesForm({ titre: this.periodique.titre })) {
+      return;
+    }
 
-        if(f.value.statut)
-        this.periodique.statut=f.value.statut
-        else this.periodique.statut=''
+    this.onFermeModal();
 
-    if(f.value.accesCourant)
-      this.periodique.accesCourant=f.value.accesCourant
-    else this.periodique.accesCourant=''
-
-    if(f.value.abonnement)
-      this.periodique.abonnement=f.value.abonnement
-    else this.periodique.abonnement=''
-
-    if(f.value.fonds)
-      this.periodique.fonds=this.multiValeurCreator(f.value.fonds)
-    else this.periodique.fonds=''
-
-    if(f.value.fournisseur)
-      this.periodique.fournisseur=f.value.fournisseur
-    else this.periodique.fournisseur=''
-
-    if(f.value.plateformePrincipale)
-      this.periodique.plateformePrincipale=f.value.plateformePrincipale
-    else this.periodique.plateformePrincipale=''
-
-    if(f.value.autrePlateforme)
-      this.periodique.autrePlateforme=this.multiValeurCreator(f.value.autrePlateforme)
-    else this.periodique.autrePlateforme=''
-
-    if(f.value.format)
-      this.periodique.format=f.value.format
-    else this.periodique.format=''
-
-    if(f.value.libreAcces)
-      this.periodique.libreAcces=f.value.libreAcces
-    else this.periodique.libreAcces=''
-
-    if(f.value.domaine)
-      this.periodique.domaine=f.value.domaine
-    else this.periodique.domaine=''
-
-    if(f.value.secteur)
-      this.periodique.secteur=this.multiValeurCreator(f.value.secteur)
-    else this.periodique.secteur=''
-
-    if(f.value.sujets)
-      this.periodique.sujets=f.value.sujets
-    else this.periodique.sujets=''
-
-    if(f.value.entente_consortiale)
-      this.periodique.entente_consortiale=f.value.entente_consortiale
-    else this.periodique.entente_consortiale=''
-
-    if(this.methodesGlobal.checkedResult('duplication'))
-      this.periodique.duplication='Oui'
-    else this.periodique.duplication='Non'
-
-    if(this.methodesGlobal.checkedResult('duplicationCourant'))
-       this.periodique.duplicationCourant='Oui'
-    else  this.periodique.duplicationCourant='Non'
-
-    if(this.methodesGlobal.checkedResult('duplicationEmbargo1'))
-      this.periodique.duplicationEmbargo1='Oui'
-    else  this.periodique.duplicationEmbargo1='Non'
-
-    if(this.methodesGlobal.checkedResult('duplicationEmbargo2'))
-      this.periodique.duplicationEmbargo2='Oui'
-    else  this.periodique.duplicationEmbargo2='Non'
-
-    if(this.methodesGlobal.checkedResult('essentiel2014'))
-      this.periodique.essentiel2014='Oui'
-    else  this.periodique.essentiel2014='Non'
-
-    if(this.methodesGlobal.checkedResult('essentiel2022'))
-      this.periodique.essentiel2022='Oui'
-    else  this.periodique.essentiel2022='Non'
-
-    //definir les champs obligatoire
-    let donnesValider:any={'titre':this.periodique.titre}
-
-        switch (action){
-          case 'save':
-            if(this.methodesGlobal.validationDonneesForm(donnesValider)){
-               this.onFermeModal()
-               this.update(this.periodique)
-            }
-            //this.remplireFiche(this.idRevue)
-            break
-          case 'add':
-            if(this.methodesGlobal.validationDonneesForm(donnesValider)){
-               this.onFermeModal()
-               this.post(this.periodique)
-            }
-            break
-        }
-
+    if (action === 'save') {
+      this.update(this.periodique);
+    } else if (action === 'add') {
+      localStorage.setItem('textFiltre',f.value.titre);
+      this.post(this.periodique);
+    }
   }
+
   //fermer le modal une fois envoyer les données
   onFermeModal() {
     this.closebutton.nativeElement.click();
   }
 
+  ensureArray(value: string | string[]): string[] {
+    return Array.isArray(value) ? value : value ? [value] : [];
+  }
 }
 

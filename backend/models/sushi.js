@@ -22,7 +22,7 @@ module.exports = class Sushi {
      let begin_date=params[1]
      //extraire l'annee selecté
      let anneePost=begin_date.split('-')[0]
-
+     //console.log(date);
      //recouperation du filtre plateforme
      if(params[3]){
        filtrePlateforme=params[3];
@@ -116,10 +116,12 @@ module.exports = class Sushi {
             keepAlive: true,
             timeout: 360000000,
           });*/
-          //console.log(reponse.data);
+          //console.log(url);
           reponse = await axios.get(url);
           resultat[rapport]=reponse.data
-
+          if (reponse.status !== 200) {
+            console.error("Erreur HTTP:", reponse.status, reponse.statusText);
+          }
         }
         //console.log(resultat)
         return resultat;

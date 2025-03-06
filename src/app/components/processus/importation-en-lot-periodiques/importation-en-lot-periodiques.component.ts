@@ -31,7 +31,7 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
   reponseUpdate = 0
 
   //les entêts du tableau
-  displayedColumns = ['IDRevue','titre', 'ISSN','EISSN','statut','abonnement','bdd','fonds','fournisseur','plateformePrincipale','autrePlateforme','format','libreAcces','domaine','secteur','sujets','duplication','duplicationCourant','duplicationEmbargo1','duplicationEmbargo2','essentiel2014','essentiel2022'];
+  displayedColumns = ['IDRevue','titre', 'ISSN','EISSN','statut','accesCourant','abonnement','bdd','fonds','fournisseur','plateformePrincipale','autrePlateforme','format','libreAcces','domaine','secteur','sujets','entente_consortiale','duplication','duplicationCourant','duplicationEmbargo1','duplicationEmbargo2','essentiel2014','essentiel2022'];
 
 
   // @ts-ignore
@@ -104,119 +104,56 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
   }
 
 
-  async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator:string) {
+  async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator: string) {
     let csvArr: UpdatePeriodiquesLot[] = [];
-    // @ts-ignore
-    let csvRecord: UpdatePeriodiquesLot = []; let curruntRecord;
-    let colIDRevue=-1,colTitre=-1,colISSN=-1
-        ,colEISSN=-1,colStatut=-1,colAbonnement=-1,colBdd=-1,colFonds=-1,colFournisseur=-1,colPlateformePrincipale=-1,colAutrePlateforme=-1
-        ,colFormat=-1,colLibreAcces=-1,colDomaine=-1,colSecteur=-1,colSujets=-1,colDuplication=-1,colDuplicationCourant=-1,colDuplicationEmbargo1=-1
-        ,colDuplicationEmbargo2=-1,colEssentiel2014=-1,colEssentiel2022=-1;
-    //prendre le numero des colons selon le nom d'entete
-    for(let i=0;i<headersRow.length;i++){
-      switch (headersRow[i].trim()){
-        case 'IDRevue':
-          colIDRevue=i
-          break;
-        case 'titre':
-          colTitre=i
-          break;
-        case 'ISSN':
-          colISSN=i
-          break;
-        case 'EISSN':
-          colEISSN=i
-          break;
-        case 'statut':
-          colStatut=i
-          break;
-        case 'abonnement':
-          colAbonnement=i
-          break;
-        case 'bdd':
-          colBdd=i
-          break;
-        case 'fonds':
-          colFonds=i
-          break;
-        case 'fournisseur':
-          colFournisseur=i
-          break;
-        case 'plateformePrincipale':
-          colPlateformePrincipale=i
-          break;
-        case 'autrePlateforme':
-          colAutrePlateforme=i
-          break;
-        case 'format':
-          colFormat=i
-          break;
-        case 'libreAcces':
-          colLibreAcces=i
-          break;
-        case 'domaine':
-          colDomaine=i
-          break;
-        case 'secteur':
-          colSecteur=i
-          break;
-        case 'sujets':
-          colSujets=i
-          break;
-        case 'duplication':
-          colDuplication=i
-          break;
-        case 'duplicationCourant':
-          colDuplicationCourant=i
-          break;
-        case 'duplicationEmbargo1':
-          colDuplicationEmbargo1=i
-          break;
-        case 'duplicationEmbargo2':
-          colDuplicationEmbargo2=i
-          break;
-        case 'essentiel2014':
-          colEssentiel2014=i
-          break;
-        case 'essentiel2022':
-          colEssentiel2022=i
-          break;
-      }
-    }
+    let colIndexMap = this.getColumnIndexMap(headersRow);
 
     for (let i = 1; i < csvRecordsArray.length; i++) {
-        curruntRecord = (<string>csvRecordsArray[i]).split(separator);
-
-          csvRecord = {
-            idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIDRevue]),
-            titre: this.methodesGlobal.returnCharIfNull(curruntRecord[colTitre]),
-            ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colISSN]),
-            EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colEISSN]),
-            statut: this.methodesGlobal.returnCharIfNull(curruntRecord[colStatut]),
-            abonnement: this.methodesGlobal.returnCharIfNull(curruntRecord[colAbonnement]),
-            bdd: this.methodesGlobal.returnCharIfNull(curruntRecord[colBdd]),
-            fonds: this.methodesGlobal.returnCharIfNull(curruntRecord[colFonds]),
-            fournisseur: this.methodesGlobal.returnCharIfNull(curruntRecord[colFournisseur]),
-            plateformePrincipale:this.methodesGlobal.returnCharIfNull(curruntRecord[colPlateformePrincipale]),
-            autrePlateforme:this.methodesGlobal.returnCharIfNull(curruntRecord[colAutrePlateforme]),
-            format:this.methodesGlobal.returnCharIfNull(curruntRecord[colFormat]),
-            libreAcces:this.methodesGlobal.returnCharIfNull(curruntRecord[colLibreAcces]),
-            domaine:this.methodesGlobal.returnCharIfNull(curruntRecord[colDomaine]),
-            secteur:this.methodesGlobal.returnCharIfNull(curruntRecord[colSecteur]),
-            sujets:this.methodesGlobal.returnCharIfNull(curruntRecord[colSujets]),
-            duplication:this.methodesGlobal.returnCharIfNull(curruntRecord[colDuplication]),
-            duplicationCourant:this.methodesGlobal.returnCharIfNull(curruntRecord[colDuplicationCourant]),
-            duplicationEmbargo1:this.methodesGlobal.returnCharIfNull(curruntRecord[colDuplicationEmbargo1]),
-            duplicationEmbargo2:this.methodesGlobal.returnCharIfNull(curruntRecord[colDuplicationEmbargo2]),
-            essentiel2014:this.methodesGlobal.returnCharIfNull(curruntRecord[colEssentiel2014]),
-            essentiel2022:this.methodesGlobal.returnCharIfNull(curruntRecord[colEssentiel2022])
-          }
-          csvArr.push(csvRecord);
-
+      let curruntRecord = csvRecordsArray[i].split(separator);
+      let csvRecord = this.mapRecord(curruntRecord, colIndexMap);
+      csvArr.push(csvRecord);
     }
-     //console.log(csvArr)
+
     return csvArr;
   }
+
+  getColumnIndexMap(headersRow: string[]) {
+    let colIndexMap: { [key: string]: number } = {};
+    for (let i = 0; i < headersRow.length; i++) {
+      colIndexMap[headersRow[i].trim()] = i;
+    }
+    return colIndexMap;
+  }
+
+  mapRecord(curruntRecord: string[], colIndexMap: { [key: string]: number }) {
+    return {
+      idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['IDRevue']]),
+      titre: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['titre']]),
+      ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['ISSN']]),
+      EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['EISSN']]),
+      statut: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['statut']]),
+      accesCourant: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['accesCourant']]),
+      abonnement: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['abonnement']]),
+      bdd: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['bdd']]),
+      fonds: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['fonds']]),
+      fournisseur: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['fournisseur']]),
+      plateformePrincipale: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['plateformePrincipale']]),
+      autrePlateforme: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['autrePlateforme']]),
+      format: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['format']]),
+      libreAcces: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['libreAcces']]),
+      domaine: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['domaine']]),
+      secteur: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['secteur']]),
+      sujets: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['sujets']]),
+      entente_consortiale: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['entente_consortiale']]),
+      duplication: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['duplication']]),
+      duplicationCourant: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['duplicationCourant']]),
+      duplicationEmbargo1: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['duplicationEmbargo1']]),
+      duplicationEmbargo2: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['duplicationEmbargo2']]),
+      essentiel2014: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['essentiel2014']]),
+      essentiel2022: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['essentiel2022']])
+    };
+  }
+
 
   isValidCSVFile(file: any) {
     return file.name.endsWith(".csv");
@@ -252,6 +189,7 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
           postLigne.ISSN=val.ISSN;
           postLigne.EISSN=val.EISSN;
           postLigne.statut=val.statut;
+          postLigne.accesCourant=val.accesCourant;
           postLigne.abonnement=val.abonnement;
           postLigne.bdd=val.bdd;
           postLigne.fonds=val.fonds;
@@ -263,6 +201,7 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
           postLigne.domaine=val.domaine;
           postLigne.secteur=val.secteur;
           postLigne.sujets=val.sujets;
+          postLigne.entente_consortiale=val.entente_consortiale;
           postLigne.duplication=val.duplication;
           postLigne.duplicationCourant=val.duplicationCourant;
           postLigne.duplicationEmbargo1=val.duplicationEmbargo1;

@@ -1,6 +1,6 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {HomeService} from "../../services/home.service";
-import {Observable} from "rxjs";
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { HomeService } from "../../services/home.service";
+import { Observable } from "rxjs";
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -14,8 +14,7 @@ import {
   ApexFill,
   ApexTooltip
 } from "ng-apexcharts";
-import {TranslateService} from "@ngx-translate/core";
-import {AuthService} from "../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -30,136 +29,88 @@ export type ChartOptions = {
   legend: ApexLegend;
 };
 
-
-
 @Component({
   selector: 'app-accueil',
   templateUrl: './accueil.component.html',
   styleUrls: ['./accueil.component.css']
 })
 export class AccueilComponent implements OnInit {
-  // @ts-ignore
-  @ViewChild("chart") chart: ChartComponent;
+  @ViewChild("chart") chart: ChartComponent | null = null;
 
   chartOptions: Partial<ChartOptions> | any;
 
-  totalRevue=0
-  totalTele=0
-  totalCitation=0
-  totalArticleUdem=0
+  totalRevue = 0;
+  totalTele = 0;
+  totalCitation = 0;
+  totalArticleUdem = 0;
 
   counts$: Observable<any> | undefined;
 
-  annee = new Date().getFullYear()-1
+  annee = new Date().getFullYear() - 1;
 
-  //variable pour le graphique
-  titreGraphique=''
-  labelTelechargements=''
-  labelUnique=''
-  labelRefus=''
+  // Variables pour le graphique
+  titreGraphique = '';
+  labelTelechargements = '';
+  labelUnique = '';
+  labelRefus = '';
 
-  objGraphique$: Observable<any>| undefined;
-  objGraphique:any={}
-  dataTel=[]
-  dataUnique=[]
-  dataRefus=[]
-  dataTitre=[]
+  objGraphique$: Observable<any> | undefined;
+  objGraphique: any = {};
+  dataTel: string[] = [];
+  dataUnique: string[] = [];
+  dataRefus: string[] = [];
+  dataTitre: string[] = [];
 
-
-  constructor(private homeService: HomeService,
-              private translate:TranslateService) {
-
-  }
+  constructor(private homeService: HomeService, private translate: TranslateService) {}
 
   ngOnInit(): void {
     this.getCount();
-
-    this.remplireObjetGraphique()
-
+    this.remplireObjetGraphique();
   }
 
   async getCount() {
     try {
       this.counts$ = this.homeService.getCount();
-      // @ts-ignore
-      await this.counts$.toPromise().then(res => {
-        //console.log(res);
-        for(let i=0;i<res.length;i++){
-          this.totalRevue=res[0].count;
-          this.totalTele=res[1].count;
-          this.totalCitation=res[2].count;
-          this.totalArticleUdem=res[3].count;
-        }
-
-      });
-    } catch(err) {
-      console.error(`Error : ${err.Message}`);
+      const res = await this.counts$.toPromise();
+      this.totalRevue = res[0]?.count ?? 0;
+      this.totalTele = res[1]?.count ?? 0;
+      this.totalCitation = res[2]?.count ?? 0;
+      this.totalArticleUdem = res[3]?.count ?? 0;
+    } catch (err) {
+      console.error(`Error: ${err.message}`);
     }
   }
-//remplire l'objet pour crée le graphique dynamique
-  async remplireObjetGraphique(){
-    //recouperer les titres
-    this.translate.get('telechargements').subscribe((res: string) => {
-      this.labelTelechargements=res;
-    });
 
-    this.translate.get('unique-telechargements').subscribe((res: string) => {
-      this.labelUnique=res;
-    });
+  async remplireObjetGraphique() {
+    try {
+      this.labelTelechargements = await this.translate.get('telechargements').toPromise();
+      this.labelUnique = await this.translate.get('unique-telechargements').toPromise();
+      this.labelRefus = await this.translate.get('refus').toPromise();
+      this.titreGraphique = await this.translate.get('titre-graphique').toPromise();
 
-    this.translate.get('refus').subscribe((res: string) => {
-      this.labelRefus=res;
-    });
+      const graphData = await this.homeService.getGraphiqueDonnees().toPromise();
 
-    this.translate.get('titre-graphique').subscribe((res: string) => {
-      this.titreGraphique=res;
-    });
-
-    //remplire l'objet
-    this.objGraphique$ = this.homeService.getGraphiqueDonnees();
-    // @ts-ignore
-    await this.objGraphique$.toPromise().then(res => {
-      //console.log(res)
-      for(let i=0;i<res.length;i++){
-        if(res[i].titre)
-        { // @ts-ignore
-          this.dataTitre.push(res[i].titre)
-        }
-        if(res[i].Total_Item_Requests)
-           { // @ts-ignore
-             this.dataTel.push(res[i].Total_Item_Requests.toLocaleString())
-           }
-        if(res[i].Unique_Item_Requests)
-          { // @ts-ignore
-            this.dataUnique.push(res[i].Unique_Item_Requests.toLocaleString())
-          }
-        else { // @ts-ignore
-          this.dataUnique.push('0')
-        }
-        if(res[i].No_License)
-        { // @ts-ignore
-          this.dataRefus.push(res[i].No_License.toLocaleString())
-        }
-        else { // @ts-ignore
-          this.dataRefus.push('0')
-        }
+      if (Array.isArray(graphData) && graphData.length) {
+        graphData.forEach((item: any) => {
+          this.dataTitre.push(item?.titre || '');
+          this.dataTel.push(item?.Total_Item_Requests?.toLocaleString() || '0');
+          this.dataUnique.push(item?.Unique_Item_Requests?.toLocaleString() || '0');
+          this.dataRefus.push(item?.No_License?.toLocaleString() || '0');
+        });
       }
-    });
 
+      this.setChartOptions();
+    } catch (error) {
+      console.error("Error populating graph data: ", error);
+    }
+  }
+
+  setChartOptions() {
     this.chartOptions = {
       series: [
-        {
-          name: this.labelTelechargements,
-          data: this.dataTel
-        },
-        {
-          name: this.labelUnique,
-          data: this.dataUnique
-        },
-        {
-          name: this.labelRefus,
-          data: this.dataRefus
-        }
+        { name: this.labelTelechargements, data: this.dataTel },
+        { name: this.labelUnique, data: this.dataUnique },
+        { name: this.labelRefus, data: this.dataRefus },
       ],
       chart: {
         type: "bar",
@@ -169,41 +120,20 @@ export class AccueilComponent implements OnInit {
         bar: {
           horizontal: true,
           columnWidth: "55%",
-          // @ts-ignore
           endingShape: "rounded"
         }
       },
-      colors: [
-              "#1bdbe0",
-              "#0071b9",
-              "#ff4d6b"
-      ],
-      dataLabels: {
-        enabled: false
-      },
+      colors: ["#1bdbe0", "#0071b9", "#ff4d6b"],
+      dataLabels: { enabled: false },
       stroke: {
         show: true,
         width: 3,
         colors: ["transparent"]
       },
-      xaxis: {
-        categories: this.dataTitre
-      },
-      yaxis: {
-        title: {
-          text: this.titreGraphique
-        }
-      },
-      fill: {
-        opacity: 1
-      },
-      tooltip: {
-        y: {
-          formatter: function(val: string) {
-            return " " + val + "";
-          }
-        }
-      }
+      xaxis: { categories: this.dataTitre },
+      yaxis: { title: { text: this.titreGraphique } },
+      fill: { opacity: 1 },
+      tooltip: { y: { formatter: (val: string) => ` ${val}` } },
     };
   }
 }

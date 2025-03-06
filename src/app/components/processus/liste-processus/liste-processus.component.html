@@ -101,8 +101,8 @@
 
               <!-- EISSN Column -->
               <ng-container matColumnDef="admin">
-                <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'processus.admin' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-15">
+                <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'processus.admin' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-10">
                   {{row.admin}}
                 </td>
               </ng-container>
@@ -147,8 +147,8 @@
 
               <!-- supprimer Column -->
               <ng-container matColumnDef="supprimer" >
-                <th *matHeaderCellDef   class="mat-w-10 text-center"> {{ 'btn-supprimer' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-10 text-center">
+                <th *matHeaderCellDef   class="mat-w-5 text-center"> {{ 'btn-supprimer' | translate}} </th>
+                <td  *matCellDef="let row" class="mat-w-5 text-center">
                   <button type="button" class="btn btn-danger btn-rounded btn-icon btn-sm" title="Supprimer la fiche" (click)="methodesGlobal.addValueInput(row.id_processus,'id_processus')" data-toggle="modal" data-target="#modal-supprimer" >
                     <i class="icon-trash"></i>
                   </button>
@@ -213,7 +213,15 @@
       <tr *ngFor="let col of listeProcessus">
         <td *ngFor="let rep of displayedColumns">{{col[rep]}}</td></tr>
     </table>
-    <!-- Contenu footer -->
+    <!-- Animation de chargement -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="spinner">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="20" />
+        </svg>
+      </div>
+    </div>
+    <!-- Fin animation:  Contenu footer -->
     <app-footer></app-footer>
   </div>
 </div>

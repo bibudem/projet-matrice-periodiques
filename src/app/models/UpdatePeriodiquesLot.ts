@@ -4,6 +4,7 @@ export interface UpdatePeriodiquesLot {
   ISSN  : string;
   EISSN : string;
   statut:string;
+  accesCourant:string;
   abonnement:string;
   bdd:string;
   fonds:string;
@@ -15,6 +16,7 @@ export interface UpdatePeriodiquesLot {
   domaine:string;
   secteur:string;
   sujets:string;
+  entente_consortiale:string;
   duplication:string;
   duplicationCourant:string;
   duplicationEmbargo1:string;

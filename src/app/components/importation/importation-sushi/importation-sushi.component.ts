@@ -54,6 +54,8 @@ export class ImportationSushiComponent implements OnInit {
   //total statistique updaté
   totalUpdate=-1
 
+  isLoading = false;
+
 
   constructor(private plateformeService: OutilsService,
               private router: Router,
@@ -121,6 +123,7 @@ export class ImportationSushiComponent implements OnInit {
       this.tableauRapports=[]
       this.methodesGlobal.nonAfficher('tableauResult')
       this.listeRaports$ = this.plateformeService.resultatRapport(annee,plateforme,rapport);
+      this.isLoading = true;
       await this.listeRaports$.toPromise().then(res => {
         if(res){
           this.methodesGlobal.afficher('filtreResult')
@@ -144,7 +147,8 @@ export class ImportationSushiComponent implements OnInit {
           this.dataSource = new MatTableDataSource(this.tableauRapports);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.matSort;
-
+          //Arrêter l'animation de chargement
+          this.isLoading = false;
           this.methodesGlobal.afficher('tableauResult')
         }
       });

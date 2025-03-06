@@ -1,7 +1,7 @@
 {
   "app-title": "Matrice des périodiques",
   "app-title-dev": "Espace développement",
-  "app-footer-link": "Bibliothèques de l'UdeM",
+  "app-footer-link": "Les bibliothèques de l’Université de Montréal",
   "lngApp": "Français",
   "lngFr": "Français",
   "lngEn": "Anglais",
@@ -220,7 +220,7 @@
     "form-description-csv-archives": "Les entêtes considérées seront: « IDRevue »,« ISSN »,« EISSN », « perennite », « conserverPap », « anneeDebut », « anneeFin », « volDebut », « volFin », « embargo », « fournisseur ». Veuillez vérifier les données dans le résultat provisoire.",
     "form-description-csv-statistiques-plus": "Les champs « IDRevue » et « PlateformeID » sont obligatoires. Le système va interrompe l'importation si un de ce champ sera vide.",
     "form-description-csv-statistiques": "Les entêtes considérées seront: « IDRevue »,« ISSN »,« EISSN », « PlateformeID », « Total_Item_Requests », « No_License », « citations », « articlesUdem », « JR4COURANT », « JR4INTER », « JR4RETRO », « JR3OAGOLD »",
-    "form-description-csv-periodiques": "Les entêtes considérées seront: « IDRevue »,« ISSN »,« EISSN », « titre », « ISSN », « EISSN », « statut », « abonnement », « bdd », « fonds », « fournisseur », « plateformePrincipale », « autrePlateforme », « format », « libreAcces », « domaine », « secteur », « sujets », « duplication », « duplicationCourant », « duplicationEmbargo1 », « duplicationEmbargo2 », « essentiel2014 », « essentiel2022 ». ",
+    "form-description-csv-periodiques": "Les entêtes considérées seront: « IDRevue »,« ISSN »,« EISSN », « titre », « statut », « accesCourant », « abonnement », « bdd », « fonds », « fournisseur », « plateformePrincipale », « autrePlateforme », « format », « libreAcces », « domaine », « secteur », « sujets », « entente_consortiale », « duplication », « duplicationCourant », « duplicationEmbargo1 », « duplicationEmbargo2 », « essentiel2014 », « essentiel2022 ». ",
     "form-description-csv-abonnement": "Les entêtes considérées seront: « IDRevue »,« ISSN »,« EISSN », « abonnement », « BDD », « note ». Veuillez vérifier les données dans le résultat provisoire. \n Les options pour le champs « abonnement » seront : Individuel et Ensemble, tandis que pour le champ « BDD » c'est : Oui et Non",
     "result-import-csv": "L'importation est terminée",
     "resultat-vide": "Attention! L'importation est vide, veuillez vérifier les journaux pour avoir plus des détails.",
@@ -290,6 +290,7 @@
   "codes":{
     "400": "400- Mauvise requête envoyée au serveur.",
     "401": "401- Problème lié aux clés d'identification ou d'authentification.",
+    "403": "403- Le code 403 est connu sous le nom de 'Forbidden' (Interdit).",
     "404": "404- L'adresse URL est erronée.",
     "429": "429- Trop de requêtes envoyées à ce serveur.",
     "500": "500- Erreur interne du serveur."
@@ -397,5 +398,6 @@
   "unique_moyenne": "Téléch. uniques (moy.)",
   "refus_moyenn": "Refus (moy.)",
   "citation_moyenn": "Citations (moy.)",
-  "articlesUdem_moyenn": "Articles Udem (moy.)"
+  "articlesUdem_moyenn": "Articles Udem (moy.)",
+  "aucune-donnee-disponible": "Aucune donnée disponible pour :"
 }

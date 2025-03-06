@@ -24,13 +24,13 @@
         <a href="javascript:;" *ngIf="texteFiltre.value"><span aria-hidden="true" (click)="viderFiltre()">&times;</span></a>
         </div>
         <div class="col-md-3">
-        <select  name="annee" id="annee"  class="form-control" #annee (change)="creerTableau(this.methodesGlobal.getValue(annee.value))" >
-          <option value="">{{ 'choisissez' | translate}}</option>
-          <option *ngIf="anneeStatistique" value="anneeStatistique" selected>{{anneeStatistique}}</option>
-          <ng-container *ngFor="let rep of this.arrayAnnee">
-             <option *ngIf="(anneeStatistique!=rep)">{{rep}}</option>
-          </ng-container>
-        </select>
+          <select name="annee" id="annee" class="form-control" #annee (change)="creerTableau(this.methodesGlobal.getValue(annee.value))">
+            <option value="">{{ 'choisissez' | translate }}</option>
+            <option *ngIf="anneeStatistique" value="{{anneeStatistique}}" selected>{{anneeStatistique}}</option>
+            <ng-container *ngFor="let rep of this.arrayAnnee">
+              <option *ngIf="anneeStatistique != rep">{{rep}}</option>
+            </ng-container>
+          </select>
         </div>
       </div>
 
@@ -113,7 +113,10 @@
             <mat-row *matRowDef="let row; columns: displayedColumns;">
             </mat-row>
           </table>
-
+          <!-- Message quand aucune donnée n'est disponible -->
+          <div *ngIf="!isLoading && dataSource.data.length === 0" class="alert alert-warning">
+            {{ 'aucune-donnee-disponible' | translate }} <strong>{{ anneeStatistique }}</strong>
+          </div>
           <mat-paginator [pageSizeOptions]="[15, 25, 50, 100]"></mat-paginator>
           <!-- creation  du tableau pour export-->
           <table  class="table table-bordered cacherVisible"  id="table-rapport-statistiques-liste" >
@@ -124,7 +127,16 @@
         </div>
       </div>
     </div>
-    <!-- Contenu footer -->
+
+    <!-- Animation de chargement -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="spinner">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="20" />
+        </svg>
+      </div>
+    </div>
+    <!-- Fin animation:  Contenu footer -->
     <app-footer></app-footer>
   </div>
 </div>

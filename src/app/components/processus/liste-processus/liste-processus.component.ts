@@ -20,7 +20,9 @@ export class ListeProcessusComponent implements OnInit {
 
   processus$: Observable<any[]> | undefined;
 
-  codes:any=[]
+  codes:any=[];
+
+  isLoading = true;
 
   //les entêts du tableau
   displayedColumns = ['id_processus','titre','annee','plateforme','admin','h_debut','h_fin','statut','note','details','supprimer'];
@@ -87,6 +89,7 @@ export class ListeProcessusComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.listeProcessus);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
+        this.isLoading = false;
       });
     } catch(err) {
       console.error(`Error : ${err.Message}`);

@@ -262,24 +262,28 @@ module.exports = class Processus {
       tabValue.push(values[4]);
     }
     if(values[5]!='-'){
-      condSql += ', abonnement = ?';
+      condSql += ', accesCourant = ?';
       tabValue.push(values[5]);
     }
     if(values[6]!='-'){
-      condSql += ', bdd = ?';
+      condSql += ', abonnement = ?';
       tabValue.push(values[6]);
     }
     if(values[7]!='-'){
-      condSql += ', fonds = ?';
+      condSql += ', bdd = ?';
       tabValue.push(values[7]);
     }
     if(values[8]!='-'){
-      condSql += ', fournisseur = ?';
+      condSql += ', fonds = ?';
       tabValue.push(values[8]);
     }
-    //Chercher l'id de la plateforme
     if(values[9]!='-'){
-      let plateformePrincipale= await db.execute('SELECT idPlateforme AS id FROM lst_plateformes  WHERE titrePlateforme = ? or PlatformID = ? ',[values[9],values[9]]);
+      condSql += ', fournisseur = ?';
+      tabValue.push(values[9]);
+    }
+    //Chercher l'id de la plateforme
+    if(values[10]!='-'){
+      let plateformePrincipale= await db.execute('SELECT idPlateforme AS id FROM lst_plateformes  WHERE titrePlateforme = ? or PlatformID = ? ',[values[10],values[10]]);
       plateformePrincipale = plateformePrincipale[0]['0']['id'].toString();
 
       if(plateformePrincipale){
@@ -289,8 +293,8 @@ module.exports = class Processus {
 
     }
     //Chercher les id des autres plateforme
-    if(values[10]!='-'){
-      let listPl = values[10].split(",");
+    if(values[11]!='-'){
+      let listPl = values[11].split(",");
       let listId ='', idP;
       for(let i=0;i<listPl.length;i++){
         idP = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes  WHERE titrePlateforme = ? or PlatformID = ? ',[listPl[i],listPl[i]]);
@@ -305,49 +309,53 @@ module.exports = class Processus {
 
 
     }
-    if(values[11]!='-'){
-      condSql += ', format = ?';
-      tabValue.push(values[11]);
-    }
     if(values[12]!='-'){
-      condSql += ', libreAcces = ?';
+      condSql += ', format = ?';
       tabValue.push(values[12]);
     }
     if(values[13]!='-'){
-      condSql += ', domaine = ?';
+      condSql += ', libreAcces = ?';
       tabValue.push(values[13]);
     }
     if(values[14]!='-'){
-      condSql += ', secteur = ?';
+      condSql += ', domaine = ?';
       tabValue.push(values[14]);
     }
     if(values[15]!='-'){
-      condSql += ', sujets = ?';
+      condSql += ', secteur = ?';
       tabValue.push(values[15]);
     }
     if(values[16]!='-'){
-      condSql += ', duplication = ?';
+      condSql += ', sujets = ?';
       tabValue.push(values[16]);
     }
     if(values[17]!='-'){
-      condSql += ', duplicationCourant = ?';
+      condSql += ', entente_consortiale = ?';
       tabValue.push(values[17]);
     }
     if(values[18]!='-'){
-      condSql += ', duplicationEmbargo1 = ?';
+      condSql += ', duplication = ?';
       tabValue.push(values[18]);
     }
     if(values[19]!='-'){
-      condSql += ', duplicationEmbargo2 = ?';
+      condSql += ', duplicationCourant = ?';
       tabValue.push(values[19]);
     }
     if(values[20]!='-'){
-      condSql += ', essentiel2014 = ?';
+      condSql += ', duplicationEmbargo1 = ?';
       tabValue.push(values[20]);
     }
     if(values[21]!='-'){
-      condSql += ', essentiel2022 = ?';
+      condSql += ', duplicationEmbargo2 = ?';
       tabValue.push(values[21]);
+    }
+    if(values[22]!='-'){
+      condSql += ', essentiel2014 = ?';
+      tabValue.push(values[22]);
+    }
+    if(values[23]!='-'){
+      condSql += ', essentiel2022 = ?';
+      tabValue.push(values[23]);
     }
 
     // si tous les champs sont '-'
@@ -359,12 +367,16 @@ module.exports = class Processus {
     tabValue.push(date);
     tabValue.push(tabValue['idRevue']);
 
-
+    //console.log(tabValue);
     //si non valid idRevue
-    if(tabValue['idRevue']!='-' ){
-      let valid= await this.valideIdRevue(values[0]);
-      if(valid){
-        await  db.execute('UPDATE tbl_periodiques SET ' + condSql + ' ,dateM =? WHERE idRevue=? ', tabValue );
+    if (tabValue['idRevue'] !== '-') {
+      let valid = await this.valideIdRevue(values[0]);
+      if (valid) {
+        let sql0= 'UPDATE tbl_periodiques SET ' + condSql + ', dateM =? WHERE idRevue=?';
+        await db.execute(sql0, [...tabValue]);
+      } else {
+        // ID invalide -> insérer une nouvelle fiche avec un nouvel idRevue
+        tabValue['idRevue'] = '-';
       }
     }
     if(tabValue['idRevue']=='-'){
@@ -372,14 +384,20 @@ module.exports = class Processus {
       //si non match ajouter une nouvelle fiche
       if(tabValue['idRevue']=='-1'){
         tabValue.pop();
-        tabValue.push(null)
-        /*let sql1= 'INSERT INTO tbl_periodiques SET ' + condSql + ',dateA =?,idRevue=?';
-        console.log('sql1: ', SqlString.format(sql1,tabValue));*/
-        await db.execute('INSERT INTO tbl_periodiques SET ' + condSql + ',dateA =?,idRevue=?', tabValue);
+        tabValue.push(null);
+        let sql1= 'INSERT INTO tbl_periodiques SET ' + condSql + ',dateA =?,idRevue=?';
+        //console.log('sql1: ', SqlString.format(sql1,tabValue));
+        await db.execute(sql1, [...tabValue]);
         let lastId= await db.execute('SELECT MAX(idRevue) as idRevue FROM tbl_periodiques');
         tabValue['idRevue']=lastId[0]['0']['idRevue'];
       } else {
-        await  db.execute('UPDATE tbl_periodiques SET ' + condSql + ' ,dateM =? WHERE idRevue=? ', tabValue );
+        tabValue.pop();
+        tabValue.push(tabValue['idRevue']);
+
+        const sql2 = `UPDATE tbl_periodiques SET ${condSql}, dateM = ? WHERE idRevue = ?`;
+        //console.log('sql2: ', SqlString.format(sql2, [...tabValue]));
+
+        await db.execute(sql2, [...tabValue]);
       }
 
     }
@@ -465,17 +483,31 @@ module.exports = class Processus {
       let dt = datetime.create();
       let date = dt.format('d/m/Y H:M:S');
       let statut = 'Terminé';
-      values.push(date);
+      let annee = values[2];
+      let admin = values[3];
+      let note = values[4];
+      let h_debut = values[5];
+      // Si le type est "periodique", forcer l'année à '-'
+      if(values[1] === 'periodiques'){
+        annee = '-';
+        admin = values[2];
+        note = values[3];
+        h_debut = values[4];
+      }
+      /*console.log(values);
+      let sql1 = 'INSERT INTO lst_processus SET titre =?, type =?, statut =?, annee =?, admin =?, note =?, h_debut =?, h_fin =?';
+      console.log('sql1: ', SqlString.format(sql1, [values[0], values[1], statut, annee, admin, note, h_debut, date]));*/
 
       return await db.execute(
-        'INSERT INTO lst_processus SET titre =?,type =?,statut =?,annee =?,admin =?,note =?,h_debut =?,h_fin =?',
-        [values[0], values[1], statut, values[2], values[3], values[4], values[5], date]
+        sql1,
+        [values[0], values[1], statut, annee, admin, note, h_debut, date]
       );
     } catch (error) {
       console.error("Erreur dans ajoutProcessus:", error);
       throw new Error("Erreur lors de l'ajout du processus");
     }
   }
+
 
   static async ajoutProcessusDetails(id, issn, eissn, plateforme) {
     try {

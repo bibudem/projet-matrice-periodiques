@@ -16,7 +16,6 @@ router.use('/login', (req, res, next) => {
   });
 });
 
-// 2. Callback après l'authentification - Reconnecter l'utilisateur
 router.get('/callback.js', (req, res, next) => {
   auth.passport.authenticate('provider', { failureRedirect: '/api/logout' }, (err, user) => {
     if (err) {
@@ -33,15 +32,24 @@ router.get('/callback.js', (req, res, next) => {
         return next(err);
       }
 
-      // Sauvegarder l'utilisateur dans la session (ou autre méthode de gestion de session)
-      const token = req.session ? req.session.token : null;
-      auth.passport.session.userConnect = user || {};
-      auth.passport.session.userConnect[token] = JSON.stringify(user);
-      // Rediriger vers la page d'accueil après la connexion
+      // Vérification ou création du token
+      const token = req.session.token || generateNewToken(user.email.toString());
+      req.session.token = token;
+      req.session.passport.user[token]  = JSON.stringify(user);
+
+      // Rediriger vers la page d\'accueil après la connexion
       return res.redirect('/accueil');
     });
   })(req, res, next);
 });
+
+
+// Exemple de fonction pour générer un nouveau token
+function generateNewToken(email) {
+  const rep=Math.random().toString(36).substr(2)+email;
+  return rep;
+}
+
 
 
 module.exports = router;

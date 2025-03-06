@@ -34,6 +34,8 @@ export class StatistiqueListeComponent implements OnInit {
 
   anneeStatistique: string | null =  '' ;
 
+  isLoading = true;
+
   @ViewChild(MatPaginator) paginator: paginationPersonnalise | any;
 
   @ViewChild(MatSort)  matSort : MatSort | any;
@@ -41,7 +43,7 @@ export class StatistiqueListeComponent implements OnInit {
   //importer les fonctions global
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
 
-  annee = new Date().getFullYear()-1;
+  annee = new Date().getFullYear();
 
   ifAdmin=false;
 
@@ -67,23 +69,21 @@ export class StatistiqueListeComponent implements OnInit {
 
     //ajout de niveau de securité
     this.ifAdmin=this.methodesGlobal.ifAdminFunction();
-    // recouperer l'annee par url
-    if(this.route.snapshot.paramMap.get("annee")){
-      this.anneeStatistique = this.route.snapshot.paramMap.get("annee");
-      this.creerTableau(String(this.anneeStatistique));
-    }else{
-      this.creerTableau(String(this.annee));
-    }
+    // Récupérer l'année depuis l'URL ou utiliser l'année actuelle par défaut
+    const anneeFromUrl = this.route.snapshot.paramMap.get("annee");
+    this.anneeStatistique = anneeFromUrl ? anneeFromUrl : String(this.annee);
 
-
+    // Appeler la fonction pour générer le tableau en utilisant l'année
+    this.creerTableau(this.anneeStatistique);
   }
+
   //fonction doit etre async pour attendre la reponse de la bd
   async creerTableau(annee:string) {
     try {
-      this.tableauStatistique=[]
+      this.isLoading = true;
+      this.tableauStatistique=[];
       this.listeStatistique$ = await this.fetchAll(annee);
       await this.listeStatistique$.toPromise().then(res => {
-         console.log(res[0])
         let i=0
         for (let val of res[0]) {
           if(!val.citations)val.citations=0
@@ -112,6 +112,7 @@ export class StatistiqueListeComponent implements OnInit {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
         //console.log(this.tableauStatistique);
+        this.isLoading = false;
       });
     } catch(err) {
       console.error(`Error : ${err.Message}`);

@@ -3,8 +3,8 @@ export interface Periodique {
   titre : string;
   ISSN  : string;
   EISSN : string;
-  accesCourant:string;
   statut:string;
+  accesCourant:string;
   abonnement:string;
   bdd:string;
   fonds:string;

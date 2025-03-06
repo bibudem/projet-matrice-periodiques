@@ -1,10 +1,8 @@
-const auth = require("../auth/auth");
-
 module.exports = (req, res, next) => {
-  const token = req.session ? req.session.token : null;
-  const user = auth.passport.session.userConnect[token];
+  const token = req.session.token;
+  const user = req.session.passport.user[token];
 
-  if (user.length === 0) {
+  if (user.length === 0 || !token) {
     return res.status(401).json({ message: 'Non autorisé. Veuillez vous connecter.' });
   }
   next();

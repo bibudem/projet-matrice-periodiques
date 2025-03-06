@@ -69,21 +69,34 @@ module.exports = class Periodique {
   }
 
   static post(periodique) {
-    //creation de la date
-    let dt = datetime.create();
-    let date = dt.format('Y-m-d H:M:S');
-    //console.log(date);
-    //ajouter la date dans le tableau des données
-    periodique.push(date);
+    // Création de la date au format 'YYYY-MM-DD HH:MM:SS'
+    let date = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-    return db.execute('INSERT INTO tbl_periodiques SET titre = ?,ISSN = ?,EISSN =?,statut = ?,accesCourant = ?,abonnement = ?,bdd = ?,fonds =?,fournisseur = ?,plateformePrincipale = ?,autrePlateforme =?,format = ?,libreAcces = ?,domaine =?,secteur = ?,sujets = ?,entente_consortiale = ?,duplication =?,duplicationCourant =?,duplicationEmbargo1 =?,duplicationEmbargo2 =?,essentiel2014 =?,essentiel2022 =?,dateA =? ', periodique );
+    // Ajout de la date à la liste des valeurs
+    periodique.push(date);
+    //console.log(periodique);
+    // Requête SQL
+    const sql = `INSERT INTO tbl_periodiques SET
+        idRevue = ?, titre = ?, ISSN = ?, EISSN = ?, accesCourant = ?, statut = ?,
+        abonnement = ?, bdd = ?, fonds = ?, fournisseur = ?, plateformePrincipale = ?,
+        autrePlateforme = ?, format = ?, libreAcces = ?, domaine = ?, secteur = ?,
+        sujets = ?, entente_consortiale = ?, duplication = ?, duplicationCourant = ?,
+        duplicationEmbargo1 = ?, duplicationEmbargo2 = ?, essentiel2014 = ?,
+        essentiel2022 = ?, dateA = ?`;
+
+    // Log pour debug
+    //console.log('SQL:', SqlString.format(sql, periodique));
+
+    // Exécution de la requête SQL
+    return db.execute(sql, periodique);
   }
+
 
   static update(periodique) {
     //creation de la date
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
-
+    //console.log(periodique);
     /*let sql = "UPDATE tbl_periodiques SET titre = ?,ISSN = ?,EISSN=?,statut = ?,accesCourant = ?,abonnement = ?,bdd = ?,fonds =?,fournisseur = ?,plateformePrincipale = ?,autrePlateforme =?,format = ?,libreAcces = ?,domaine =?,secteur = ?,sujets = ?,entente_consortiale = ?,duplication =?,duplicationCourant =?,duplicationEmbargo1 =?,duplicationEmbargo2 =?,essentiel2014 =?,essentiel2022 =?,dateM =? WHERE idRevue  = ?";
     console.log('sql: ', SqlString.format(sql,[periodique[1],periodique[2],periodique[3],periodique[4],periodique[5],periodique[6],periodique[7],periodique[8],periodique[9],periodique[10],periodique[11],periodique[12],periodique[13],periodique[14],periodique[15],periodique[16],periodique[17],periodique[18],periodique[19],periodique[20],periodique[21],periodique[22],periodique[23],date, periodique[0]]));*/
     return db.execute('UPDATE tbl_periodiques SET titre = ?,ISSN = ?,EISSN=?,statut = ?,accesCourant = ?,abonnement = ?,bdd = ?,fonds =?,fournisseur = ?,plateformePrincipale = ?,autrePlateforme =?,format = ?,libreAcces = ?,domaine =?,secteur = ?,sujets = ?,entente_consortiale = ?,duplication =?,duplicationCourant =?,duplicationEmbargo1 =?,duplicationEmbargo2 =?,essentiel2014 =?,essentiel2022 =?,dateM =? WHERE idRevue  = ?',
