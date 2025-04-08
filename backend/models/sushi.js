@@ -54,6 +54,8 @@ module.exports = class Sushi {
             //return ('Le reponse du SUSHI est vide')
           }
           if(typeof(reponse)=='object') {
+            //inserer les url bien formé
+            await this.insertLogs('SUSHI-URL-Success', api.PlatformID,localStorage.getItem('url'), 'success', 'The request was successfully completed', 'admin', dateNow,anneePost)
                  for (const [rapport, valObjet] of Object.entries(reponse)) {
                    //chercher les données d'url formé
                    for (const [key, value] of Object.entries(valObjet)) {
@@ -87,7 +89,7 @@ module.exports = class Sushi {
   //fonction qui cherche les données selon l'url passé
   static async reponseUrl(api,date){
     try{
-        const agent = new HttpsProxyAgent('http://mandataire.ti.umontreal.ca:80');
+        //const agent = new HttpsProxyAgent('http://mandataire.ti.umontreal.ca:80');
         //creation d'url pour chaque plateforme
         let values=['j1','j2','j3','j4'];
         let url; let reponse;let resultat=[]
@@ -116,14 +118,13 @@ module.exports = class Sushi {
             keepAlive: true,
             timeout: 360000000,
           });*/
-          //console.log(url);
           reponse = await axios.get(url);
           resultat[rapport]=reponse.data
           if (reponse.status !== 200) {
             console.error("Erreur HTTP:", reponse.status, reponse.statusText);
           }
         }
-        //console.log(resultat)
+        console.log(resultat)
         return resultat;
     }catch (e) {
         console.log('error axios'+e)
@@ -145,7 +146,7 @@ module.exports = class Sushi {
         Title=data.Title;
         if(data["Access_Type"]){
           //console.log(data["Access_Type"]);
-          console.log(rapport);
+          //console.log(rapport);
         }
           if(rapport=='j3' && data["Access_Type"]=='Controlled'){
             console.log(data["Access_Type"]);

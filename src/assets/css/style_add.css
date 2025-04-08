@@ -225,6 +225,10 @@ th,td {
   stroke-width:3;
 }
 
+.btn {
+  border-radius: 50px!important;
+}
+
 @keyframes rotate {
   100% {
     -webkit-transform: rotate(360deg);

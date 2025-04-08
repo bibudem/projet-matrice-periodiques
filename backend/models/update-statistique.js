@@ -8,7 +8,7 @@ module.exports = class Sushi {
   }
 
   static async  getAllStatistique(annee) {
-    console.log('Update-statistique:'+annee)
+    //console.log('Update-statistique:'+annee)
     let rapports=['J1-J2','J3','J4']; let resultat
     try {
       await this.updateStatistique(annee)

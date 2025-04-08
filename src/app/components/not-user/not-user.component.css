@@ -6,7 +6,7 @@
   --teal: #20c997;
   --cyan: #17a2b8;
   --primary: #f9c6cf;
-  --font-family-sans-serif: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  --font-family-sans-serif: -apple-system,BlinkMacSystemFont,'Figtree', sans-serif;
 }
 * {
   box-sizing: border-box;
@@ -28,6 +28,7 @@
   font-weight: 400;
   letter-spacing: 8px;
   text-transform: uppercase;
+  font-family: 'Figtree', sans-serif;
 }
 .title h3 {
   font-size: 14px;
@@ -35,11 +36,12 @@
   text-transform: uppercase;
   letter-spacing: 8px;
   line-height: 0;
+  font-family: 'Lora', serif;
 }
 /* Parallax */
 .parallax1 {
   position: relative;
-  background-image: url("https://matrice.bib.umontreal.ca/assets/images/not-user1.jpg");
+  background-image: url("https://matrice.bib.umontreal.ca/assets/images/bib-not-user.jpg");
   min-height: 35vh;
   position: relative;
   background-attachment: fixed;
@@ -52,18 +54,18 @@
   justify-content: center;
   align-items: center;
   position: relative;
-  background-image: url("https://matrice.bib.umontreal.ca/assets/images/not-user2.jpg");
+  background-image: url("https://matrice.bib.umontreal.ca/assets/images/bib-not-user.jpg");
   min-height: 45vh;
   position: relative;
   background-attachment: fixed;
-  background-position: center;
+  background-position: bottom;
   background-repeat: no-repeat;
   background-size: cover;
 }
 .overlay {
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, .4);
+  background-color: rgba(0, 0, 0, .5);
   position: absolute;
 }
 .parallax2 h2 {
@@ -72,6 +74,7 @@
   text-transform: uppercase;
   color: var(--white);
   z-index: 1;
+  font-family: 'Lora', serif;
 }
 h5 {
   color: #495057;
@@ -91,6 +94,7 @@ h5 {
   line-height: 1.45em;
   letter-spacing: .1em;
   color: rgb(64, 64, 64);
+  font-family: 'Lora', serif;
 }
 .first span {
   font-size: 4em;
@@ -99,6 +103,7 @@ h5 {
   font-weight: 400;
   line-height: 55px;
   padding: .05em .2em 0 0;
+  font-family: 'Lora', serif;
 }
 .second span {
   font-size: 4em;
@@ -107,6 +112,7 @@ h5 {
   font-weight: 400;
   line-height: 55px;
   padding: .05em .2em 0 0;
+  font-family: 'Lora', serif;
 }
 .third span {
   font-size: 4em;

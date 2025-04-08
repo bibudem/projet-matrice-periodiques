@@ -12,12 +12,12 @@ module.exports = class Logs {
     /*let sql = "SELECT * FROM lst_logsrevues  where annee=? order by Title"
     console.log('sql: ', SqlString.format(sql,[annee]));*/
 
-    return db.execute('SELECT * FROM lst_logsrevues  where annee=? order by Title',[annee]);
+    return db.execute('SELECT * FROM lst_logsrevues  where annee=? order by dateA DESC',[annee]);
   }
 
   static fetchAllLogsPlateforme() {
 
-    return db.execute('SELECT * FROM lst_logsplateformes order by plateforme');
+    return db.execute('SELECT * FROM lst_logsplateformes order by dateA DESC');
   }
 
   static async fetchCount() {

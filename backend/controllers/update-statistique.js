@@ -5,11 +5,8 @@ const auth = require("../auth/auth");
 
 exports.getAllStatistique = async (req, res, next) => {
   try {
-    //dans la réponse d'authentification le paramettre upn represente le courriel de la personne connecté
-    const token = req.session ? req.session.token : null;
-    const user = auth.passport.session.userConnect[token];
-    const ficheUser = await UserAuth.returnUserUdem(user);
-    let courriel = ficheUser[0]['courriel'];
+    // Récupérer l'utilisateur connecté
+    const userEmail =req.user.email;
 
     UpdateStatistique.getAllStatistique(req.params.annee).then( reponse => {
       let htmlContenu = "<p> La procédure de la mise à jour des statistiques est terminée! </p>" +
@@ -17,7 +14,7 @@ exports.getAllStatistique = async (req, res, next) => {
         "<p>Veuillez consulter la liste complet<a href='https://matrice-dev.bib.umontreal.ca/liste-statistique/" + req.params.annee + "'> ici</a></p>"+
         "<p>Vérifier les journaux pour les plateformes qui ont donné des erreurs.</p>";
       //console.log('End update'+Lib.dateNow('d-m-Y H:M:S'));
-      Mail.mailEnvoyer(courriel,'Statistique',htmlContenu);
+      Mail.mailEnvoyer(userEmail,'Statistique',htmlContenu);
     });
     // console.log(allSushi)
     res.status(200).json(['ok']);
