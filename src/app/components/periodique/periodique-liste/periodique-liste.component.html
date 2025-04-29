@@ -16,8 +16,8 @@
       </div>
       <div class=" w-100 b-white">
         <mat-form-field class="w-50 ">
-          <input (keyup)="applyFilter(getValue(texteFiltre.value))"
-                 matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre value="{{textRechercher}}">
+          <input #texteFiltre (keyup)="applyFilter(texteFiltre.value)"
+                 matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre"  value="{{textRechercher}}">
         </mat-form-field>
         <a href="javascript:;" *ngIf="texteFiltre.value"><span aria-hidden="true" (click)="viderFiltre()">&times;</span></a>
       </div>
@@ -109,7 +109,7 @@
               </mat-row>
             </table>
 
-        <mat-paginator [pageSizeOptions]="[30, 60, 90, 120]"></mat-paginator>
+        <mat-paginator [pageSizeOptions]="[25, 50, 75, 100, 150]"></mat-paginator>
         </div>
       </div>
     </div>

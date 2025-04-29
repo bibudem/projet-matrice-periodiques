@@ -53,10 +53,8 @@ export class ListeProcessusComponent implements OnInit {
 
   //appliquer filtre
   applyFilter(filterValue: string) {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-    // @ts-ignore
-    this.dataSource.filter = filterValue;
+    const normalizedFilter = this.methodesGlobal.normalizeString(filterValue);
+    this.dataSource.filter = normalizedFilter;
   }
 
   ngOnInit(): void {
@@ -89,6 +87,24 @@ export class ListeProcessusComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.listeProcessus);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
+        // 🔧 Appliquer un filtre personnalisé
+        this.dataSource.filterPredicate = (data: any, filter: string) => {
+          const normalizedFilter = this.methodesGlobal.normalizeString(filter);
+
+          // Normalise les champs du processus que tu veux inclure dans la recherche
+          const normalizedTitre = this.methodesGlobal.normalizeString(data.titre);
+          const normalizedAnnee = this.methodesGlobal.normalizeString(data.annee?.toString() ?? '');
+          const normalizedPlateforme = this.methodesGlobal.normalizeString(data.plateforme ?? '');
+
+          // 👉 Ajoute d'autres champs si nécessaire
+
+          // Match si le filtre correspond à un champ quelconque
+          return (
+            normalizedTitre.includes(normalizedFilter) ||
+            normalizedAnnee.includes(normalizedFilter) ||
+            normalizedPlateforme.includes(normalizedFilter)
+          );
+        };
         this.isLoading = false;
       });
     } catch(err) {

@@ -52,7 +52,6 @@ export class AuthService {
           sessionStorage.setItem('prenomAdmin', this.user.prenom);
           sessionStorage.setItem('courrielAdmin', this.user.courriel);
 
-
           switch (this.user.groupe){
             case 'Admin':
               sessionStorage.setItem('groupeAdmin', 'Gestionnaire');

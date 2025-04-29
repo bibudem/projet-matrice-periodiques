@@ -43,8 +43,9 @@ export class PeriodiquePrixComponent implements OnInit {
 
   idRevue: string | null ='';
 
+  action='add';
 
-  action='add'
+  ifAdmin=false;
 
   @ViewChild('closebutton') closebutton:any
 
@@ -54,6 +55,9 @@ export class PeriodiquePrixComponent implements OnInit {
               private translate: TranslateService) { }
 
   ngOnInit(): void {
+    //ajout de niveau de securité
+    this.ifAdmin=this.methodesGlobal.ifAdminFunction();
+
     this.idRevue=localStorage.getItem('idRevue');
     //afficher le bon bouton
     this.methodesGlobal.afficher('add-boutton');

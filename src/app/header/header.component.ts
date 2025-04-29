@@ -31,8 +31,6 @@ export class HeaderComponent {
     this.nomAdmin = sessionStorage.getItem('nomAdmin');
     this.prenomAdmin = sessionStorage.getItem('prenomAdmin');
     this.groupeAdmin = sessionStorage.getItem('groupeAdmin');
-
-
   }
   // Informe l'utilisateur sur son authentfication.
   setMessage() {

@@ -25,7 +25,7 @@
         </div>
         <div class="col-md-3">
           <select name="annee" id="annee" class="form-control" #annee (change)="creerTableau(this.methodesGlobal.getValue(annee.value))">
-            <option value="">{{ 'choisissez' | translate }}</option>
+            <!--<option value="">{{ 'choisissez' | translate }}</option>-->
             <option *ngIf="anneeStatistique" value="{{anneeStatistique}}" selected>{{anneeStatistique}}</option>
             <ng-container *ngFor="let rep of this.arrayAnnee">
               <option *ngIf="anneeStatistique != rep">{{rep}}</option>
@@ -104,7 +104,7 @@
             <ng-container matColumnDef="consulter" >
               <th *matHeaderCellDef   class="mat-w-5"> {{ 'consulter' | translate}} </th>
               <td  *matCellDef="let row" class="mat-w-5">
-                <button *ngIf="ifAdmin" type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter les détails"  (click)="consulterStatistique(row.idRevue,row.titre)" >
+                <button  type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter les détails"  (click)="consulterStatistique(row.idRevue,row.titre)" >
                   <i class="icon-note"></i>
                 </button>
               </td>
@@ -117,7 +117,7 @@
           <div *ngIf="!isLoading && dataSource.data.length === 0" class="alert alert-warning">
             {{ 'aucune-donnee-disponible' | translate }} <strong>{{ anneeStatistique }}</strong>
           </div>
-          <mat-paginator [pageSizeOptions]="[15, 25, 50, 100]"></mat-paginator>
+          <mat-paginator [pageSizeOptions]="[25, 50, 75, 100]"></mat-paginator>
           <!-- creation  du tableau pour export-->
           <table  class="table table-bordered cacherVisible"  id="table-rapport-statistiques-liste" >
             <tr><th *ngFor="let th of displayedColumns ">{{th}}</th></tr>

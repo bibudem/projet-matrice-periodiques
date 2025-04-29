@@ -20,7 +20,9 @@ export class ListeProcessusDelailsComponent implements OnInit {
 
   processus$: Observable<any[]> | undefined;
 
-  codes:any=[]
+  codes:any=[];
+
+  isLoading = true;
 
   //les entêts du tableau
   displayedColumns = ['numero','idRevue','ISSN','EISSN','titre','dateA','fiche','supprimer'];
@@ -54,10 +56,9 @@ export class ListeProcessusDelailsComponent implements OnInit {
 
   //appliquer filtre
   applyFilter(filterValue: string) {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+    const normalizedFilter = this.methodesGlobal.normalizeString(filterValue);
     // @ts-ignore
-    this.dataSource.filter = filterValue;
+    this.dataSource.filter = normalizedFilter;
   }
 
   ngOnInit(): void {
@@ -104,6 +105,7 @@ export class ListeProcessusDelailsComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.listeProcessus);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
+        this.isLoading = false;
         //console.log(this.dataSource);
       });
     } catch(err) {

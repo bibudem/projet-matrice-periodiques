@@ -34,10 +34,12 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
   titrePeriodique=localStorage.getItem('titrePeridique');
   idRevue=localStorage.getItem('idRevue');
 
-  action='add'
+  action='add';
 
   return=''
-  bouttonFiche=false
+  bouttonFiche=false;
+
+  ifAdmin=false;
 
   //creer la liste des plateforme
   plateformes$: Observable<any> | undefined;
@@ -52,7 +54,8 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
               private plateformeService: OutilsService) { }
 
   ngOnInit(): void {
-
+    //ajout de niveau de securité
+    this.ifAdmin=this.methodesGlobal.ifAdminFunction();
     //afficher le bon bouton
     this.methodesGlobal.afficher('add-boutton-note');
     this.methodesGlobal.nonAfficher('save-boutton-note');

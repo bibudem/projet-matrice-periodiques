@@ -57,10 +57,9 @@ export class StatistiqueListeComponent implements OnInit {
 
   //appliquer filtre
   applyFilter(filterValue: string) {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+    const normalizedFilter = this.methodesGlobal.normalizeString(filterValue);
     // @ts-ignore
-    this.dataSource.filter = filterValue;
+    this.dataSource.filter = normalizedFilter;
   }
 
   ngOnInit(): void {

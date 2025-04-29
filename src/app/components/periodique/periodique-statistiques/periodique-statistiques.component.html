@@ -32,7 +32,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form   #statistiqueForm="ngForm" name="statistiqueForm" id="statistiqueForm" (ngSubmit)="onSubmit(statistiqueForm)">
+        <form *ngIf="ifAdmin"  #statistiqueForm="ngForm" name="statistiqueForm" id="statistiqueForm" (ngSubmit)="onSubmit(statistiqueForm)">
           <div class="row">
             <div class="col-md-3">
               <div class="form-group">
@@ -103,7 +103,7 @@
               </div>
             </div>
             <div class="col-md-3"><br>
-              <button type="button" class="btn btn-success mr-2 w-100" data-toggle="modal" data-target="#modal-enregistrer"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
+              <button *ngIf="ifAdmin" type="button" class="btn btn-success mr-2 w-100" data-toggle="modal" data-target="#modal-enregistrer"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
               <!-- Modal pour modifier-->
               <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -119,7 +119,7 @@
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i>{{'btn-annuler'| translate}}</button>
-                      <input type="submit" class="btn btn-primary btn-sm"  value="{{bouttonAction}}" (click)="onFermeModal()">
+                      <input *ngIf="ifAdmin" type="submit" class="btn btn-primary btn-sm"  value="{{bouttonAction}}" (click)="onFermeModal()">
                     </div>
                   </div>
                 </div>
@@ -145,8 +145,8 @@
               <th class="mat-w-10">{{ 'citations' | translate}}</th>
               <th class="mat-w-10">{{ 'art.-udem' | translate}}</th>
               <th class="mat-w-10 ">{{ 'date-dernier-modif' | translate}}</th>
-              <th class="mat-w-5">{{ 'btn-modifier' | translate}}</th>
-              <th class="mat-w-5">{{ 'btn-supprimer' | translate}}</th>
+              <th *ngIf="ifAdmin" class="mat-w-5">{{ 'btn-modifier' | translate}}</th>
+              <th *ngIf="ifAdmin" class="mat-w-5">{{ 'btn-supprimer' | translate}}</th>
             </tr>
             </thead>
             <tbody>
@@ -161,12 +161,12 @@
               <td>{{rep.articlesUdem}}</td>
               <td *ngIf="rep.dateM">{{ rep.dateM | date:'short': 'fr' }}</td>
               <td *ngIf="!rep.dateM">{{ rep.dateA | date:'short': 'fr' }}</td>
-              <td class="text-center">
-                <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm " title="Modifier"  (click)="apliquerModifier(rep.idStatistique)">
+              <td *ngIf="ifAdmin" class="text-center">
+                <button  type="button" class="btn btn-dark btn-rounded btn-icon btn-sm " title="Modifier"  (click)="apliquerModifier(rep.idStatistique)">
                 <i class="icon-note"></i>
               </button>
               </td>
-              <td class="text-center">
+              <td *ngIf="ifAdmin" class="text-center">
                 <button  mat-icon-button (click)="delete(rep.idStatistique)">
                   <mat-icon  color="warn">
                     delete

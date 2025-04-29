@@ -43,7 +43,9 @@ export class PeriodiqueNoteComponent implements OnInit {
   idRevue=localStorage.getItem('idRevue');
   courrielAdmin: string  ='';
 
-  action='add'
+  action='add';
+
+  ifAdmin=false;
 
   @ViewChild('closebutton') closebutton:any
 
@@ -53,6 +55,9 @@ export class PeriodiqueNoteComponent implements OnInit {
               private translate: TranslateService) { }
 
   ngOnInit(): void {
+
+    //ajout de niveau de securité
+    this.ifAdmin=this.methodesGlobal.ifAdminFunction();
 
     //afficher le bon bouton
     this.methodesGlobal.afficher('add-boutton-note');

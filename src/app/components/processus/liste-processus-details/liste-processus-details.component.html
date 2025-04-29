@@ -23,8 +23,8 @@
         <div class="example-container w-100 p-3">
           <div class=" b-white mb-5">
             <mat-form-field class="w-75">
-              <input (keyup)="applyFilter(methodesGlobal.getValue(texteFiltre.value))"
-                     matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre >
+              <input (keyup)="applyFilter(methodesGlobal.getValue(texteFiltreDetails.value))"
+                     matInput placeholder="{{ 'filtre-text' | translate}}" id="texteFiltreDetails" name="texteFiltreDetails" #texteFiltreDetails >
             </mat-form-field>
           </div>
           <div class="table-responsive w-100">
@@ -134,6 +134,15 @@
       <tr *ngFor="let col of listeProcessus">
         <td *ngFor="let rep of displayedColumns">{{col[rep]}}</td></tr>
     </table>
+    <!-- Animation de chargement -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="spinner">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="20" />
+        </svg>
+      </div>
+    </div>
+    <!-- Fin animation:  Contenu footer -->
     <!-- Contenu footer -->
     <app-footer></app-footer>
   </div>

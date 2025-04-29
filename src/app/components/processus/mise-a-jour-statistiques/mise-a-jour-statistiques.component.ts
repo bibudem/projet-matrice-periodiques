@@ -237,6 +237,9 @@ export class MiseAJourStatistiquesComponent implements OnInit {
     return csvArr;
   }
 
+
+
+
   isValidCSVFile(file: any) {
     return file.name.endsWith(".csv");
   }

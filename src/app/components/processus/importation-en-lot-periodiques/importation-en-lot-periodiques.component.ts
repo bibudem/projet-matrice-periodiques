@@ -237,7 +237,7 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
       // @ts-ignore
       this.note=document.getElementById('note').value.toString();
     }
-    this.processus = {'titre':'Mise à jour de la liste de périodiques','type':'periodiques','admin':this.admin,'note':this.note,'dateStart':dateStart}
+    this.processus = {'titre':'Versements en lot des fiches des périodiques','type':'periodiques','admin':this.admin,'note':this.note,'dateStart':dateStart}
     this.addProcessus$ = this.csvService
       .addProcessus(this.processus)
       .pipe(tap(() => (this.finImportation())));

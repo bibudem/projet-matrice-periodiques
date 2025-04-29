@@ -106,7 +106,7 @@ export class MethodesGlobal  {
 
     return result;
   }
-  
+
   //valide la valeur si non null d'un cahmp
   isValueChamp(value:string, id:string):boolean{
       // @ts-ignore
@@ -194,6 +194,17 @@ export class MethodesGlobal  {
   //fonction utilise pour ajouté une pause dans les operations
   delay(timeInMillis: number): Promise<void> {
     return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
+  }
+
+  normalizeString(value: string): string {
+    return value
+      .normalize("NFD")                    // décompose les accents
+      .replace(/[\u0300-\u036f]/g, '')     // supprime les diacritiques
+      .replace(/[’‘]/g, "'")               // normalise les apostrophes
+      .replace(/[^a-zA-Z0-9\s]/g, '')      // supprime les caractères spéciaux sauf lettres, chiffres et espaces
+      .replace(/\s+/g, ' ')                // réduit les espaces multiples
+      .toLowerCase()
+      .trim();
   }
 
 }

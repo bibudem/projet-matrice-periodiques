@@ -37,21 +37,22 @@
             <div class="modal-body">
               <label for="processSelect">{{'processus.choix-prosessus'| translate}}</label>
               <select  id="processSelect"  name="processSelect" [(ngModel)]="selectedProcessus" (ngModelChange)="linkCreerProcessus($event)" class="form-control mt-3 mb-5"  >
-                <option  value="mise-a-jour-prix" >
-                  {{'processus.mise-a-jour-prix'| translate}}
-                </option>
-                <option  value="mise-a-jour-abonnement" >
-                  {{'processus.mise-a-jour-abonnement'| translate}}
-                </option>
-                <option  value="mise-a-jour-statistiques" >
-                  {{'processus.mise-a-jour-statistiques'| translate}}
-               </option>
-                <option  value="mise-a-jour-archives" >
-                  {{'processus.mise-a-jour-archives'| translate}}
-                </option>
                 <option  value="mise-a-jour-periodiques" >
                   {{'processus.mise-a-jour-periodiques'| translate}}
                 </option>
+                <option  value="mise-a-jour-statistiques" >
+                  {{'processus.mise-a-jour-statistiques'| translate}}
+                </option>
+                <option  value="mise-a-jour-prix" >
+                  {{'processus.mise-a-jour-prix'| translate}}
+                </option>
+                <option  value="mise-a-jour-archives" >
+                  {{'processus.mise-a-jour-archives'| translate}}
+                </option>
+                <option  value="lot-periodiques" >
+                  {{'processus.versements-en-lot-periodiques'| translate}}
+                </option>
+
               </select>
             </div>
             <div class="modal-footer">
@@ -65,8 +66,8 @@
         <div class="example-container w-100">
           <div class="card-header b-white">
             <mat-form-field class="w-75">
-              <input (keyup)="applyFilter(methodesGlobal.getValue(texteFiltre.value))"
-                     matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre >
+              <input (keyup)="applyFilter(methodesGlobal.getValue(textFiltreListe.value))"
+                     matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltreListe" name="textFiltreListe" #textFiltreListe >
             </mat-form-field>
           </div>
           <div class="table-responsive w-100">

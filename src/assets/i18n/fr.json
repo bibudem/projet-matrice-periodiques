@@ -135,6 +135,7 @@
   "configuration-fournisseurs": "Configuration fournisseurs",
   "entente_consortiale": "Entente consortiale",
   "devise": "Devise",
+  "not-access-explication": "Votre compte ne dispose pas des autorisations nécessaires pour accéder à cette section.",
 
   "message": {
     "confirmer-titre": "Confirmer votre action",
@@ -282,7 +283,8 @@
     "mise-a-jour-archives": "Mise à jour des archives",
     "mise-a-jour-abonnement": "Mise à jour d'abonnement",
     "mise-a-jour-statistiques": "Mise à jour manuellement des statistiques",
-    "mise-a-jour-periodiques": "Versements en lot des fiches des périodiques",
+    "versements-en-lot-periodiques": "Versements en lot des fiches des périodiques",
+    "mise-a-jour-periodiques": "Mise à jour de fiche de périodique",
     "btn-csv": "Mise à jour de prix des périodiques",
     "btn-csv-abonnement": "Mise à jour d'abonnement et de BDD des périodiques",
     "procedure-fini": "Votre processus est bien complété"

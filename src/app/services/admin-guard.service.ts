@@ -16,7 +16,7 @@ export class AdminGuard implements CanActivate {
     let ifAdmin=sessionStorage.getItem('role');
     if (ifAdmin=='Admin') { return true; }
 
-    this.router.navigate(['/not-acces']);
+    this.router.navigate(['/not-access']);
     return false;
   }
 }

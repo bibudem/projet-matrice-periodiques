@@ -91,7 +91,7 @@
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item active" aria-current="page">
-                  <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#modal-enregistrer"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
+                  <button *ngIf="ifAdmin" type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#modal-enregistrer"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
                   <!-- Modal pour modifier-->
                   <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -107,7 +107,7 @@
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i>{{'btn-annuler'| translate}}</button>
-                          <input type="submit" class="btn btn-primary btn-sm"  value="{{bouttonAction}}" (click)="onFermeModal()">
+                          <input type="submit" *ngIf="ifAdmin" class="btn btn-primary btn-sm"  value="{{bouttonAction}}" (click)="onFermeModal()">
                         </div>
                       </div>
                     </div>
