@@ -80,6 +80,7 @@ import {ListeProcessusDelailsComponent} from "./components/processus/liste-proce
 import {MiseAJourArchivesComponent} from "./components/processus/mise-a-jour-archives/mise-a-jour-archives.component";
 import {RapportMoyenneComponent} from "./components/rapports/rapport-moyenne/rapport-moyenne.component";
 import {ListFournisseursComponent} from "./components/outils/list-fournisseurs/list-fournisseurs.component";
+import {MiseAJourPeriodiquesComponent} from "./components/processus/mise-a-jour-periodiques/mise-a-jour-periodiques.component";
 
 const maskConfig: Partial<IConfig> = {
   validation: false,
@@ -124,7 +125,8 @@ const maskConfig: Partial<IConfig> = {
     MiseAJourAbonnementComponent,
     ListeProcessusComponent,
     MiseEnLotPeriodiquesComponent,
-    ListeProcessusDelailsComponent
+    ListeProcessusDelailsComponent,
+    MiseAJourPeriodiquesComponent
   ],
     imports: [
         BrowserModule,

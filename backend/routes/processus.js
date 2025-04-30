@@ -24,6 +24,9 @@ router.put('/save-archives', authMiddleware, processusController.postArchives);
 router.put('/update-statistiques', authMiddleware, processusController.postStatistiques);
 
 
+router.post('/update-list-periodiques', authMiddleware, processusController.postListUpdatePeriodiques);
+
+
 router.post('/lot-periodiques', authMiddleware, processusController.postLotPeriodiques);
 
 

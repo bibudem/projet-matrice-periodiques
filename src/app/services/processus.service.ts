@@ -103,10 +103,20 @@ export class ProcessusService {
       .pipe(catchError(this.errorHandlerService.handleError<any>("update statistiques")));
   }
 
-  /******************Section mise a jour des periodiques*******************/
+  /******************Section versement en lot des periodiques*******************/
 
   updateLotPeriodiques(periodiques: any): Observable<any[]> {
     const url = `/api/processus/lot-periodiques`;
+    //console.log(periodiques)
+    return this.http
+      .post<any>(url, periodiques, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("lot periodiques")));
+  }
+
+  /******************Section mise a jour des periodiques*******************/
+
+  updateProcessousPeriodiques(periodiques: any): Observable<any[]> {
+    const url = `/api/processus/update-list-periodiques`;
     //console.log(periodiques)
     return this.http
       .post<any>(url, periodiques, this.httpOptions)

@@ -130,7 +130,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
   ngOnInit(): void {
     localStorage.setItem('titrePeridique','');
     //ajout de niveau de securité
-    this.ifAdmin=this.methodesGlobal.ifAdminFunction()
+    this.ifAdmin=this.methodesGlobal.ifAdminFunction();
     //remplire la liste des plateforme
     this.creerTableauPlateforme();
 

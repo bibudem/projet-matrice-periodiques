@@ -93,6 +93,21 @@ exports.postLotPeriodiques= async (req, res, next) => {
     next(err);
   }
 };
+
+exports.postListUpdatePeriodiques= async (req, res, next) => {
+  try {
+    let values=Object.values(req.body);
+    //console.log(values);
+    const postResponse = await Processus.postListUpdatePeriodiques(values);
+    res.status(201).json(postResponse);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
 exports.ajoutProcessus=  async (req, res, next) => {
   try {
     let values=Object.values(req.body);
