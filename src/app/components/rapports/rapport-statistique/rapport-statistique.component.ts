@@ -91,92 +91,106 @@ export class RapportStatistiqueComponent implements OnInit {
     }
   }
 //liste des statistiques générales
-  async creerTableauStatistique(annees:any,plateforme:string) {
-    try {
-      // @ts-ignore
-      if(annees.length==0){
-        this.methodesGlobal.afficher('alertErreur')
-        return;
-      }
-      this.methodesGlobal.nonAfficher('alertErreur')
-      //vider le tableau
-      this.listeStatistique=[]
-      this.dataSource = new MatTableDataSource(this.listeStatistique);
-      this.dataSource.paginator = this.paginator;
-      this.totalDonnees=this.listeStatistique.length;
-      this.afficherAnimation();
+async creerTableauStatistique(annees: any, plateforme: string) {
+  try {
+    if (!annees || annees.length === 0) {
+      this.methodesGlobal.afficher('alertErreur');
+      return;
+    }
+    
+    this.methodesGlobal.nonAfficher('alertErreur');
+    this.listeStatistique = [];
+    this.afficherAnimation();
 
-      let j=0,k,annee=''
-      let result = Object.entries(this.filtres);
-        for(let k=0; k<annees.length;k++) {
-          annee += annees[k]
-          if(k!=annees.length-1){
-            annee+=", "
+    const anneesStr = annees.join(', ');
+    const plateformeQuery = plateforme || 'vide';
+    const donneesRegroupees = new Map<string, any>();
+    
+    this.statistiques$ = this.statistiqueService.rapportStatistiques(annees, plateformeQuery);
+    
+    await this.statistiques$.toPromise().then(res => {
+      const filtresEntries: [string, string][] = Object.entries(this.filtres) as [string, string][];
+      
+      for (const val of res) {
+        const matchesFilters = filtresEntries.every(([key, elem]) => {
+          const filterValue = val[key] as string;
+          const filterElem = elem as string;
+          return filterValue !== null && filterValue !== '' && filterElem.includes(filterValue);
+        });
+        
+        if (!matchesFilters) continue;
+        
+        // Modification clé: utilisation de idRevue (val.idP) comme clé de regroupement
+        const cle = val.idP;
+        
+        if (!donneesRegroupees.has(cle)) {
+          donneesRegroupees.set(cle, {
+            "Nr": donneesRegroupees.size + 1,
+            "titre": val.titre,
+            "idRevue": val.idP,
+            "ISSN": val.ISSN,
+            "EISSN": val.EISSN,
+            "statut": val.statut,
+            "domaine": val.domaine,
+            "secteur": val.secteur,
+            "abonnement": val.abonnement,
+            "fournisseur": val.fournisseur,
+            "annee": val.annee,
+            "plateforme": val.plateforme,
+            "Total_Item_Requests": parseInt(val.Total_Item_Requests) || 0,
+            "Unique_Item_Requests": parseInt(val.Unique_Item_Requests) || 0,
+            "No_License": parseInt(val.No_License) || 0,
+            "citations": parseInt(val.citations) || 0,
+            "articlesUdem": parseInt(val.articlesUdem) || 0,
+            "JR4COURANT": parseInt(val.JR4COURANT) || 0,
+            "JR4INTER": parseInt(val.JR4INTER) || 0,
+            "JR4RETRO": parseInt(val.JR4RETRO) || 0,
+            "JR3OAGOLD": parseInt(val.JR3OAGOLD) || 0,
+            "dateA": '-',
+            "dateM": '-',
+            "bdd": val.bdd
+          });
+        } else {
+          const existing = donneesRegroupees.get(cle);
+          
+          // Mise à jour des valeurs numériques
+          existing.Total_Item_Requests += parseInt(val.Total_Item_Requests) || 0;
+          existing.Unique_Item_Requests += parseInt(val.Unique_Item_Requests) || 0;
+          existing.No_License += parseInt(val.No_License) || 0;
+          existing.citations += parseInt(val.citations) || 0;
+          existing.articlesUdem += parseInt(val.articlesUdem) || 0;
+          existing.JR4COURANT += parseInt(val.JR4COURANT) || 0;
+          existing.JR4INTER += parseInt(val.JR4INTER) || 0;
+          existing.JR4RETRO += parseInt(val.JR4RETRO) || 0;
+          existing.JR3OAGOLD += parseInt(val.JR3OAGOLD) || 0;
+          
+          // Concaténation des autres champs si nécessaire
+          if (val.plateforme && !existing.plateforme.includes(val.plateforme)) {
+            existing.plateforme = [existing.plateforme, val.plateforme].filter(Boolean).join(', ');
+          }
+          if (val.annee && !existing.annee.includes(val.annee)) {
+            existing.annee = [existing.annee, val.annee].filter(Boolean).join(', ');
           }
         }
-        if(!plateforme){
-          plateforme='vide';
-        }
-        this.statistiques$ = this.statistiqueService.rapportStatistiques(annees,plateforme);
-              // @ts-ignore
-              await this.statistiques$.toPromise().then(res => {
-                let val;
-                for (let i = 0; i < res.length; i++) {
-                  k=0;
-                  val=res[i];
-                  for ( let [key,elem] of result){
-                    // @ts-ignore
-                    if( res[i][key]!==null && res[i][key]!=='' && elem.includes(res[i][key])){
-                      k++;
-                    }
-                  }
-                  if(k==result.length){
-                    this.listeStatistique[j]={
-                      "Nr":j+1,
-                      "titre":val.titre,
-                      "idRevue":val.idP,
-                      "ISSN":val.ISSN,
-                      "EISSN":val.EISSN,
-                      "statut":val.statut,
-                      "domaine":val.domaine,
-                      "secteur":val.secteur,
-                      "abonnement":val.abonnement,
-                      "fournisseur":val.fournisseur,
-                      "annee":val.annee,
-                      "plateforme":val.plateforme,
-                      "Total_Item_Requests":val.Total_Item_Requests,
-                      "Unique_Item_Requests":val.Unique_Item_Requests,
-                      "No_License":val.No_License,
-                      "citations":val.citations,
-                      "articlesUdem":val.articlesUdem,
-                      "JR4COURANT":val.JR4COURANT,
-                      "JR4INTER":val.JR4INTER,
-                      "JR4RETRO":val.JR4RETRO,
-                      "JR3OAGOLD":val.JR3OAGOLD,
-                      "dateA":'-',
-                      "dateM":'-',
-                      "bdd":val.bdd
-                    }
-                    j++
-                  }
-                }
-            // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
-            this.dataSource = new MatTableDataSource(this.listeStatistique);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.matSort;
-            this.totalDonnees=this.listeStatistique.length;
-            //afficher le tableau
-            this.nonAfficherAnimation();
-
-          });
-
-    } catch(err) {
-      this.nonAfficherAnimation()
-      this.methodesGlobal.afficher('alertErreur')
-      console.error(`Error : ${err.Message}`);
-    }
+      }
+      
+      this.listeStatistique = Array.from(donneesRegroupees.values());
+      this.initialiserDataSource();
+    });
+  } catch(err) {
+    this.nonAfficherAnimation();
+    this.methodesGlobal.afficher('alertErreur');
+    console.error(`Error : ${err.message}`);
   }
+}
 
+private initialiserDataSource() {
+  this.dataSource = new MatTableDataSource(this.listeStatistique);
+  this.dataSource.paginator = this.paginator;
+  this.dataSource.sort = this.matSort;
+  this.totalDonnees = this.listeStatistique.length;
+  this.nonAfficherAnimation();
+}
   //creation des th selon les case qui sont cauchée
   creationThTable($event: any): void{
     let checked
