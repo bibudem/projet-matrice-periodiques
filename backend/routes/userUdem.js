@@ -1,4 +1,5 @@
 const express = require("express");
+const crypto = require("crypto");
 const userUdem = require("../controllers/userUdem");
 const auth = require("../auth/auth");
 const router = express.Router();
@@ -33,7 +34,7 @@ router.get('/callback.js', (req, res, next) => {
       }
 
       // Vérification ou création du token
-      const token = req.session.token || generateNewToken(user.email.toString());
+      const token = req.session.token || generateNewToken();
       req.session.token = token;
       req.session.passport.user[token]  = JSON.stringify(user);
 
@@ -44,10 +45,8 @@ router.get('/callback.js', (req, res, next) => {
 });
 
 
-// Exemple de fonction pour générer un nouveau token
-function generateNewToken(email) {
-  const rep=Math.random().toString(36).substr(2)+email;
-  return rep;
+function generateNewToken() {
+  return crypto.randomBytes(32).toString('hex');
 }
 
 

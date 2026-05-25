@@ -9,3 +9,4 @@ Thumbs.db
 .idea
 .gitignore
 /backend/scratch
+/backend/.env

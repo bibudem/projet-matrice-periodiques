@@ -84,13 +84,10 @@ export class AuthService {
   // Une méthode de déconnexion
 
   async logout() {
-
     this.isLoggedIn = false;
-    sessionStorage.clear()
-    sessionStorage.setItem('isLoggedIn', 'true')
-    caches.keys().then((keyList) =>  Promise.all(keyList.map((key) => caches.delete(key))))
-
-    window.location.href = '/api/logout'
+    sessionStorage.clear();
+    caches.keys().then((keyList) => Promise.all(keyList.map((key) => caches.delete(key))));
+    window.location.href = '/api/logout';
   }
 
   /** Redirects to the specified external link with the mediation of the router */

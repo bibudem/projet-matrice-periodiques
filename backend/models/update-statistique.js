@@ -45,54 +45,53 @@ module.exports = class Sushi {
     }
   }
 
-  //inserer les donnée pour J1
-  static async statisquesJ1J2(annee){
-    let donneesExist,dt,dateNow,totalRequest,idRevue,rapport;
-    let typeDonnees=['Total_Item_Requests','Unique_Item_Requests','No_License'];
+static async statisquesJ1J2(annee){
+    let donneesExist, dt, dateNow, totalRequest, idRevue, rapport;
+    let typeDonnees = ['Total_Item_Requests', 'Unique_Item_Requests', 'No_License'];
+    
     try {
-      let table='tbl_results_j1';
-      rapport='J1'
-      for(let t of typeDonnees){
-        if(t=='No_License'){
-          table='tbl_results_j2'
-          rapport='J2'
-        }
+        for(let t of typeDonnees){
+            let table = (t == 'No_License') ? 'tbl_results_j2' : 'tbl_results_j1';
+            let rapport = (t == 'No_License') ? 'J2' : 'J1';
 
+            let donnees = await db.execute(
+                "SELECT ISSN, EISSN, Title, Reporting_Period_Total, PlatformID FROM " + table + " WHERE annee = ? AND Metric_Type = ?",
+                [annee, t]
+            );
 
-        let donnees= await db.execute("SELECT ISSN,EISSN,Title,Reporting_Period_Total,PlatformID  FROM "+table+"  WHERE annee=? AND Metric_Type=? ",[annee,t])
-        //inserer le Total_Item_Requests dans la table statisque de cette periodique
-        for(let chiffre of donnees[0]){
-          //prendre l'idRvue
-          idRevue= await this.recouperationIdRevue(chiffre.ISSN,chiffre.EISSN,chiffre.Title,rapport,chiffre.PlatformID,annee)
-          //console.log(idRevue)
-          if(idRevue!=-1){
-            //verifier si ce periodique as deja des données dans statistique pour cette annee
-            donneesExist= await this.verifierDonneesExist(annee,idRevue,t)
-            dt = datetime.create();
-            dateNow = dt.format('Y-m-d H:M:S');
-            // console.log(champ)
-            if(donneesExist==-1){
-              //console.log('add'+champ['idRevue'])
-              /*let sql = "INSERT INTO tbl_statistiques SET annee=?,"+t+" =?,dateA=?, idRevue=?"
-              console.log('sql: ', SqlString.format(sql,[annee,chiffre.Reporting_Period_Total,dateNow,idRevue]));*/
-              await db.execute("INSERT INTO tbl_statistiques SET annee=?,"+t+" =?,dateA=?, idRevue=?,plateforme=?", [annee,chiffre.Reporting_Period_Total,dateNow,idRevue,chiffre.PlatformID] );
+            for(let chiffre of donnees[0]){
+                idRevue = await this.recouperationIdRevue(
+                    chiffre.ISSN, chiffre.EISSN, chiffre.Title, rapport, 
+                    chiffre.PlatformID, annee
+                );
+                
+                if(idRevue!= -1 && idRevue > 0){
+                    // Vérifier l'existence par idRevue + annee + plateforme
+                    donneesExist = await this.verifierDonneesExist(annee, idRevue, t, chiffre.PlatformID);
+                    
+                    dt = datetime.create();
+                    dateNow = dt.format('Y-m-d H:M:S');
+                    
+                    if(donneesExist === -1){
+                        // INSERT avec la plateforme
+                        await db.execute(
+                            "INSERT INTO tbl_statistiques SET annee = ?, " + t + " = ?, dateA = ?, idRevue = ?, plateforme = ?",
+                            [annee, chiffre.Reporting_Period_Total, dateNow, idRevue, chiffre.PlatformID]
+                        );
+                    } else {
+                        // UPDATE en spécifiant la plateforme
+                        await db.execute(
+                            "UPDATE tbl_statistiques SET " + t + " = ?, dateM = ? WHERE idRevue = ? AND annee = ? AND plateforme = ?",
+                            [chiffre.Reporting_Period_Total, dateNow, idRevue, annee, chiffre.PlatformID]
+                        );
+                    }
+                }
             }
-            if(donneesExist>=0){
-             /* totalRequest=0
-              /*let sql = "UPDATE tbl_statistiques SET "+t+" =?,dateM=? where idRevue=? AND annee=?"
-              console.log('sql: ', SqlString.format(sql,[totalRequest.toString(),dateNow,idRevue,annee]));*/
-              /*totalRequest=Number(donneesExist)+Number(chiffre.Reporting_Period_Total)*/
-              //console.log(totalRequest)*/
-              await db.execute("UPDATE tbl_statistiques SET "+t+" =?,plateforme=?,dateM=? where idRevue=? AND annee=?", [chiffre.Reporting_Period_Total,chiffre.PlatformID,dateNow,idRevue,annee] );
-
-            }
-          }
         }
-      }
     } catch (error) {
-      console.error(error);
+        console.error(error);
     }
-  }
+}
 
   //inserer les donnée pour J3
   static async statisquesJ3(annee){
@@ -107,25 +106,25 @@ module.exports = class Sushi {
         //prendre l'idRvue
         let idRevue= await this.recouperationIdRevue(chiffre.ISSN,chiffre.EISSN,chiffre.titre,'J3',chiffre.PlatformID,annee)
         //console.log(idRevue)
-        if(idRevue!=-1){
+        if(idRevue!=-1 && idRevue > 0){
           //verifier si ce periodique as deja des données dans statistique pour cette annee
-            let donneesExist= await this.verifierDonneesExist(annee,idRevue,champJR)
+            let donneesExist= await this.verifierDonneesExist(annee,idRevue,champJR,chiffre.PlatformID)
             let dt = datetime.create();
             let dateNow = dt.format('Y-m-d H:M:S');
             // console.log(champ)
-            if(donneesExist=='-1'){
+            if(donneesExist=== -1){
               //console.log('add'+champ['idRevue'])
                let sql = "INSERT INTO tbl_statistiques SET annee=?,plateforme=?,JR3OAGOLD =?,dateA=?, idRevue=?"
                console.log('sql: ', SqlString.format(sql,[annee,chiffre.PlatformID,chiffre.Total_Item_Requests,dateNow,idRevue]));
               await db.execute("INSERT INTO tbl_statistiques SET annee=?,plateforme=?,JR3OAGOLD =?,dateA=?, idRevue=?", [annee,chiffre.PlatformID,chiffre.Total_Item_Requests,dateNow,idRevue] );
             }
-            if(donneesExist>='0'){
+            else{
 
-               let sql = "UPDATE tbl_statistiques SET JR3OAGOLD =?,dateM=? where idRevue=? AND annee=?"
-               console.log('sql: ', SqlString.format(sql,[chiffre.Total_Item_Requests,dateNow,idRevue,annee]));
+              /* let sql = "UPDATE tbl_statistiques SET JR3OAGOLD =?,dateM=? where idRevue=? AND annee=?"
+               console.log('sql: ', SqlString.format(sql,[chiffre.Total_Item_Requests,dateNow,idRevue,annee]));*/
               //totalRequest=Number(donneesExist)+Number(donneesJR[j])
               //console.log(totalRequest)
-              await db.execute("UPDATE tbl_statistiques SET JR3OAGOLD =?,dateM=? where idRevue=? AND annee=?", [chiffre.Total_Item_Requests,dateNow,idRevue,annee] );
+              await db.execute("UPDATE tbl_statistiques SET JR3OAGOLD =?,plateforme=?,dateM=? where idRevue=? AND annee=?", [chiffre.Total_Item_Requests,chiffre.PlatformID,dateNow,idRevue,annee] );
 
             }
 
@@ -152,21 +151,21 @@ module.exports = class Sushi {
         //prendre l'idRvue
         let idRevue= await this.recouperationIdRevue(chiffre.ISSN,chiffre.EISSN,chiffre.titre,'J4',chiffre.PlatformID,annee)
         //console.log(idRevue)
-        if(idRevue!=-1){
+        if(idRevue!=-1 && idRevue > 0){
           //verifier si ce periodique as deja des données dans statistique pour cette annee
 
           for(let j of champJR){
-            let donneesExist= await this.verifierDonneesExist(annee,idRevue,j)
+            let donneesExist= await this.verifierDonneesExist(annee,idRevue,j,chiffre.PlatformID)
             let dt = datetime.create();
             let dateNow = dt.format('Y-m-d H:M:S');
 
-            if(donneesExist=='-1'){
+            if(donneesExist === -1){
               //console.log('add'+champ['idRevue'])
               /* let sql = "INSERT INTO tbl_statistiques SET annee=?,"+j+" =?,dateA=?, idRevue=?"
                console.log('sql: ', SqlString.format(sql,[annee,donneesJR[j],dateNow,idRevue]));*/
               await db.execute("INSERT INTO tbl_statistiques SET annee=?,plateforme=?,"+j+" =?,dateA=?, idRevue=?", [annee,chiffre.PlatformID,donneesJR[j],dateNow,idRevue] );
             }
-            if(donneesExist>='0'){
+            else{
              /* totalRequest=0
               /*let sql = "UPDATE tbl_statistiques SET "+j+" =?,dateM=? where idRevue=? AND annee=?"
               console.log('sql: ', SqlString.format(sql,[donneesJR[j],dateNow,idRevue,annee]));*/
@@ -185,11 +184,19 @@ module.exports = class Sushi {
   }
 
   //faire un select avant de définir l'action
-  static async verifierDonneesExist(annee, idRevue, Metric_Type) {
+  /*static async verifierDonneesExist(annee, idRevue, Metric_Type) {
     const sql = `SELECT ${Metric_Type} AS total FROM tbl_statistiques WHERE idRevue = ? AND annee = ?`;
     const [rows] = await db.execute(sql, [idRevue, annee]);
     return rows.length > 0 ? rows[0].total : -1;
-  }
+  }*/
+
+  static async verifierDonneesExist(annee, idRevue, Metric_Type, plateforme) {
+    const sql = `SELECT ${Metric_Type} AS total 
+                FROM tbl_statistiques 
+                WHERE idRevue = ? AND annee = ? AND plateforme = ?`;
+    const [rows] = await db.execute(sql, [idRevue, annee, plateforme]);
+    return rows.length > 0 ? rows[0].total : -1;
+}
 
   //vider la table statistique pour un année donnée avant d'inserer les nouveau data
   static async updateStatistique(annee){

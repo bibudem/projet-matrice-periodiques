@@ -35,6 +35,20 @@ export class ListeStatistiquesService {
       );
   }
 
+  fetchAllPaginated(annee: string, skip: number, limit: number, search: string, sortColumn: string, sortDirection: string): Observable<any> {
+    let params = new HttpParams()
+      .set('skip', skip.toString())
+      .set('limit', limit.toString())
+      .set('search', search)
+      .set('sortColumn', sortColumn)
+      .set('sortDirection', sortDirection);
+    return this.http
+      .get<any>(`/api/liste-statistique/${annee}`, { params, responseType: "json" })
+      .pipe(
+        catchError(this.errorHandlerService.handleError<any>("fetchAllPaginated", []))
+      );
+  }
+
   //chercher toute la liste des statistiques
   rapportStatistiques(annees:any,plateforme:string): Observable<any[]> {
     let params,paramAnnees='';

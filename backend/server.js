@@ -1,3 +1,4 @@
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const express = require('express');
 
 const bodyParser = require('body-parser');
@@ -73,7 +74,7 @@ app.use((req, res, next) => {
 
 app.use(session({
   store: new MemoryStore({ checkPeriod: 3600000 }),
-  secret: 'AB3X9-YG2KD-Q4PL6-MN7TS-WZ8FV-YT9KD-Q4PL98',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {

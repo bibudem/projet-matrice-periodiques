@@ -45,6 +45,29 @@ export class PeriodiqueListeService implements OnInit {
         )
       );
   }
+
+  // Récupérer les périodiques avec pagination, recherche et tri
+  fetchAllPaginated(skip: number, limit: number, search: string = '', sortColumn: string = 'titre', sortDirection: string = 'asc'): Observable<any> {
+    let params = new HttpParams()
+      .set('skip', skip.toString())
+      .set('limit', limit.toString())
+      .set('sortColumn', sortColumn)
+      .set('sortDirection', sortDirection);
+
+    if (search && search.trim()) {
+      params = params.set('search', search);
+    }
+
+    return this.http
+      .get<any>(this.url + '/all', { params, responseType: "json" })
+      .pipe(
+        tap((_) => console.log("fetched periodiques paginated")),
+        catchError(
+          this.errorHandlerService.handleError<any>("fetchAllPaginated", { data: [], total: 0 })
+        )
+      );
+  }
+
   //chercher toute la liste des periodiques avec les champs par defaut
   fetchRapportAll(plateforme:string): Observable<any[]> {
     if(plateforme=='' || plateforme==undefined)

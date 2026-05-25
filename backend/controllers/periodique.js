@@ -2,10 +2,21 @@ const Periodique = require('../models/periodique');
 
 exports.getAllPeriodiques = async (req, res, next) => {
   try {
+    const skip = parseInt(req.query.skip) || 0;
+    const limit = parseInt(req.query.limit) || 50;
+    const search = req.query.search || '';
+    const sortColumn = req.query.sortColumn || 'titre';
+    const sortDirection = req.query.sortDirection || 'asc';
 
-    const [allPeriodiques] = await Periodique.fetchAll();
-    res.status(200).json(allPeriodiques);
+    const paginatedResult = await Periodique.fetchAllPaginated(skip, limit, search, sortColumn, sortDirection);
+    const countResult = await Periodique.countAll(search);
 
+    res.status(200).json({
+      data: paginatedResult[0],  // [0] pour les rows
+      total: countResult[0][0].count || 0,
+      skip: skip,
+      limit: limit
+    });
 
   } catch (err) {
     if (!err.statusCode) {

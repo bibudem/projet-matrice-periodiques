@@ -1,14 +1,10 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {Observable} from "rxjs";
+import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
-import {paginationPersonnalise} from "../../lib/paginationPersonnalise";
+import {MatSort} from "@angular/material/sort";
+import type {Sort} from "@angular/material/sort";
 import {MethodesGlobal} from "../../lib/MethodesGlobal";
-import {ListeStatistique} from "../../models/ListeStatistique";
-import {TranslateService} from "@ngx-translate/core";
 import {ListeStatistiquesService} from "../../services/liste-statistiques.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MatSort} from "@angular/material/sort";
 import * as XLSX from "xlsx";
 
 @Component({
@@ -16,159 +12,232 @@ import * as XLSX from "xlsx";
   templateUrl: './statistique-liste.component.html',
   styleUrls: ['./statistique-liste.component.css']
 })
-export class StatistiqueListeComponent implements OnInit {
-  listeStatistique$: Observable<any[]> | undefined;
+export class StatistiqueListeComponent implements OnInit, AfterViewInit {
+  displayedColumns = ['numero','annee','plateforme','titre','telech','refus','citation','articlesUdem','dateA','dateM','consulter'];
+  tableauStatistique: any[] = [];
 
-  //creation d'objet avec la liste des periodiques
-  // @ts-ignore
-  public listeStatistique: ListeStatistique = {};
-  id: string | null | undefined ;
-  //les entêts du tableau
-  displayedColumns = ['numero','annee','plateforme', 'titre','telech','refus','citation','articlesUdem','dateA','dateM','consulter'];
-  tableauStatistique: any = [];
+  @ViewChild(MatSort) matSort: MatSort | any;
 
-  //Initialiser le tableau d'annee'
-  arrayAnnee:any[]=[];
-  // @ts-ignore
-  dataSource: MatTableDataSource<ListeStatistique>;
-
-  anneeStatistique: string | null =  '' ;
-
-  isLoading = true;
-
-  @ViewChild(MatPaginator) paginator: paginationPersonnalise | any;
-
-  @ViewChild(MatSort)  matSort : MatSort | any;
-
-  //importer les fonctions global
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
 
   annee = new Date().getFullYear();
+  anneeStatistique: string = '';
+  arrayAnnee: any[] = [];
 
-  ifAdmin=false;
+  isLoading = true;
+  ifAdmin = false;
 
-  /*name of the excel-file which will be downloaded. */
-  fileName= 'rapport-statistiques-liste.xlsx';
+  textRechercher = '';
 
-  constructor(private listeStatistiqueService: ListeStatistiquesService,
-              private translate: TranslateService,
-              private router: Router,
-              private route: ActivatedRoute,) { }
+  // Pagination manuelle
+  currentPage = 0;
+  pageSize = 25;
+  totalItems = 0;
+  pageSizeOptions = [25, 50, 75, 100, 150];
 
-  //appliquer filtre
-  applyFilter(filterValue: string) {
-    const normalizedFilter = this.methodesGlobal.normalizeString(filterValue);
-    // @ts-ignore
-    this.dataSource.filter = normalizedFilter;
-  }
+  // Tri serveur
+  sortColumn = 'titre';
+  sortDirection = 'asc';
+
+  // @ts-ignore
+  dataSource: MatTableDataSource<any>;
+
+  fileName = 'rapport-statistiques-liste.xlsx';
+
+  constructor(
+    private listeStatistiqueService: ListeStatistiquesService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
-    //remplire la liste des annees
-    this.anneeOptions()
+    this.anneeOptions();
+    this.ifAdmin = this.methodesGlobal.ifAdminFunction();
 
-    //ajout de niveau de securité
-    this.ifAdmin=this.methodesGlobal.ifAdminFunction();
-    // Récupérer l'année depuis l'URL ou utiliser l'année actuelle par défaut
     const anneeFromUrl = this.route.snapshot.paramMap.get("annee");
     this.anneeStatistique = anneeFromUrl ? anneeFromUrl : String(this.annee);
 
-    // Appeler la fonction pour générer le tableau en utilisant l'année
-    this.creerTableau(this.anneeStatistique);
+    const savedPage = localStorage.getItem('stat_currentPage');
+    const savedSize = localStorage.getItem('stat_pageSize');
+    const savedSortCol = localStorage.getItem('stat_sortColumn');
+    const savedSortDir = localStorage.getItem('stat_sortDirection');
+    const savedFiltre = localStorage.getItem('stat_textFiltre');
+    const savedAnnee = localStorage.getItem('stat_annee');
+
+    if (savedPage) this.currentPage = parseInt(savedPage, 10);
+    if (savedSize) this.pageSize = parseInt(savedSize, 10);
+    if (savedSortCol) this.sortColumn = savedSortCol;
+    if (savedSortDir) this.sortDirection = savedSortDir;
+    if (savedFiltre) this.textRechercher = savedFiltre;
+    if (!anneeFromUrl && savedAnnee) this.anneeStatistique = savedAnnee;
   }
 
-  //fonction doit etre async pour attendre la reponse de la bd
-  async creerTableau(annee:string) {
-    try {
-      this.isLoading = true;
-      this.tableauStatistique=[];
-      this.listeStatistique$ = await this.fetchAll(annee);
-      await this.listeStatistique$.toPromise().then(res => {
-        let i=0
-        for (let val of res[0]) {
-          if(!val.citations)val.citations=0
-          if(!val.articlesUdem)val.articlesUdem=0
-          if(!val.Total_Item_Requests)val.Total_Item_Requests=0
-          if(!val.Unique_Item_Requests)val.Unique_Item_Requests=0
-          if(!val.No_License)val.No_License=0
-          this.tableauStatistique[i]={
-            "numero":i+1,
-            "idRevue":val.idP,
-            "annee":val.annee,
-            "idStatistique":val.idStatistique,
-            "plateforme":val.plateforme,
-            "titre":val.titreP,
-            "telech":val.Total_Item_Requests,
-            "refus":val.No_License,
-            "citation":val.citations,
-            "articlesUdem":val.articlesUdem,
-            "dateA":val.dateA,
-            "dateM":val.dateM
-          }
-          i++
-        }
-        // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
-        this.dataSource = new MatTableDataSource(this.tableauStatistique);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.matSort;
-        //console.log(this.tableauStatistique);
+  ngAfterViewInit(): void {
+    this.dataSource = new MatTableDataSource<any>([]);
+
+    this.matSort.sortChange.subscribe((sort: Sort) => {
+      this.sortColumn = sort.active || 'titre';
+      this.sortDirection = sort.direction || 'asc';
+      this.currentPage = 0;
+      this.loadStatistiques();
+    });
+
+    this.loadStatistiques();
+  }
+
+  loadStatistiques(): void {
+    this.isLoading = true;
+    const skip = this.currentPage * this.pageSize;
+    const search = this.methodesGlobal.normalizeString(this.textRechercher.toLowerCase());
+
+    localStorage.setItem('stat_currentPage', this.currentPage.toString());
+    localStorage.setItem('stat_pageSize', this.pageSize.toString());
+    localStorage.setItem('stat_sortColumn', this.sortColumn);
+    localStorage.setItem('stat_sortDirection', this.sortDirection);
+    localStorage.setItem('stat_annee', this.anneeStatistique);
+
+    this.listeStatistiqueService.fetchAllPaginated(
+      this.anneeStatistique, skip, this.pageSize, search, this.sortColumn, this.sortDirection
+    ).subscribe({
+      next: (response: any) => {
+        const rows: any[] = Array.isArray(response?.data) ? response.data : [];
+        const offset = this.currentPage * this.pageSize;
+        this.tableauStatistique = rows.map((val: any, idx: number) => ({
+          numero: offset + idx + 1,
+          idRevue: val.idP,
+          annee: val.annee,
+          idStatistique: val.idStatistique,
+          plateforme: val.plateforme,
+          titre: val.titreP,
+          telech: val.Total_Item_Requests || 0,
+          refus: val.No_License || 0,
+          citation: val.citations || 0,
+          articlesUdem: val.articlesUdem || 0,
+          dateA: val.dateA,
+          dateM: val.dateM,
+        }));
+        this.dataSource.data = this.tableauStatistique;
+        this.totalItems = response?.total || 0;
         this.isLoading = false;
-      });
-    } catch(err) {
-      console.error(`Error : ${err.Message}`);
-      //
+      },
+      error: (err: unknown) => {
+        console.error(`Erreur chargement statistiques : ${String(err)}`);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  applyFilter(filterValue: string): void {
+    localStorage.setItem('stat_textFiltre', filterValue);
+    this.textRechercher = filterValue.trim();
+    this.currentPage = 0;
+    this.loadStatistiques();
+  }
+
+  changerAnnee(annee: string): void {
+    this.anneeStatistique = annee;
+    this.currentPage = 0;
+    this.loadStatistiques();
+  }
+
+  viderFiltre(): void {
+    const input = document.getElementById('textFiltre') as HTMLInputElement;
+    if (input) {
+      input.value = '';
+      localStorage.setItem('stat_textFiltre', '');
+      this.textRechercher = '';
+      this.currentPage = 0;
+      this.loadStatistiques();
     }
   }
 
-  //recouperer la liste des periodiques
-  fetchAll(annee:string): Observable<ListeStatistique[]> {
-    return this.listeStatistiqueService.fetchAll(annee);
+  consulterStatistique(id: string, titre: string): void {
+    localStorage.setItem('titrePeridique', titre);
+    this.router.navigate(['/periodique/statistiques/' + id + '/historique']);
   }
-  //creation du select d'année a partir de 2019
-  anneeOptions(){
-    let anneeNow=new Date().getFullYear();
-    let i=0
-    while(i <=(anneeNow-2018)){
-      this.arrayAnnee[i]=anneeNow-i
-      i++
+
+  anneeOptions(): void {
+    let anneeNow = new Date().getFullYear();
+    for (let i = 0; i <= anneeNow - 2018; i++) {
+      this.arrayAnnee[i] = anneeNow - i;
     }
   }
 
-  //redirectioner vers les détails de statistiques
-  consulterStatistique(id:string,titre:string){
-    localStorage.setItem('titrePeridique',titre);
-    this.router.navigate(['/periodique/statistiques/'+id+'/historique']);
+  // ===== PAGINATION MANUELLE =====
+
+  nextPage(): void {
+    if (!this.isLastPage()) { this.currentPage++; this.loadStatistiques(); }
   }
-    //vider le filtre
-  viderFiltre(){
-    // @ts-ignore
-    if(document.getElementById('textFiltre').value){
-      // @ts-ignore
-      document.getElementById('textFiltre').value=''
-      localStorage.setItem('textFiltre','')
-      this.applyFilter('')
+
+  previousPage(): void {
+    if (this.currentPage > 0) { this.currentPage--; this.loadStatistiques(); }
+  }
+
+  goToPage(pageNumber: number): void {
+    const maxPage = Math.ceil(this.totalItems / this.pageSize) - 1;
+    if (pageNumber >= 0 && pageNumber <= maxPage) {
+      this.currentPage = pageNumber;
+      this.loadStatistiques();
     }
-
   }
-  //exporter les données en format xlsx
-  async ExportTOExcel()
-  {
-    let that=this
 
+  firstPage(): void {
+    this.currentPage = 0;
+    this.loadStatistiques();
+  }
+
+  lastPage(): void {
+    this.currentPage = Math.ceil(this.totalItems / this.pageSize) - 1;
+    this.loadStatistiques();
+  }
+
+  changePageSize(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPage = 0;
+    this.loadStatistiques();
+  }
+
+  isFirstPage(): boolean { return this.currentPage === 0; }
+
+  isLastPage(): boolean {
+    return this.currentPage >= Math.ceil(this.totalItems / this.pageSize) - 1;
+  }
+
+  getCurrentPageNumber(): number { return this.currentPage + 1; }
+
+  getTotalPages(): number { return Math.ceil(this.totalItems / this.pageSize); }
+
+  getDisplayStart(): number {
+    return this.totalItems === 0 ? 0 : this.currentPage * this.pageSize + 1;
+  }
+
+  getDisplayEnd(): number {
+    return Math.min((this.currentPage + 1) * this.pageSize, this.totalItems);
+  }
+
+  getPageNumbers(): (number | null)[] {
+    const total = this.getTotalPages();
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    const current = this.getCurrentPageNumber();
+    const pages: (number | null)[] = [1];
+    if (current > 3) pages.push(null);
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (current < total - 2) pages.push(null);
+    pages.push(total);
+    return pages;
+  }
+
+  async ExportTOExcel() {
+    const that = this;
     setTimeout(async function () {
-      let dateNow=new Date().getUTCDate();
-      /* table id is passed over here */
-      let element = document.getElementById('table-rapport-statistiques-liste');
-      const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
-
-      /* generate workbook and add the worksheet */
+      const dateNow = new Date().getUTCDate();
+      const element = document.getElementById('table-rapport-statistiques-liste');
+      const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Rapport-logs-revues-'+dateNow);
-
-      /* save to file */
+      XLSX.utils.book_append_sheet(wb, ws, 'Rapport-logs-revues-' + dateNow);
       XLSX.writeFile(wb, that.fileName);
     }, 3000);
-
-    //console.log(this.dataSource);
-
   }
 }

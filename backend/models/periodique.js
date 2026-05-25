@@ -14,6 +14,30 @@ module.exports = class Periodique {
     return db.execute('SELECT * FROM tbl_periodiques order by titre');
   }
 
+  static fetchAllPaginated(skip, limit, search = '', sortColumn = 'titre', sortDirection = 'asc') {
+    const allowedColumns = ['idRevue', 'titre', 'ISSN', 'EISSN', 'secteur', 'domaine', 'abonnement', 'bdd', 'statut', 'dateA', 'dateM'];
+    const col = allowedColumns.includes(sortColumn) ? sortColumn : 'titre';
+    const dir = sortDirection === 'desc' ? 'DESC' : 'ASC';
+
+    let whereClause = '';
+    if (search && search.trim()) {
+      const escapedSearch = db.escape(`%${search}%`);
+      whereClause = ` WHERE (idRevue LIKE ${escapedSearch} OR titre LIKE ${escapedSearch} OR ISSN LIKE ${escapedSearch} OR EISSN LIKE ${escapedSearch} OR secteur LIKE ${escapedSearch} OR domaine LIKE ${escapedSearch} OR abonnement LIKE ${escapedSearch} OR bdd LIKE ${escapedSearch} OR statut LIKE ${escapedSearch})`;
+    }
+    const sql = `SELECT * FROM tbl_periodiques ${whereClause} ORDER BY \`${col}\` ${dir} LIMIT ${limit} OFFSET ${skip}`;
+    return db.execute(sql);
+  }
+
+  static countAll(search = '') {
+    let whereClause = '';
+    if (search && search.trim()) {
+      const escapedSearch = db.escape(`%${search}%`);
+      whereClause = ` WHERE (idRevue LIKE ${escapedSearch} OR titre LIKE ${escapedSearch} OR ISSN LIKE ${escapedSearch} OR EISSN LIKE ${escapedSearch} OR secteur LIKE ${escapedSearch} OR domaine LIKE ${escapedSearch} OR abonnement LIKE ${escapedSearch} OR bdd LIKE ${escapedSearch} OR statut LIKE ${escapedSearch})`;
+    }
+    const sql = `SELECT COUNT(*) as count FROM tbl_periodiques ${whereClause}`;
+    return db.execute(sql);
+  }
+
   static  fetchRapportAll(plateforme) {
     let sqlCondition='';
     let valPlateforme=plateforme.split('=')[1];

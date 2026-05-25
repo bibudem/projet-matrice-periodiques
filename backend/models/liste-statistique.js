@@ -9,10 +9,36 @@ module.exports = class ListeStatistique {
 
 
   static fetchAll(annee) {
-    //afficher la requette
-    /* let sql = "SELECT idStatistique,annee,tbl_statistiques.idRevue as idP,Total_Item_Requests,No_License,citations,articlesUdem,titre,tbl_statistiques.dateA as date FROM tbl_statistiques INNER JOIN tbl_periodiques ON tbl_statistiques.idRevue=tbl_periodiques.idRevue where annee = ?"
-    console.log('sql: ', SqlString.format(sql,[annee]));*/
     return db.execute('SELECT idStatistique,annee,tbl_statistiques.idRevue as idP,Total_Item_Requests,Unique_Item_Requests,No_License,citations,articlesUdem,tbl_periodiques.titre as titreP,tbl_statistiques.plateforme as plateforme,tbl_statistiques.dateA as dateA,tbl_statistiques.dateM as dateM,statut,abonnement,ISSN,EISSN,domaine,secteur FROM tbl_statistiques INNER JOIN tbl_periodiques ON tbl_statistiques.idRevue=tbl_periodiques.idRevue where annee = ? order by idP ',[annee]);
+  }
+
+  static fetchAllPaginated(annee, skip, limit, search, sortColumn, sortDirection) {
+    const colMap = {
+      'titre': 'tbl_periodiques.titre',
+      'plateforme': 'tbl_statistiques.plateforme',
+      'annee': 'annee',
+      'telech': 'Total_Item_Requests',
+      'refus': 'No_License',
+      'citation': 'citations',
+      'articlesUdem': 'articlesUdem',
+      'dateA': 'tbl_statistiques.dateA',
+      'dateM': 'tbl_statistiques.dateM',
+    };
+    const col = colMap[sortColumn] || 'tbl_periodiques.titre';
+    const dir = sortDirection === 'desc' ? 'DESC' : 'ASC';
+    const searchParam = search ? `%${search}%` : '%';
+    return db.execute(
+      `SELECT idStatistique,annee,tbl_statistiques.idRevue as idP,Total_Item_Requests,Unique_Item_Requests,No_License,citations,articlesUdem,tbl_periodiques.titre as titreP,tbl_statistiques.plateforme as plateforme,tbl_statistiques.dateA as dateA,tbl_statistiques.dateM as dateM FROM tbl_statistiques INNER JOIN tbl_periodiques ON tbl_statistiques.idRevue=tbl_periodiques.idRevue WHERE annee = ? AND (tbl_periodiques.titre LIKE ? OR tbl_statistiques.plateforme LIKE ?) ORDER BY ${col} ${dir} LIMIT ? OFFSET ?`,
+      [annee, searchParam, searchParam, limit, skip]
+    );
+  }
+
+  static countAll(annee, search) {
+    const searchParam = search ? `%${search}%` : '%';
+    return db.execute(
+      'SELECT COUNT(*) as count FROM tbl_statistiques INNER JOIN tbl_periodiques ON tbl_statistiques.idRevue=tbl_periodiques.idRevue WHERE annee = ? AND (tbl_periodiques.titre LIKE ? OR tbl_statistiques.plateforme LIKE ?)',
+      [annee, searchParam, searchParam]
+    );
   }
 
   static  async donneesStatistiqueRapport(periode) {

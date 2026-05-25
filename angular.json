@@ -43,7 +43,7 @@
               "src/assets/css/style.css"
             ],
             "scripts": [
-
+               "src/assets/js/bib-avis.min.js"
             ]
           },
           "configurations": {

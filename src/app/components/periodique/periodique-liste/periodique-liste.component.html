@@ -108,8 +108,66 @@
               <mat-row *matRowDef="let row; columns: displayedColumns;">
               </mat-row>
             </table>
+        </div>
 
-        <mat-paginator [pageSizeOptions]="[25, 50, 75, 100, 150]"></mat-paginator>
+        <!-- PAGINATION (hors table-responsive pour éviter la scrollbar) -->
+        <div class="pagination-wrapper">
+          <div class="d-flex flex-wrap align-items-center justify-content-between">
+
+            <!-- Info résultats -->
+            <div class="pagination-info-text">
+              Affichage de <strong>{{ getDisplayStart() }}</strong> à <strong>{{ getDisplayEnd() }}</strong> sur <strong>{{ totalItems }}</strong> entrées
+            </div>
+
+            <!-- Boutons de page -->
+            <nav aria-label="Navigation des pages">
+              <ul class="pagination pagination-sm mb-0">
+
+                <li class="page-item" [class.disabled]="isFirstPage()">
+                  <a class="page-link" (click)="!isFirstPage() && firstPage()" title="Première page">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li class="page-item" [class.disabled]="isFirstPage()">
+                  <a class="page-link" (click)="!isFirstPage() && previousPage()" title="Précédent">
+                    <span aria-hidden="true">&lsaquo;</span>
+                  </a>
+                </li>
+
+                <ng-container *ngFor="let page of getPageNumbers()">
+                  <li class="page-item disabled" *ngIf="page === null">
+                    <span class="page-link ellipsis">…</span>
+                  </li>
+                  <li class="page-item" *ngIf="page !== null" [class.active]="page === getCurrentPageNumber()">
+                    <a class="page-link" (click)="goToPage(page - 1)">{{ page }}</a>
+                  </li>
+                </ng-container>
+
+                <li class="page-item" [class.disabled]="isLastPage()">
+                  <a class="page-link" (click)="!isLastPage() && nextPage()" title="Suivant">
+                    <span aria-hidden="true">&rsaquo;</span>
+                  </a>
+                </li>
+                <li class="page-item" [class.disabled]="isLastPage()">
+                  <a class="page-link" (click)="!isLastPage() && lastPage()" title="Dernière page">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+
+              </ul>
+            </nav>
+
+            <!-- Sélecteur taille de page -->
+            <div class="d-flex align-items-center">
+              <label class="pagination-size-label mb-0 mr-2">Entrées par page :</label>
+              <select class="form-control form-control-sm pagination-size-select"
+                      [ngModel]="pageSize"
+                      (ngModelChange)="changePageSize($event)">
+                <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+              </select>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
