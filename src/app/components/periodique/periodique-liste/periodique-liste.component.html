@@ -14,12 +14,17 @@
               </span>
         </div>
       </div>
-      <div class=" w-100 b-white">
-        <mat-form-field class="w-50 ">
-          <input #texteFiltre (keyup)="applyFilter(texteFiltre.value)"
-                 matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre"  value="{{textRechercher}}">
-        </mat-form-field>
-        <a href="javascript:;" *ngIf="texteFiltre.value"><span aria-hidden="true" (click)="viderFiltre()">&times;</span></a>
+      <div class="search-bar-wrapper">
+        <i class="icon-magnifier search-bar-icon"></i>
+        <input class="search-bar-input"
+               #texteFiltre
+               (keyup)="applyFilter(texteFiltre.value)"
+               placeholder="{{ 'filtre-text' | translate }}"
+               id="textFiltre" name="textFiltre"
+               [value]="textRechercher">
+        <button class="search-bar-clear" *ngIf="texteFiltre.value" (click)="viderFiltre()" aria-label="Effacer">
+          &times;
+        </button>
       </div>
 
       <div class="example-container">
@@ -97,8 +102,8 @@
               </ng-container>
               <!-- Consulter Column -->
               <ng-container matColumnDef="consulter" >
-                <th *matHeaderCellDef   class="font-weight-bold w-10"> {{ 'consulter' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10 text-center ">
+                <th *matHeaderCellDef class="font-weight-bold w-10 text-center"> {{ 'consulter' | translate}} </th>
+                <td  *matCellDef="let row" class="w-10 text-center">
                   <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter la fiche"  routerLink="/periodique/{{ row.idRevue }}">
                     <i class="icon-note"></i>
                   </button>

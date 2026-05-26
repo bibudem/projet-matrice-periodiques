@@ -15,26 +15,37 @@
           </span>
         </div>
       </div>
-      <div class="card-header mt-1 row b-white">
-        <div class="col-md-9">
-          <mat-form-field class="w-40">
-            <input #texteFiltre (keyup)="applyFilter(texteFiltre.value)"
-                   matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" value="{{textRechercher}}">
-          </mat-form-field>
-          <a href="javascript:;" *ngIf="texteFiltre.value"><span aria-hidden="true" (click)="viderFiltre()">&times;</span></a>
+      <div class="search-bar-wrapper">
+          <div class="search-bar-wrapper">
+            <i class="icon-magnifier search-bar-icon"></i>
+            <input class="search-bar-input"
+                   #texteFiltre
+                   (keyup)="applyFilter(texteFiltre.value)"
+                   placeholder="{{ 'filtre-text' | translate }}"
+                   id="textFiltre" name="textFiltre"
+                   [value]="textRechercher">
+            <button class="search-bar-clear" *ngIf="texteFiltre.value" (click)="viderFiltre()" aria-label="Effacer">
+              &times;
+            </button>
+          </div>
         </div>
-        <div class="col-md-3">
-          <select name="annee" id="annee" class="form-control" #annee (change)="changerAnnee(annee.value)">
-            <option *ngIf="anneeStatistique" value="{{anneeStatistique}}" selected>{{anneeStatistique}}</option>
-            <ng-container *ngFor="let rep of arrayAnnee">
-              <option *ngIf="anneeStatistique != rep">{{rep}}</option>
-            </ng-container>
-          </select>
+        <div class=" d-flex align-items-center justify-content-end">
+          <span class="stepper-label">{{ 'annee' | translate }}</span>
+          <div class="annee-stepper">
+            <button class="stepper-btn"
+                    (click)="stepperAnnee(-1)"
+                    [disabled]="!canStep(-1)"
+                    aria-label="Année précédente">&#8249;</button>
+            <span class="stepper-annee">{{ anneeStatistique }}</span>
+            <button class="stepper-btn"
+                    (click)="stepperAnnee(1)"
+                    [disabled]="!canStep(1)"
+                    aria-label="Année suivante">&#8250;</button>
+          </div>
         </div>
-      </div>
 
       <div class="example-container">
-        <div class="table-responsive">
+        <div class="table-responsive" *ngIf="!(!isLoading && totalItems === 0)">
           <table mat-table
                  [dataSource]="dataSource"
                  class="mat-elevation-z8 w-100 p-2"
@@ -105,11 +116,6 @@
             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           </table>
 
-          <!-- Message quand aucune donnée n'est disponible -->
-          <div *ngIf="!isLoading && totalItems === 0" class="alert alert-warning">
-            {{ 'aucune-donnee-disponible' | translate }} <strong>{{ anneeStatistique }}</strong>
-          </div>
-
           <!-- Table cachée pour export Excel -->
           <table class="table table-bordered cacherVisible" id="table-rapport-statistiques-liste">
             <tr><th *ngFor="let th of displayedColumns">{{th}}</th></tr>
@@ -117,6 +123,30 @@
               <td *ngFor="let rep of displayedColumns">{{col[rep]}}</td>
             </tr>
           </table>
+        </div>
+
+        <!-- État vide -->
+        <div *ngIf="!isLoading && totalItems === 0" class="empty-stat">
+          <svg class="empty-stat-icon" viewBox="0 0 80 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4"  y="44" width="14" height="24" rx="3" fill="#dce8f2"/>
+            <rect x="22" y="30" width="14" height="38" rx="3" fill="#c8daea"/>
+            <rect x="40" y="18" width="14" height="50" rx="3" fill="#b4ccde"/>
+            <rect x="58" y="36" width="14" height="32" rx="3" fill="#dce8f2"/>
+            <line x1="2" y1="68" x2="78" y2="68" stroke="#ccd8e4" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="40" cy="28" r="14" fill="#fff" stroke="#ccd8e4" stroke-width="1.5"/>
+            <text x="40" y="33" text-anchor="middle" font-size="14" font-weight="700" fill="#b0bec8"
+                  font-family="-apple-system,sans-serif">?</text>
+          </svg>
+          <div class="empty-stat-year">{{ anneeStatistique }}</div>
+          <p class="empty-stat-text">Aucune donnée disponible pour cette année.</p>
+          <div class="empty-stat-actions">
+            <button *ngIf="canStep(-1)" class="btn-empty-nav" (click)="stepperAnnee(-1)">
+              &#8592; {{ +anneeStatistique - 1 }}
+            </button>
+            <button *ngIf="canStep(1)" class="btn-empty-nav" (click)="stepperAnnee(1)">
+              {{ +anneeStatistique + 1 }} &#8594;
+            </button>
+          </div>
         </div>
 
         <!-- PAGINATION (hors table-responsive) -->

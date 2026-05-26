@@ -1,46 +1,26 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-
-import { ErrorHandlerService } from "./error-handler.service";
-
+import { catchError } from "rxjs/operators";
 @Injectable({
   providedIn: "root",
 })
 export class HomeService {
   private url = "/api/home";
 
-  httpOptions: { headers: HttpHeaders } = {
-    headers: new HttpHeaders({ "Content-Type": "application/json" }),
-  };
+  constructor(private http: HttpClient) {}
 
-  constructor(
-    private errorHandlerService: ErrorHandlerService,
-    private http: HttpClient
-  ) {}
-
-  // Optimized getCount method with better error handling
-  getCount(): Observable<any> {
+  getCount(annee: number): Observable<any> {
+    const params = new HttpParams().set('annee', annee.toString());
     return this.http
-      .get<any[]>(`${this.url}/count`, { responseType: "json" })
-      .pipe(
-        catchError((error) => {
-          this.errorHandlerService.handleError("getCount", error);
-          return of([]); // Return empty array in case of error
-        })
-      );
+      .get<any[]>(`${this.url}/count`, { params, responseType: "json" })
+      .pipe(catchError(() => of([])));
   }
 
-  // Optimized getGraphiqueDonnees method
-  getGraphiqueDonnees(): Observable<any> {
+  getGraphiqueDonnees(annee: number): Observable<any> {
+    const params = new HttpParams().set('annee', annee.toString());
     return this.http
-      .get<any[]>(`${this.url}/graphique`, { responseType: "json" })
-      .pipe(
-        catchError((error) => {
-          this.errorHandlerService.handleError("getGraphiqueDonnees", error);
-          return of([]); // Return empty array in case of error
-        })
-      );
+      .get<any[]>(`${this.url}/graphique`, { params, responseType: "json" })
+      .pipe(catchError(() => of([])));
   }
 }

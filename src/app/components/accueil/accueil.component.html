@@ -1,85 +1,187 @@
-<!-- Integrer le top de chaque page -->
 <app-header></app-header>
-<!-- Integrer le carcase de chaque page --->
 <div class="container-fluid page-body-wrapper">
   <app-menu></app-menu>
   <div class="main-panel">
     <div class="content-wrapper">
-      <!-- Contenu de la page d'accueil-->
-      <!-- Chiffres de statistique-->
-      <div class="row mt-3">
+
+      <!-- En-tête + sélecteur d'année -->
+      <div class="row">
         <div class="col-md-12 grid-margin">
-          <div class="card mt-2">
+          <div class="card">
             <div class="card-body">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="d-sm-flex align-items-baseline report-summary-header">
-                    <h4 class="font-weight-semibold titre-initial ">{{ 'home.board' | translate}}</h4>
-                    <span class="ml-auto">Année: {{annee}}</span>
-                  </div>
+
+              <div class="d-sm-flex align-items-center report-summary-header mb-3 flex-wrap gap-2">
+                <h4 class="font-weight-semibold titre-initial mb-0">{{ 'home.board' | translate }}</h4>
+                <div class="annee-stepper ml-auto">
+                  <button class="stepper-btn"
+                          (click)="changerAnnee(anneeSelectionnee - 1)"
+                          [disabled]="!arrayAnnee.includes(anneeSelectionnee - 1)"
+                          aria-label="Année précédente">&#8249;</button>
+                  <span class="stepper-annee">{{ anneeSelectionnee }}</span>
+                  <button class="stepper-btn"
+                          (click)="changerAnnee(anneeSelectionnee + 1)"
+                          [disabled]="!arrayAnnee.includes(anneeSelectionnee + 1)"
+                          aria-label="Année suivante">&#8250;</button>
                 </div>
               </div>
-              <div class="row report-inner-cards-wrapper">
-                <div class=" col-md -6 col-xl report-inner-card">
-                  <div class="inner-card-text">
-                    <span class="report-title">{{ 'home.periodique' | translate}}</span>
-                    <h4>{{totalRevue}}</h4>
-                  </div>
-                  <div class="inner-card-icon bg-success">
-                    <i class="icon-layers"></i>
-                  </div>
-                </div>
-                <div class="col-md-6 col-xl report-inner-card">
-                  <div class="inner-card-text">
-                    <span class="report-title">{{ 'home.tele' | translate}}</span>
-                    <h4>{{totalTele}}</h4>
-                  </div>
-                  <div class="inner-card-icon bg-primary">
-                    <i class="icon-cloud-download"></i>
+
+              <!-- KPI cards -->
+              <div class="row kpi-row">
+
+                <div class="col-sm-6 col-xl-3">
+                  <div class="kpi-card kpi-card--success">
+                    <div class="kpi-icon">
+                      <i class="icon-layers"></i>
+                    </div>
+                    <div class="kpi-body">
+                      <span class="kpi-label">{{ 'home.periodique' | translate }}</span>
+                      <div class="kpi-value">{{ totalRevue | number }}</div>
+                    </div>
                   </div>
                 </div>
-                <div class="col-md-6 col-xl report-inner-card">
-                  <div class="inner-card-text">
-                    <span class="report-title">{{ 'home.citations' | translate}}</span>
-                    <h4>{{totalCitation}}</h4>
-                  </div>
-                  <div class="inner-card-icon bg-warning">
-                    <i class="icon-pin"></i>
-                  </div>
-                </div>
-                <div class="col-md-6 col-xl report-inner-card">
-                  <div class="inner-card-text">
-                    <span class="report-title">{{ 'home.article-udem' | translate}}</span>
-                    <h4>{{totalArticleUdem}}</h4>
-                  </div>
-                  <div class="inner-card-icon bg-info">
-                    <i class="icon-paper-clip"></i>
+
+                <div class="col-sm-6 col-xl-3">
+                  <div class="kpi-card kpi-card--primary">
+                    <div class="kpi-icon">
+                      <i class="icon-cloud-download"></i>
+                    </div>
+                    <div class="kpi-body">
+                      <span class="kpi-label">{{ 'home.tele' | translate }}</span>
+                      <div class="kpi-value">{{ totalTele | number }}</div>
+                    </div>
                   </div>
                 </div>
+
+                <div class="col-sm-6 col-xl-3">
+                  <div class="kpi-card kpi-card--warning">
+                    <div class="kpi-icon">
+                      <i class="icon-pin"></i>
+                    </div>
+                    <div class="kpi-body">
+                      <span class="kpi-label">{{ 'home.citations' | translate }}</span>
+                      <div class="kpi-value">{{ totalCitation | number }}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                  <div class="kpi-card kpi-card--info">
+                    <div class="kpi-icon">
+                      <i class="icon-paper-clip"></i>
+                    </div>
+                    <div class="kpi-body">
+                      <span class="kpi-label">{{ 'home.article-udem' | translate }}</span>
+                      <div class="kpi-value">{{ totalArticleUdem | number }}</div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
+
             </div>
           </div>
         </div>
       </div>
-      <div class="p-2 b-white mb-3">
-        <div id="chart" class="p-2">
-          <apx-chart
-            [series]="chartOptions.series"
-            [chart]="chartOptions.chart"
-            [dataLabels]="chartOptions.dataLabels"
-            [colors]="chartOptions.colors"
-            [plotOptions]="chartOptions.plotOptions"
-            [yaxis]="chartOptions.yaxis"
-            [legend]="chartOptions.legend"
-            [fill]="chartOptions.fill"
-            [stroke]="chartOptions.stroke"
-            [tooltip]="chartOptions.tooltip"
-            [xaxis]="chartOptions.xaxis"
-          ></apx-chart>
+
+      <!-- Top 10 -->
+      <div class="row">
+        <div class="col-md-12 grid-margin">
+          <div class="card">
+            <div class="card-body">
+
+              <div class="d-flex align-items-center mb-4">
+                <h4 class="font-weight-semibold titre-initial mb-0">
+                  {{ 'home.top10' | translate }} — {{ anneeSelectionnee }}
+                </h4>
+                <button class="btn-export-top10 ml-auto"
+                        (click)="exportTop10()"
+                        [disabled]="isLoading || top10.length === 0"
+                        aria-label="Télécharger le graphique">
+                  <i class="icon-cloud-download"></i>
+                  <span class="export-tooltip">Exporter en Excel (.xlsx)</span>
+                </button>
+              </div>
+
+              <!-- Chargement -->
+              <div *ngIf="isLoading" class="text-center py-5">
+                <div class="loader-inline"></div>
+                <p class="text-muted mt-3 small">{{ 'importation.attendre' | translate }}</p>
+              </div>
+
+              <!-- Données disponibles -->
+              <div *ngIf="!isLoading && top10.length > 0" class="row">
+
+                <!-- Colonne gauche : rangs 1-5 -->
+                <div class="col-md-6 col-top5">
+                  <div *ngFor="let item of top10Left; let i = index"
+                       class="top10-row" [ngClass]="rankClass(i + 1)">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="top10-titre">
+                        <span class="top10-rang" [ngClass]="rankClass(i + 1)">{{ i + 1 }}</span>
+                        {{ item.titre }}
+                      </span>
+                      <span class="top10-valeur">
+                        {{ item.Total_Item_Requests | number }}
+                        <span *ngIf="item.No_License > 0" class="top10-refus">
+                          · {{ item.No_License | number }} {{ 'home.refus' | translate }}
+                        </span>
+                      </span>
+                    </div>
+                    <div class="top10-progress">
+                      <div class="top10-bar"
+                           [style.width.%]="barWidth(item.Total_Item_Requests)">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Colonne droite : rangs 6-10 -->
+                <div class="col-md-6">
+                  <div *ngFor="let item of top10Right; let i = index"
+                       class="top10-row">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="top10-titre">
+                        <span class="top10-rang">{{ i + 6 }}</span>
+                        {{ item.titre }}
+                      </span>
+                      <span class="top10-valeur">
+                        {{ item.Total_Item_Requests | number }}
+                        <span *ngIf="item.No_License > 0" class="top10-refus">
+                          · {{ item.No_License | number }} {{ 'home.refus' | translate }}
+                        </span>
+                      </span>
+                    </div>
+                    <div class="top10-progress">
+                      <div class="top10-bar"
+                           [style.width.%]="barWidth(item.Total_Item_Requests)">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- État vide -->
+              <div *ngIf="!isLoading && top10.length === 0" class="empty-state text-center py-5">
+                <i class="fa fa-bar-chart empty-icon"></i>
+                <p class="mt-3 font-weight-semibold">
+                  {{ 'home.aucune-donnee' | translate }} {{ anneeSelectionnee }}
+                </p>
+                <p class="text-muted small">
+                  {{ 'home.donnees-counter-info' | translate }}
+                </p>
+                <button *ngIf="anneePrec()" class="btn btn-outline-primary btn-sm mt-2"
+                        (click)="changerAnnee(anneePrec()!)">
+                  ← {{ 'home.voir-annee' | translate }} {{ anneePrec() }}
+                </button>
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
+
     </div>
-    <!-- Contenu footer -->
     <app-footer></app-footer>
   </div>
 </div>

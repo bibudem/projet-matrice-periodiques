@@ -1,9 +1,12 @@
 const Home = require('../models/home');
 
+const ANNEE_DEFAUT = new Date().getFullYear() - 1;
+
 exports.getCount = async (req, res, next) => {
   try {
-    const allChifres = await Home.fetchCountBoard();
-    res.status(200).json(allChifres[0]); // Renvoyer uniquement les données nécessaires
+    const annee = parseInt(req.query.annee) || ANNEE_DEFAUT;
+    const result = await Home.fetchCountBoard(annee);
+    res.status(200).json(result[0]);
   } catch (err) {
     err.statusCode = err.statusCode || 500;
     next(err);
@@ -12,8 +15,9 @@ exports.getCount = async (req, res, next) => {
 
 exports.getGraphiqueDonnees = async (req, res, next) => {
   try {
-    const objGraphique = await Home.getGraphiqueDonnees();
-    res.status(200).json(objGraphique[0]);
+    const annee = parseInt(req.query.annee) || ANNEE_DEFAUT;
+    const result = await Home.getGraphiqueDonnees(annee);
+    res.status(200).json(result[0]);
   } catch (err) {
     err.statusCode = err.statusCode || 500;
     next(err);

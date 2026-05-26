@@ -163,6 +163,15 @@ export class StatistiqueListeComponent implements OnInit, AfterViewInit {
     }
   }
 
+  stepperAnnee(delta: number): void {
+    const next = Number(this.anneeStatistique) + delta;
+    if (this.arrayAnnee.includes(next)) this.changerAnnee(String(next));
+  }
+
+  canStep(delta: number): boolean {
+    return this.arrayAnnee.includes(Number(this.anneeStatistique) + delta);
+  }
+
   // ===== PAGINATION MANUELLE =====
 
   nextPage(): void {
