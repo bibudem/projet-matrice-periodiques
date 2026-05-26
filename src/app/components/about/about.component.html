@@ -5,76 +5,106 @@
   <app-menu></app-menu>
   <div class="main-panel">
     <div class="content-wrapper mt-4">
-      <!-- Contenu de la page d'about-->
+
+      <!-- En-tête de page -->
       <div class="row">
-        <div class="col-md-12 ">
-          <div class="card ">
+        <div class="col-md-12">
+          <div class="card about-hero-card">
+            <div class="card-body about-hero-body">
+              <div class="about-hero-icon">
+                <i class="icon-info icon-lg"></i>
+              </div>
+              <div class="about-hero-text">
+                <h3 class="about-hero-title">{{ 'home.apropos' | translate }}</h3>
+                <p class="about-hero-description">{{ 'home.home-description' | translate }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section principale -->
+      <div class="row mb-5 mt-3">
+
+        <!-- Carte contacts -->
+        <div class="col-md-7 grid-margin stretch-card">
+          <div class="card about-contact-card">
             <div class="card-body">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="d-sm-flex align-items-baseline report-summary-header">
-                    <h3 class="font-weight-semibold titre-initial">{{ 'home.apropos' | translate}}</h3>
+
+              <!-- Direction collections -->
+              <div class="about-section">
+                <div class="about-section-header">
+                  <div class="about-section-icon about-section-icon--blue">
+                    <i class="icon-layers"></i>
+                  </div>
+                  <div>
+                    <h4 class="about-section-title">{{ 'home.direction-collections' | translate }}</h4>
+                    <p class="about-section-text">{{ 'home.direction-collections-text' | translate }}</p>
+                  </div>
+                </div>
+                <div class="about-contact-item">
+                  <div class="about-contact-icon-wrap">
+                    <i class="icon-envelope"></i>
+                  </div>
+                  <a href="mailto:{{ 'home.dir-collections-courriel' | translate }}" class="about-contact-link">
+                    {{ 'home.dir-collections-courriel' | translate }}
+                  </a>
+                </div>
+              </div>
+
+              <div class="about-divider"></div>
+
+              <!-- Direction technologies -->
+              <div class="about-section">
+                <div class="about-section-header">
+                  <div class="about-section-icon about-section-icon--teal">
+                    <i class="icon-settings"></i>
+                  </div>
+                  <div>
+                    <h4 class="about-section-title">{{ 'home.direction-technologies' | translate }}</h4>
+                    <p class="about-section-text">{{ 'home.direction-technologies-text' | translate }}</p>
+                  </div>
+                </div>
+                <div class="about-contact-item">
+                  <div class="about-contact-icon-wrap">
+                    <i class="icon-phone"></i>
+                  </div>
+                  <span class="about-contact-value">{{ 'home.dir-technologies-tel' | translate }}</span>
+                </div>
+                <div class="about-contact-item">
+                  <div class="about-contact-icon-wrap">
+                    <i class="icon-envelope"></i>
+                  </div>
+                  <a href="mailto:{{ 'home.dir-technologies-courriel' | translate }}" class="about-contact-link">
+                    {{ 'home.dir-technologies-courriel' | translate }}
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Carte image -->
+        <div class="col-md-5 grid-margin stretch-card">
+          <div class="card about-image-card">
+            <div class="card-body p-0">
+              <div class="about-image-wrapper">
+                <img src="./assets/images/accueil.jpg" alt="Matrice des périodiques" class="about-img">
+                <div class="about-image-overlay">
+                  <div class="about-image-tag">
+                    <i class="icon-book-open mr-2"></i>
+                    Bibliothèques UdeM
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-    </div>
-      <br>
-    <div class="row mb-5">
-      <div class="col-md-6 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title titre-initial">{{ 'home.direction-collections' | translate}}</h4>
-            <p>{{ 'home.direction-collections-text' | translate}}</p>
-            <!--<div class="media mt-2">
-              <i class=" icon-phone icon-md text-info d-flex align-self-start mr-3"></i>
-              <div class="media-body">
-                <h5 class="mt-2">{{ 'home.dir-collections-tel' | translate}} </h5>
-              </div>
-            </div>-->
-            <div class="media mt-2">
-              <i class=" icon-envelope icon-md text-info d-flex align-self-start mr-3 "></i>
-              <div class="media-body">
-                <h5 class="mt-2">{{ 'home.dir-collections-courriel' | translate}}</h5>
-              </div>
-            </div>
-            <hr>
-            <h4 class="card-title titre-initial">{{ 'home.direction-technologies' | translate}}</h4>
-            <p>{{ 'home.direction-technologies-text' | translate}}</p>
-            <div class="media mt-2">
-              <i class=" icon-phone icon-md text-info d-flex align-self-start mr-3"></i>
-              <div class="media-body">
-                <h5 class="mt-2">{{ 'home.dir-technologies-tel' | translate}} </h5>
-              </div>
-            </div>
-            <div class="media mt-2">
-              <i class=" icon-envelope icon-md text-info d-flex align-self-start mr-3 "></i>
-              <div class="media-body">
-                <h5 class="mt-2">{{ 'home.dir-technologies-courriel' | translate}}</h5>
-              </div>
-            </div>
-          </div>
-        </div>
+
       </div>
-      <div class="col-md-6 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body performane-indicator-card">
-            <div class="d-sm-flex flex-wrap">
-              <img src="./assets/images/accueil.jpg" alt="" class="img-fluid">
-            </div>
-            <div class="row report-inner-cards-wrapper">
-              <h4 style="font-weight: 500!important">{{ 'home.home-description' | translate}}</h4>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     </div>
     <!-- Contenu footer -->
     <app-footer></app-footer>
   </div>
 </div>
-
-

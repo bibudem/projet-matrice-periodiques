@@ -1,0 +1,10 @@
+/* styles partagés définis dans style_add.css */
+
+/* Annule le style drag-drop global appliqué par erreur au wrapper du tableau */
+.example-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block !important;
+  margin: 0 !important;
+  vertical-align: initial !important;
+}

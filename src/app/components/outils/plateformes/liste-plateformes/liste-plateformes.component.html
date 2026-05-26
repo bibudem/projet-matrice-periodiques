@@ -15,10 +15,17 @@
               </span>
           </div>
         </div>
-        <mat-form-field class="w-50">
-          <input (keyup)="applyFilter(methodesGlobal.getValue(texteFiltre.value))"
-                 matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre>
-        </mat-form-field>
+        <div class="search-bar-wrapper">
+          <i class="icon-magnifier search-bar-icon"></i>
+          <input class="search-bar-input"
+                 #texteFiltre
+                 (keyup)="applyFilter(methodesGlobal.getValue(texteFiltre.value))"
+                 placeholder="{{ 'filtre-text' | translate }}"
+                 id="textFiltre" name="textFiltre">
+          <button class="search-bar-clear" *ngIf="texteFiltre.value"
+                  (click)="texteFiltre.value=''; applyFilter('')"
+                  aria-label="Effacer">&times;</button>
+        </div>
       </div>
 
       <div class="example-container">

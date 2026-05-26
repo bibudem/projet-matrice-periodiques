@@ -65,10 +65,17 @@
       <div class="row">
         <div class="example-container w-100">
           <div class="card-header b-white">
-            <mat-form-field class="w-75">
-              <input (keyup)="applyFilter(methodesGlobal.getValue(textFiltreListe.value))"
-                     matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltreListe" name="textFiltreListe" #textFiltreListe >
-            </mat-form-field>
+            <div class="search-bar-wrapper">
+              <i class="icon-magnifier search-bar-icon"></i>
+              <input class="search-bar-input"
+                     #textFiltreListe
+                     (keyup)="applyFilter(methodesGlobal.getValue(textFiltreListe.value))"
+                     placeholder="{{ 'filtre-text' | translate }}"
+                     id="textFiltreListe" name="textFiltreListe">
+              <button class="search-bar-clear" *ngIf="textFiltreListe.value"
+                      (click)="textFiltreListe.value=''; applyFilter('')"
+                      aria-label="Effacer">&times;</button>
+            </div>
           </div>
           <div class="table-responsive w-100">
             <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100 p-5" >
