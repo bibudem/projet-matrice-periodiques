@@ -93,55 +93,13 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item active" aria-current="page">
-                <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#modal-enregistrer"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
+                <button type="button" class="btn btn-success mr-2" (click)="confirmerModification()"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
               </li>
               <li class="breadcrumb-item cacherVisible" aria-current="page" id="btn-supprimer">
-                <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-target="#modal-supprimer"><i class="icon-trash btn-icon-prepend"></i> {{'btn-supprimer'| translate }}</button>
+                <button type="button" class="btn btn-danger mr-2" (click)="confirmerSuppression(plateforme.idPlateforme, plateforme.titrePlateforme)"><i class="icon-trash btn-icon-prepend"></i> {{'btn-supprimer'| translate }}</button>
               </li>
             </ol>
           </nav>
-        </div>
-        <!-- Modal pour modifier-->
-        <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">{{'message.confirmer-titre'| translate }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                {{'message.confirmer-text'| translate }}
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i>{{'btn-annuler'| translate}}</button>
-                <div id="div-add" class="cacherVisible"> <button type="button" class="btn btn-primary btn-sm "  data-dismiss="modal" id="add-boutton" (click)="post(this.methodesGlobal.getValue(PlatformID.value),this.methodesGlobal.getValue(titrePlateforme.value),this.methodesGlobal.getValue(note.value),this.methodesGlobal.getValue(SUSHIURL.value),this.methodesGlobal.getValue(ConsortiumCustID.value),this.methodesGlobal.getValue(ConsortiumRequestorID.value),this.methodesGlobal.getValue(ConsortiumApiKey.value),this.methodesGlobal.getValue(PlatformCode.value));" ><i class="fa fa-save btn-icon-prepend"></i> {{'btn-ajouter'| translate }}</button></div>
-                <div id="div-save" class="cacherVisible"><button type="button" class="cacherVisible btn btn-primary btn-sm " id="save-boutton" data-dismiss="modal"
-                        (click)="update(this.methodesGlobal.convertNumber(this.methodesGlobal.getValue(idPlateforme.value)),this.methodesGlobal.getValue(PlatformID.value),this.methodesGlobal.getValue(titrePlateforme.value),this.methodesGlobal.getValue(note.value),this.methodesGlobal.getValue(SUSHIURL.value),this.methodesGlobal.getValue(ConsortiumCustID.value),this.methodesGlobal.getValue(ConsortiumRequestorID.value),this.methodesGlobal.getValue(ConsortiumApiKey.value),this.methodesGlobal.getValue(PlatformCode.value));"><i class="fa fa-save btn-icon-prepend"></i> {{'btn-enregistrer'| translate }}</button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Modal pour modifier-->
-        <div class="modal fade" id="modal-supprimer" tabindex="-1" role="dialog" aria-labelledby="modal-supprimer" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" >{{'message.supprimer-titre'| translate }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                {{'message.supprimer-text'| translate }}
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i>{{'btn-annuler'| translate}}</button>
-                <button type="button" class="btn btn-danger btn-sm "  data-dismiss="modal"  (click)="delete(plateforme.idPlateforme);" ><i class="fa fa-save btn-icon-prepend"></i> {{'btn-supprimer'| translate }}</button>
-              </div>
-            </div>
-          </div>
         </div>
       </form>
     <!-- fin contenu page -->

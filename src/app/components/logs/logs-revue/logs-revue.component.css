@@ -1,0 +1,8 @@
+/* ── Spinner de chargement ──────────────────────────────────────── */
+.logs-loading {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+/* ── État vide → style_add.css (.empty-stat, .empty-stat-*, .btn-empty-nav) ── */

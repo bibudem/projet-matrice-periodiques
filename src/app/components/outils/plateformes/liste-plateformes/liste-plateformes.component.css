@@ -1,1 +1,5 @@
-/* styles partagés définis dans style_add.css */
+.col-pf-num      { flex: none; width: 5%; }
+.col-pf-acronyme { flex: none; width: 15%; }
+.col-pf-titre    { flex: none; width: 47%; }
+.col-pf-date     { flex: none; width: 20%; }
+.col-pf-actions  { flex: none; width: 13%; }

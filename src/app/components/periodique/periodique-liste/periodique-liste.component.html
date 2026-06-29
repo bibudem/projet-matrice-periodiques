@@ -100,12 +100,15 @@
                 <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10" > {{ 'dateM' | translate}} </th>
                 <td  *matCellDef="let row" class="w-10"> {{row.dateM| date:'short': 'fr'}} </td>
               </ng-container>
-              <!-- Consulter Column -->
+              <!-- Actions Column -->
               <ng-container matColumnDef="consulter" >
-                <th *matHeaderCellDef class="font-weight-bold w-10 text-center"> {{ 'consulter' | translate}} </th>
+                <th *matHeaderCellDef class="font-weight-bold w-10 text-center">Actions</th>
                 <td  *matCellDef="let row" class="w-10 text-center">
-                  <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter la fiche"  routerLink="/periodique/{{ row.idRevue }}">
+                  <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter la fiche" routerLink="/periodique/{{ row.idRevue }}">
                     <i class="icon-note"></i>
+                  </button>
+                  <button *ngIf="ifAdmin" type="button" class="btn btn-danger btn-rounded btn-icon btn-sm ml-1" title="Supprimer" (click)="supprimerPeriodique(row.idRevue, row.titre)">
+                    <i class="icon-trash"></i>
                   </button>
                 </td>
               </ng-container>

@@ -7,12 +7,16 @@
     <div class="content-wrapper b-white">
       <div class="card-header w-100 b-white">
         <div class="page-header pt-2 mt-2">
-          <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
+          <div class="d-sm-flex align-items-baseline report-summary-header w-100">
             <h4 class="font-weight-semibold text-initial">{{ 'configuration-plateformes' | translate}}</h4>
-            <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
-                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
-              <button type="button" class="btn btn-success btn-sm mb-1 ml-2" (click)="addPlateform()" routerLink="/plateforme-form" ><i class="icon-plus text-white"></i> {{bouttonAction}}</button>
-              </span>
+            <span class="ml-auto">
+              <button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
+                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}}
+              </button>
+              <button type="button" class="btn btn-success btn-sm mb-1 ml-2" (click)="addPlateform()" routerLink="/plateforme-form">
+                <i class="icon-plus text-white"></i> {{bouttonAction}}
+              </button>
+            </span>
           </div>
         </div>
         <div class="search-bar-wrapper">
@@ -28,45 +32,54 @@
         </div>
       </div>
 
-      <div class="example-container">
-        <div class="table-responsive">
-          <table  mat-table [dataSource]="dataSource" matSort class="p-3 mat-table mt-3 table-mat-100"  >
+      <div class="example-container w-100 p-3">
+        <div class="table-responsive w-100">
+          <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100">
 
-            <!-- ID Column -->
-            <ng-container matColumnDef="numero" >
-              <th *matHeaderCellDef mat-sort-header  class="mat-w-10"> {{ 'numero' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-10" > {{row.numero}} </td>
+            <!-- No Column -->
+            <ng-container matColumnDef="numero">
+              <th *matHeaderCellDef mat-sort-header class="col-pf-num"> {{ 'numero' | translate}} </th>
+              <td *matCellDef="let row" class="col-pf-num"> {{row.numero}} </td>
             </ng-container>
 
-            <!-- Acronime Column -->
+            <!-- Acronyme Column -->
             <ng-container matColumnDef="PlatformID">
-              <th *matHeaderCellDef mat-sort-header class="mat-w-20"> {{ 'acronyme' | translate}} </th>
-              <td  *matCellDef="let row" class="mat-w-20" > {{row.PlatformID}} </td>
+              <th *matHeaderCellDef mat-sort-header class="col-pf-acronyme"> {{ 'acronyme' | translate}} </th>
+              <td *matCellDef="let row" class="col-pf-acronyme"> {{row.PlatformID}} </td>
             </ng-container>
 
-            <!-- ISSN Column -->
+            <!-- Titre Column -->
             <ng-container matColumnDef="titrePlateforme">
-              <th *matHeaderCellDef mat-sort-header  class="mat-w-50"> {{ 'titre' | translate}} </th>
-              <td  *matCellDef="let row" class="mat-w-50"> {{row.titrePlateforme}} </td>
+              <th *matHeaderCellDef mat-sort-header class="col-pf-titre"> {{ 'titre' | translate}} </th>
+              <td *matCellDef="let row" class="col-pf-titre"> {{row.titrePlateforme}} </td>
             </ng-container>
 
-            <!-- Derniere modification -->
+            <!-- Date modification Column -->
             <ng-container matColumnDef="dateM">
-              <th *matHeaderCellDef mat-sort-header  class="mat-w-15"> {{ 'dateM' | translate}} </th>
-              <td  *matCellDef="let row" class="mat-w-15"> {{row.dateM | date:'short': 'fr'}} </td>
+              <th *matHeaderCellDef mat-sort-header class="col-pf-date"> {{ 'dateM' | translate}} </th>
+              <td *matCellDef="let row" class="col-pf-date"> {{row.dateM | date:'short': 'fr'}} </td>
             </ng-container>
-            <!-- Consulter Column -->
-            <ng-container matColumnDef="consulter" >
-              <th *matHeaderCellDef   class="mat-w-5"> {{ 'consulter' | translate}} </th>
-              <td  *matCellDef="let row" class="mat-w-5">
-                <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter la fiche" (click)="consulter(row.idPlateforme)" routerLink="/plateforme-form" >
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th *matHeaderCellDef class="col-pf-actions text-right">Actions</th>
+              <td *matCellDef="let row" class="col-pf-actions text-right">
+                <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm"
+                        title="Consulter la fiche"
+                        (click)="consulter(row.idPlateforme)"
+                        routerLink="/plateforme-form">
                   <i class="icon-note"></i>
+                </button>
+                <button *ngIf="ifAdmin" type="button" class="btn btn-danger btn-rounded btn-icon btn-sm ml-1"
+                        title="Supprimer"
+                        (click)="confirmerSuppression(row.idPlateforme, row.titrePlateforme)">
+                  <i class="icon-trash"></i>
                 </button>
               </td>
             </ng-container>
+
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns;">
-            </mat-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           </table>
 
           <mat-paginator [pageSizeOptions]="[25, 50, 75, 100]"></mat-paginator>

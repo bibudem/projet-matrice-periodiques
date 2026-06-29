@@ -8,6 +8,8 @@ import {LogsListeServiceService} from "../../../services/logs-liste.service";
 import {tap} from "rxjs/operators";
 import {TranslateService} from "@ngx-translate/core";
 import {MatSort} from "@angular/material/sort";
+import {MatDialog} from "@angular/material/dialog";
+import {ConfirmDialogComponent} from "../../../lib/confirm-suppression-dialog.component";
 import * as XLSX from "xlsx";
 
 @Component({
@@ -19,118 +21,116 @@ export class LogsPlateformeComponent implements OnInit {
 
   logs$: Observable<any[]> | undefined;
 
-  codes:any=[]
+  codes: any = [];
 
-  //les entêts du tableau
-  displayedColumns = ['numero', 'plateforme','url','annee','message','dateA','supprimer'];
+  displayedColumns = ['numero', 'plateforme', 'url', 'annee', 'message', 'dateA', 'actions'];
   listeLogs: any = [];
   // @ts-ignore
   dataSource: MatTableDataSource<listePlateformes>;
 
-  /*name of the excel-file which will be downloaded. */
-  fileName= 'rapport-logs-plateformes.xlsx';
+  fileName = 'rapport-logs-plateformes.xlsx';
 
   @ViewChild(MatPaginator) paginator: paginationPersonnalise | any;
+  @ViewChild(MatSort) matSort: MatSort | any;
 
-  @ViewChild(MatSort)  matSort : MatSort | any;
+  methodesGlobal: MethodesGlobal = new MethodesGlobal();
+  ifAdmin = false;
+  currentUrl: string = '';
+  urlCopied = false;
 
-  //importer les fonctions global
-  methodesGlobal: MethodesGlobal = new MethodesGlobal()
-  constructor(private logsService: LogsListeServiceService,
-              private translate:TranslateService) { }
+  constructor(
+    private logsService: LogsListeServiceService,
+    private translate: TranslateService,
+    private dialog: MatDialog
+  ) {}
 
-  //appliquer filtre
   applyFilter(filterValue: string) {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+    filterValue = filterValue.trim().toLowerCase();
     // @ts-ignore
     this.dataSource.filter = filterValue;
   }
 
   ngOnInit(): void {
-    this.getAllLogsPlateforme()
-
+    this.ifAdmin = this.methodesGlobal.ifAdminFunction();
+    this.getAllLogsPlateforme();
     this.translate.get('codes').subscribe((res: any) => {
       let result = Object.entries(res);
-     // console.log(typeof(result))
-     for(let [key,val] of result){
-
-       this.codes.push(val)
-     }
+      for (let [, val] of result) {
+        this.codes.push(val);
+      }
     });
   }
 
   async getAllLogsPlateforme() {
     try {
-      this.listeLogs=[]
+      this.listeLogs = [];
       this.logs$ = this.logsService.getAllLogsPlateforme();
       // @ts-ignore
       await this.logs$.toPromise().then(res => {
         for (let i = 0; i < res.length; i++) {
-          this.listeLogs[i]={
-            "numero":i+1,
-            "idLog":res[i].idLog,
-            "plateforme":res[i].plateforme,
-            "url":res[i].url,
-            "annee":res[i].annee,
-            "message":res[i].message,
-            "dateA":res[i].dateA,
-          }
+          this.listeLogs[i] = {
+            "numero": i + 1,
+            "idLog": res[i].idLog,
+            "plateforme": res[i].plateforme,
+            "url": res[i].url,
+            "annee": res[i].annee,
+            "message": res[i].message,
+            "dateA": res[i].dateA,
+          };
         }
-        // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
         this.dataSource = new MatTableDataSource(this.listeLogs);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
-        //console.log(this.dataSource);
       });
-    } catch(err) {
-      console.error(`Error : ${err.Message}`);
+    } catch (err: any) {
+      console.error(`Error : ${err.message}`);
     }
   }
 
-  async deleteLogsPLateforme(id:string){
-    let idP=Number(id)
-    this.logs$ = this.logsService
-      .deleteLogsPLateforme(idP)
-      .pipe(tap(() => (this.getAllLogsPlateforme())));
+  confirmerSuppression(id: number, plateforme: string): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        titre: 'Supprimer le log',
+        message: `Êtes-vous sûr de vouloir supprimer le log de la plateforme « ${plateforme} » ? Cette action est irréversible.`,
+        confirmLabel: 'Supprimer',
+        confirmColor: 'warn'
+      }
+    });
+    ref.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+      this.logs$ = this.logsService
+        .deleteLogsPLateforme(id)
+        .pipe(tap(() => this.getAllLogsPlateforme()));
+    });
   }
 
-  //remplire la section pour afficher l'url
-  afficherUrlSection(plateforme:string,url:string){
-    // @ts-ignore
-    document.getElementById('urlLog').innerHTML=plateforme+' => '+url
-    this.methodesGlobal.afficher('alert-urlLog')
+  copierUrlCourante(): void {
+    navigator.clipboard.writeText(this.currentUrl).then(() => {
+      this.urlCopied = true;
+      setTimeout(() => this.urlCopied = false, 1800);
+    }).catch(err => console.error('Erreur copie URL', err));
   }
 
-  //Ajouter la valeur pour l'input
-  addValue(val:string){
-    let idLog=document.getElementById('idLog')
-    if(idLog)
-       { // @ts-ignore
-         idLog.value=val
-       }
+  afficherUrlSection(plateforme: string, url: string) {
+    const elPlateforme = document.getElementById('urlPlateforme');
+    const elUrl = document.getElementById('urlLog');
+    if (elPlateforme) elPlateforme.textContent = plateforme;
+    if (elUrl) elUrl.textContent = url;
+    this.currentUrl = url;
+    this.urlCopied = false;
+    this.methodesGlobal.afficher('alert-urlLog');
   }
 
-  //exporter les données en format xlsx
-  async ExportTOExcel()
-  {
-    let that=this
-
+  async ExportTOExcel() {
+    let that = this;
     setTimeout(async function () {
-      let dateNow=new Date().getUTCDate();
-      /* table id is passed over here */
+      let dateNow = new Date().getUTCDate();
       let element = document.getElementById('table-logs-plateformes');
-      const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
-
-      /* generate workbook and add the worksheet */
+      const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Rapport-statistique-'+dateNow);
-
-      /* save to file */
+      XLSX.utils.book_append_sheet(wb, ws, 'Rapport-statistique-' + dateNow);
       XLSX.writeFile(wb, that.fileName);
     }, 3000);
-
-    //console.log(this.dataSource);
-
   }
 }

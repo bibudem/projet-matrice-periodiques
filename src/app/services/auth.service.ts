@@ -13,12 +13,24 @@ import {DOCUMENT} from "@angular/common";
 export class AuthService {
   isLoggedIn: boolean = false; // L'utilisateur est-il connecté ?
 
-
   redirectUrl: string| undefined='/accueil'; // où rediriger l'utilisateur après l'authentification ?
 
   // @ts-ignore
   public user: User = {};
   private data: any;
+
+  private _initPromise: Promise<void> | null = null;
+
+  initLogin(): Promise<void> {
+    if (!this._initPromise) {
+      this._initPromise = new Promise<void>(resolve => {
+        this.login()
+          .then(obs => obs.subscribe(() => resolve()))
+          .catch(() => resolve());
+      });
+    }
+    return this._initPromise;
+  }
 
   constructor(private http: HttpClient,
               private errorHandlerService: ErrorHandlerService,

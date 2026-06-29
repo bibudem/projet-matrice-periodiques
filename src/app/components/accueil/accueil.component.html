@@ -163,18 +163,30 @@
               </div>
 
               <!-- État vide -->
-              <div *ngIf="!isLoading && top10.length === 0" class="empty-state text-center py-5">
-                <i class="fa fa-bar-chart empty-icon"></i>
-                <p class="mt-3 font-weight-semibold">
+              <div *ngIf="!isLoading && top10.length === 0" class="empty-stat">
+                <svg class="empty-stat-icon" viewBox="0 0 80 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4"  y="44" width="14" height="24" rx="3" fill="#dce8f2"/>
+                  <rect x="22" y="30" width="14" height="38" rx="3" fill="#c8daea"/>
+                  <rect x="40" y="18" width="14" height="50" rx="3" fill="#b4ccde"/>
+                  <rect x="58" y="36" width="14" height="32" rx="3" fill="#dce8f2"/>
+                  <line x1="2" y1="68" x2="78" y2="68" stroke="#ccd8e4" stroke-width="2" stroke-linecap="round"/>
+                  <circle cx="40" cy="28" r="14" fill="#fff" stroke="#ccd8e4" stroke-width="1.5"/>
+                  <text x="40" y="33" text-anchor="middle" font-size="14" font-weight="700" fill="#b0bec8"
+                        font-family="-apple-system,sans-serif">?</text>
+                </svg>
+                <div class="empty-stat-year">{{ anneeSelectionnee }}</div>
+                <p class="empty-stat-text font-weight-semibold">
                   {{ 'home.aucune-donnee' | translate }} {{ anneeSelectionnee }}
                 </p>
-                <p class="text-muted small">
+                <p class="empty-stat-text">
                   {{ 'home.donnees-counter-info' | translate }}
                 </p>
-                <button *ngIf="anneePrec()" class="btn btn-outline-primary btn-sm mt-2"
-                        (click)="changerAnnee(anneePrec()!)">
-                  ← {{ 'home.voir-annee' | translate }} {{ anneePrec() }}
-                </button>
+                <div class="empty-stat-actions">
+                  <button *ngIf="anneePrec()" class="btn-empty-nav"
+                          (click)="changerAnnee(anneePrec()!)">
+                    &#8592; {{ 'home.voir-annee' | translate }} {{ anneePrec() }}
+                  </button>
+                </div>
               </div>
 
             </div>

@@ -1,50 +1,13 @@
-/* Annule le style drag-drop global appliqué par erreur au wrapper du tableau */
-.example-container {
-  width: 100% !important;
-  max-width: 100% !important;
-  display: block !important;
-  margin: 0 !important;
-  vertical-align: initial !important;
-}
+/* .example-container.w-100, .mat-cell, .mat-header-cell → style_add.css */
 
-/* ── État vide (aucune statistique pour l'année sélectionnée) ──── */
-.empty-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 44px 20px 36px;
-  text-align: center;
-}
-.empty-stat-icon {
-  width: 80px;
-  height: 72px;
-  margin-bottom: 12px;
-  opacity: 0.7;
-}
-.empty-stat-year {
-  font-size: 2.4rem;
-  font-weight: 700;
-  color: #cdd8e2;
-  letter-spacing: 0.06em;
-  line-height: 1;
-  margin-bottom: 10px;
-}
-.empty-stat-text {
-  font-size: 0.82rem;
-  color: #8a97a5;
-  margin-bottom: 18px;
-}
-.empty-stat-actions { display: flex; gap: 10px; }
+/* ── Colonnes du tableau statistique ───────────────────────────────────
+   num(×4)=20 + annee=7 + pf=10 + titre=30 + articles=10 + date(×2)=18 + action=5 = 100%  */
+.col-stat-num     { flex: none; width: 5%;  text-align: center; }
+.col-stat-annee   { flex: none; width: 7%;  }
+.col-stat-pf      { flex: none; width: 10%; }
+.col-stat-titre   { flex: none; width: 30%; }
+.col-stat-articles{ flex: none; width: 10%; }
+.col-stat-date    { flex: none; width: 9%;  }
+.col-stat-action  { flex: none; width: 5%;  text-align: right; }
 
-.btn-empty-nav {
-  padding: 5px 16px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: #05304e;
-  background: transparent;
-  border: 1px solid #c5dcea;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
-.btn-empty-nav:hover { background: #eaf4fb; border-color: #05304e; }
+/* ── État vide → style_add.css (.empty-stat, .empty-stat-*, .btn-empty-nav) ── */

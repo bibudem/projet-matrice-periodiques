@@ -1,4 +1,6 @@
 import {Component,  OnInit, ViewChild} from "@angular/core";
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../lib/confirm-suppression-dialog.component';
 import {Router} from "@angular/router";
 import { Observable } from "rxjs";
 import { Periodique } from "src/app/models/Periodique";
@@ -112,8 +114,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
     essentiel2022: ""
   };
 
-  // @ts-ignore
-  @ViewChild('closebutton') closebutton:any
+  private pendingForm: NgForm | null = null;
 
   constructor(private periodiqueFormulaireService: PeriodiqueFormulaireService,
               private archiveService: PeriodiqueArchiveService,
@@ -125,7 +126,8 @@ export class PeriodiqueFormulaireComponent implements OnInit {
               private router: Router,
               private translate: TranslateService,
               private plateformeService: OutilsService,
-              private _location: Location) {}
+              private _location: Location,
+              private dialog: MatDialog) {}
 
   ngOnInit(): void {
     localStorage.setItem('titrePeridique','');
@@ -258,7 +260,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
           this.multiListePlateforme.push({ "id": res[i].idPlateforme, "titre": res[i].titrePlateforme })
          }
       });
-    } catch(err) {
+    } catch(err: any) {
       console.error(`Error : ${err.Message}`);
     }
   }
@@ -274,7 +276,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
           }
         }
       });
-    } catch(err) {
+    } catch(err: any) {
       console.error(`Error : ${err.Message}`);
     }
   }
@@ -292,7 +294,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
           this.multiListeFonds.push({ "id": res[i].numero, "titre": res[i].titre })
         }
       });
-    } catch(err) {
+    } catch(err: any) {
       console.error(`Error : ${err.Message}`);
     }
   }
@@ -318,11 +320,26 @@ export class PeriodiqueFormulaireComponent implements OnInit {
     }, 2000);
 
   }
-//supprimer un enregistrement
+  //supprimer un enregistrement
   delete(id: number): void {
-    this.periodiques$ = this.periodiqueFormulaireService
-      .delete(id)
-      .pipe(tap(() => (this.goBack())));
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        titre: 'Confirmation de suppression',
+        message: `Êtes-vous sûr de vouloir supprimer le périodique "${this.periodique.titre}" ?`,
+        confirmLabel: 'Supprimer',
+        confirmColor: 'warn'
+      }
+    });
+
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.periodiqueFormulaireService.delete(id).subscribe({
+          next: () => this.goBack(),
+          error: (err) => console.error(`Erreur suppression périodique : ${err}`)
+        });
+      }
+    });
   }
   //consulter une fiche
   consulter(id: number) {
@@ -356,7 +373,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
           }
         //console.log(this.tableauArchives);
       });
-    } catch(err) {
+    } catch(err: any) {
       console.error(`Error : ${err.Message}`);
     }
   }
@@ -376,7 +393,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
         }
         //console.log(this.tableauHistorique);
       });
-    } catch(err) {
+    } catch(err: any) {
       console.error(`Error : ${err.Message}`);
     }
   }
@@ -394,7 +411,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
           }
         }
       });
-    } catch(err) {
+    } catch(err: any) {
       console.error(`Error : ${err.Message}`);
     }
   }
@@ -417,7 +434,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
           }
         }
       });
-    } catch(err) {
+    } catch(err: any) {
       console.error(`Error : ${err.Message}`);
     }
   }
@@ -438,7 +455,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
         }
 
       });
-    } catch(err) {
+    } catch(err: any) {
       console.error(`Error : ${err.Message}`);
     }
   }
@@ -457,7 +474,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
           }
         }
       });
-    } catch(err) {
+    } catch(err: any) {
       console.error(`Error : ${err.Message}`);
     }
   }
@@ -514,8 +531,6 @@ export class PeriodiqueFormulaireComponent implements OnInit {
       return;
     }
 
-    this.onFermeModal();
-
     if (action === 'save') {
       this.update(this.periodique);
     } else if (action === 'add') {
@@ -524,9 +539,24 @@ export class PeriodiqueFormulaireComponent implements OnInit {
     }
   }
 
-  //fermer le modal une fois envoyer les données
-  onFermeModal() {
-    this.closebutton.nativeElement.click();
+  confirmerModification(form: NgForm): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        titre: 'Confirmation de modification',
+        message: 'Êtes-vous sûr de vouloir enregistrer les modifications ?',
+        confirmLabel: 'Enregistrer',
+        confirmColor: 'primary'
+      }
+    });
+
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.pendingForm = form;
+        this.onSubmit(form);
+        this.pendingForm = null;
+      }
+    });
   }
 
   ensureArray(value: string | string[]): string[] {

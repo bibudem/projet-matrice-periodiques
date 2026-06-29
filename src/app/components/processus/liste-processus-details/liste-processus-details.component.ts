@@ -4,12 +4,14 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {paginationPersonnalise} from "../../../lib/paginationPersonnalise";
 import {MatSort} from "@angular/material/sort";
+import {MatDialog} from "@angular/material/dialog";
 import {MethodesGlobal} from "../../../lib/MethodesGlobal";
 import {ProcessusService} from "../../../services/processus.service";
 import {TranslateService} from "@ngx-translate/core";
 import {tap} from "rxjs/operators";
 import * as XLSX from "xlsx";
 import {ActivatedRoute, Router} from "@angular/router";
+import {ConfirmDialogComponent} from "../../../lib/confirm-suppression-dialog.component";
 
 @Component({
   selector: 'app-liste-processus-details',
@@ -25,7 +27,7 @@ export class ListeProcessusDelailsComponent implements OnInit {
   isLoading = true;
 
   //les entêts du tableau
-  displayedColumns = ['numero','idRevue','ISSN','EISSN','titre','dateA','fiche','supprimer'];
+  displayedColumns = ['numero','idRevue','ISSN','EISSN','titre','dateA','actions'];
   listeProcessus: any = [];
   // @ts-ignore
   dataSource: MatTableDataSource<any>;
@@ -36,8 +38,6 @@ export class ListeProcessusDelailsComponent implements OnInit {
 
   @ViewChild(MatSort)  matSort : MatSort | any;
 
-  // @ts-ignore
-  @ViewChild('closebutton') closebutton:any;
 
   //importer les fonctions global
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
@@ -50,9 +50,10 @@ export class ListeProcessusDelailsComponent implements OnInit {
   idProcessus: string = '';
 
   constructor(private processusService: ProcessusService,
-              private translate:TranslateService,
+              private translate: TranslateService,
               private route: ActivatedRoute,
-              private router: Router) { }
+              private router: Router,
+              private dialog: MatDialog) { }
 
   //appliquer filtre
   applyFilter(filterValue: string) {
@@ -108,9 +109,27 @@ export class ListeProcessusDelailsComponent implements OnInit {
         this.isLoading = false;
         //console.log(this.dataSource);
       });
-    } catch(err) {
-      console.error(`Error : ${err.Message}`);
+    } catch(err: any) {
+      console.error(`Error : ${err.message}`);
     }
+  }
+
+  confirmerSuppression(id: string, titre: string): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        titre: 'Confirmation de suppression',
+        message: `Êtes-vous sûr de vouloir supprimer la ligne "${titre}" ?`,
+        confirmLabel: 'Supprimer',
+        confirmColor: 'warn'
+      }
+    });
+
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.deleteProcessusDetails(id);
+      }
+    });
   }
 
   async deleteProcessusDetails(id:string){

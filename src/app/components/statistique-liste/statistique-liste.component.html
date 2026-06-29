@@ -16,19 +16,17 @@
         </div>
       </div>
       <div class="search-bar-wrapper">
-          <div class="search-bar-wrapper">
-            <i class="icon-magnifier search-bar-icon"></i>
-            <input class="search-bar-input"
-                   #texteFiltre
-                   (keyup)="applyFilter(texteFiltre.value)"
-                   placeholder="{{ 'filtre-text' | translate }}"
-                   id="textFiltre" name="textFiltre"
-                   [value]="textRechercher">
-            <button class="search-bar-clear" *ngIf="texteFiltre.value" (click)="viderFiltre()" aria-label="Effacer">
-              &times;
-            </button>
-          </div>
-        </div>
+        <i class="icon-magnifier search-bar-icon"></i>
+        <input class="search-bar-input"
+               #texteFiltre
+               (keyup)="applyFilter(texteFiltre.value)"
+               placeholder="{{ 'filtre-text' | translate }}"
+               id="textFiltre" name="textFiltre"
+               [value]="textRechercher">
+        <button class="search-bar-clear" *ngIf="texteFiltre.value" (click)="viderFiltre()" aria-label="Effacer">
+          &times;
+        </button>
+      </div>
         <div class=" d-flex align-items-center justify-content-end">
           <span class="stepper-label">{{ 'annee' | translate }}</span>
           <div class="annee-stepper">
@@ -44,8 +42,8 @@
           </div>
         </div>
 
-      <div class="example-container">
-        <div class="table-responsive" *ngIf="!(!isLoading && totalItems === 0)">
+      <div class="example-container w-100 p-3">
+        <div class="table-responsive w-100" *ngIf="!(!isLoading && totalItems === 0)">
           <table mat-table
                  [dataSource]="dataSource"
                  class="mat-elevation-z8 w-100 p-2"
@@ -54,58 +52,58 @@
                  matSortDirection="asc">
 
             <ng-container matColumnDef="numero">
-              <th *matHeaderCellDef mat-sort-header="numero" class="mat-w-5"> {{ 'numero' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-5"> {{row.numero}} </td>
+              <th *matHeaderCellDef mat-sort-header="numero" class="col-stat-num"> {{ 'numero' | translate}} </th>
+              <td *matCellDef="let row" class="col-stat-num"> {{row.numero}} </td>
             </ng-container>
 
             <ng-container matColumnDef="annee">
-              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'annee' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-10"> {{row.annee}} </td>
+              <th *matHeaderCellDef mat-sort-header class="col-stat-annee"> {{ 'annee' | translate}} </th>
+              <td *matCellDef="let row" class="col-stat-annee"> {{row.annee}} </td>
             </ng-container>
 
             <ng-container matColumnDef="plateforme">
-              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'plateforme' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-10"> {{row.plateforme}} </td>
+              <th *matHeaderCellDef mat-sort-header class="col-stat-pf"> {{ 'plateforme' | translate}} </th>
+              <td *matCellDef="let row" class="col-stat-pf"> {{row.plateforme}} </td>
             </ng-container>
 
             <ng-container matColumnDef="titre">
-              <th *matHeaderCellDef mat-sort-header class="mat-w-15"> {{ 'titre' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-15"> {{row.titre}} </td>
+              <th *matHeaderCellDef mat-sort-header class="col-stat-titre"> {{ 'titre' | translate}} </th>
+              <td *matCellDef="let row" class="col-stat-titre"> {{row.titre}} </td>
             </ng-container>
 
             <ng-container matColumnDef="telech">
-              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'telech.' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-10"> {{row.telech}} </td>
+              <th *matHeaderCellDef mat-sort-header class="col-stat-num"> {{ 'telech.' | translate}} </th>
+              <td *matCellDef="let row" class="col-stat-num"> {{row.telech}} </td>
             </ng-container>
 
             <ng-container matColumnDef="refus">
-              <th *matHeaderCellDef mat-sort-header class="mat-w-5"> {{ 'refus' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-5"> {{row.refus}} </td>
+              <th *matHeaderCellDef mat-sort-header class="col-stat-num"> {{ 'refus' | translate}} </th>
+              <td *matCellDef="let row" class="col-stat-num"> {{row.refus}} </td>
             </ng-container>
 
             <ng-container matColumnDef="citation">
-              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'citations' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-10"> {{row.citation}} </td>
+              <th *matHeaderCellDef mat-sort-header class="col-stat-num"> {{ 'citations' | translate}} </th>
+              <td *matCellDef="let row" class="col-stat-num"> {{row.citation}} </td>
             </ng-container>
 
             <ng-container matColumnDef="articlesUdem">
-              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'articlesUdem' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-10"> {{row.articlesUdem}} </td>
+              <th *matHeaderCellDef mat-sort-header class="col-stat-articles"> {{ 'articlesUdem' | translate}} </th>
+              <td *matCellDef="let row" class="col-stat-articles"> {{row.articlesUdem}} </td>
             </ng-container>
 
             <ng-container matColumnDef="dateA">
-              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'dateA' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-10"> {{row.dateA | date:'short': 'fr'}} </td>
+              <th *matHeaderCellDef mat-sort-header class="col-stat-date"> {{ 'dateA' | translate}} </th>
+              <td *matCellDef="let row" class="col-stat-date"> {{row.dateA | date:'short': 'fr'}} </td>
             </ng-container>
 
             <ng-container matColumnDef="dateM">
-              <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'dateM' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-10"> {{row.dateM | date:'short': 'fr'}} </td>
+              <th *matHeaderCellDef mat-sort-header class="col-stat-date"> {{ 'dateM' | translate}} </th>
+              <td *matCellDef="let row" class="col-stat-date"> {{row.dateM | date:'short': 'fr'}} </td>
             </ng-container>
 
             <ng-container matColumnDef="consulter">
-              <th *matHeaderCellDef class="mat-w-5"> {{ 'consulter' | translate}} </th>
-              <td *matCellDef="let row" class="mat-w-5">
+              <th *matHeaderCellDef class="col-stat-action">Actions</th>
+              <td *matCellDef="let row" class="col-stat-action">
                 <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm" title="Consulter les détails" (click)="consulterStatistique(row.idRevue, row.titre)">
                   <i class="icon-note"></i>
                 </button>

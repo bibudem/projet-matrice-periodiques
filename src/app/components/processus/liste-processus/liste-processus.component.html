@@ -157,7 +157,7 @@
               <ng-container matColumnDef="supprimer" >
                 <th *matHeaderCellDef   class="mat-w-5 text-center"> {{ 'btn-supprimer' | translate}} </th>
                 <td  *matCellDef="let row" class="mat-w-5 text-center">
-                  <button type="button" class="btn btn-danger btn-rounded btn-icon btn-sm" title="Supprimer la fiche" (click)="methodesGlobal.addValueInput(row.id_processus,'id_processus')" data-toggle="modal" data-target="#modal-supprimer" >
+                  <button type="button" class="btn btn-danger btn-rounded btn-icon btn-sm" title="Supprimer la fiche" (click)="confirmerSuppression(row.id_processus, row.titre)">
                     <i class="icon-trash"></i>
                   </button>
                 </td>
@@ -169,27 +169,6 @@
             </table>
 
             <mat-paginator [pageSizeOptions]="[15, 25, 50, 100]"></mat-paginator>
-          </div>
-        </div>
-      </div>
-    </div>
-    <input type="hidden" id="id_processus" name="id_processus" #id_processus value="">
-    <!-- Modal pour supprimer-->
-    <div class="modal fade" id="modal-supprimer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="modal-supprimer-Label">{{'message.supprimer-titre'| translate}}</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            {{'message.supprimer-text'| translate}}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary btn-sm"  data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i> {{'btn-annuler'| translate}}</button>
-            <button type="button" class="btn btn-danger btn-sm" (click)="deleteProcessus(this.methodesGlobal.getValue(id_processus.value))" data-dismiss="modal" ><i class="fa fa-trash btn-icon-prepend"></i> {{'btn-supprimer'| translate}}</button>
           </div>
         </div>
       </div>

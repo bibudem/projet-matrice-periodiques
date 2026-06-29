@@ -5,54 +5,75 @@
   <app-menu></app-menu>
   <div class="main-panel">
     <div class="content-wrapper b-white">
-      <!-- Contenu de la page liste des periodiques -->
-      <!-- Quick Action Toolbar Ends-->
+
       <div class="page-header pt-3">
-        <div  class="d-sm-flex align-items-baseline report-summary-header w-100 mt-3">
-          <h4 class="font-weight-semibold text-initial ">{{ 'logs.menu-logs' | translate}}  </h4>
-          <span  class="ml-auto "><button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
-                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
-              </span>
+        <div class="d-sm-flex align-items-baseline report-summary-header w-100 mt-3">
+          <h4 class="font-weight-semibold text-initial">{{ 'logs.menu-logs' | translate }}</h4>
+          <span class="ml-auto">
+            <button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/accueil">
+              <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate }}
+            </button>
+          </span>
         </div>
       </div>
-      <div class="row">
-          <div class="col-xl-6 col-sm-6 col-md-6">
-            <div class="card text-white bg-danger o-hidden h-100">
-              <div class="card-body">
-                <div class="card-body-icon">
-                  <i class="icon-layers"></i>
-                </div>
-                <div class="mr-5"><h1 class="font-size-3 text-white">{{totalLogsRevue}}</h1> </div>
-                <h4>{{ 'logs.titre-logs-revue' | translate}}</h4>
-              </div>
-              <a class="card-footer text-white clearfix small z-1" routerLink="/logs-revue">
-                <span class="float-left">{{ 'voir-details' | translate}}</span>
-                <span class="float-right">
-                <i class="fa fa-angle-right"></i>
-              </span>
-              </a>
-            </div>
-          </div>
-          <div class="col-xl-6 col-sm-6 col-md-5">
-            <div class="card text-white bg-info o-hidden h-100">
-              <div class="card-body">
-                <div class="card-body-icon">
-                  <i class="fa fa-fw fa-list"></i>
-                </div>
-                <div class="mr-5"><h1 class="font-size-3 text-white">{{totalLogsPlat}}</h1></div>
-                <h4>{{ 'logs.titre-logs-plateforme' | translate}}</h4>
-              </div>
-              <a class="card-footer text-white clearfix small z-1" routerLink="/logs-plateforme">
-                <span class="float-left">{{ 'voir-details' | translate}}</span>
-                <span class="float-right">
-                <i class="fa fa-angle-right"></i>
-              </span>
-              </a>
-            </div>
-          </div>
+
+      <!-- Bannière descriptive -->
+      <div class="logs-intro">
+        <div class="logs-intro__icon"><i class="fa fa-database"></i></div>
+        <div>
+          <h6 class="logs-intro__title">Journaux d'activité</h6>
+          <p class="logs-intro__desc">
+            Consultez et analysez l'activité de la matrice des périodiques.
+            Sélectionnez un journal pour accéder aux détails et gérer les entrées.
+          </p>
         </div>
+      </div>
+
+      <!-- Cartes horizontales -->
+      <div class="logs-cards-list">
+
+        <!-- Journal des données non-importées -->
+        <a class="log-card log-card--revue" routerLink="/logs-revue">
+          <div class="log-card__icon-panel">
+            <i class="icon-layers"></i>
+          </div>
+          <div class="log-card__content">
+            <p class="log-card__label">{{ 'logs.titre-logs-revue' | translate }}</p>
+            <span class="log-card__count">{{ totalLogsRevue }}</span>
+            <p class="log-card__desc">
+              Données de périodiques non importées dans la matrice.
+              Consultez et traitez les entrées en attente de traitement.
+            </p>
+          </div>
+          <div class="log-card__cta">
+            <i class="fa fa-arrow-right log-card__arrow"></i>
+            <span>{{ 'voir-details' | translate }}</span>
+          </div>
+        </a>
+
+        <!-- Journal des plateformes -->
+        <a class="log-card log-card--plat" routerLink="/logs-plateforme">
+          <div class="log-card__icon-panel">
+            <i class="fa fa-fw fa-list"></i>
+          </div>
+          <div class="log-card__content">
+            <p class="log-card__label">{{ 'logs.titre-logs-plateforme' | translate }}</p>
+            <span class="log-card__count">{{ totalLogsPlat }}</span>
+            <p class="log-card__desc">
+              Événements liés aux plateformes : accès, erreurs et modifications enregistrées.
+              Suivez l'activité par source de données.
+            </p>
+          </div>
+          <div class="log-card__cta">
+            <i class="fa fa-arrow-right log-card__arrow"></i>
+            <span>{{ 'voir-details' | translate }}</span>
+          </div>
+        </a>
+
+      </div>
+
     </div>
-      <!-- Contenu footer -->
-      <app-footer></app-footer>
-    </div>
+    <!-- Contenu footer -->
+    <app-footer></app-footer>
   </div>
+</div>

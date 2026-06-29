@@ -1,14 +1,13 @@
 import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
-import { Observable } from "rxjs";
-import { Periodique } from "src/app/models/Periodique";
 import {PeriodiqueListeService} from "../../../services/periodique-liste.service";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatSort} from "@angular/material/sort";
 import type {Sort} from "@angular/material/sort";
 import { MatPaginator } from '@angular/material/paginator';
-import { paginationPersonnalise } from '../../../lib/paginationPersonnalise';
 import {MethodesGlobal} from "../../../lib/MethodesGlobal";
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../lib/confirm-suppression-dialog.component';
 
 @Component({
   selector: 'app-periodique-liste',
@@ -50,8 +49,11 @@ export class PeriodiqueListeComponent implements OnInit, AfterViewInit {
   sortColumn = 'titre';
   sortDirection = 'asc';
 
-  constructor(private periodiqueListeService: PeriodiqueListeService, private router: Router) {
-  }
+  constructor(
+    private periodiqueListeService: PeriodiqueListeService,
+    private router: Router,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit():void {
     this.textRechercher = this.historiqueRechercheZone();
@@ -255,6 +257,27 @@ export class PeriodiqueListeComponent implements OnInit, AfterViewInit {
     }
 
     return result;
+  }
+
+  supprimerPeriodique(id: string, titre: string): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        titre: 'Confirmation de suppression',
+        message: `Êtes-vous sûr de vouloir supprimer le périodique "${titre}" ?`,
+        confirmLabel: 'Supprimer',
+        confirmColor: 'warn'
+      }
+    });
+
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.periodiqueListeService.delete(Number(id)).subscribe({
+          next: () => this.loadPeriodiques(this.prepareSearch(this.textRechercher)),
+          error: (err) => console.error(`Erreur suppression périodique : ${err}`)
+        });
+      }
+    });
   }
 
   //vider le filtre

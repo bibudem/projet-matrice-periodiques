@@ -6,6 +6,8 @@ import {Plateforme} from "../../../../models/Plateforme";
 import {Observable} from "rxjs";
 import {tap} from "rxjs/operators";
 import {Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
+import {ConfirmDialogComponent} from "../../../../lib/confirm-suppression-dialog.component";
 
 @Component({
   selector: 'app-plateforme-form',
@@ -38,54 +40,35 @@ export class PlateformeFormComponent implements OnInit {
   //titre boutton
   bouttonAction='';
 
-  constructor( private periodiquePlateformeService: OutilsService,
-               private translate: TranslateService,
-               private router: Router,) { }
+  constructor(
+    private periodiquePlateformeService: OutilsService,
+    private translate: TranslateService,
+    private router: Router,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
-    //cacher le boutton add
-    this.methodesGlobal.nonAfficher('div-save');
     this.methodesGlobal.nonAfficher('btn-supprimer');
-    this.methodesGlobal.afficher('div-add');
-    //afficher les variable
-    console.log('id plateforme: '+localStorage.getItem('idPlateforme'))
-    //recouperer le bon titre du bouton
+    console.log('id plateforme: ' + localStorage.getItem('idPlateforme'));
     this.translate.get('btn-ajouter').subscribe((res: string) => {
-      this.bouttonAction=res;
+      this.bouttonAction = res;
     });
-    //valeur de l'action
-    this.action=localStorage.getItem('action');
-    //valeur du idPlateforme
-    this.idPlateforme=localStorage.getItem('idPlateforme');
-    //prendre la fiche si l'action est save
-    if(this.idPlateforme!=null && this.action=='save'){
-      //recouperer le bon titre du bouton
+    this.action = localStorage.getItem('action');
+    this.idPlateforme = localStorage.getItem('idPlateforme');
+
+    if (this.idPlateforme != null && this.action == 'save') {
       this.translate.get('btn-modifier').subscribe((res: string) => {
-        this.bouttonAction=res;
+        this.bouttonAction = res;
       });
       this.plateformes$ = this.consulter(this.methodesGlobal.convertNumber(this.idPlateforme));
       this.plateformes$.subscribe(res => {
-        this.plateforme =res[0];
-        console.log(this.plateforme);
+        this.plateforme = res[0];
       });
-      //cacher le boutton add
-      this.methodesGlobal.afficher('div-save');
       this.methodesGlobal.afficher('btn-supprimer');
-      this.methodesGlobal.nonAfficher('div-add');
-
-      //changer le texte pour le boutton
-      //recouperer le bon titre du bouton
       this.translate.get('btn-enregistrer').subscribe((res: string) => {
-        this.bouttonAction=res;
+        this.bouttonAction = res;
       });
     }
-    //afficher le form vide si l'action est add une fiche
-    if(this.action=='add'){
-      //cacher le boutton add
-      this.methodesGlobal.nonAfficher('div-save');
-      this.methodesGlobal.afficher('div-add');
-    }
-
   }
   //consulter une fiche
   consulter(id: number) {
@@ -96,12 +79,66 @@ export class PlateformeFormComponent implements OnInit {
   goBack(): void {
     this.router.navigate(['/plateformes']);
   }
+  confirmerModification(): void {
+    const isAdd = this.action === 'add-plateforme';
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        titre: isAdd ? 'Ajouter la plateforme' : 'Enregistrer les modifications',
+        message: isAdd
+          ? 'Êtes-vous sûr de vouloir ajouter cette plateforme ?'
+          : `Êtes-vous sûr de vouloir enregistrer les modifications apportées à « ${this.plateforme.titrePlateforme} » ?`,
+        confirmLabel: isAdd ? 'Ajouter' : 'Enregistrer',
+        confirmColor: 'primary'
+      }
+    });
+    ref.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+      if (isAdd) {
+        this.post(
+          this.plateforme.PlatformID,
+          this.plateforme.titrePlateforme,
+          this.plateforme.note,
+          this.plateforme.SUSHIURL,
+          this.plateforme.ConsortiumCustID,
+          this.plateforme.ConsortiumRequestorID,
+          this.plateforme.ConsortiumApiKey,
+          this.plateforme.PlatformCode
+        );
+      } else {
+        this.update(
+          this.plateforme.idPlateforme,
+          this.plateforme.PlatformID,
+          this.plateforme.titrePlateforme,
+          this.plateforme.note,
+          this.plateforme.SUSHIURL,
+          this.plateforme.ConsortiumCustID,
+          this.plateforme.ConsortiumRequestorID,
+          this.plateforme.ConsortiumApiKey,
+          this.plateforme.PlatformCode
+        );
+      }
+    });
+  }
+
   //supprimer un enregistrement
-  delete(id: number): void {
-    console.log(id);
-    this.plateformes$ = this.periodiquePlateformeService
-      .delete(id)
-      .pipe(tap(() => (this.goBack())));
+  confirmerSuppression(id: number, titre: string): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        titre: 'Supprimer la plateforme',
+        message: `Êtes-vous sûr de vouloir supprimer la plateforme « ${titre} » ? Cette action est irréversible.`,
+        confirmLabel: 'Supprimer',
+        confirmColor: 'warn'
+      }
+    });
+    ref.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+      this.periodiquePlateformeService.delete(id).subscribe({
+        next: () => this.goBack(),
+        error: (err: any) => console.error('Erreur suppression plateforme', err)
+      });
+    });
   }
   //fonction pour inserer
   post( newPlatformID: string,newtitrePlateforme: string,newNote: string,

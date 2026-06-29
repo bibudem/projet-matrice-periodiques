@@ -1,0 +1,13 @@
+/* .actions-cell, .btn-placeholder, .mat-cell/.mat-header-cell padding → style_add.css */
+
+/* Colonne Titre — plus large pour afficher les titres complets de processus */
+.col-titre {
+  min-width: 260px;
+  width: 30%;
+}
+
+/* Colonne Actions — largeur fixe propre à ce tableau */
+.col-actions {
+  width:     120px;
+  min-width: 120px;
+}

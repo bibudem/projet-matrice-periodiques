@@ -24,6 +24,7 @@ import { FooterComponent } from './footer/footer.component';
 import { MenuComponent } from './menu/menu.component';
 import { AccueilComponent } from './components/accueil/accueil.component';
 import { PeriodiqueListeComponent } from './components/periodique/periodique-liste/periodique-liste.component';
+import { ConfirmDialogComponent } from './lib/confirm-suppression-dialog.component';
 import { PeriodiqueFormulaireComponent } from './components/periodique/periodique-formulaire/periodique-formulaire.component';
 import { PeriodiqueArchiveComponent } from './components/periodique/periodique-archive/periodique-archive.component';
 import { PeriodiqueStatistiquesComponent } from './components/periodique/periodique-statistiques/periodique-statistiques.component';
@@ -94,6 +95,7 @@ const maskConfig: Partial<IConfig> = {
     MenuComponent,
     AccueilComponent,
     PeriodiqueListeComponent,
+    ConfirmDialogComponent,
     PeriodiqueFormulaireComponent,
     PeriodiqueArchiveComponent,
     PeriodiqueStatistiquesComponent,

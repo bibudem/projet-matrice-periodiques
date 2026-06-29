@@ -5,139 +5,158 @@
   <app-menu></app-menu>
   <div class="main-panel">
     <div class="content-wrapper b-white">
-      <!-- Contenu de la page liste des periodiques -->
-      <!-- Quick Action Toolbar Ends-->
       <div class="page-header pt-3">
-        <div  class="d-sm-flex align-items-baseline report-summary-header w-100 mt-3">
-          <h4 class="font-weight-semibold text-initial ">{{ 'logs.titre-logs-revue' | translate}}  </h4>
-          <span  class="ml-auto ">
+        <div class="d-sm-flex align-items-baseline report-summary-header w-100 mt-3">
+          <h4 class="font-weight-semibold text-initial">{{ 'logs.titre-logs-revue' | translate}}</h4>
+          <span class="ml-auto">
             <button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/logs-menu">
-                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
-            <button class="btn btn-info ml-1 btn-sm mb-1" (click)="methodesGlobal.ExportTOExcel('tableau-logs','liste-logs-periodiques.xlsx');"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}</button>
-              </span>
+              <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}}
+            </button>
+            <button class="btn btn-info ml-1 btn-sm mb-1" (click)="methodesGlobal.ExportTOExcel('tableau-logs','liste-logs-periodiques.xlsx');">
+              <i class="fa fa-file-excel-o"></i> {{'btn-export' | translate}}
+            </button>
+          </span>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-2">
-          <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
-          <select name="annee" id="annee"  class="form-control" #annee (change)="getAllLogsRevue(this.methodesGlobal.getValue(annee.value))">
-            <option value="">{{ 'choisissez' | translate}}</option>
-            <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
-          </select>
-        </div>
-        <div class="col-md-10">
-          <mat-form-field class="w-50 mt-4">
-            <input (keyup)="applyFilter(methodesGlobal.getValue(texteFiltre.value))"
-                   matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre >
-          </mat-form-field>
-        </div>
 
-        <div class="example-container w-100  mt-3">
-          <!-- section pour afficher les url des logs -->
+      <div class="search-bar-wrapper">
+        <i class="icon-magnifier search-bar-icon"></i>
+        <input class="search-bar-input"
+               #texteFiltre
+               (keyup)="applyFilter(texteFiltre.value)"
+               placeholder="{{ 'filtre-text' | translate }}"
+               id="textFiltre" name="textFiltre">
+        <button class="search-bar-clear" *ngIf="texteFiltre.value"
+                (click)="texteFiltre.value=''; applyFilter('')" aria-label="Effacer">
+          &times;
+        </button>
+      </div>
+      <div class="d-flex align-items-center justify-content-end">
+        <span class="stepper-label">{{ 'annee' | translate }}</span>
+        <div class="annee-stepper">
+          <button class="stepper-btn" (click)="stepYear(-1)" [disabled]="!canStepYear(-1)" aria-label="Année précédente">&#8249;</button>
+          <span class="stepper-annee">{{ annee }}</span>
+          <button class="stepper-btn" (click)="stepYear(1)" [disabled]="!canStepYear(1)" aria-label="Année suivante">&#8250;</button>
+        </div>
+      </div>
+
+      <div class="example-container w-100 mt-3">
           <div class="alert alert-success cacherVisible" id="alert-urlLog">
             <button type="button" (click)="methodesGlobal.nonAfficher('alert-urlLog')" class="alert-dismissible close">&times;</button>
             <strong id="urlLog"></strong>
           </div>
-          <div class="table-responsive w-100">
-            <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100" >
-              <!-- ID Column -->
-              <ng-container matColumnDef="numero" >
+
+          <!-- Spinner de chargement -->
+          <div *ngIf="isLoading" class="logs-loading">
+            <div class="spinner-border text-secondary" role="status">
+              <span class="sr-only">Chargement...</span>
+            </div>
+          </div>
+
+          <!-- État vide -->
+          <div *ngIf="!isLoading && dataLoaded && listeLogs.length === 0" class="empty-stat">
+            <svg class="empty-stat-icon" viewBox="0 0 80 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="12" y="8" width="46" height="56" rx="5" fill="#dce8f2"/>
+              <rect x="20" y="20" width="30" height="3" rx="1.5" fill="#c0d4e4"/>
+              <rect x="20" y="28" width="22" height="3" rx="1.5" fill="#c0d4e4"/>
+              <rect x="20" y="36" width="26" height="3" rx="1.5" fill="#c0d4e4"/>
+              <circle cx="57" cy="55" r="14" fill="#fff" stroke="#ccd8e4" stroke-width="1.5"/>
+              <line x1="51" y1="55" x2="63" y2="55" stroke="#b0bec8" stroke-width="2" stroke-linecap="round"/>
+              <line x1="57" y1="49" x2="57" y2="61" stroke="#b0bec8" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div class="empty-stat-year">{{ annee }}</div>
+            <p class="empty-stat-text">Aucun journal disponible pour cette année.</p>
+            <div class="empty-stat-actions">
+              <button *ngIf="canStepYear(-1)" class="btn-empty-nav" (click)="stepYear(-1)">
+                &#8592; {{ annee - 1 }}
+              </button>
+              <button *ngIf="canStepYear(1)" class="btn-empty-nav" (click)="stepYear(1)">
+                {{ annee + 1 }} &#8594;
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive w-100" *ngIf="!isLoading && listeLogs.length > 0">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100">
+
+              <!-- No Column -->
+              <ng-container matColumnDef="numero">
                 <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-5 p-3"> {{ 'numero' | translate}} </th>
-                <td *matCellDef="let row" class="w-5 p-3" > {{row.numero}} </td>
+                <td *matCellDef="let row" class="w-5 p-3"> {{row.numero}} </td>
               </ng-container>
 
-              <!-- plateforme Column -->
+              <!-- ISSN Column -->
               <ng-container matColumnDef="ISSN">
                 <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'ISSN' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10" > {{row.ISSN}} </td>
+                <td *matCellDef="let row" class="w-10"> {{row.ISSN}} </td>
               </ng-container>
 
               <!-- EISSN Column -->
               <ng-container matColumnDef="EISSN">
-                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 pr-1"> {{ 'EISSN' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10">
-                  {{row.EISSN}}
-                </td>
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10 pr-1"> {{ 'EISSN' | translate}} </th>
+                <td *matCellDef="let row" class="w-10"> {{row.EISSN}} </td>
               </ng-container>
 
               <!-- Title Column -->
               <ng-container matColumnDef="Title">
-                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-25 pr-1"> {{ 'titre' | translate}} </th>
-                <td  *matCellDef="let row" class="w-25 pr-1"> {{row.Title}} </td>
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-25 pr-1"> {{ 'titre' | translate}} </th>
+                <td *matCellDef="let row" class="w-25 pr-1"> {{row.Title}} </td>
               </ng-container>
 
-              <!-- rapport Column -->
+              <!-- Rapport Column -->
               <ng-container matColumnDef="rapport">
-                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 pr-1"> {{ 'rapport-titre' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10 pr-1"> {{row.rapport}} </td>
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10 pr-1"> {{ 'rapport-titre' | translate}} </th>
+                <td *matCellDef="let row" class="w-10 pr-1"> {{row.rapport}} </td>
               </ng-container>
 
-              <!-- fourniseur Column -->
-              <ng-container matColumnDef="fournisseur">
-                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 pr-1"> {{ 'labels-rapport-periodique.fournisseur' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10 pr-1"> {{row.fournisseur}} </td>
-              </ng-container>
-
-              <!-- annee Column -->
+              <!-- Année Column -->
               <ng-container matColumnDef="annee">
-                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 pr-1"> {{ 'annee' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10 pr-1"> {{row.annee}} </td>
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10 pr-1"> {{ 'annee' | translate}} </th>
+                <td *matCellDef="let row" class="w-10 pr-1"> {{row.annee}} </td>
               </ng-container>
 
-              <!-- Derniere modification -->
-              <ng-container matColumnDef="dateA">
-                <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'dateA' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10"> {{row.dateA | date:'short': 'fr'}} </td>
+              <!-- Fournisseur Column -->
+              <ng-container matColumnDef="fournisseur">
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10 pr-1"> {{ 'labels-rapport-periodique.fournisseur' | translate}} </th>
+                <td *matCellDef="let row" class="w-10 pr-1"> {{row.fournisseur}} </td>
               </ng-container>
-              <!-- Consulter Column -->
-              <ng-container matColumnDef="supprimer" >
-                <th *matHeaderCellDef   class="font-weight-bold w-10 pr-1"> {{ 'supprimer' | translate}} </th>
-                <td  *matCellDef="let row" class="w-10 text-center pr-1">
-                  <button type="button" class="btn btn-danger btn-rounded btn-icon btn-sm" title="Supprimer la fiche" (click)="methodesGlobal.addValueInput(row.id_log,'id_log')" data-toggle="modal" data-target="#modal-supprimer" >
+
+              <!-- Date ajout Column -->
+              <ng-container matColumnDef="dateA">
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'dateA' | translate}} </th>
+                <td *matCellDef="let row" class="w-10"> {{row.dateA | date:'short': 'fr'}} </td>
+              </ng-container>
+
+              <!-- Actions Column -->
+              <ng-container matColumnDef="actions">
+                <th *matHeaderCellDef class="font-weight-bold w-10 text-right">Actions</th>
+                <td *matCellDef="let row" class="w-10 text-right">
+                  <button *ngIf="ifAdmin" type="button" class="btn btn-danger btn-rounded btn-icon btn-sm"
+                          title="Supprimer le log"
+                          (click)="confirmerSuppression(row.id_log, row.Title)">
                     <i class="icon-trash"></i>
                   </button>
                 </td>
               </ng-container>
 
               <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: displayedColumns;">
-              </mat-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
             </table>
 
             <mat-paginator [pageSizeOptions]="[25, 50, 100, 150]"></mat-paginator>
-          </div>
-        </div>
-      </div>
+          </div><!-- /table-responsive -->
+        </div><!-- /example-container -->
     </div>
-    <input type="hidden" id="id_log" name="id_log" #id_log value="">
-    <!-- Modal pour supprimer-->
-    <div class="modal fade" id="modal-supprimer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="modal-supprimer-Label">{{'message.supprimer-titre'| translate}}</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            {{'message.supprimer-text'| translate}}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary btn-sm"  data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i> {{'btn-annuler'| translate}}</button>
-            <button type="button" class="btn btn-danger btn-sm" (click)="deleteLogsRevue(this.methodesGlobal.getValue(id_log.value))" data-dismiss="modal" ><i class="fa fa-trash btn-icon-prepend"></i> {{'btn-supprimer'| translate}}</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- fin note -->
+
+    <!-- Tableau caché pour export Excel -->
     <div class="noVisible" *ngFor="let log of logs$ | async"></div>
-    <!-- creation  du tableau pour export-->
-    <table  class="table table-bordered cacherVisible"  id="tableau-logs" >
-      <tr><th *ngFor="let th of displayedColumns ">{{th}}</th></tr>
+    <table class="table table-bordered cacherVisible" id="tableau-logs">
+      <tr><th *ngFor="let th of displayedColumns">{{th}}</th></tr>
       <tr *ngFor="let col of listeLogs">
-        <td *ngFor="let rep of displayedColumns">{{col[rep]}}</td></tr>
+        <td *ngFor="let rep of displayedColumns">{{col[rep]}}</td>
+      </tr>
     </table>
+
     <!-- Contenu footer -->
     <app-footer></app-footer>
   </div>

@@ -4,10 +4,12 @@ import { MatTableDataSource } from "@angular/material/table";
 import { MatPaginator } from "@angular/material/paginator";
 import { paginationPersonnalise } from "../../../lib/paginationPersonnalise";
 import { MatSort } from "@angular/material/sort";
+import { MatDialog } from '@angular/material/dialog';
 import { MethodesGlobal } from "../../../lib/MethodesGlobal";
 import { ProcessusService } from "../../../services/processus.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
+import { ConfirmDialogComponent } from '../../../lib/confirm-suppression-dialog.component';
 
 @Component({
   selector: 'app-liste-processus',
@@ -37,7 +39,8 @@ export class ListeProcessusComponent implements OnInit {
     private processusService: ProcessusService,
     private translate: TranslateService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -120,6 +123,24 @@ export class ListeProcessusComponent implements OnInit {
       statut: item.statut,
       note: item.note
     };
+  }
+
+  confirmerSuppression(id: string, titre: string): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        titre: 'Confirmation de suppression',
+        message: `Êtes-vous sûr de vouloir supprimer le processus "${titre}" ?`,
+        confirmLabel: 'Supprimer',
+        confirmColor: 'warn'
+      }
+    });
+
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.deleteProcessus(id);
+      }
+    });
   }
 
   async deleteProcessus(id: string) {

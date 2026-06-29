@@ -14,7 +14,7 @@
           <span  class="ml-auto">
               <!--<button type="button" class="btn btn-outline-info btn-sm mb-1 mr-1" (click)="ajouterConsultation()" >
                 <i class="icon-layers  btn-icon-prepend"></i> {{ 'ajout-consultation' | translate}} </button>-->
-              <button *ngIf="ifAdmin" type="button" class="btn btn-success btn-sm mb-1" data-toggle="modal" data-target="#modal-enregistrer"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
+              <button *ngIf="ifAdmin" type="button" class="btn btn-success btn-sm mb-1" (click)="confirmerModification(periodiqueForm)"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
               <button type="button" class="btn btn-secondary btn-sm mb-1 ml-1" (click)="backClicked()" >
                 <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}} </button>
             </span>
@@ -570,51 +570,11 @@
           </div>
           <div *ngIf="ifAdmin" class="row">
             <div class="col-md-6">
-              <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#modal-enregistrer"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
-              <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-target="#modal-supprimer"><i class="fa fa-trash btn-icon-prepend"></i> {{'btn-supprimer'| translate}}</button>
+              <button type="button" class="btn btn-success mr-2" (click)="confirmerModification(periodiqueForm)"><i class="fa fa-save btn-icon-prepend"></i> {{bouttonAction}}</button>
+              <button type="button" class="btn btn-danger mr-2" (click)="delete(periodique.idRevue)"><i class="fa fa-trash btn-icon-prepend"></i> {{'btn-supprimer'| translate}}</button>
             </div>
             <div class="col-md-6"></div>
 
-          </div>
-          <!-- Modal pour modifier-->
-          <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">{{'message.confirmer-titre'| translate}}</h5>
-                  <button type="button" class="close" #closebutton data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  {{'message.confirmer-text'| translate}}
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i> Annuler</button>
-                  <input *ngIf="ifAdmin" type="submit" class="btn btn-primary btn-sm"  value="{{bouttonAction}}" (click)="onFermeModal()">
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Modal pour supprimer-->
-          <div class="modal fade" id="modal-supprimer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h4 class="modal-title" id="modal-supprimer-Label">{{'message.supprimer-titre'| translate}}</h4>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  {{'message.supprimer-text'| translate}}
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i> {{'btn-annuler'| translate}}</button>
-                  <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" (click)="delete(periodique.idRevue)"><i class="fa fa-trash btn-icon-prepend"></i> {{'btn-supprimer'| translate}}</button>
-                </div>
-              </div>
-            </div>
           </div>
 
         </form>

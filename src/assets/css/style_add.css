@@ -69,7 +69,7 @@ select.typeahead, select.tt-query, select.tt-hint { color: #495057!important; }
   padding-left: 5px;
 }
 
-/* ── Tableaux ───────────────────────────────────────────────────── */
+/* ── Tableaux — base ────────────────────────────────────────────── */
 thead { background: #f6f7f9; }
 th, td { font-size: 14px!important; }
 mat-cell:last-of-type, mat-header-cell:last-of-type, mat-footer-cell:last-of-type { padding-right: 0!important; }
@@ -432,3 +432,129 @@ mat-cell:last-of-type, mat-header-cell:last-of-type, mat-footer-cell:last-of-typ
                 -0.11em -0.83em 0 -0.477em #ffffff;
   }
 }
+
+
+/* ══════════════════════════════════════════════════════════════════
+   TABLEAUX MATERIAL (mat-table)
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Wrapper de tableau — corrige le conflit CDK drag-and-drop ───────────
+   CDK DragDrop définit .example-container { width:400px; display:inline-block }.
+   Toutes les vues de liste utilisent class="example-container w-100 p-3".
+   Le sélecteur combiné .w-100 prend le dessus sans modifier le HTML ni
+   introduire une nouvelle classe. ─────────────────────────────────────── */
+.example-container.w-100 {
+  width:      100% !important;
+  max-width:  100% !important;
+  display:    block !important;
+  margin:     0 !important;
+}
+
+/* ── Densité des cellules ─────────────────────────────────────────────────
+   Padding vertical uniforme dans toutes les vues de liste. ─────────────── */
+.mat-cell,
+.mat-header-cell {
+  padding-top:    10px;
+  padding-bottom: 10px;
+}
+
+/* ── Largeurs fixes de colonnes (complète la série mat-w-*) ──────────────
+   Utiliser sur th/td à la place de width: x% inline.
+   Les classes existantes mat-w-5/10/15/20/50 sont déclarées plus haut. ── */
+.mat-w-25 { flex: none; width: 25%; }
+.mat-w-30 { flex: none; width: 30%; }
+.mat-w-35 { flex: none; width: 35%; }
+.mat-w-40 { flex: none; width: 40%; }
+.mat-w-45 { flex: none; width: 45%; }
+
+/* ── Colonne Actions — alignement des boutons icônes ─────────────────────
+   .actions-cell  : flex container aligné à droite, gap uniforme.
+   .btn-placeholder : espace réservé (même taille qu'un btn-icon) pour garder
+                      l'alignement sur les lignes sans bouton Consulter. ─── */
+.actions-cell {
+  display:         flex;
+  align-items:     center;
+  justify-content: flex-end;
+  gap:             6px;
+}
+.btn-placeholder {
+  display: inline-block;
+  width:   29px;
+  height:  29px;
+}
+
+/* ── Tableaux de type Rapport — lignes denses avec séparateur vertical ───
+   Ajouter class="rapport-table" sur l'élément <table mat-table> des
+   composants: rapport-periodique, rapport-statistique, rapport-plateformes,
+   rapport-moyenne. ────────────────────────────────────────────────────── */
+.rapport-table th,
+.rapport-table td {
+  min-height:   40px;
+  height:       auto;
+  border-right: 1px solid #d5d0d0;
+}
+.rapport-table mat-row        { height: auto; min-height: 40px !important; }
+.rapport-table mat-header-row { background: #b3b0b045; }
+
+/* ── Alerte URL (logs-plateforme) ────────────────────────────────────────
+   Bandeau discret affiché sous le filtre pour montrer l'URL du log
+   sélectionné, avec bouton de copie intégré. ─────────────────────────── */
+.url-alert {
+  background-color: #f8f9fa;
+  border-left:      4px solid #4a90d9;
+  border-radius:    4px;
+  padding:          10px 14px;
+  margin-bottom:    12px;
+  color:            #2c3e50;
+}
+.url-log-text {
+  word-break: break-all;
+  font-size:  0.83rem;
+  color:      #2c3e50;
+  background: transparent;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   ÉTAT VIDE (tableau ou données absentes pour une année donnée)
+   Utilisé dans : statistique-liste, logs-revue, accueil
+   ══════════════════════════════════════════════════════════════════ */
+.empty-stat {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  padding:        44px 20px 36px;
+  text-align:     center;
+}
+.empty-stat-icon {
+  width:         80px;
+  height:        72px;
+  margin-bottom: 12px;
+  opacity:       0.7;
+}
+.empty-stat-year {
+  font-size:      2.4rem;
+  font-weight:    700;
+  color:          #cdd8e2;
+  letter-spacing: 0.06em;
+  line-height:    1;
+  margin-bottom:  10px;
+}
+.empty-stat-text {
+  font-size:     0.82rem;
+  color:         #8a97a5;
+  margin-bottom: 8px;
+}
+.empty-stat-actions { display: flex; gap: 10px; margin-top: 10px; }
+
+.btn-empty-nav {
+  padding:         5px 16px;
+  font-size:       0.82rem;
+  font-weight:     500;
+  color:           #05304e;
+  background:      transparent;
+  border:          1px solid #c5dcea;
+  border-radius:   20px;
+  cursor:          pointer;
+  transition:      background 0.15s, border-color 0.15s;
+}
+.btn-empty-nav:hover { background: #eaf4fb; border-color: #05304e; }

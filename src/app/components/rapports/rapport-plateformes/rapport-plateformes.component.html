@@ -67,7 +67,7 @@
                 <table
                   mat-table
                   [dataSource]="dataSource"
-                  class="mat-elevation-z8 w-100 p-2"
+                  class="mat-elevation-z8 w-100 p-2 rapport-table"
                   matSort>                  <!-- creation dynamique du tableau -->
                   <ng-container  *ngFor="let th of thTableau" matColumnDef="{{th}}">
                     <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-15 pl-3"> {{ champsTitre[th]}} </th>
