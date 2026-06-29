@@ -1,27 +1,81 @@
-# ProjetMatricePeriodiques
+# Matrice des périodiques
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.0.
+Application web de gestion et de suivi des périodiques pour la Direction des bibliothèques de l'Université de Montréal.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Fonctionnalites
 
-## Code scaffolding
+- Gestion des périodiques (archives, prix, historique, notes, plateformes)
+- Collecte des statistiques d'utilisation via le protocole SUSHI
+- Import de données par fichier CSV
+- Export des données vers Excel
+- Visualisation graphique des statistiques
+- Authentification via Azure Active Directory (comptes UdeM)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## Technologies
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- **Frontend** : Angular 12, Angular Material, Bootstrap, ApexCharts
+- **Backend** : Node.js, Express, MySQL
+- **Authentification** : Azure AD OAuth2 (Passport.js)
 
-## Running unit tests
+---
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Prerequis
 
-## Running end-to-end tests
+- Node.js >= 14.x
+- Angular CLI 12 (`npm install -g @angular/cli@12`)
+- Serveur MySQL
+- Acces au réseau UdeM
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+---
 
-## Further help
+## Installation et démarrage
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Backend
+
+```bash
+cd backend
+npm install
+npm start
+# Démarre sur le port 9110
+```
+
+### Frontend
+
+```bash
+yarn install
+ng serve
+# Accessible sur http://localhost:4200
+```
+
+---
+
+## Variables d'environnement
+
+Créer un fichier `.env` dans le dossier `backend/` :
+
+```env
+PORT=9110
+NODE_ENV=development
+SESSION_SECRET=
+
+DB_HOST=
+DB_PORT=3306
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+
+AZURE_CLIENT_ID=
+AZURE_CLIENT_SECRET=
+```
+
+---
+
+## Auteurs
+
+Développé par Natalia Jabinschi — Direction des bibliothèques, Université de Montréal.
+
+© Université de Montréal — Tous droits réservés.
