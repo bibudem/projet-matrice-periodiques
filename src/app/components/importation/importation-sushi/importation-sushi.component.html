@@ -19,118 +19,155 @@
         </div>
       </div>
       <div id="contenu-form">
-        <!-- alert resultat vide -->
+
+        <!-- Notifications -->
         <blockquote class="blockquote blockquote-warning cacherVisible" id="reponse-importation">
-          <button type="button"  class="close" (click)="methodesGlobal.nonAfficher('reponse-importation')" >
+          <button type="button" class="close" (click)="methodesGlobal.nonAfficher('reponse-importation')">
             <span aria-hidden="true">&times;</span>
           </button>
           <h5 class="p-2">{{ 'importation.demande-importation' | translate}}</h5>
         </blockquote>
-        <!-- alert result update -->
         <blockquote class="blockquote blockquote-warning cacherVisible" id="result-update">
-          <button type="button"  class="close" (click)="methodesGlobal.nonAfficher('result-update')" >
+          <button type="button" class="close" (click)="methodesGlobal.nonAfficher('result-update')">
             <span aria-hidden="true">&times;</span>
           </button>
           <h5 class="p-2">{{ 'importation.result-update' | translate}}</h5>
         </blockquote>
-        <form  #importationForm="ngForm" >
-          <div class="row mt-5">
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="plateforme">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
-                <select name="annee" id="annee"  class="form-control" #annee >
-                  <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
-                </select>
+
+        <form #importationForm="ngForm">
+          <div class="card border-0 shadow-sm mt-4">
+            <div class="card-body p-4">
+
+              <!-- Paramètres -->
+              <div class="row align-items-end mb-4">
+                <div class="col-md-2">
+                  <label class="small text-muted text-uppercase font-weight-bold mb-1" style="letter-spacing:.05em">
+                    {{ 'annee' | translate }} <span class="text-danger">*</span>
+                  </label>
+                  <select name="annee" id="annee" class="form-control" #annee>
+                    <option *ngFor="let rep of this.arrayAnnee">{{rep}}</option>
+                  </select>
+                </div>
+                <div class="col-md-5">
+                  <label class="small text-muted text-uppercase font-weight-bold mb-1" style="letter-spacing:.05em">
+                    {{ 'plateforme' | translate }}
+                  </label>
+                  <select name="plateforme" id="plateforme" class="form-control" #plateforme>
+                    <option value="">{{ 'importation.tous-plateforme' | translate }}</option>
+                    <option *ngFor="let rep of this.listePlateforme" [value]="rep.PlatformID">{{rep.PlatformID}}</option>
+                  </select>
+                </div>
               </div>
-            </div>
-            <div class="col-md-8">
-              <div class="form-group">
-                <label for="plateforme">{{ 'plateforme' | translate}}</label>
-                <select name="plateforme" id="plateforme"  class="form-control" #plateforme >
-                  <option value="">{{ 'importation.tous-plateforme' | translate}}</option>
-                  <option *ngFor="let rep of this.listePlateforme" [value]="rep.PlatformID">{{rep.PlatformID}}</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="page-header mt-3">
-            <h4 class="mt-3 text-uppercase"></h4>
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">
-                  <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#modal-enregistrer"><i class="icon-cloud-upload btn-icon-prepend"></i> {{ 'importation.sushi-titre' | translate}}</button>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                  <button type="button" class="btn btn-dark mr-2" (click)="this.methodesGlobal.afficher('contenu-resultat')"><i class="icon-list btn-icon-prepend"></i> {{ 'importation.afficher-resultats' | translate}}</button>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                  <button type="button" class="btn btn-primary mr-2" (click)="updateStatistiques(this.methodesGlobal.getValue(annee.value))"><i class="fa fa-save btn-icon-prepend"></i> {{ 'importation.mis-a-jour-statistiques' | translate}}</button>
-                </li>
-              </ol>
-            </nav>
-          </div>
-          <!-- Modal pour modifier-->
-        <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">{{ 'importation.sushi-titre' | translate}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
+
+              <hr class="mt-0 mb-3">
+
+              <!-- Actions -->
+              <div class="d-flex align-items-center flex-wrap" style="gap:10px;">
+                <button type="button" class="btn btn-success"
+                        data-toggle="modal" data-target="#modal-enregistrer">
+                  <i class="icon-cloud-upload btn-icon-prepend"></i>
+                  {{ 'importation.sushi-titre' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-outline-dark"
+                        (click)="this.methodesGlobal.afficher('contenu-resultat')">
+                  <i class="icon-list btn-icon-prepend"></i>
+                  {{ 'importation.afficher-resultats' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-outline-primary"
+                        (click)="updateStatistiques(this.methodesGlobal.getValue(annee.value))">
+                  <i class="fa fa-database btn-icon-prepend"></i>
+                  {{ 'importation.mis-a-jour-statistiques' | translate }}
                 </button>
               </div>
-              <div class="modal-body">
-                {{ 'importation.confirmer-text' | translate}}
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="icon-close btn-icon-prepend"></i>{{'btn-annuler'| translate}}</button>
-                <button type="button" class="btn btn-primary btn-sm "  data-dismiss="modal" id="add-boutton" (click)="importer(this.methodesGlobal.getValueNgSelect(plateforme.value),this.methodesGlobal.getValue(annee.value))" ><i class="fa fa-save btn-icon-prepend"></i> {{'importation.sushi-titre'| translate }}</button></div>
+
             </div>
           </div>
-        </div>
-      </form>
+
+          <!-- Modal confirmation importation -->
+          <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">{{ 'importation.sushi-titre' | translate }}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  {{ 'importation.confirmer-text' | translate }}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">
+                    <i class="icon-close btn-icon-prepend"></i> {{'btn-annuler' | translate}}
+                  </button>
+                  <button type="button" class="btn btn-success btn-sm" data-dismiss="modal"
+                          (click)="importer(this.methodesGlobal.getValueNgSelect(plateforme.value), this.methodesGlobal.getValue(annee.value))">
+                    <i class="icon-cloud-upload btn-icon-prepend"></i> {{'importation.sushi-titre' | translate}}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
       <!-- Contenu des tableaux des résultats -->
       <div id="contenu-resultat" class="cacherVisible">
 
-        <div class="card-header mt-1 b-white" id="filtreResult">
-          <div class="d-flex flex-wrap align-items-center justify-content-between mb-2">
+        <div class="card border-0 shadow-sm mt-3 mx-0" id="filtreResult">
+          <div class="card-body px-3 py-2">
 
-            <!-- Barre de recherche -->
-            <div class="search-bar-wrapper flex-grow-1 mr-3" style="max-width: 450px;">
-              <i class="icon-magnifier search-bar-icon"></i>
-              <input class="search-bar-input"
-                     #texteFiltreSushi
-                     (keyup)="applyFilter(texteFiltreSushi.value)"
-                     placeholder="{{ 'filtre-text' | translate }}"
-                     id="texteFiltreSushi" name="texteFiltreSushi">
-              <button class="search-bar-clear" *ngIf="texteFiltreSushi.value"
-                      (click)="texteFiltreSushi.value=''; applyFilter('')" aria-label="Effacer">
-                &times;
-              </button>
+            <!-- Ligne 1 : sélection du rapport + actions utilitaires -->
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center">
+                <small class="text-muted text-uppercase font-weight-bold mr-3"
+                       style="letter-spacing: .06em; font-size: .7rem;">Rapport :</small>
+                <div class="btn-group btn-group-sm" role="group">
+                  <button type="button" class="btn btn-sm"
+                          [ngClass]="currentRapport === 'j1' ? 'btn-dark' : 'btn-outline-dark'"
+                          (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j1')">
+                    {{ 'importation.rapportJ1' | translate }}
+                  </button>
+                  <button type="button" class="btn btn-sm"
+                          [ngClass]="currentRapport === 'j2' ? 'btn-dark' : 'btn-outline-dark'"
+                          (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j2')">
+                    {{ 'importation.rapportJ2' | translate }}
+                  </button>
+                  <button type="button" class="btn btn-sm"
+                          [ngClass]="currentRapport === 'j3' ? 'btn-dark' : 'btn-outline-dark'"
+                          (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j3')">
+                    {{ 'importation.rapportJ3' | translate }}
+                  </button>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center" id="bouton-actions">
+                <button class="btn btn-sm btn-outline-success mr-2" (click)="ExportTOExcel()">
+                  <i class="fa fa-file-excel-o mr-1"></i> {{ 'btn-export' | translate }}
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="methodesGlobal.nonAfficher('contenu-resultat')">
+                  <i class="fa fa-eye-slash mr-1"></i> Masquer
+                </button>
+              </div>
             </div>
 
-            <!-- Boutons rapport + actions -->
-            <div class="d-flex align-items-center flex-wrap" id="bouton-actions">
-              <button class="btn btn-outline-dark btn-sm mr-1"
-                      (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j1')">
-                {{ 'importation.rapportJ1' | translate}}
-              </button>
-              <button class="btn btn-outline-dark btn-sm mr-1"
-                      (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j2')">
-                {{ 'importation.rapportJ2' | translate}}
-              </button>
-              <button class="btn btn-outline-dark btn-sm mr-2"
-                      (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j3')">
-                {{ 'importation.rapportJ3' | translate}}
-              </button>
-              <button class="btn btn-primary btn-sm mr-1" title="{{ 'btn-export' | translate}}" (click)="ExportTOExcel()">
-                <i class="fa fa-file-excel-o"></i>
-              </button>
-              <button class="btn btn-dark btn-sm" (click)="methodesGlobal.nonAfficher('contenu-resultat')">
-                <i class="fa fa-eye-slash"></i>
-              </button>
+            <!-- Ligne 2 : filtre de recherche -->
+            <div class="border-top mt-2 pt-2">
+              <div class="search-bar-wrapper" style="max-width: 500px;">
+                <i class="icon-magnifier search-bar-icon"></i>
+                <input class="search-bar-input"
+                       #texteFiltreSushi
+                       (keyup)="applyFilter(texteFiltreSushi.value)"
+                       placeholder="{{ 'filtre-text' | translate }}"
+                       id="texteFiltreSushi" name="texteFiltreSushi">
+                <button class="search-bar-clear" *ngIf="texteFiltreSushi.value"
+                        (click)="texteFiltreSushi.value=''; applyFilter('')" aria-label="Effacer">
+                  &times;
+                </button>
+              </div>
             </div>
+
           </div>
         </div>
 
