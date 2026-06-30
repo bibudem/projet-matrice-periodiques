@@ -2,15 +2,15 @@
 <div class="container-fluid page-body-wrapper">
   <app-menu></app-menu>
   <div class="main-panel">
-    <div class="content-wrapper">
+    <div class="content-wrapper pb-2">
 
-      <!-- En-tête + sélecteur d'année -->
-      <div class="row">
+      <!-- KPI cards -->
+      <div class="row mt-4">
         <div class="col-md-12">
-          <div class="card">
+          <div class="card card--compact">
             <div class="card-body">
 
-              <div class="d-sm-flex align-items-center report-summary-header mb-3 flex-wrap gap-2">
+              <div class="d-sm-flex align-items-center report-summary-header mb-2 flex-wrap gap-2">
                 <h4 class="font-weight-semibold titre-initial mb-0">{{ 'home.board' | translate }}</h4>
                 <div class="annee-stepper ml-auto">
                   <button class="stepper-btn"
@@ -25,14 +25,11 @@
                 </div>
               </div>
 
-              <!-- KPI cards -->
               <div class="row kpi-row">
 
                 <div class="col-sm-6 col-xl-3">
                   <div class="kpi-card kpi-card--success">
-                    <div class="kpi-icon">
-                      <i class="icon-layers"></i>
-                    </div>
+                    <div class="kpi-icon"><i class="icon-layers"></i></div>
                     <div class="kpi-body">
                       <span class="kpi-label">{{ 'home.periodique' | translate }}</span>
                       <div class="kpi-value">{{ totalRevue | number }}</div>
@@ -42,9 +39,7 @@
 
                 <div class="col-sm-6 col-xl-3">
                   <div class="kpi-card kpi-card--primary">
-                    <div class="kpi-icon">
-                      <i class="icon-cloud-download"></i>
-                    </div>
+                    <div class="kpi-icon"><i class="icon-cloud-download"></i></div>
                     <div class="kpi-body">
                       <span class="kpi-label">{{ 'home.tele' | translate }}</span>
                       <div class="kpi-value">{{ totalTele | number }}</div>
@@ -54,9 +49,7 @@
 
                 <div class="col-sm-6 col-xl-3">
                   <div class="kpi-card kpi-card--warning">
-                    <div class="kpi-icon">
-                      <i class="icon-pin"></i>
-                    </div>
+                    <div class="kpi-icon"><i class="icon-pin"></i></div>
                     <div class="kpi-body">
                       <span class="kpi-label">{{ 'home.citations' | translate }}</span>
                       <div class="kpi-value">{{ totalCitation | number }}</div>
@@ -66,9 +59,7 @@
 
                 <div class="col-sm-6 col-xl-3">
                   <div class="kpi-card kpi-card--info">
-                    <div class="kpi-icon">
-                      <i class="icon-paper-clip"></i>
-                    </div>
+                    <div class="kpi-icon"><i class="icon-paper-clip"></i></div>
                     <div class="kpi-body">
                       <span class="kpi-label">{{ 'home.article-udem' | translate }}</span>
                       <div class="kpi-value">{{ totalArticleUdem | number }}</div>
@@ -85,11 +76,11 @@
 
       <!-- Top 10 -->
       <div class="row">
-        <div class="col-md-12 grid-margin">
-          <div class="card">
+        <div class="col-md-12">
+          <div class="card card--compact">
             <div class="card-body">
 
-              <div class="d-flex align-items-center mb-4">
+              <div class="d-flex align-items-center mb-2 flex-wrap gap-2">
                 <h4 class="font-weight-semibold titre-initial mb-0">
                   {{ 'home.top10' | translate }} — {{ anneeSelectionnee }}
                 </h4>
@@ -101,65 +92,34 @@
                   <span class="export-tooltip">Exporter en Excel (.xlsx)</span>
                 </button>
               </div>
-              <hr>
+              <hr class="mt-1 mb-2">
 
               <!-- Chargement -->
-              <div *ngIf="isLoading" class="text-center py-5">
+              <div *ngIf="isLoading" class="text-center py-3">
                 <div class="loader-inline"></div>
-                <p class="text-muted mt-3 small">{{ 'importation.attendre' | translate }}</p>
+                <p class="text-muted mt-2 small">{{ 'importation.attendre' | translate }}</p>
               </div>
 
               <!-- Données disponibles -->
-              <div *ngIf="!isLoading && top10.length > 0" class="row">
-
-                <!-- Colonne gauche : rangs 1-5 -->
-                <div class="col-md-6 col-top5">
-                  <div *ngFor="let item of top10Left; let i = index"
-                       class="top10-row" [ngClass]="rankClass(i + 1)">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <span class="top10-titre">
-                        <span class="top10-rang" [ngClass]="rankClass(i + 1)">{{ i + 1 }}</span>
-                        {{ item.titre }}
-                      </span>
-                      <span class="top10-valeur">
-                        {{ item.Total_Item_Requests | number }}
-                        <span *ngIf="item.No_License > 0" class="top10-refus">
-                          · {{ item.No_License | number }} {{ 'home.refus' | translate }}
-                        </span>
-                      </span>
-                    </div>
-                    <div class="top10-progress">
-                      <div class="top10-bar"
-                           [style.width.%]="barWidth(item.Total_Item_Requests)">
-                      </div>
+              <div *ngIf="!isLoading && top10.length > 0" class="ranking-list">
+                <div *ngFor="let item of top10; let i = index"
+                     class="ranking-row" [ngClass]="rankClass(i + 1)">
+                  <div class="ranking-badge" [ngClass]="rankClass(i + 1)">{{ i + 1 }}</div>
+                  <div class="ranking-content">
+                    <div class="ranking-titre">{{ item.titre }}</div>
+                    <div class="ranking-track">
+                      <div class="ranking-bar" [ngClass]="rankClass(i + 1)"
+                           [style.width.%]="barWidth(item.Total_Item_Requests)"></div>
                     </div>
                   </div>
-                </div>
-
-                <!-- Colonne droite : rangs 6-10 -->
-                <div class="col-md-6">
-                  <div *ngFor="let item of top10Right; let i = index"
-                       class="top10-row">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <span class="top10-titre">
-                        <span class="top10-rang">{{ i + 6 }}</span>
-                        {{ item.titre }}
-                      </span>
-                      <span class="top10-valeur">
-                        {{ item.Total_Item_Requests | number }}
-                        <span *ngIf="item.No_License > 0" class="top10-refus">
-                          · {{ item.No_License | number }} {{ 'home.refus' | translate }}
-                        </span>
-                      </span>
-                    </div>
-                    <div class="top10-progress">
-                      <div class="top10-bar"
-                           [style.width.%]="barWidth(item.Total_Item_Requests)">
-                      </div>
-                    </div>
+                  <div class="ranking-stats">
+                    <span class="ranking-count">{{ item.Total_Item_Requests | number }}</span>
+                    <span class="ranking-pct">{{ barWidth(item.Total_Item_Requests) }}%</span>
+                    <span *ngIf="item.No_License > 0" class="ranking-refus">
+                      {{ item.No_License | number }} {{ 'home.refus' | translate }}
+                    </span>
                   </div>
                 </div>
-
               </div>
 
               <!-- État vide -->
@@ -178,12 +138,9 @@
                 <p class="empty-stat-text font-weight-semibold">
                   {{ 'home.aucune-donnee' | translate }} {{ anneeSelectionnee }}
                 </p>
-                <p class="empty-stat-text">
-                  {{ 'home.donnees-counter-info' | translate }}
-                </p>
+                <p class="empty-stat-text">{{ 'home.donnees-counter-info' | translate }}</p>
                 <div class="empty-stat-actions">
-                  <button *ngIf="anneePrec()" class="btn-empty-nav"
-                          (click)="changerAnnee(anneePrec()!)">
+                  <button *ngIf="anneePrec()" class="btn-empty-nav" (click)="changerAnnee(anneePrec()!)">
                     &#8592; {{ 'home.voir-annee' | translate }} {{ anneePrec() }}
                   </button>
                 </div>

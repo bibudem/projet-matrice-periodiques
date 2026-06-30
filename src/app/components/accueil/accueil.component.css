@@ -1,6 +1,15 @@
 .card {
-  padding-top: 2rem;
+  padding-top:    2rem;
   padding-bottom: 2rem;
+}
+
+/* Version compacte — réduit les marges internes de la card */
+.card--compact {
+  padding-top:    0;
+  padding-bottom: 0;
+}
+.card--compact .card-body {
+  padding: 14px 20px;
 }
 
 /* ── KPI Cards ───────────────────────────────────────────── */
@@ -17,10 +26,10 @@
   border-radius: 10px;
   border: 1px solid #e8edf2;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: 20px 22px;
+  padding: 14px 18px;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
   position: relative;
   overflow: hidden;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
@@ -41,13 +50,13 @@
 
 .kpi-icon {
   flex-shrink: 0;
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: #fff;
 }
 
@@ -80,121 +89,155 @@
 }
 
 .kpi-value {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #2d3a45;
   line-height: 1;
   letter-spacing: -0.02em;
 }
 
-/* ── Rangée top 10 ─────────────────────────────────── */
-.top10-row {
-  padding: 10px 12px;
-  border-bottom: 1px solid #f2f2f2;
-  transition: background 0.15s;
+/* ── Liste de classement ─────────────────────────────── */
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ranking-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: #f8fbfd;
+  border-left: 3px solid transparent;
+  transition: background 0.15s, transform 0.15s;
   animation: rowFade 0.35s ease-out both;
 }
-
-.top10-row:last-child {
-  border-bottom: none;
+.ranking-row:hover {
+  background: #eef5fb;
+  transform: translateX(3px);
 }
 
-.top10-row:hover {
-  background: #f0f6fb;
-}
+/* Podium — nuances de bleu (1 = navy, 2 = bleu primaire, 3 = bleu moyen) */
+.ranking-row.rang-or     { border-left-color: #05304e; background: #e8f0f8; }
+.ranking-row.rang-argent { border-left-color: #0071b9; background: #eef4fb; }
+.ranking-row.rang-bronze { border-left-color: #3a7bd5; background: #f0f5fd; }
 
-/* Cascade d'apparition : 5 rangées par colonne */
-.top10-row:nth-child(1) { animation-delay: 0.05s; }
-.top10-row:nth-child(2) { animation-delay: 0.12s; }
-.top10-row:nth-child(3) { animation-delay: 0.19s; }
-.top10-row:nth-child(4) { animation-delay: 0.26s; }
-.top10-row:nth-child(5) { animation-delay: 0.33s; }
+/* Cascade d'apparition */
+.ranking-row:nth-child(1)  { animation-delay: 0.04s; }
+.ranking-row:nth-child(2)  { animation-delay: 0.09s; }
+.ranking-row:nth-child(3)  { animation-delay: 0.14s; }
+.ranking-row:nth-child(4)  { animation-delay: 0.19s; }
+.ranking-row:nth-child(5)  { animation-delay: 0.24s; }
+.ranking-row:nth-child(6)  { animation-delay: 0.29s; }
+.ranking-row:nth-child(7)  { animation-delay: 0.34s; }
+.ranking-row:nth-child(8)  { animation-delay: 0.39s; }
+.ranking-row:nth-child(9)  { animation-delay: 0.44s; }
+.ranking-row:nth-child(10) { animation-delay: 0.49s; }
 
 @keyframes rowFade {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Accentuation podium (colonne gauche) ────────────── */
-.col-top5 .top10-row.rang-or     { border-left: 3px solid #e8b800; }
-.col-top5 .top10-row.rang-argent { border-left: 3px solid #7a9eb0; }
-.col-top5 .top10-row.rang-bronze { border-left: 3px solid #c4703a; }
-
-/* ── Titre ───────────────────────────────────────────── */
-.top10-titre {
-  font-size: 0.85rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 68%;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 /* ── Badge de rang ───────────────────────────────────── */
-.top10-rang {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.ranking-badge {
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: #dce8f0;
   color: #3a5a70;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ranking-badge.rang-or     { background: #05304e; color: #fff; }
+.ranking-badge.rang-argent { background: #0071b9; color: #fff; }
+.ranking-badge.rang-bronze { background: #3a7bd5; color: #fff; }
+
+/* ── Contenu central (titre + barre) ────────────────── */
+.ranking-content {
+  flex: 1;
+  min-width: 0;
 }
 
-/* Couleurs médailles harmonisées avec #0071b9 */
-.top10-rang.rang-or     { background: #e8b800; color: #4a3800; }
-.top10-rang.rang-argent { background: #7a9eb0; color: #fff; }
-.top10-rang.rang-bronze { background: #c4703a; color: #fff; }
-
-/* ── Valeurs ─────────────────────────────────────────── */
-.top10-valeur {
-  font-weight: 600;
-  font-size: 0.82rem;
-  color: #0071b9;
+.ranking-titre {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: #2d3a45;
   white-space: nowrap;
-  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 5px;
 }
 
-.top10-refus {
-  font-weight: 400;
-  font-size: 0.75rem;
-  color: #b07d00;
-}
-
-/* ── Barre de progression ────────────────────────────── */
-.top10-progress {
-  height: 8px;
-  border-radius: 4px;
-  background-color: #e8f0f6;
-  margin-top: 5px;
+.ranking-track {
+  height: 7px;
+  border-radius: 6px;
+  background: #e4eef6;
   overflow: hidden;
 }
 
-.top10-bar {
+.ranking-bar {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 6px;
   background: linear-gradient(90deg, #0071b9 0%, #00b4d8 100%);
   transform-origin: left center;
-  animation: barGrow 0.65s cubic-bezier(0.4, 0, 0.2, 1) both;
-  min-width: 2px;
+  animation: barGrow 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+  min-width: 3px;
 }
+.ranking-bar.rang-or     { background: linear-gradient(90deg, #032438 0%, #05304e 100%); }
+.ranking-bar.rang-argent { background: linear-gradient(90deg, #005a93 0%, #0071b9 100%); }
+.ranking-bar.rang-bronze { background: linear-gradient(90deg, #2d63bf 0%, #3a7bd5 100%); }
 
-/* Décalage de l'animation de barre calé sur la rangée */
-.top10-row:nth-child(1) .top10-bar { animation-delay: 0.10s; }
-.top10-row:nth-child(2) .top10-bar { animation-delay: 0.17s; }
-.top10-row:nth-child(3) .top10-bar { animation-delay: 0.24s; }
-.top10-row:nth-child(4) .top10-bar { animation-delay: 0.31s; }
-.top10-row:nth-child(5) .top10-bar { animation-delay: 0.38s; }
+/* Décalage croissant des barres */
+.ranking-row:nth-child(1)  .ranking-bar { animation-delay: 0.10s; }
+.ranking-row:nth-child(2)  .ranking-bar { animation-delay: 0.16s; }
+.ranking-row:nth-child(3)  .ranking-bar { animation-delay: 0.22s; }
+.ranking-row:nth-child(4)  .ranking-bar { animation-delay: 0.28s; }
+.ranking-row:nth-child(5)  .ranking-bar { animation-delay: 0.34s; }
+.ranking-row:nth-child(6)  .ranking-bar { animation-delay: 0.40s; }
+.ranking-row:nth-child(7)  .ranking-bar { animation-delay: 0.46s; }
+.ranking-row:nth-child(8)  .ranking-bar { animation-delay: 0.52s; }
+.ranking-row:nth-child(9)  .ranking-bar { animation-delay: 0.58s; }
+.ranking-row:nth-child(10) .ranking-bar { animation-delay: 0.64s; }
 
 @keyframes barGrow {
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
+}
+
+/* ── Statistiques (droite) ───────────────────────────── */
+.ranking-stats {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 90px;
+}
+
+.ranking-count {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0071b9;
+  white-space: nowrap;
+}
+
+.ranking-pct {
+  font-size: 0.70rem;
+  color: #9aacba;
+  font-weight: 500;
+}
+
+.ranking-refus {
+  font-size: 0.70rem;
+  color: #b07d00;
+  white-space: nowrap;
 }
 
 /* ── Bouton export Top 10 ────────────────────────────── */

@@ -14,7 +14,7 @@ export class AccueilComponent implements OnInit {
   totalCitation = 0;
   totalArticleUdem = 0;
 
-  anneeSelectionnee: number = new Date().getFullYear() - 1;
+  anneeSelectionnee: number = new Date().getFullYear();
   arrayAnnee: number[] = [];
 
   top10: any[] = [];
@@ -30,7 +30,7 @@ export class AccueilComponent implements OnInit {
 
   anneeOptions(): void {
     const now = new Date().getFullYear();
-    for (let i = now - 1; i >= 2018; i--) {
+    for (let i = now; i >= 2018; i--) {
       this.arrayAnnee.push(i);
     }
   }
@@ -78,9 +78,6 @@ export class AccueilComponent implements OnInit {
     const idx = this.arrayAnnee.indexOf(this.anneeSelectionnee);
     return idx < this.arrayAnnee.length - 1 ? this.arrayAnnee[idx + 1] : null;
   }
-
-  get top10Left(): any[] { return this.top10.slice(0, 5); }
-  get top10Right(): any[] { return this.top10.slice(5); }
 
   rankClass(rank: number): string {
     if (rank === 1) return 'rang-or';
