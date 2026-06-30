@@ -86,11 +86,15 @@ export class MiseAJourAbonnementComponent implements OnInit {
     if (this.isValidCSVFile(files[0])) {
       let input = $event.target;
       let reader = new FileReader();
-      reader.readAsText(input.files[0]);
+      reader.readAsArrayBuffer(input.files[0]);
       reader.onload = async () => {
-        let csvData = await reader.result;
+        const buffer = reader.result as ArrayBuffer;
+        const bytes = new Uint8Array(buffer);
+        const hasUtf8Bom = bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF;
+        const encoding = hasUtf8Bom ? 'utf-8' : 'windows-1252';
+        const csvData = new TextDecoder(encoding).decode(buffer);
 
-        let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
+        let csvRecordsArray = csvData.split(/\r\n|\n/);
 
         if(csvRecordsArray[0].search(',')!=-1){
           this.separator =','
@@ -190,42 +194,31 @@ export class MiseAJourAbonnementComponent implements OnInit {
 
 
   //inserer les données
-  async postArray(records:UpdateAbonnement[]): Promise<void> {
-    //console.log(records)
+  async postArray(records: UpdateAbonnement[]): Promise<void> {
+    if (records.length === 0) return;
     this.processousEnCours();
-    if (records.length == 0) return;
-    let i =0;
-    this.dateStart=this.methodesGlobal.dateCreator();
-    let postLigne : any = {};
-
-    for (let val of records) {
-          i++;
-          postLigne.idRevue=val.idRevue;
-          postLigne.issn=val.ISSN;
-          postLigne.eissn=val.EISSN;
-          postLigne.abonnement=val.abonnement;
-          postLigne.bdd=val.bdd;
-          postLigne.note=val.note;
-          this.post(postLigne)
-
-          await this.methodesGlobal.delay(100);
-
-          if(i==records.length){
-            await this.methodesGlobal.delay(1000);
-            //console.log('fin processus');
-            await this.addProcessus(this.dateStart);
-
-          }
+    this.dateStart = this.methodesGlobal.dateCreator();
+    const payload = records.map(val => ({
+      idRevue: val.idRevue, issn: val.ISSN, eissn: val.EISSN,
+      abonnement: val.abonnement, bdd: val.bdd, note: val.note
+    }));
+    try {
+      await this.csvService.bulkUpdateAbonnement(payload).toPromise();
+    } catch (err: any) {
+      console.error(`Erreur importation: ${err.message}`);
     }
+    await this.addProcessus(this.dateStart);
   }
   //fonction pour inserer
-  post( postLigne:any) {
-    this.inUpdateAbonnement$ = this.csvService
-      .updateAbonnement(postLigne);
-      //.pipe(tap(() => ()));
+  async post(postLigne: any): Promise<void> {
+    try {
+      await this.csvService.updateAbonnement(postLigne).toPromise();
+    } catch (err: any) {
+      console.error(`Erreur ligne ${postLigne.idRevue}: ${err.message}`);
+    }
   }
 
-  async addProcessus(dateStart:string){
+  async addProcessus(dateStart:string): Promise<void> {
     // creer la date du début
 
     if(sessionStorage.getItem('prenomAdmin')){
@@ -237,10 +230,9 @@ export class MiseAJourAbonnementComponent implements OnInit {
       // @ts-ignore
       this.note=document.getElementById('note').value.toString();
     }
-      this.processus = {'titre':'Mise à jour des abonnements/BDD','type':'abonnements','admin':this.admin,'note':this.note,'dateStart':dateStart}
-      this.addProcessus$ = await this.csvService
-      .addProcessus(this.processus)
-        .pipe(tap(() => (this.finImportation())));
+    this.processus = {'titre':'Mise à jour des abonnements/BDD','type':'abonnements','annee':this.annee,'admin':this.admin,'note':this.note,'dateStart':dateStart}
+    await this.csvService.addProcessus(this.processus).toPromise();
+    this.finImportation();
   }
 
 //cacher l'animation pour la mise a jour des données

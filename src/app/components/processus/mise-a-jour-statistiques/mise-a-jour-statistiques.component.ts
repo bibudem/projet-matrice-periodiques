@@ -102,8 +102,8 @@ export class MiseAJourStatistiquesComponent implements OnInit {
           }
         }
       });
-    } catch(err) {
-      console.error(`Error : ${err.Message}`);
+    } catch(err: any) {
+      console.error(`Error : ${err.message}`);
     }
   }
 
@@ -114,11 +114,15 @@ export class MiseAJourStatistiquesComponent implements OnInit {
     if (this.isValidCSVFile(files[0])) {
       let input = $event.target;
       let reader = new FileReader();
-      reader.readAsText(input.files[0]);
+      reader.readAsArrayBuffer(input.files[0]);
       reader.onload = async () => {
-        let csvData = await reader.result;
+        const buffer = reader.result as ArrayBuffer;
+        const bytes = new Uint8Array(buffer);
+        const hasUtf8Bom = bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF;
+        const encoding = hasUtf8Bom ? 'utf-8' : 'windows-1252';
+        const csvData = new TextDecoder(encoding).decode(buffer);
 
-        let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
+        let csvRecordsArray = csvData.split(/\r\n|\n/);
 
         if(csvRecordsArray[0].search(',')!=-1){
           this.separator =','
@@ -260,51 +264,33 @@ export class MiseAJourStatistiquesComponent implements OnInit {
 
 
   //inserer les données
-  async postArray(records:any){
-    //console.log(records)
+  async postArray(records: any[]): Promise<void> {
+    if (records.length === 0) return;
     this.processousEnCours();
-    let that=this
-    let n: any;
-    if (records.length == 0) return;
-    let i =0;
-    this.dateStart=this.methodesGlobal.dateCreator();
-    let postLigne : any = {}
-    for (let val of records) {
-        i++;
-          postLigne.idRevue=val.idRevue;
-          postLigne.ISSN=val.ISSN;
-          postLigne.EISSN=val.EISSN;
-          postLigne.annee=val.annee;
-          postLigne.Total_Item_Requests=val.Total_Item_Requests;
-          postLigne.No_License=val.No_License;
-          postLigne.citations=val.citations;
-          postLigne.articlesUdem=val.articlesUdem;
-          postLigne.JR4COURANT=val.JR4COURANT;
-          postLigne.JR4INTER=val.JR4INTER;
-          postLigne.JR4RETRO=val.JR4RETRO;
-          postLigne.JR3OAGOLD=val.JR3OAGOLD;
-          postLigne.PlateformeID=val.PlateformeID;
-          this.post(postLigne)
-
-         await this.methodesGlobal.delay(150);
-
-          if(i==records.length){
-            await this.methodesGlobal.delay(1000);
-            //console.log('fin processus');
-            await this.addProcessus(this.dateStart);
-
-          }
-
+    this.dateStart = this.methodesGlobal.dateCreator();
+    const payload = records.map(val => ({
+      idRevue: val.idRevue, ISSN: val.ISSN, EISSN: val.EISSN, annee: val.annee,
+      Total_Item_Requests: val.Total_Item_Requests, No_License: val.No_License,
+      citations: val.citations, articlesUdem: val.articlesUdem,
+      JR4COURANT: val.JR4COURANT, JR4INTER: val.JR4INTER,
+      JR4RETRO: val.JR4RETRO, JR3OAGOLD: val.JR3OAGOLD, PlateformeID: val.PlateformeID
+    }));
+    try {
+      await this.csvService.bulkUpdateStatistiques(payload).toPromise();
+    } catch (err: any) {
+      console.error(`Erreur importation: ${err.message}`);
     }
+    await this.addProcessus(this.dateStart);
   }
   //fonction pour inserer
-   post( postLigne : any) {
-
-    this.inUpdateStatistiques$ = this.csvService
-      .updateStatistiques(postLigne)
-      //.toPromise(tap(() => (this.finImportation())));
+  async post(postLigne: any): Promise<void> {
+    try {
+      await this.csvService.updateStatistiques(postLigne).toPromise();
+    } catch (err: any) {
+      console.error(`Erreur ligne ${postLigne.idRevue}: ${err.message}`);
+    }
   }
-  async addProcessus(dateStart:string){
+  async addProcessus(dateStart:string): Promise<void> {
     // creer la date du début
 
     if(sessionStorage.getItem('prenomAdmin')){
@@ -317,9 +303,8 @@ export class MiseAJourStatistiquesComponent implements OnInit {
       this.note=document.getElementById('note').value.toString();
     }
     this.processus = {'titre':'Mise à jour des statistiques','type':'statistiques','annee':this.annee,'admin':this.admin,'note':this.note,'dateStart':dateStart}
-    this.addProcessus$ = await this.csvService
-      .addProcessus(this.processus)
-      .pipe(tap(() => (this.finImportation())));
+    await this.csvService.addProcessus(this.processus).toPromise();
+    this.finImportation();
   }
 
 //cacher l'animation pour la mise a jour des données

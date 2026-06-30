@@ -27,6 +27,27 @@ exports.getAllDetailsProcessus = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getAllDetailsProcessusPaginated = async (req, res, next) => {
+  try {
+    const skip = parseInt(req.query.skip) || 0;
+    const limit = parseInt(req.query.limit) || 25;
+    const search = req.query.search || '';
+
+    const paginatedResult = await Processus.getAllDetailsProcessusPaginated(req.params.id, skip, limit, search);
+    const countResult = await Processus.countAllDetails(req.params.id, search);
+
+    res.status(200).json({
+      data: paginatedResult[0],
+      total: countResult[0][0].count || 0,
+      skip,
+      limit
+    });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
 exports.getLastIdProcessus = async (req, res, next) => {
   try {
     const [lastIdProcessus] = await Processus.getLastIdProcessus();
@@ -38,6 +59,26 @@ exports.getLastIdProcessus = async (req, res, next) => {
     next(err);
   }
 };
+exports.postBulkPrix = async (req, res, next) => {
+  try {
+    const records = Array.isArray(req.body) ? req.body : [req.body];
+    let processed = 0, errors = 0;
+    for (const record of records) {
+      try {
+        await Processus.postPrix(Object.values(record));
+        processed++;
+      } catch (err) {
+        console.error(`Erreur ligne: ${err.message}`);
+        errors++;
+      }
+    }
+    res.status(200).json({ processed, errors });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
+
 exports.postPrix= async (req, res, next) => {
   try {
     let values=Object.values(req.body);
@@ -53,6 +94,26 @@ exports.postPrix= async (req, res, next) => {
     next(err);
   }
 };
+exports.postBulkArchives = async (req, res, next) => {
+  try {
+    const records = Array.isArray(req.body) ? req.body : [req.body];
+    let processed = 0, errors = 0;
+    for (const record of records) {
+      try {
+        await Processus.postArchives(Object.values(record));
+        processed++;
+      } catch (err) {
+        console.error(`Erreur ligne: ${err.message}`);
+        errors++;
+      }
+    }
+    res.status(200).json({ processed, errors });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
+
 exports.postArchives= async (req, res, next) => {
   try {
     let values=Object.values(req.body);
@@ -68,6 +129,26 @@ exports.postArchives= async (req, res, next) => {
     next(err);
   }
 };
+exports.postBulkStatistiques = async (req, res, next) => {
+  try {
+    const records = Array.isArray(req.body) ? req.body : [req.body];
+    let processed = 0, errors = 0;
+    for (const record of records) {
+      try {
+        await Processus.postStatistiques(Object.values(record));
+        processed++;
+      } catch (err) {
+        console.error(`Erreur ligne: ${err.message}`);
+        errors++;
+      }
+    }
+    res.status(200).json({ processed, errors });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
+
 exports.postStatistiques = async (req, res, next) => {
   try {
     const values = Object.values(req.body);
@@ -80,6 +161,26 @@ exports.postStatistiques = async (req, res, next) => {
     next(err);
   }
 };
+exports.postBulkLotPeriodiques = async (req, res, next) => {
+  try {
+    const records = Array.isArray(req.body) ? req.body : [req.body];
+    let processed = 0, errors = 0;
+    for (const record of records) {
+      try {
+        await Processus.postPeriodiques(Object.values(record));
+        processed++;
+      } catch (err) {
+        console.error(`Erreur ligne: ${err.message}`);
+        errors++;
+      }
+    }
+    res.status(200).json({ processed, errors });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
+
 exports.postLotPeriodiques= async (req, res, next) => {
   try {
     let values=Object.values(req.body);
@@ -90,6 +191,26 @@ exports.postLotPeriodiques= async (req, res, next) => {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
+    next(err);
+  }
+};
+
+exports.postBulkUpdatePeriodiques = async (req, res, next) => {
+  try {
+    const records = Array.isArray(req.body) ? req.body : [req.body];
+    let processed = 0, errors = 0;
+    for (const record of records) {
+      try {
+        await Processus.postListUpdatePeriodiques(Object.values(record));
+        processed++;
+      } catch (err) {
+        console.error(`Erreur ligne: ${err.message}`);
+        errors++;
+      }
+    }
+    res.status(200).json({ processed, errors });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
     next(err);
   }
 };
@@ -121,6 +242,26 @@ exports.ajoutProcessus=  async (req, res, next) => {
     next(err);
   }
 };
+exports.postBulkAbonnement = async (req, res, next) => {
+  try {
+    const records = Array.isArray(req.body) ? req.body : [req.body];
+    let processed = 0, errors = 0;
+    for (const record of records) {
+      try {
+        await Processus.postAbonnement(Object.values(record));
+        processed++;
+      } catch (err) {
+        console.error(`Erreur ligne: ${err.message}`);
+        errors++;
+      }
+    }
+    res.status(200).json({ processed, errors });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
+
 exports.postAbonnement= async (req, res, next) => {
   try {
     let values=Object.values(req.body);

@@ -147,6 +147,20 @@ export class OutilsService {
       .get<any>(url, { responseType: "json" })
       .pipe(catchError(this.errorHandlerService.handleError<any>("consulter données brutes")));
   }
+
+  resultatRapportPaginated(annee: string, plateforme: string, rapport: string, skip: number, limit: number, search: string = ''): Observable<any> {
+    if (!plateforme || plateforme === '') plateforme = 'vide';
+    let params = new HttpParams()
+      .set('annee', annee)
+      .set('plateforme', plateforme)
+      .set('rapport', rapport)
+      .set('skip', skip.toString())
+      .set('limit', limit.toString());
+    if (search && search.trim()) params = params.set('search', search);
+    return this.http
+      .get<any>('/api/outils/brut-paginated', { params, responseType: 'json' })
+      .pipe(catchError(this.errorHandlerService.handleError<any>('resultatRapportPaginated', { data: [], total: 0 })));
+  }
   /******************Section pour la gestion des fournisseurs*******************/
 
   postFournisseur(fond: any): Observable<any> {

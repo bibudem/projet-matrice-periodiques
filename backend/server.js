@@ -63,7 +63,7 @@ proxy.start();
 
 //*********************************************//
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -85,7 +85,7 @@ app.use(session({
 }));
 
 
-app.use(bodyParser.urlencoded({ extended : true }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(auth.passport.initialize());
 app.use(auth.passport.session());
 

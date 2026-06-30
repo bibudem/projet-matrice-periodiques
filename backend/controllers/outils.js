@@ -107,6 +107,20 @@ exports.getAllResultRapport = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getAllResultRapportPaginated = async (req, res, next) => {
+  try {
+    const { annee, plateforme = 'vide', rapport, search = '' } = req.query;
+    const skip = parseInt(req.query.skip) || 0;
+    const limit = parseInt(req.query.limit) || 25;
+    const [donnees] = await Outils.getAllResultRapportPaginated(annee, plateforme, rapport, skip, limit, search);
+    const [countResult] = await Outils.countResultRapport(annee, plateforme, rapport, search);
+    res.status(200).json({ data: donnees, total: countResult[0].count || 0, skip, limit });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
 exports.putFournisseur = async (req, res, next) => {
   try {
     let values=Object.values(req.body);

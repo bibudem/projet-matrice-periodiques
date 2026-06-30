@@ -10,8 +10,6 @@
       <div id="load">{{ 'importation.attendre' | translate}}</div>
     </div>
     <div class="content-wrapper b-white h-100" id="contenu-interface">
-      <!-- Contenu de la page liste des periodiques -->
-      <!-- Quick Action Toolbar Ends-->
       <div class="page-header pt-5">
         <div  class="d-sm-flex align-items-baseline report-summary-header w-100">
           <h4 class="font-weight-semibold text-initial ">{{ 'importation.titre' | translate}}</h4>
@@ -92,107 +90,174 @@
         </div>
       </form>
       </div>
-      <!-- progresse bar -->
-      <!-- fin contenu form -->
       <!-- Contenu des tableaux des résultats -->
       <div id="contenu-resultat" class="cacherVisible">
-        <!-- alert resultat vide -->
-        <div class="alert alert-warning" id="message-brute">
-          <button type="button"  class="close" (click)="methodesGlobal.nonAfficher('message-brute')" >
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <h6 class="p-2">{{ 'importation.message-brute' | translate}}</h6>
+
+        <div class="card-header mt-1 b-white" id="filtreResult">
+          <div class="d-flex flex-wrap align-items-center justify-content-between mb-2">
+
+            <!-- Barre de recherche -->
+            <div class="search-bar-wrapper flex-grow-1 mr-3" style="max-width: 450px;">
+              <i class="icon-magnifier search-bar-icon"></i>
+              <input class="search-bar-input"
+                     #texteFiltreSushi
+                     (keyup)="applyFilter(texteFiltreSushi.value)"
+                     placeholder="{{ 'filtre-text' | translate }}"
+                     id="texteFiltreSushi" name="texteFiltreSushi">
+              <button class="search-bar-clear" *ngIf="texteFiltreSushi.value"
+                      (click)="texteFiltreSushi.value=''; applyFilter('')" aria-label="Effacer">
+                &times;
+              </button>
+            </div>
+
+            <!-- Boutons rapport + actions -->
+            <div class="d-flex align-items-center flex-wrap" id="bouton-actions">
+              <button class="btn btn-outline-dark btn-sm mr-1"
+                      (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j1')">
+                {{ 'importation.rapportJ1' | translate}}
+              </button>
+              <button class="btn btn-outline-dark btn-sm mr-1"
+                      (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j2')">
+                {{ 'importation.rapportJ2' | translate}}
+              </button>
+              <button class="btn btn-outline-dark btn-sm mr-2"
+                      (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j3')">
+                {{ 'importation.rapportJ3' | translate}}
+              </button>
+              <button class="btn btn-primary btn-sm mr-1" title="{{ 'btn-export' | translate}}" (click)="ExportTOExcel()">
+                <i class="fa fa-file-excel-o"></i>
+              </button>
+              <button class="btn btn-dark btn-sm" (click)="methodesGlobal.nonAfficher('contenu-resultat')">
+                <i class="fa fa-eye-slash"></i>
+              </button>
+            </div>
+          </div>
         </div>
-      <div class="card-header mt-1 row b-white" id="filtreResult" >
-        <div class="col-md-12">
 
-          <ul class="list-inline w-100">
-            <li class="list-inline-item w-50" >
-              <mat-form-field class="w-100" >
-                <input  (keyup)="applyFilter(methodesGlobal.getValue(texteFiltre.value))"
-                        matInput placeholder="{{ 'filtre-text' | translate}}" id="textFiltre" name="textFiltre" #texteFiltre>
-              </mat-form-field>
-            </li>
-            <li class="list-inline-item" ><button class="btn btn-outline-dark btn-sm ml-5" (click)="this.methodesGlobal.nonAfficher('tableauResult');creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j1')">{{ 'importation.rapportJ1' | translate}}</button></li>
-            <li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="this.methodesGlobal.nonAfficher('tableauResult');creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j2')">{{ 'importation.rapportJ2' | translate}}</button> </li>
-            <li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="this.methodesGlobal.nonAfficher('tableauResult');creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j3')">{{ 'importation.rapportJ3' | translate}}</button> </li>
-            <!--<li class="list-inline-item " ><button class="btn btn-outline-dark btn-sm" (click)="creerTableauResultat(methodesGlobal.getValue(annee.value),methodesGlobal.getValue(plateforme.value),'j4')">{{ 'importation.rapportJ4' | translate}}</button></li>-->
-            <li class="list-inline-item" ><button class="btn btn-primary btn-sm" title="{{ 'btn-export' | translate}}" (click)="ExportTOExcel()"><i class="fa fa-file-excel-o"></i></button></li>
-            <li class="list-inline-item ml-2" ><button class="btn btn-dark btn-sm" (click)="methodesGlobal.nonAfficher('contenu-resultat')"><i class="fa fa-eye-slash"></i></button></li>
-          </ul>
+        <!-- Message aucun résultat -->
+        <div *ngIf="!isLoading && currentRapport && totalItems === 0"
+             class="alert alert-info d-flex align-items-center mt-3 mx-3">
+          <i class="icon-info mr-2"></i>
+          Aucun résultat trouvé pour ce rapport.
         </div>
-      </div>
-      <div class="example-container" id="tableauResult" class="cacherVisible">
-        <div class="table-responsive">
-          <table mat-table
-                 [dataSource]="dataSource"
-                 class="mat-elevation-z8 w-100 p-2"
-                 matSort  >
-            <!-- ID Column -->
-            <ng-container matColumnDef="numero" >
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10 p-3"> {{ 'numero' | translate}} </th>
-              <td *matCellDef="let row" class="w-10 p-3" > {{row.numero}} </td>
-            </ng-container>
 
-            <ng-container matColumnDef="PlatformID">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-10"> {{ 'PlatformID' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10" > {{row.PlatformID}} </td>
-            </ng-container>
+        <div class="example-container w-100 p-3 cacherVisible" id="tableauResult">
+          <div class="table-responsive" *ngIf="tableauRapports.length > 0">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-100" matSort>
 
-            <!-- Acronime Column -->
-            <ng-container matColumnDef="Title">
-              <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-15"> {{ 'titre' | translate}} </th>
-              <td  *matCellDef="let row" class="w-15" > {{row.Title}} </td>
-            </ng-container>
+              <ng-container matColumnDef="numero">
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold mat-w-5"> {{ 'numero' | translate}} </th>
+                <td *matCellDef="let row" class="mat-w-5"> {{row.numero}} </td>
+              </ng-container>
 
-            <!-- ISSN Column -->
-            <ng-container matColumnDef="ISSN">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'ISSN' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.ISSN}} </td>
-            </ng-container>
+              <ng-container matColumnDef="PlatformID">
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold mat-w-10"> {{ 'PlatformID' | translate}} </th>
+                <td *matCellDef="let row" class="mat-w-10"> {{row.PlatformID}} </td>
+              </ng-container>
 
-            <!-- Derniere modification -->
-            <ng-container matColumnDef="EISSN">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'EISSN' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.EISSN }} </td>
-            </ng-container>
+              <ng-container matColumnDef="Title">
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold mat-w-20"> {{ 'titre' | translate}} </th>
+                <td *matCellDef="let row" class="mat-w-20"> {{row.Title}} </td>
+              </ng-container>
 
-            <!-- Derniere modification -->
-            <ng-container matColumnDef="annee">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'annee' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.annee }} </td>
-            </ng-container>
+              <ng-container matColumnDef="ISSN">
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold mat-w-10"> {{ 'ISSN' | translate}} </th>
+                <td *matCellDef="let row" class="mat-w-10"> {{row.ISSN}} </td>
+              </ng-container>
 
-            <!-- Derniere modification -->
-            <ng-container matColumnDef="Metric_Type">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-15"> {{ 'type' | translate}} </th>
-              <td  *matCellDef="let row" class="w-15"> {{row.Metric_Type }} </td>
-            </ng-container>
+              <ng-container matColumnDef="EISSN">
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold mat-w-10"> {{ 'EISSN' | translate}} </th>
+                <td *matCellDef="let row" class="mat-w-10"> {{row.EISSN}} </td>
+              </ng-container>
 
-            <!-- Derniere modification -->
-            <ng-container matColumnDef="Reporting_Period_Total">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'Total' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.Reporting_Period_Total }} </td>
-            </ng-container>
+              <ng-container matColumnDef="annee">
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold mat-w-5"> {{ 'annee' | translate}} </th>
+                <td *matCellDef="let row" class="mat-w-5"> {{row.annee}} </td>
+              </ng-container>
 
-            <!-- Derniere modification -->
-            <ng-container matColumnDef="dateA">
-              <th *matHeaderCellDef mat-sort-header  class="font-weight-bold w-10"> {{ 'dateA' | translate}} </th>
-              <td  *matCellDef="let row" class="w-10"> {{row.dateA | date:'short': 'fr'}} </td>
-            </ng-container>
+              <ng-container matColumnDef="Metric_Type">
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold mat-w-15"> {{ 'type' | translate}} </th>
+                <td *matCellDef="let row" class="mat-w-15"> {{row.Metric_Type}} </td>
+              </ng-container>
 
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns;">
-            </mat-row>
+              <ng-container matColumnDef="Reporting_Period_Total">
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold mat-w-10"> {{ 'Total' | translate}} </th>
+                <td *matCellDef="let row" class="mat-w-10"> {{row.Reporting_Period_Total}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="dateA">
+                <th *matHeaderCellDef mat-sort-header class="font-weight-bold mat-w-15"> {{ 'dateA' | translate}} </th>
+                <td *matCellDef="let row" class="mat-w-15"> {{row.dateA | date:'short': 'fr'}} </td>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </table>
+          </div>
+
+          <!-- Pagination serveur -->
+          <div class="pagination-wrapper" *ngIf="totalItems > 0">
+            <div class="d-flex flex-wrap align-items-center justify-content-between">
+
+              <div class="pagination-info-text">
+                Affichage de <strong>{{ getDisplayStart() }}</strong> à <strong>{{ getDisplayEnd() }}</strong>
+                sur <strong>{{ totalItems }}</strong> entrées
+              </div>
+
+              <nav aria-label="Navigation des pages">
+                <ul class="pagination pagination-sm mb-0">
+                  <li class="page-item" [class.disabled]="isFirstPage()">
+                    <a class="page-link" (click)="!isFirstPage() && firstPage()" title="Première page">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item" [class.disabled]="isFirstPage()">
+                    <a class="page-link" (click)="!isFirstPage() && previousPage()" title="Précédent">
+                      <span aria-hidden="true">&lsaquo;</span>
+                    </a>
+                  </li>
+
+                  <ng-container *ngFor="let page of getPageNumbers()">
+                    <li class="page-item disabled" *ngIf="page === null">
+                      <span class="page-link ellipsis">…</span>
+                    </li>
+                    <li class="page-item" *ngIf="page !== null" [class.active]="page === getCurrentPageNumber()">
+                      <a class="page-link" (click)="goToPage(page - 1)">{{ page }}</a>
+                    </li>
+                  </ng-container>
+
+                  <li class="page-item" [class.disabled]="isLastPage()">
+                    <a class="page-link" (click)="!isLastPage() && nextPage()" title="Suivant">
+                      <span aria-hidden="true">&rsaquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item" [class.disabled]="isLastPage()">
+                    <a class="page-link" (click)="!isLastPage() && lastPage()" title="Dernière page">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+
+              <div class="d-flex align-items-center">
+                <label class="pagination-size-label mb-0 mr-2">Entrées par page :</label>
+                <select class="form-control form-control-sm pagination-size-select"
+                        [ngModel]="pageSize"
+                        (ngModelChange)="changePageSize($event)">
+                  <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+                </select>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Table cachée pour export Excel -->
+          <table class="table table-bordered cacherVisible" id="table-rapport">
+            <tr><th *ngFor="let th of displayedColumns">{{th}}</th></tr>
+            <tr *ngFor="let col of tableauRapports">
+              <td *ngFor="let rep of displayedColumns">{{col[rep]}}</td>
+            </tr>
           </table>
-        </div>
-          <mat-paginator [pageSizeOptions]="[25, 50, 100, 150]"></mat-paginator>
-        <!-- creation  du tableau pour export-->
-        <table  class="table table-bordered cacherVisible"  id="table-rapport" >
-          <tr><th *ngFor="let th of displayedColumns ">{{th}}</th></tr>
-          <tr *ngFor="let col of tableauRapports">
-            <td *ngFor="let rep of displayedColumns">{{col[rep]}}</td></tr>
-        </table>
         </div>
       </div>
     </div>
@@ -207,4 +272,3 @@
     <app-footer></app-footer>
   </div>
 </div>
-

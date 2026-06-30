@@ -73,11 +73,15 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
     if (this.isValidCSVFile(files[0])) {
       let input = $event.target;
       let reader = new FileReader();
-      reader.readAsText(input.files[0]);
+      reader.readAsArrayBuffer(input.files[0]);
       reader.onload = async () => {
-        let csvData = await reader.result;
+        const buffer = reader.result as ArrayBuffer;
+        const bytes = new Uint8Array(buffer);
+        const hasUtf8Bom = bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF;
+        const encoding = hasUtf8Bom ? 'utf-8' : 'windows-1252';
+        const csvData = new TextDecoder(encoding).decode(buffer);
 
-        let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
+        let csvRecordsArray = csvData.split(/\r\n|\n/);
 
         if(csvRecordsArray[0].search(',')!=-1){
           this.separator =','
@@ -175,57 +179,37 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
 
 
   //inserer les données
-  async postArray(records:any){
-    //console.log(records)
+  async postArray(records: any[]): Promise<void> {
+    if (records.length === 0) return;
     this.processousEnCours();
-    if (records.length == 0) return;
-    let i =0;
-    this.dateStart=this.methodesGlobal.dateCreator();
-    let postLigne : any = {}
-    for (let val of records) {
-        i++;
-          postLigne.idRevue=val.idRevue;
-          postLigne.titre=val.titre;
-          postLigne.ISSN=val.ISSN;
-          postLigne.EISSN=val.EISSN;
-          postLigne.statut=val.statut;
-          postLigne.accesCourant=val.accesCourant;
-          postLigne.abonnement=val.abonnement;
-          postLigne.bdd=val.bdd;
-          postLigne.fonds=val.fonds;
-          postLigne.fournisseur=val.fournisseur;
-          postLigne.plateformePrincipale=val.plateformePrincipale;
-          postLigne.autrePlateforme=val.autrePlateforme;
-          postLigne.format=val.format;
-          postLigne.libreAcces=val.libreAcces;
-          postLigne.domaine=val.domaine;
-          postLigne.secteur=val.secteur;
-          postLigne.sujets=val.sujets;
-          postLigne.entente_consortiale=val.entente_consortiale;
-          postLigne.duplication=val.duplication;
-          postLigne.duplicationCourant=val.duplicationCourant;
-          postLigne.duplicationEmbargo1=val.duplicationEmbargo1;
-          postLigne.duplicationEmbargo2=val.duplicationEmbargo2;
-          postLigne.essentiel2014=val.essentiel2014;
-          postLigne.essentiel2022=val.essentiel2022;
-          this.post(postLigne);
-
-          await this.methodesGlobal.delay(100);
-
-          if(i==records.length){
-            await this.methodesGlobal.delay(1000);
-            //console.log('fin processus');
-            this.addProcessus(this.dateStart);
-          }
+    this.dateStart = this.methodesGlobal.dateCreator();
+    const payload = records.map(val => ({
+      idRevue: val.idRevue, titre: val.titre, ISSN: val.ISSN, EISSN: val.EISSN,
+      statut: val.statut, accesCourant: val.accesCourant, abonnement: val.abonnement,
+      bdd: val.bdd, fonds: val.fonds, fournisseur: val.fournisseur,
+      plateformePrincipale: val.plateformePrincipale, autrePlateforme: val.autrePlateforme,
+      format: val.format, libreAcces: val.libreAcces, domaine: val.domaine,
+      secteur: val.secteur, sujets: val.sujets, entente_consortiale: val.entente_consortiale,
+      duplication: val.duplication, duplicationCourant: val.duplicationCourant,
+      duplicationEmbargo1: val.duplicationEmbargo1, duplicationEmbargo2: val.duplicationEmbargo2,
+      essentiel2014: val.essentiel2014, essentiel2022: val.essentiel2022
+    }));
+    try {
+      await this.csvService.bulkUpdateLotPeriodiques(payload).toPromise();
+    } catch (err: any) {
+      console.error(`Erreur importation: ${err.message}`);
     }
+    await this.addProcessus(this.dateStart);
   }
   //fonction pour inserer
-  post( postLigne : any) {
-    this.inUpdatePeriodiques$ = this.csvService
-      .updateLotPeriodiques(postLigne)
-      //.toPromise(tap(() => (this.finImportation())));
+  async post(postLigne: any): Promise<void> {
+    try {
+      await this.csvService.updateLotPeriodiques(postLigne).toPromise();
+    } catch (err: any) {
+      console.error(`Erreur ligne ${postLigne.idRevue}: ${err.message}`);
+    }
   }
-  addProcessus(dateStart:string){
+  async addProcessus(dateStart:string): Promise<void> {
     // creer la date du début
 
     if(sessionStorage.getItem('prenomAdmin')){
@@ -238,9 +222,8 @@ export class MiseEnLotPeriodiquesComponent implements OnInit {
       this.note=document.getElementById('note').value.toString();
     }
     this.processus = {'titre':'Versements en lot des fiches des périodiques','type':'periodiques','admin':this.admin,'note':this.note,'dateStart':dateStart}
-    this.addProcessus$ = this.csvService
-      .addProcessus(this.processus)
-      .pipe(tap(() => (this.finImportation())));
+    await this.csvService.addProcessus(this.processus).toPromise();
+    this.finImportation();
   }
 
 //cacher l'animation pour la mise a jour des données

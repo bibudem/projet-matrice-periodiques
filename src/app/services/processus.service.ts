@@ -61,6 +61,20 @@ export class ProcessusService {
         )
       );
   }
+
+  fetchAllDetailsPaginated(id: string, skip: number, limit: number, search: string = ''): Observable<any> {
+    let params = new HttpParams()
+      .set('skip', skip.toString())
+      .set('limit', limit.toString());
+    if (search && search.trim()) {
+      params = params.set('search', search);
+    }
+    return this.http
+      .get<any>(`${this.url}/liste-details-paginated/${id}`, { params, responseType: 'json' })
+      .pipe(
+        catchError(this.errorHandlerService.handleError<any>('fetchAllDetailsPaginated', { data: [], total: 0 }))
+      );
+  }
   //chercher le dernier id du Processus
   lastIdProcessus(): Observable<any[]> {
     return this.http
@@ -131,6 +145,36 @@ export class ProcessusService {
     return this.http
       .put<any>(url, abonnement, this.httpOptions)
       .pipe(catchError(this.errorHandlerService.handleError<any>("update abonnement")));
+  }
+
+  bulkUpdateProcessousPeriodiques(records: any[]): Observable<any> {
+    return this.http.post<any>(`/api/processus/bulk-update-periodiques`, records, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("bulk update periodiques")));
+  }
+
+  bulkUpdateLotPeriodiques(records: any[]): Observable<any> {
+    return this.http.post<any>(`/api/processus/bulk-lot-periodiques`, records, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("bulk lot periodiques")));
+  }
+
+  bulkUpdatePrix(records: any[]): Observable<any> {
+    return this.http.put<any>(`/api/processus/bulk-save-prix`, records, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("bulk update prix")));
+  }
+
+  bulkUpdateAbonnement(records: any[]): Observable<any> {
+    return this.http.put<any>(`/api/processus/bulk-save-abonnement`, records, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("bulk update abonnement")));
+  }
+
+  bulkUpdateArchives(records: any[]): Observable<any> {
+    return this.http.put<any>(`/api/processus/bulk-save-archives`, records, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("bulk update archives")));
+  }
+
+  bulkUpdateStatistiques(records: any[]): Observable<any> {
+    return this.http.put<any>(`/api/processus/bulk-update-statistiques`, records, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>("bulk update statistiques")));
   }
 
   addProcessus(processus: any): Observable<any[]>{

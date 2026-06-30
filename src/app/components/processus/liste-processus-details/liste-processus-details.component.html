@@ -1,31 +1,32 @@
-<!-- Integrer le top de chaque page -->
 <app-header></app-header>
-<!-- Integrer le carcase de chaque page -->
 <div class="container-fluid page-body-wrapper">
   <app-menu></app-menu>
   <div class="main-panel">
     <div class="content-wrapper b-white">
-      <!-- Contenu de la page liste des periodiques -->
-      <!-- Quick Action Toolbar Ends-->
       <div class="page-header pt-3">
-        <div  class="d-sm-flex align-items-baseline report-summary-header w-100 mt-3">
-          <h4 class="font-weight-semibold text-initial ">{{ 'processus.titre-processus-details' | translate}}  </h4>
-          <span  class="ml-auto ">
+        <div class="d-sm-flex align-items-baseline report-summary-header w-100 mt-3">
+          <h4 class="font-weight-semibold text-initial">{{ 'processus.titre-processus-details' | translate }}</h4>
+          <span class="ml-auto">
             <button type="button" class="btn btn-secondary btn-sm mb-1" routerLink="/processus">
-                <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate}}
+              <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate }}
             </button>
-            <button class="btn btn-info ml-1 btn-sm mb-1" (click)="methodesGlobal.ExportTOExcel('tableau-processus','liste-processus-details.xlsx');"><i class="fa fa-file-excel-o"></i> {{'btn-export'| translate }}
+            <button class="btn btn-info ml-1 btn-sm mb-1"
+                    (click)="methodesGlobal.ExportTOExcel('tableau-processus','liste-processus-details.xlsx')">
+              <i class="fa fa-file-excel-o"></i> {{ 'btn-export' | translate }}
             </button>
           </span>
         </div>
       </div>
+
       <div class="row">
         <div class="example-container w-100 p-3">
+
+          <!-- Barre de recherche -->
           <div class="search-bar-wrapper mb-3">
             <i class="icon-magnifier search-bar-icon"></i>
             <input class="search-bar-input"
                    #texteFiltreDetails
-                   (keyup)="applyFilter(methodesGlobal.getValue(texteFiltreDetails.value))"
+                   (keyup)="applyFilter(texteFiltreDetails.value)"
                    placeholder="{{ 'filtre-text' | translate }}"
                    id="texteFiltreDetails" name="texteFiltreDetails">
             <button class="search-bar-clear" *ngIf="texteFiltreDetails.value"
@@ -33,66 +34,60 @@
               &times;
             </button>
           </div>
+
           <div class="table-responsive w-100">
-            <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100" >
-              <!-- ID Column -->
-              <ng-container matColumnDef="numero" >
-                <th *matHeaderCellDef mat-sort-header class="mat-w-10 pl-2"> {{ 'numero' | translate}} </th>
-                <td *matCellDef="let row" class="mat-w-10 pl-2" > {{row.numero}} </td>
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100">
+
+              <ng-container matColumnDef="numero">
+                <th *matHeaderCellDef mat-sort-header class="mat-w-10 pl-2">{{ 'numero' | translate }}</th>
+                <td *matCellDef="let row" class="mat-w-10 pl-2">{{ row.numero }}</td>
               </ng-container>
 
-              <!-- plateforme Column -->
               <ng-container matColumnDef="idRevue">
-                <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'idRevue' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-10" >
-                  <span  *ngIf="row.idRevue=='!!!'" class="text-danger">{{row.idRevue}}</span>
-                  <span  *ngIf="row.idRevue!='!!!'" >{{row.idRevue}}</span>
-                   </td>
-              </ng-container>
-
-              <!-- ISSN Column -->
-              <ng-container matColumnDef="ISSN">
-                <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'ISSN' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-10" >
-                  <span class="text-danger" *ngIf="row.ISSN=='!!!'">{{row.ISSN}}</span>
-                  <span  *ngIf="row.ISSN!='!!!'">{{row.ISSN}}</span>
-                 </td>
-              </ng-container>
-
-              <!-- EISSN Column -->
-              <ng-container matColumnDef="EISSN">
-                <th *matHeaderCellDef mat-sort-header class="mat-w-10"> {{ 'EISSN' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-10" > {{row.EISSN}} </td>
-              </ng-container>
-
-              <!-- EISSN Column -->
-              <ng-container matColumnDef="titre">
-                <th *matHeaderCellDef mat-sort-header  class="col-titre"> {{ 'titre' | translate}} </th>
-                <td  *matCellDef="let row" class="col-titre">
-                  <span class="text-danger" *ngIf="row.idRevue=='!!!'">{{'non-periodique' | translate}}</span>
-                  <span  *ngIf="row.idRevue!='!!!'">{{row.titre}}</span>
+                <th *matHeaderCellDef mat-sort-header class="mat-w-10">{{ 'idRevue' | translate }}</th>
+                <td *matCellDef="let row" class="mat-w-10">
+                  <span *ngIf="row.idRevue === '!!!'" class="text-danger">{{ row.idRevue }}</span>
+                  <span *ngIf="row.idRevue !== '!!!'">{{ row.idRevue }}</span>
                 </td>
               </ng-container>
 
-
-              <!-- rapport Column -->
-              <ng-container matColumnDef="dateA">
-                <th *matHeaderCellDef mat-sort-header  class="mat-w-20"> {{ 'dateA' | translate}} </th>
-                <td  *matCellDef="let row" class="mat-w-20"> {{row.dateA}} </td>
+              <ng-container matColumnDef="ISSN">
+                <th *matHeaderCellDef mat-sort-header class="mat-w-10">{{ 'ISSN' | translate }}</th>
+                <td *matCellDef="let row" class="mat-w-10">
+                  <span class="text-danger" *ngIf="row.ISSN === '!!!'">{{ row.ISSN }}</span>
+                  <span *ngIf="row.ISSN !== '!!!'">{{ row.ISSN }}</span>
+                </td>
               </ng-container>
 
-              <!-- Actions Column -->
+              <ng-container matColumnDef="EISSN">
+                <th *matHeaderCellDef mat-sort-header class="mat-w-10">{{ 'EISSN' | translate }}</th>
+                <td *matCellDef="let row" class="mat-w-10">{{ row.EISSN }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="titre">
+                <th *matHeaderCellDef mat-sort-header class="col-titre">{{ 'titre' | translate }}</th>
+                <td *matCellDef="let row" class="col-titre">
+                  <span class="text-danger" *ngIf="row.idRevue === '!!!'">{{ 'non-periodique' | translate }}</span>
+                  <span *ngIf="row.idRevue !== '!!!'">{{ row.titre }}</span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="dateA">
+                <th *matHeaderCellDef mat-sort-header class="mat-w-20">{{ 'dateA' | translate }}</th>
+                <td *matCellDef="let row" class="mat-w-20">{{ row.dateA }}</td>
+              </ng-container>
+
               <ng-container matColumnDef="actions">
                 <th *matHeaderCellDef class="col-actions text-center">Actions</th>
                 <td *matCellDef="let row" class="col-actions text-center">
                   <div class="actions-wrapper">
                     <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm"
-                            *ngIf="row.idRevue!='!!!'"
-                            title="{{'fiche-periodique'| translate}}"
-                            routerLink="/periodique/{{row.idRevue}}">
+                            *ngIf="row.idRevue !== '!!!'"
+                            title="{{ 'fiche-periodique' | translate }}"
+                            routerLink="/periodique/{{ row.idRevue }}">
                       <i class="icon-note"></i>
                     </button>
-                    <span *ngIf="row.idRevue==='!!!'" class="btn-placeholder"></span>
+                    <span *ngIf="row.idRevue === '!!!'" class="btn-placeholder"></span>
                     <button type="button" class="btn btn-danger btn-rounded btn-icon btn-sm"
                             title="Supprimer la ligne"
                             (click)="confirmerSuppression(row.id_details, row.titre)">
@@ -103,23 +98,78 @@
               </ng-container>
 
               <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: displayedColumns;">
-              </mat-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
             </table>
-
-            <mat-paginator [pageSizeOptions]="[15, 25, 50, 100]"></mat-paginator>
           </div>
+
+          <!-- Pagination serveur -->
+          <div class="pagination-wrapper">
+            <div class="d-flex flex-wrap align-items-center justify-content-between">
+
+              <div class="pagination-info-text">
+                Affichage de <strong>{{ getDisplayStart() }}</strong> à <strong>{{ getDisplayEnd() }}</strong>
+                sur <strong>{{ totalItems }}</strong> entrées
+              </div>
+
+              <nav aria-label="Navigation des pages">
+                <ul class="pagination pagination-sm mb-0">
+                  <li class="page-item" [class.disabled]="isFirstPage()">
+                    <a class="page-link" (click)="!isFirstPage() && firstPage()" title="Première page">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item" [class.disabled]="isFirstPage()">
+                    <a class="page-link" (click)="!isFirstPage() && previousPage()" title="Précédent">
+                      <span aria-hidden="true">&lsaquo;</span>
+                    </a>
+                  </li>
+
+                  <ng-container *ngFor="let page of getPageNumbers()">
+                    <li class="page-item disabled" *ngIf="page === null">
+                      <span class="page-link ellipsis">…</span>
+                    </li>
+                    <li class="page-item" *ngIf="page !== null" [class.active]="page === getCurrentPageNumber()">
+                      <a class="page-link" (click)="goToPage(page - 1)">{{ page }}</a>
+                    </li>
+                  </ng-container>
+
+                  <li class="page-item" [class.disabled]="isLastPage()">
+                    <a class="page-link" (click)="!isLastPage() && nextPage()" title="Suivant">
+                      <span aria-hidden="true">&rsaquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item" [class.disabled]="isLastPage()">
+                    <a class="page-link" (click)="!isLastPage() && lastPage()" title="Dernière page">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+
+              <div class="d-flex align-items-center">
+                <label class="pagination-size-label mb-0 mr-2">Entrées par page :</label>
+                <select class="form-control form-control-sm pagination-size-select"
+                        [ngModel]="pageSize"
+                        (ngModelChange)="changePageSize($event)">
+                  <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+                </select>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
-    <!-- fin note -->
-    <div class="noVisible" *ngFor="let proces of processus$ | async"></div>
-    <!-- creation  du tableau pour export-->
-    <table  class="table table-bordered cacherVisible"  id="tableau-processus" >
-      <tr><th *ngFor="let th of displayedColumns ">{{th}}</th></tr>
+
+    <!-- Table cachée pour export Excel -->
+    <table class="table table-bordered cacherVisible" id="tableau-processus">
+      <tr><th *ngFor="let th of displayedColumns">{{ th }}</th></tr>
       <tr *ngFor="let col of listeProcessus">
-        <td *ngFor="let rep of displayedColumns">{{col[rep]}}</td></tr>
+        <td *ngFor="let rep of displayedColumns">{{ col[rep] }}</td>
+      </tr>
     </table>
+
     <!-- Animation de chargement -->
     <div *ngIf="isLoading" class="loading-container">
       <div class="spinner">
@@ -128,8 +178,7 @@
         </svg>
       </div>
     </div>
-    <!-- Fin animation:  Contenu footer -->
-    <!-- Contenu footer -->
+
     <app-footer></app-footer>
   </div>
 </div>

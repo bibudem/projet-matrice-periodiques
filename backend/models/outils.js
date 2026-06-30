@@ -109,6 +109,42 @@ module.exports = class Outils {
 
     return db.execute("SELECT * FROM "+table+"  WHERE annee=?  " +plateformeSql+ " order by Title ",[annee])
   }
+  static getAllResultRapportPaginated(annee, plateforme, rapport, skip, limit, search = '') {
+    const allowed = ['j1', 'j2', 'j3', 'j4'];
+    if (!allowed.includes(rapport)) throw new Error('Rapport invalide');
+    const table = 'tbl_results_' + rapport;
+    let whereClause = 'WHERE annee = ?';
+    const params = [annee];
+    if (plateforme && plateforme !== 'vide') {
+      whereClause += ' AND PlatformID = ?';
+      params.push(plateforme);
+    }
+    if (search && search.trim()) {
+      const s = '%' + search + '%';
+      whereClause += ' AND (Title LIKE ? OR ISSN LIKE ? OR EISSN LIKE ? OR PlatformID LIKE ?)';
+      params.push(s, s, s, s);
+    }
+    return db.execute(`SELECT * FROM ${table} ${whereClause} ORDER BY Title LIMIT ${parseInt(limit)} OFFSET ${parseInt(skip)}`, params);
+  }
+
+  static countResultRapport(annee, plateforme, rapport, search = '') {
+    const allowed = ['j1', 'j2', 'j3', 'j4'];
+    if (!allowed.includes(rapport)) throw new Error('Rapport invalide');
+    const table = 'tbl_results_' + rapport;
+    let whereClause = 'WHERE annee = ?';
+    const params = [annee];
+    if (plateforme && plateforme !== 'vide') {
+      whereClause += ' AND PlatformID = ?';
+      params.push(plateforme);
+    }
+    if (search && search.trim()) {
+      const s = '%' + search + '%';
+      whereClause += ' AND (Title LIKE ? OR ISSN LIKE ? OR EISSN LIKE ? OR PlatformID LIKE ?)';
+      params.push(s, s, s, s);
+    }
+    return db.execute(`SELECT COUNT(*) as count FROM ${table} ${whereClause}`, params);
+  }
+
   static allFournisseurs() {
     return db.execute('SELECT * FROM lst_fournisseurs  order by titre');
   }

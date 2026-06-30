@@ -1,15 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {Observable} from "rxjs";
+import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
-import {paginationPersonnalise} from "../../../lib/paginationPersonnalise";
 import {MatSort} from "@angular/material/sort";
 import {MatDialog} from "@angular/material/dialog";
 import {MethodesGlobal} from "../../../lib/MethodesGlobal";
 import {ProcessusService} from "../../../services/processus.service";
-import {TranslateService} from "@ngx-translate/core";
-import {tap} from "rxjs/operators";
-import * as XLSX from "xlsx";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ConfirmDialogComponent} from "../../../lib/confirm-suppression-dialog.component";
 
@@ -18,100 +12,119 @@ import {ConfirmDialogComponent} from "../../../lib/confirm-suppression-dialog.co
   templateUrl: './liste-processus-details.component.html',
   styleUrls: ['./liste-processus-details.component.css']
 })
-export class ListeProcessusDelailsComponent implements OnInit {
+export class ListeProcessusDelailsComponent implements OnInit, AfterViewInit {
 
-  processus$: Observable<any[]> | undefined;
+  displayedColumns = ['numero', 'idRevue', 'ISSN', 'EISSN', 'titre', 'dateA', 'actions'];
+  listeProcessus: any[] = [];
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 
-  codes:any=[];
+  @ViewChild(MatSort) matSort: MatSort | any;
 
-  isLoading = true;
-
-  //les entêts du tableau
-  displayedColumns = ['numero','idRevue','ISSN','EISSN','titre','dateA','actions'];
-  listeProcessus: any = [];
-  // @ts-ignore
-  dataSource: MatTableDataSource<any>;
-
-  selectedProcessus: string | undefined;
-
-  @ViewChild(MatPaginator) paginator: paginationPersonnalise | any;
-
-  @ViewChild(MatSort)  matSort : MatSort | any;
-
-
-  //importer les fonctions global
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
 
-  /*name of the excel-file which will be downloaded. */
-  fileName= 'liste-processus.xlsx';
-
-  routerChek :string = ''
-
+  fileName = 'liste-processus.xlsx';
   idProcessus: string = '';
+  isLoading = true;
 
-  constructor(private processusService: ProcessusService,
-              private translate: TranslateService,
-              private route: ActivatedRoute,
-              private router: Router,
-              private dialog: MatDialog) { }
+  currentPage = 0;
+  pageSize = 25;
+  totalItems = 0;
+  pageSizeOptions = [25, 50, 100, 200];
+  textRechercher = '';
 
-  //appliquer filtre
-  applyFilter(filterValue: string) {
-    const normalizedFilter = this.methodesGlobal.normalizeString(filterValue);
-    // @ts-ignore
-    this.dataSource.filter = normalizedFilter;
-  }
+  constructor(
+    private processusService: ProcessusService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
-    //lire l'url
-    this.routerChek = this. router.url.toString();
+    this.idProcessus = this.route.snapshot.paramMap.get('id') as string;
+    this.loadDetails();
+  }
 
-    // @ts-ignore
-    this.idProcessus = this.route.snapshot.paramMap.get("id");
-    console.log(this.idProcessus);
-    //prendre la fiche
-    if(this.idProcessus!=null){
-      this.getAllProcessusDelails(this.idProcessus);
-      }
-    }
-  async getAllProcessusDelails(id:string) {
-    try {
-      let titre  ='';
-      this.listeProcessus=[];
-      this.processus$ = this.processusService.fetchAllDetails(id);
-      // @ts-ignore
-      await this.processus$.toPromise().then(res => {
-        //console.log(res);
-        let idVal='',issnVal='';
-        for (let i = 0; i < res.length; i++) {
-          idVal=res[i].idRevue;
-          issnVal=res[i].ISSN;
-          if(res[i].ISSN=='-1'){
-            issnVal='!!!';
-          }
-          if(res[i].idRevue=='-1'){
-            idVal='!!!';
-          }
-          this.listeProcessus[i]={
-            "numero":i+1,
-            "id_details":res[i].id_details,
-            "idRevue":idVal,
-            "ISSN":issnVal,
-            "EISSN":res[i].EISSN,
-            "titre":res[i].titre,
-            "dateA":res[i].dateA
-          }
+  ngAfterViewInit(): void {
+    this.dataSource.sort = this.matSort;
+  }
+
+  private prepareSearch(value: string): string {
+    const diacritics = new RegExp('[\\u0300-\\u036f]', 'g');
+    return value.normalize('NFD').replace(diacritics, '').toLowerCase().trim();
+  }
+
+  applyFilter(filterValue: string): void {
+    this.textRechercher = filterValue.trim();
+    this.currentPage = 0;
+    this.loadDetails(this.prepareSearch(this.textRechercher));
+  }
+
+  loadDetails(searchTerm = ''): void {
+    this.isLoading = true;
+    const skip = this.currentPage * this.pageSize;
+
+    this.processusService.fetchAllDetailsPaginated(this.idProcessus, skip, this.pageSize, searchTerm)
+      .subscribe({
+        next: (response) => {
+          const rows: any[] = response?.data || [];
+          this.listeProcessus = rows.map((r: any, i: number) => ({
+            numero: skip + i + 1,
+            id_details: r.id_details,
+            idRevue: r.idRevue === '-1' ? '!!!' : r.idRevue,
+            ISSN: r.ISSN === '-1' ? '!!!' : r.ISSN,
+            EISSN: r.EISSN,
+            titre: r.titre,
+            dateA: r.dateA
+          }));
+          this.dataSource.data = this.listeProcessus;
+          this.totalItems = response?.total || 0;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error(`Erreur chargement détails: ${err}`);
+          this.isLoading = false;
         }
-        // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
-        this.dataSource = new MatTableDataSource(this.listeProcessus);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.matSort;
-        this.isLoading = false;
-        //console.log(this.dataSource);
       });
-    } catch(err: any) {
-      console.error(`Error : ${err.message}`);
+  }
+
+  nextPage(): void {
+    if (!this.isLastPage()) { this.currentPage++; this.loadDetails(this.prepareSearch(this.textRechercher)); }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 0) { this.currentPage--; this.loadDetails(this.prepareSearch(this.textRechercher)); }
+  }
+
+  goToPage(pageNumber: number): void {
+    const maxPage = Math.ceil(this.totalItems / this.pageSize) - 1;
+    if (pageNumber >= 0 && pageNumber <= maxPage) {
+      this.currentPage = pageNumber;
+      this.loadDetails(this.prepareSearch(this.textRechercher));
     }
+  }
+
+  firstPage(): void { this.currentPage = 0; this.loadDetails(this.prepareSearch(this.textRechercher)); }
+  lastPage(): void { this.currentPage = Math.ceil(this.totalItems / this.pageSize) - 1; this.loadDetails(this.prepareSearch(this.textRechercher)); }
+  changePageSize(newSize: number): void { this.pageSize = newSize; this.currentPage = 0; this.loadDetails(this.prepareSearch(this.textRechercher)); }
+  isFirstPage(): boolean { return this.currentPage === 0; }
+  isLastPage(): boolean { return this.currentPage >= Math.ceil(this.totalItems / this.pageSize) - 1; }
+  getCurrentPageNumber(): number { return this.currentPage + 1; }
+  getTotalPages(): number { return Math.ceil(this.totalItems / this.pageSize); }
+  getDisplayStart(): number { return this.totalItems === 0 ? 0 : this.currentPage * this.pageSize + 1; }
+  getDisplayEnd(): number { return Math.min((this.currentPage + 1) * this.pageSize, this.totalItems); }
+
+  getPageNumbers(): (number | null)[] {
+    const total = this.getTotalPages();
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    const current = this.getCurrentPageNumber();
+    const pages: (number | null)[] = [1];
+    if (current > 3) pages.push(null);
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (current < total - 2) pages.push(null);
+    pages.push(total);
+    return pages;
   }
 
   confirmerSuppression(id: string, titre: string): void {
@@ -124,19 +137,15 @@ export class ListeProcessusDelailsComponent implements OnInit {
         confirmColor: 'warn'
       }
     });
-
     ref.afterClosed().subscribe((confirmed: boolean) => {
-      if (confirmed) {
-        this.deleteProcessusDetails(id);
-      }
+      if (confirmed) this.deleteProcessusDetails(id);
     });
   }
 
-  async deleteProcessusDetails(id:string){
-    let idP=Number(id)
-    this.processus$ = this.processusService
-      .deleteDetails(idP)
-      .pipe(tap(() => (this.getAllProcessusDelails(this.idProcessus))));
+  deleteProcessusDetails(id: string): void {
+    this.processusService.deleteDetails(Number(id)).subscribe({
+      next: () => this.loadDetails(this.prepareSearch(this.textRechercher)),
+      error: (err) => console.error(`Erreur suppression: ${err}`)
+    });
   }
-
 }

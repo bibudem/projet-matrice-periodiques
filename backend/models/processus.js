@@ -22,6 +22,37 @@ module.exports = class Processus {
     return db.execute('SELECT id_details,lst_processus_details.id_processus as id_processus, lst_processus_details.idRevue as idRevue,lst_processus_details.ISSN as ISSN,lst_processus_details.EISSN as EISSN, titre, lst_processus_details.dateA as dateA FROM lst_processus_details Left JOIN tbl_periodiques on lst_processus_details.idRevue=tbl_periodiques.idRevue where id_processus = ? order by id_details DESC',[id]);
   }
 
+  static getAllDetailsProcessusPaginated(id, skip, limit, search = '') {
+    const params = [id];
+    let searchClause = '';
+    if (search && search.trim()) {
+      const s = `%${search}%`;
+      searchClause = ' AND (d.idRevue LIKE ? OR d.ISSN LIKE ? OR d.EISSN LIKE ? OR p.titre LIKE ?)';
+      params.push(s, s, s, s);
+    }
+    const sql = `SELECT d.id_details, d.id_processus, d.idRevue, d.ISSN, d.EISSN, p.titre, d.dateA
+                 FROM lst_processus_details d
+                 LEFT JOIN tbl_periodiques p ON d.idRevue = p.idRevue
+                 WHERE d.id_processus = ?${searchClause}
+                 ORDER BY d.id_details DESC
+                 LIMIT ${parseInt(limit)} OFFSET ${parseInt(skip)}`;
+    return db.execute(sql, params);
+  }
+
+  static countAllDetails(id, search = '') {
+    const params = [id];
+    let searchClause = '';
+    if (search && search.trim()) {
+      const s = `%${search}%`;
+      searchClause = ' AND (d.idRevue LIKE ? OR d.ISSN LIKE ? OR d.EISSN LIKE ? OR p.titre LIKE ?)';
+      params.push(s, s, s, s);
+    }
+    const sql = `SELECT COUNT(*) as count FROM lst_processus_details d
+                 LEFT JOIN tbl_periodiques p ON d.idRevue = p.idRevue
+                 WHERE d.id_processus = ?${searchClause}`;
+    return db.execute(sql, params);
+  }
+
   static getLastIdProcessus() {
     return db.execute("SELECT MAX(id_processus) AS max FROM lst_processus  ");
   }
@@ -301,31 +332,26 @@ module.exports = class Processus {
     }
     //Chercher l'id de la plateforme
     if(values[10]!='-'){
-      let plateformePrincipale= await db.execute('SELECT idPlateforme AS id FROM lst_plateformes  WHERE titrePlateforme = ? or PlatformID = ? ',[values[10],values[10]]);
-      plateformePrincipale = plateformePrincipale[0]['0']['id'].toString();
-
-      if(plateformePrincipale){
-        tabValue.push(plateformePrincipale);
+      let plResult = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes WHERE titrePlateforme = ? or PlatformID = ?', [values[10], values[10]]);
+      if(plResult[0].length > 0){
+        tabValue.push(plResult[0][0]['id'].toString());
         condSql += ', plateformePrincipale = ?';
       }
-
     }
     //Chercher les id des autres plateforme
     if(values[11]!='-'){
       let listPl = values[11].split(",");
       let listId ='', idP;
       for(let i=0;i<listPl.length;i++){
-        idP = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes  WHERE titrePlateforme = ? or PlatformID = ? ',[listPl[i],listPl[i]]);
-        if(idP){
-          listId+=idP[0]['0']['id']+',';
+        idP = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes WHERE titrePlateforme = ? or PlatformID = ?', [listPl[i].trim(), listPl[i].trim()]);
+        if(idP && idP[0].length > 0){
+          listId+=idP[0][0]['id']+',';
         }
       }
-      if(listId!='')  {
+      if(listId!=''){
         tabValue.push(listId);
         condSql += ', autrePlateforme = ?';
       }
-
-
     }
     if(values[12]!='-'){
       condSql += ', format = ?';
@@ -479,31 +505,26 @@ module.exports = class Processus {
     }
     //Chercher l'id de la plateforme
     if(values[10]!='-'){
-      let plateformePrincipale= await db.execute('SELECT idPlateforme AS id FROM lst_plateformes  WHERE titrePlateforme = ? or PlatformID = ? ',[values[10],values[10]]);
-      plateformePrincipale = plateformePrincipale[0]['0']['id'].toString();
-
-      if(plateformePrincipale){
-        tabValue.push(plateformePrincipale);
+      let plResult = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes WHERE titrePlateforme = ? or PlatformID = ?', [values[10], values[10]]);
+      if(plResult[0].length > 0){
+        tabValue.push(plResult[0][0]['id'].toString());
         condSql += ', plateformePrincipale = ?';
       }
-
     }
     //Chercher les id des autres plateforme
     if(values[11]!='-'){
       let listPl = values[11].split(",");
       let listId ='', idP;
       for(let i=0;i<listPl.length;i++){
-        idP = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes  WHERE titrePlateforme = ? or PlatformID = ? ',[listPl[i],listPl[i]]);
-        if(idP){
-          listId+=idP[0]['0']['id']+',';
+        idP = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes WHERE titrePlateforme = ? or PlatformID = ?', [listPl[i].trim(), listPl[i].trim()]);
+        if(idP && idP[0].length > 0){
+          listId+=idP[0][0]['id']+',';
         }
       }
-      if(listId!='')  {
+      if(listId!=''){
         tabValue.push(listId);
         condSql += ', autrePlateforme = ?';
       }
-
-
     }
     if(values[12]!='-'){
       condSql += ', format = ?';
@@ -583,11 +604,8 @@ module.exports = class Processus {
         tabValue.push(tabValue['idRevue']);
 
         const sql2 = `UPDATE tbl_periodiques SET ${condSql}, dateM = ? WHERE idRevue = ?`;
-        //console.log('sql2: ', SqlString.format(sql2, [...tabValue]));
-
         await db.execute(sql2, [...tabValue]);
       }
-
     }
 
     /** Ajout details processus*/

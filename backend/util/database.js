@@ -7,6 +7,7 @@ const pool = mysql.createPool({
   user: config.user,
   database: config.database,
   password: config.password,
+  charset: 'utf8mb4',
 });
 
 module.exports = pool.promise();

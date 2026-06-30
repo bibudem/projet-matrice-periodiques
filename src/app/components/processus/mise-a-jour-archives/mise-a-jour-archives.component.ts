@@ -77,11 +77,15 @@ export class MiseAJourArchivesComponent implements OnInit {
     if (this.isValidCSVFile(files[0])) {
       let input = $event.target;
       let reader = new FileReader();
-      reader.readAsText(input.files[0]);
+      reader.readAsArrayBuffer(input.files[0]);
       reader.onload = async () => {
-        let csvData = await reader.result;
+        const buffer = reader.result as ArrayBuffer;
+        const bytes = new Uint8Array(buffer);
+        const hasUtf8Bom = bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF;
+        const encoding = hasUtf8Bom ? 'utf-8' : 'windows-1252';
+        const csvData = new TextDecoder(encoding).decode(buffer);
 
-        let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
+        let csvRecordsArray = csvData.split(/\r\n|\n/);
 
         if(csvRecordsArray[0].search(',')!=-1){
           this.separator =','
@@ -197,39 +201,34 @@ export class MiseAJourArchivesComponent implements OnInit {
 
 
   //inserer les données
-  async postArray(records:UpdateArchives[]){
-    //console.log(records)
+  async postArray(records: UpdateArchives[]): Promise<void> {
+    if (records.length === 0) return;
     this.processousEnCours();
-    let that=this
-    let n: any;
-    if (records.length == 0) return;
-    let i =0;
-    this.dateStart=this.methodesGlobal.dateCreator();
-    let postLigne : any = {}
-    for (let val of records) {
-          i++;
-          postLigne=val
-          this.post(postLigne);
-          await this.methodesGlobal.delay(100);
-
-          if(i==records.length){
-            await this.methodesGlobal.delay(1000);
-            //console.log('fin processus');
-            this.addProcessus(this.dateStart);
-
-        }
-
-
+    this.dateStart = this.methodesGlobal.dateCreator();
+    const payload = records.map(val => ({
+      idRevue: val.idRevue, ISSN: val.ISSN, EISSN: val.EISSN,
+      perennite: val.perennite, conserverPap: val.conserverPap,
+      anneeDebut: val.anneeDebut, anneeFin: val.anneeFin,
+      volDebut: val.volDebut, volFin: val.volFin,
+      embargo: val.embargo, fournisseur: val.fournisseur
+    }));
+    try {
+      await this.csvService.bulkUpdateArchives(payload).toPromise();
+    } catch (err: any) {
+      console.error(`Erreur importation: ${err.message}`);
     }
+    await this.addProcessus(this.dateStart);
   }
   //fonction pour inserer
-  post( postLigne: string) {
-    this.inUpdateArchives$ = this.csvService
-      .updateArchives(postLigne)
-      //.pipe(tap(() => ()));
+  async post(postLigne: any): Promise<void> {
+    try {
+      await this.csvService.updateArchives(postLigne).toPromise();
+    } catch (err: any) {
+      console.error(`Erreur ligne ${postLigne.idRevue}: ${err.message}`);
+    }
   }
 
-  addProcessus(dateStart:string){
+  async addProcessus(dateStart:string): Promise<void> {
     // creer la date du début
 
     if(sessionStorage.getItem('prenomAdmin')){
@@ -241,10 +240,9 @@ export class MiseAJourArchivesComponent implements OnInit {
       // @ts-ignore
       this.note=document.getElementById('note').value.toString();
     }
-    this.processus = {'titre':'Mise à jour des archives','type':'prix','admin':this.admin,'note':this.note,'dateStart':dateStart}
-    this.addProcessus$ = this.csvService
-      .addProcessus(this.processus)
-      .pipe(tap(() => (this.finImportation())));
+    this.processus = {'titre':'Mise à jour des archives','type':'archives','annee':this.annee,'admin':this.admin,'note':this.note,'dateStart':dateStart}
+    await this.csvService.addProcessus(this.processus).toPromise();
+    this.finImportation();
   }
 
 

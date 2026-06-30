@@ -13,6 +13,7 @@ router.get('/fiche-fond/:id', authMiddleware, outilsController.consulterFond);
 router.get('/rapport-plateformes/:annee', authMiddleware, outilsController.rapportPlateformes);
 router.get('/rapport-moyenne', authMiddleware, outilsController.rapportMoyenne);
 router.get('/brut/:result', authMiddleware, outilsController.getAllResultRapport);
+router.get('/brut-paginated', authMiddleware, outilsController.getAllResultRapportPaginated);
 
 router.get('/all-fournisseurs', authMiddleware, outilsController.allFournisseurs);
 router.get('/fiche-fournisseur/:id', authMiddleware, outilsController.ficheFournisseur);
