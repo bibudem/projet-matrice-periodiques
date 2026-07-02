@@ -118,7 +118,7 @@ module.exports = class Sushi {
             keepAlive: true,
             timeout: 360000000,
           });*/
-          reponse = await axios.get(url);
+          reponse = await axios.get(url, { timeout: 60000 });
           resultat[rapport]=reponse.data
           if (reponse.status !== 200) {
             console.error("Erreur HTTP:", reponse.status, reponse.statusText);
@@ -149,8 +149,7 @@ module.exports = class Sushi {
           //console.log(rapport);
         }
           if(rapport=='j3' && data["Access_Type"]=='Controlled'){
-            console.log(data["Access_Type"]);
-            break;
+            continue;
           }
               if(data["Performance"]){
                 uniqueRequest=0;totalRequest=0;noLicence=0;
@@ -273,29 +272,25 @@ module.exports = class Sushi {
     try{
       switch (action){
         case "add":
-         /*let sql1 = "INSERT INTO " + table + " SET PlatformID =?,ISSN =?,EISSN =?,Title=?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateA =?,admin=? "
-          console.log('sql: ', SqlString.format(sql1,arrayReponse));*/
           if(tbl=='j4'){
-            db.execute("INSERT INTO "+ table + " SET PlatformID =?,ISSN =?,EISSN =?,Title=?,YOP =?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateA =?,admin=? ", arrayReponse );
+            await db.execute("INSERT INTO "+ table + " SET PlatformID =?,ISSN =?,EISSN =?,Title=?,YOP =?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateA =?,admin=? ", arrayReponse );
           } else{
-            db.execute("INSERT INTO "+ table + " SET PlatformID =?,ISSN =?,EISSN =?,Title=?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateA =?,admin=? ", arrayReponse );
+            await db.execute("INSERT INTO "+ table + " SET PlatformID =?,ISSN =?,EISSN =?,Title=?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateA =?,admin=? ", arrayReponse );
           }
           break;
         case "save":
           if(tbl!='j4'){
             arrayReponse.push(anneePost)
           }
-          arrayReponse.push(idPlateforme)//id de la plateforme
-          arrayReponse.push(EISSN)//EISSN
-          arrayReponse.push(ISSN)//ISSN
+          arrayReponse.push(idPlateforme)
+          arrayReponse.push(EISSN)
+          arrayReponse.push(ISSN)
           arrayReponse.push(Metric_Type)
-          /*let sql2 = "UPDATE " + table + " SET PlatformID =?,ISSN =?,EISSN =?,Title=?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateM =?,admin=? WHERE annee=? and PlatformID=? AND  EISSN=? AND ISSN=? AND Metric_Type=? "
-          console.log('sql: ', SqlString.format(sql2,arrayReponse));*/
           if(tbl=='j4'){
             arrayReponse.push(YOP)
-            db.execute("UPDATE  "+ table +" SET PlatformID =?,ISSN =?,EISSN =?,Title=?,YOP =?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateM =?,admin=? WHERE  PlatformID=? AND  EISSN=? AND ISSN=? AND Metric_Type=? and YOP=?", arrayReponse );
+            await db.execute("UPDATE  "+ table +" SET PlatformID =?,ISSN =?,EISSN =?,Title=?,YOP =?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateM =?,admin=? WHERE  PlatformID=? AND  EISSN=? AND ISSN=? AND Metric_Type=? and YOP=?", arrayReponse );
           } else{
-            db.execute("UPDATE  "+ table +" SET PlatformID =?,ISSN =?,EISSN =?,Title=?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateM =?,admin=? WHERE annee=? and PlatformID=? AND  EISSN=? AND ISSN=? AND Metric_Type=?", arrayReponse );
+            await db.execute("UPDATE  "+ table +" SET PlatformID =?,ISSN =?,EISSN =?,Title=?,Metric_Type =?,annee =?,Reporting_Period_Total =?,m01 =?,m02 =?,m03 =?,m04 =?,m05 =?,m06 =?,m07 =?,m08 =?,m09 =?,m10 =?,m11 =?,m12 =?,dateM =?,admin=? WHERE annee=? and PlatformID=? AND  EISSN=? AND ISSN=? AND Metric_Type=?", arrayReponse );
           }
           break;
         default:
@@ -336,7 +331,7 @@ module.exports = class Sushi {
   static async insertLogs(type,plateforme,url,error,message,admin,date,annee){
     try {
       let idLog =await db.execute("SELECT idLog  FROM lst_logsplateformes WHERE plateforme= ? and annee= ?",[plateforme,annee])
-      if(idLog [0]==''){
+      if(idLog[0].length === 0){
         //Inserer les periodiques non trouvé dans la matrice, mais existant dans les rapport soushi
         await db.execute("INSERT INTO lst_logsplateformes SET typeOperation =?,plateforme =?,url=? ,annee= ?,statut =?,message=?,admin=?,dateA=?", [type,plateforme,url,annee,error,message,admin,date] );
       }

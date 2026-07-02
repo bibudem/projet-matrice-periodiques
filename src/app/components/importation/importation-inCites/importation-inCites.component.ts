@@ -8,7 +8,6 @@ import {Observable} from "rxjs";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {paginationPersonnalise} from "../../../lib/paginationPersonnalise";
-import {tap} from "rxjs/operators";
 import {MatSort} from "@angular/material/sort";
 
 @Component({
@@ -21,9 +20,6 @@ export class ImportationInCitesComponent implements OnInit {
   //Initialiser le tableau d'annee'
   arrayAnnee:any[]=[];
   title = 'Angular7-readCSV';
-
-  inCites$: Observable<any[]> | undefined;
-  //importer les fonctions global
 
   //reponse pour la mise a jour des données
   reponsesUpdate$: Observable<any[]> | undefined;
@@ -44,7 +40,6 @@ export class ImportationInCitesComponent implements OnInit {
 
   records: InCites[] = [];
   @ViewChild('InCites') InCites: any;
-  csvReader: any;
 
   separator=',';
 
@@ -68,17 +63,14 @@ export class ImportationInCitesComponent implements OnInit {
   }
 
   uploadListener($event: any): void {
-    let text = [];
     let files = $event.srcElement.files;
     if (this.isValidCSVFile(files[0])) {
       let input = $event.target;
       let reader = new FileReader();
       reader.readAsText(input.files[0]);
       reader.onload = async () => {
-        let csvData = await reader.result;
-        let ligneHeader=<string>csvData;
-
-        let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
+        const csvData = reader.result as string;
+        let csvRecordsArray = csvData.split(/\r\n|\n/);
         let headersRow = this.getHeaderArray(csvRecordsArray);
         this.records = await this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow);
         this.dataSource = new MatTableDataSource( this.records);
@@ -102,7 +94,7 @@ export class ImportationInCitesComponent implements OnInit {
     let csvArr: InCites[] = [];
     // @ts-ignore
     let csvRecord: InCites = []; let curruntRecord;
-    let name='',annee,ArticlesUdeM='0',Citations='0',ISSN='',EISSN=''; let j=1;
+    let j = 1;
     let colName=-1,colArUdem=-1,colCitation=-1,colISSN=-1,colEISSN=-1
     //prendre le numero des colons selon le nom d'entete
     if(headersRow.indexOf(';')!=-1){
@@ -174,49 +166,34 @@ export class ImportationInCitesComponent implements OnInit {
   }
 
   fileReset() {
-    this.csvReader.nativeElement.value = "";
+    this.InCites.nativeElement.value = "";
     this.records = [];
   }
 
 
-  //inserer les données
- async postArray(records:any[]){
-   //console.log(records)
-   this.methodesGlobal.nonAfficher('contenu-form');
-   this.methodesGlobal.nonAfficher('contenu-resultat');
-   this.methodesGlobal.afficher('load-import');
-   // desactiver tous les actions
-   document.getElementsByTagName("body")[0].style.setProperty('pointer-events','none');
+  async postArray(records: any[]) {
+    this.methodesGlobal.nonAfficher('contenu-form');
+    this.methodesGlobal.nonAfficher('contenu-resultat');
+    this.methodesGlobal.afficher('load-import');
+    document.getElementsByTagName("body")[0].style.setProperty('pointer-events', 'none');
 
-   let postLigne : any = {};
-   let i=0;
-    for (let val of records) {
-              i++;
-              postLigne.numero=0,
-              postLigne.annee=val.annee,
-              postLigne.Name=val.Name,
-              postLigne.ArticlesUdeM=val.ArticlesUdeM,
-              postLigne.Citations=val.Citations,
-              postLigne.ISSN=val.ISSN,
-              postLigne.EISSN=val.EISSN
+    const toSend = records
+      .filter(val => val.Name !== '-')
+      .map(val => ({
+        annee: val.annee,
+        Name: val.Name,
+        ArticlesUdeM: val.ArticlesUdeM,
+        Citations: val.Citations,
+        ISSN: val.ISSN,
+        EISSN: val.EISSN
+      }));
 
-              this.post(postLigne);
-              await this.methodesGlobal.delay(100);
-
-            if(i==records.length){
-              this.finImportation();
-            }
-
+    try {
+      await this.csvService.postBulk(toSend).toPromise();
+    } catch (err: any) {
+      console.error(`Erreur import: ${err.message}`);
     }
-
- }
-  //fonction pour inserer
-    post( values:any) {
-    if (values.Name=='-') return;
-
-    this.inCites$ = this.csvService
-      .post(values);
-      //.pipe(tap(() => (this.finImportation())));
+    this.finImportation();
   }
   //cacher l'animation pour la mise a jour des données
   finImportation(){
@@ -242,8 +219,8 @@ export class ImportationInCitesComponent implements OnInit {
               }
             }
           );
-        } catch(err) {
-          console.error(`Error : ${err.Message}`);
+        } catch(err: any) {
+          console.error(`Error : ${err.message}`);
         }
   }
 

@@ -31,6 +31,12 @@ export class ImportationCsvService {
       .pipe(catchError(this.errorHandlerService.handleError<any>("post")));
   }
 
+  postBulk(records: any[]): Observable<any> {
+    return this.http
+      .post<any>(this.url + '/add-bulk', records, this.httpOptions)
+      .pipe(catchError(this.errorHandlerService.handleError<any>('postBulk')));
+  }
+
   updateStatistique(annee: string): Observable<any> {
     return this.http
       .get<any[]>(this.url+`/update/${annee}`, { responseType: "json" })
