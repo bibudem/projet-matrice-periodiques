@@ -31,7 +31,8 @@ exports.getAllStatistique = async (req, res, next) => {
 };
 exports.rapportStatistiques = async (req, res, next) => {
   try {
-    const allRapport =  await ListeStatistique.donneesStatistiqueRapport(req.params.periode);
+    const { annees, ...filtres } = req.query;
+    const allRapport = await ListeStatistique.donneesStatistiqueRapport(annees || '', filtres);
 
     res.status(200).json(allRapport[0]);
   } catch (err) {

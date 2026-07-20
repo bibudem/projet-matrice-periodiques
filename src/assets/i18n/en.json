@@ -183,6 +183,11 @@
     "csv-titre": "Updating statistical data via csv",
     "excel-titre": "Import statistical data from a prepared file.",
     "confirmer-text": "Are you sure you want to import the data according to your chosen criteria?",
+    "note-format-excel": "Only Excel files (.xlsx, .xls) matching the column headers above will be accepted.",
+    "entetes-attendus-titre": "Expected column headers",
+    "entetes-ordre-libre": "Column order does not matter: only the header names are used to recognize the data.",
+    "envoi-fichier-titre": "Import the file",
+    "choisir-fichier": "Excel file to import",
     "form-description": "Choose your filters if necessary. Fields with a star are required.",
     "form-description-csv": "Please check the data in the principal result",
     "form-description-excel": "The headers considered will be: « Plateforme », « Titre », « ISSN », « eISSN », « Téléchargements », « Tél. uniques », « Refus », « JR5-COURANT », « JR5-COURANT », « JR5-RETRO ». Please check the data in the provisional result.",
@@ -213,7 +218,11 @@
     "btn-filtre": "Apply filters",
     "total-rapport": "Total result :",
     "rapport-total-statistique": "General report",
-    "rapport-statistique-plateforme": "Statistics report by platform"
+    "rapport-statistique-plateforme": "Statistics report by platform",
+    "titre-filtres": "Report filters",
+    "titre-colonnes": "Report columns",
+    "tout-cocher": "Check all",
+    "tout-decocher": "Uncheck all"
   },
   "logs":{
     "menu-logs": "Import logs",

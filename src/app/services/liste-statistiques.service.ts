@@ -7,6 +7,7 @@ import { catchError, tap } from "rxjs/operators";
 import { ErrorHandlerService } from "./error-handler.service";
 
 import {ListeStatistique} from "../models/ListeStatistique";
+import {buildFiltresParams} from "../lib/httpFiltres";
 
 @Injectable({
   providedIn: "root",
@@ -49,24 +50,11 @@ export class ListeStatistiquesService {
       );
   }
 
-  //chercher toute la liste des statistiques
-  rapportStatistiques(annees:any,plateforme:string): Observable<any[]> {
-    let params,paramAnnees='';
-    if(annees!=''){
-      params=new HttpParams()
-      for(let i=0;i<annees.length;i++){
-        paramAnnees+=annees[i]+'='
-      }
-      if(plateforme!=''){
-        paramAnnees+='&'+plateforme;
-      }
-      params=new HttpParams().set('periode', paramAnnees);
-    }
-
-    console.log(paramAnnees);
-    console.log('/api/liste-statistique/rapport/'+params);
+  //chercher toute la liste des statistiques filtree selon les criteres du rapport (filtrage cote serveur)
+  rapportStatistiques(annees: any, filtres: any): Observable<any[]> {
+    const params = buildFiltresParams(filtres, { annees: Array.isArray(annees) ? annees.join(',') : annees });
     return this.http
-      .get<any[]>(`/api/liste-statistique/rapport/${params}`, { responseType: "json" })
+      .get<any[]>(`/api/liste-statistique/rapport`, { params, responseType: "json" })
       .pipe(
         tap((_) => console.log("rapport statistiques")),
         catchError(

@@ -82,9 +82,20 @@
 
               <div class="d-flex align-items-center mb-2 flex-wrap gap-2">
                 <h4 class="font-weight-semibold titre-initial mb-0">
-                  {{ 'home.top10' | translate }} — {{ anneeSelectionnee }}
+                  {{ 'home.top10' | translate }}
                 </h4>
-                <button class="btn-export-top10 ml-auto"
+                <div class="annee-stepper ml-auto">
+                  <button class="stepper-btn"
+                          (click)="changerAnnee(anneeSelectionnee - 1)"
+                          [disabled]="!arrayAnnee.includes(anneeSelectionnee - 1)"
+                          aria-label="Année précédente">&#8249;</button>
+                  <span class="stepper-annee">{{ anneeSelectionnee }}</span>
+                  <button class="stepper-btn"
+                          (click)="changerAnnee(anneeSelectionnee + 1)"
+                          [disabled]="!arrayAnnee.includes(anneeSelectionnee + 1)"
+                          aria-label="Année suivante">&#8250;</button>
+                </div>
+                <button class="btn-export-top10"
                         (click)="exportTop10()"
                         [disabled]="isLoading || top10.length === 0"
                         aria-label="Télécharger le graphique">
@@ -141,7 +152,10 @@
                 <p class="empty-stat-text">{{ 'home.donnees-counter-info' | translate }}</p>
                 <div class="empty-stat-actions">
                   <button *ngIf="anneePrec()" class="btn-empty-nav" (click)="changerAnnee(anneePrec()!)">
-                    &#8592; {{ 'home.voir-annee' | translate }} {{ anneePrec() }}
+                    &#8592; {{ anneePrec() }}
+                  </button>
+                  <button *ngIf="anneeSuiv()" class="btn-empty-nav" (click)="changerAnnee(anneeSuiv()!)">
+                    {{ anneeSuiv() }} &#8594;
                   </button>
                 </div>
               </div>

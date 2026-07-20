@@ -22,15 +22,15 @@
       </div>
       <div id="contenu-form">
         <!-- Nav tabs -->
-        <ul class="nav nav-tabs">
-          <li class="nav-item p-2">
-            <a class="nav-link text-uppercase text-dark active" data-toggle="tab" href="#home">
-              <h4 class="text-success ">{{ 'importation.csv-titre' | translate}}</h4>
+        <ul class="nav nav-tabs import-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#home">
+              <i class="fa fa-file-excel-o mr-2"></i>{{ 'importation.csv-titre' | translate}}
             </a>
           </li>
-          <li class="nav-item p-2" (click)="methodesGlobal.viderInput('csvFile');methodesGlobal.nonAfficher('contenu-resultat')">
-            <a class="nav-link text-uppercase text-dark" data-toggle="tab" href="#statistiqueUpdateForm">
-              <h4 class="font-weight-semibold text-initial ">{{ 'importation.csv-titre-mise-a-jour-incites' | translate}}</h4>
+          <li class="nav-item" (click)="methodesGlobal.viderInput('csvFile');methodesGlobal.nonAfficher('contenu-resultat')">
+            <a class="nav-link" data-toggle="tab" href="#statistiqueUpdateForm">
+              <i class="fa fa-refresh mr-2"></i>{{ 'importation.csv-titre-mise-a-jour-incites' | translate}}
             </a>
           </li>
         </ul>
@@ -39,32 +39,55 @@
         <div class="tab-content">
           <div class="tab-pane mt-3 active" id="home">
             <!-- Alert notification div -->
-            <div>
-              <blockquote class="blockquote blockquote-danger">
-                <p>{{ 'importation.form-description-csv' | translate}}</p>
-              </blockquote>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card rapport-card headers-card shadow-sm mb-3">
+                  <div class="card-header">
+                    <span class="rapport-card-titre font-weight-semibold"><i class="fa fa-table"></i>{{ 'importation.entetes-attendus-titre' | translate}}</span>
+                  </div>
+                  <div class="card-body">
+                    <div class="headers-chip-list">
+                      <span class="badge-header" *ngFor="let h of headersFichier">{{ h }}</span>
+                    </div>
+                    <small class="form-text text-muted mt-2 mb-0">
+                      <i class="fa fa-info-circle mr-1"></i>{{ 'importation.entetes-ordre-libre' | translate}}
+                    </small>
+                  </div>
+                </div>
+              </div>
             </div>
             <form  #importationForm="ngForm" >
-              <div class="row mt-5">
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
-                    <select name="plateforme" id="annee"  class="form-control" #annee >
-                      <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
-                    </select>
-                  </div>
+              <div class="card rapport-card shadow-sm mb-3">
+                <div class="card-header">
+                  <span class="rapport-card-titre font-weight-semibold"><i class="fa fa-upload"></i>{{ 'importation.envoi-fichier-titre' | translate}}</span>
                 </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <input type="file" class="form-control mt-4" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".csv">
-                  </div>
-                </div>
-                <div class="col-md-5">
-                  <div class="form-group cacherVisible"  id="addCsv">
-                    <button type="button" class="btn btn-outline-dark mt-4 mr-2 cacherVisible" (click)="methodesGlobal.viderInput('csvFile');methodesGlobal.nonAfficher('contenu-resultat')">
-                      {{ 'btn-annuler' | translate}}</button>
-                    <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
-                      <i class="fa fa-file-excel-o btn-icon-prepend"></i> {{ 'importation.csv-titre' | translate}}</button>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group mb-0">
+                        <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
+                        <select name="plateforme" id="annee"  class="form-control" #annee >
+                          <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-9">
+                      <div class="form-group mb-0">
+                        <label class="font-weight-semibold" for="csvFile">{{ 'importation.choisir-fichier' | translate}}</label>
+                        <input type="file" class="form-control" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".xlsx,.xls">
+                        <small class="form-text text-muted">
+                          <i class="fa fa-info-circle mr-1"></i>{{ 'importation.note-format-excel' | translate}}
+                        </small>
+                      </div>
+                    </div>
+                    <div class="col-md-12 mt-3">
+                      <div class="form-group cacherVisible mb-0"  id="addCsv">
+                        <button type="button" class="btn btn-outline-dark mr-2 cacherVisible" (click)="methodesGlobal.viderInput('csvFile');methodesGlobal.nonAfficher('contenu-resultat')">
+                          {{ 'btn-annuler' | translate}}</button>
+                        <button type="button" class="btn btn-success cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
+                          <i class="fa fa-file-excel-o btn-icon-prepend"></i> {{ 'importation.csv-titre' | translate}}</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -90,21 +113,25 @@
             </form>
           </div>
           <div class="tab-pane fade " id="statistiqueUpdateForm">
-            <div class="row mt-3">
-              <div class="col-md-3">
-                <div class="form-group">
-                  <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
-                  <select name="anneeM" id="anneeM"  class="form-control" #anneeM >
-                    <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
-                  </select>
+            <div class="card rapport-card shadow-sm mb-3 mt-3">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3">
+                    <div class="form-group mb-0">
+                      <label for="annee">{{ 'annee' | translate }} <span class="text-danger"> *</span></label>
+                      <select name="anneeM" id="anneeM"  class="form-control" #anneeM >
+                        <option *ngFor="let rep of this.arrayAnnee" >{{rep}}</option>
+                      </select>
+                    </div>
+                  </div>
+                    <div class="col-md-7">
+                      <div class="form-group mb-0">
+                        <button type="button" class="btn btn-primary mt-4" (click)="this.methodesGlobal.nonAfficher('statistiqueUpdateForm');updateStatistique(methodesGlobal.getValue(anneeM.value))">
+                          <i class="fa fa-save btn-icon-prepend"></i> {{ 'importation.csv-update-titre-incites' | translate}}</button>
+                      </div>
+                    </div>
                 </div>
               </div>
-                <div class="col-md-7">
-                  <div class="form-group">
-                    <button type="button" class="btn btn-primary mt-4" (click)="this.methodesGlobal.nonAfficher('statistiqueUpdateForm');updateStatistique(methodesGlobal.getValue(anneeM.value))">
-                      <i class="fa fa-save btn-icon-prepend"></i> {{ 'importation.csv-update-titre-incites' | translate}}</button>
-                  </div>
-                </div>
             </div>
           </div>
         </div>

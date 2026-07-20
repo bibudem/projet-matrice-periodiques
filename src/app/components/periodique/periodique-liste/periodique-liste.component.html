@@ -120,26 +120,30 @@
 
         <!-- PAGINATION (hors table-responsive pour éviter la scrollbar) -->
         <div class="pagination-wrapper">
-          <div class="d-flex flex-wrap align-items-center justify-content-between">
+          <div class="pagination-bar">
 
             <!-- Info résultats -->
             <div class="pagination-info-text">
-              Affichage de <strong>{{ getDisplayStart() }}</strong> à <strong>{{ getDisplayEnd() }}</strong> sur <strong>{{ totalItems }}</strong> entrées
+              <ng-container *ngIf="totalItems > 0; else aucunResultat">
+                Affichage de <strong>{{ getDisplayStart() }}</strong>–<strong>{{ getDisplayEnd() }}</strong> sur <strong>{{ totalItems }}</strong> entrées
+                <span class="pagination-page-count">(page {{ getCurrentPageNumber() }} / {{ getTotalPages() }})</span>
+              </ng-container>
+              <ng-template #aucunResultat>Aucun résultat</ng-template>
             </div>
 
             <!-- Boutons de page -->
-            <nav aria-label="Navigation des pages">
+            <nav aria-label="Navigation des pages" class="pagination-nav" *ngIf="totalItems > 0">
               <ul class="pagination pagination-sm mb-0">
 
                 <li class="page-item" [class.disabled]="isFirstPage()">
-                  <a class="page-link" (click)="!isFirstPage() && firstPage()" title="Première page">
+                  <button type="button" class="page-link" [disabled]="isFirstPage()" (click)="firstPage()" title="Première page" aria-label="Première page">
                     <span aria-hidden="true">&laquo;</span>
-                  </a>
+                  </button>
                 </li>
                 <li class="page-item" [class.disabled]="isFirstPage()">
-                  <a class="page-link" (click)="!isFirstPage() && previousPage()" title="Précédent">
+                  <button type="button" class="page-link" [disabled]="isFirstPage()" (click)="previousPage()" title="Page précédente" aria-label="Page précédente">
                     <span aria-hidden="true">&lsaquo;</span>
-                  </a>
+                  </button>
                 </li>
 
                 <ng-container *ngFor="let page of getPageNumbers()">
@@ -147,32 +151,45 @@
                     <span class="page-link ellipsis">…</span>
                   </li>
                   <li class="page-item" *ngIf="page !== null" [class.active]="page === getCurrentPageNumber()">
-                    <a class="page-link" (click)="goToPage(page - 1)">{{ page }}</a>
+                    <button type="button" class="page-link" (click)="goToPage(page - 1)"
+                            [attr.aria-current]="page === getCurrentPageNumber() ? 'page' : null">{{ page }}</button>
                   </li>
                 </ng-container>
 
                 <li class="page-item" [class.disabled]="isLastPage()">
-                  <a class="page-link" (click)="!isLastPage() && nextPage()" title="Suivant">
+                  <button type="button" class="page-link" [disabled]="isLastPage()" (click)="nextPage()" title="Page suivante" aria-label="Page suivante">
                     <span aria-hidden="true">&rsaquo;</span>
-                  </a>
+                  </button>
                 </li>
                 <li class="page-item" [class.disabled]="isLastPage()">
-                  <a class="page-link" (click)="!isLastPage() && lastPage()" title="Dernière page">
+                  <button type="button" class="page-link" [disabled]="isLastPage()" (click)="lastPage()" title="Dernière page" aria-label="Dernière page">
                     <span aria-hidden="true">&raquo;</span>
-                  </a>
+                  </button>
                 </li>
 
               </ul>
             </nav>
 
-            <!-- Sélecteur taille de page -->
-            <div class="d-flex align-items-center">
-              <label class="pagination-size-label mb-0 mr-2">Entrées par page :</label>
-              <select class="form-control form-control-sm pagination-size-select"
-                      [ngModel]="pageSize"
-                      (ngModelChange)="changePageSize($event)">
-                <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
-              </select>
+            <!-- Aller à la page + taille de page -->
+            <div class="pagination-controls" *ngIf="totalItems > 0">
+
+              <div class="pagination-jump" *ngIf="getTotalPages() > 1">
+                <label for="pageJumpInput">Aller à la page</label>
+                <input id="pageJumpInput" #pageJump type="number" class="pagination-jump-input"
+                       min="1" [max]="getTotalPages()" [disabled]="isLoading"
+                       [attr.placeholder]="getCurrentPageNumber()"
+                       (keyup.enter)="jumpToPage(pageJump.value); pageJump.value=''">
+              </div>
+
+              <div class="pagination-size">
+                <label for="pageSizeSelect" class="pagination-size-label mb-0">Entrées par page</label>
+                <select id="pageSizeSelect" class="form-control form-control-sm pagination-size-select"
+                        [ngModel]="pageSize" [disabled]="isLoading"
+                        (ngModelChange)="changePageSize($event)">
+                  <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+                </select>
+              </div>
+
             </div>
 
           </div>

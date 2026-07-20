@@ -50,6 +50,37 @@
 .nav-tabs .nav-link     { color: #212529; font-weight: bold; }
 .tab-content > .active  { border-color: #bdbfc3!important; }
 
+/* ── Onglets d'import (ex: importation-inCites) — variante compacte,
+   ajouter class="import-tabs" en plus de "nav nav-tabs" sur le <ul>. ── */
+.import-tabs {
+  border-bottom: 1px solid #e9ecef;
+}
+.import-tabs .nav-item {
+  margin-bottom: -1px;
+}
+.import-tabs .nav-link {
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  padding: 10px 18px;
+  color: #6c757d!important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  background: transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.import-tabs .nav-link:hover {
+  color: #0071b9!important;
+  border-bottom-color: #cfe4f3;
+}
+.import-tabs .nav-link.active {
+  color: #05304e!important;
+  border-bottom-color: #0071b9;
+  background: transparent;
+}
+
 /* ── Formulaires & Sélecteurs ───────────────────────────────────── */
 div.ng-select-container {
   outline: 1px solid #bdbfc3!important;
@@ -159,55 +190,126 @@ mat-cell:last-of-type, mat-header-cell:last-of-type, mat-footer-cell:last-of-typ
 /* ── Pagination ─────────────────────────────────────────────────── */
 .pagination-wrapper {
   border-top: 1px solid #e8ecf1;
-  padding: 0.75rem 0.25rem 0.5rem;
+  padding: 0.85rem 0.25rem 0.6rem;
   margin-top: 0.25rem;
 }
-.pagination-wrapper > .d-flex { gap: 0.75rem; }
-.pagination-info-text { font-size: 0.85rem; color: #6c757d; white-space: nowrap; }
+.pagination-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem 1.5rem;
+}
+.pagination-info-text { order: 1; font-size: 0.85rem; color: #6c757d; white-space: nowrap; }
+.pagination-page-count { margin-left: 0.35rem; color: #97a3b0; }
+.pagination-nav { order: 2; }
+.pagination-controls { order: 3; display: flex; align-items: center; gap: 1.25rem; }
+
+.pagination .page-item { margin: 0 1px; }
 .pagination .page-link {
   color: #05304e;
   border-color: #dee2e6;
-  padding: 0.35rem 0.65rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
+  background-color: #fff;
+  min-width: 2.15rem;
+  height: 2.15rem;
+  padding: 0 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  line-height: 1;
+  border-radius: 6px !important;
   cursor: pointer;
   user-select: none;
-  transition: color 0.12s ease-in-out, background-color 0.12s ease-in-out, border-color 0.12s ease-in-out;
+  transition: color 0.12s ease-in-out, background-color 0.12s ease-in-out, border-color 0.12s ease-in-out, box-shadow 0.12s ease-in-out;
 }
-.pagination .page-link:hover {
+.pagination .page-link:hover:not(:disabled) {
   color: #fff!important;
-  background-color: #042136;
-  border-color: #05304e;
+  background-color: #021421;
+  border-color: #021421;
   z-index: 2;
   text-decoration: none;
+}
+.pagination .page-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 0.15rem rgba(5, 48, 78, 0.25);
+  z-index: 2;
 }
 .pagination .page-item.active .page-link {
   background-color: #05304e;
   border-color: #05304e;
   color: #fff!important;
   font-weight: 600;
+  box-shadow: 0 1px 4px rgba(5, 48, 78, 0.35);
   z-index: 3;
 }
+.pagination .page-link:disabled,
 .pagination .page-item.disabled .page-link {
-  color: #adb5bd;
-  background-color: #fff;
-  border-color: #dee2e6;
+  color: #c2c9d1;
+  background-color: #f8f9fb;
+  border-color: #e8ecf1;
   cursor: default;
   pointer-events: none;
+  box-shadow: none;
 }
-.pagination .page-link.ellipsis { cursor: default; pointer-events: none; }
-.pagination-size-label  { font-size: 0.85rem; color: #6c757d; white-space: nowrap; }
+.pagination .page-link.ellipsis {
+  border-color: transparent;
+  background: transparent;
+  cursor: default;
+  pointer-events: none;
+  color: #adb5bd;
+}
+
+.pagination-jump {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #6c757d;
+  white-space: nowrap;
+}
+.pagination-jump-input {
+  width: 3.5rem;
+  height: 2rem;
+  padding: 0 0.4rem;
+  font-size: 0.85rem;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  color: #05304e;
+}
+.pagination-jump-input::-webkit-outer-spin-button,
+.pagination-jump-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.pagination-jump-input:focus {
+  outline: none;
+  border-color: #05304e;
+  box-shadow: 0 0 0 0.15rem rgba(5, 48, 78, 0.15);
+}
+.pagination-jump-input:disabled { background-color: #f8f9fb; color: #c2c9d1; }
+
+.pagination-size { display: flex; align-items: center; gap: 0.5rem; }
+.pagination-size-label { font-size: 0.85rem; color: #6c757d; white-space: nowrap; margin: 0; }
 .pagination-size-select {
   width: auto;
   min-width: 65px;
   font-size: 0.85rem;
   border-color: #dee2e6;
   color: #495057;
+  border-radius: 6px;
 }
 .pagination-size-select:focus {
-  border-color: #021421;
-  box-shadow: 0 0 0 0.15rem rgba(75, 73, 172, 0.2);
+  border-color: #05304e;
+  box-shadow: 0 0 0 0.15rem rgba(5, 48, 78, 0.2);
   outline: none;
+}
+.pagination-size-select:disabled { background-color: #f8f9fb; color: #c2c9d1; }
+
+@media (max-width: 768px) {
+  .pagination-bar { flex-direction: column; text-align: center; }
+  .pagination-controls { flex-direction: column; gap: 0.65rem; }
 }
 
 /* ── Stepper d'année ─────────────────────────────────────────────── */
@@ -483,18 +585,48 @@ mat-cell:last-of-type, mat-header-cell:last-of-type, mat-footer-cell:last-of-typ
   height:  29px;
 }
 
-/* ── Tableaux de type Rapport — lignes denses avec séparateur vertical ───
+/* ── Tableaux de type Rapport ─────────────────────────────────────────────
    Ajouter class="rapport-table" sur l'élément <table mat-table> des
    composants: rapport-periodique, rapport-statistique, rapport-plateformes,
-   rapport-moyenne. ────────────────────────────────────────────────────── */
+   rapport-moyenne. Meme style simple que le tableau "résultat provisoire"
+   des pages d'import (mat-table + table-mat-100 + mat-w-*) plutôt qu'un
+   traitement special (sticky/zébrures) dont le rendu etait incertain. ──── */
 .rapport-table th,
 .rapport-table td {
   min-height:   40px;
   height:       auto;
   border-right: 1px solid #d5d0d0;
 }
-.rapport-table mat-row        { height: auto; min-height: 40px !important; }
-.rapport-table mat-header-row { background: #b3b0b045; }
+/* selecteur de classe (avec le point) et non de balise : <table mat-table>
+   rend de vraies balises <tr mat-row>/<tr mat-header-row>, pas des elements
+   <mat-row>/<mat-header-row> — l'ancien selecteur ne matchait donc rien ici. */
+.rapport-table .mat-row        { height: auto; min-height: 40px !important; }
+/* meme fond clair que les entetes de carte (.rapport-card .card-header) pour
+   rester coherent avec le reste de l'application, plutot qu'un gris uni lourd. */
+.rapport-table .mat-header-row { background: #f8f9fa; }
+.rapport-table th {
+  color:         #05304e;
+  border-bottom: 2px solid #e9ecef;
+}
+
+/* ── Colonnes dynamiques des rapports avec beaucoup de colonnes (periodique,
+   statistique). Les lignes mat-row sont en flexbox : chaque ligne calcule la
+   largeur de ses colonnes INDEPENDAMMENT des autres si on ne fixe qu'un
+   min-width — une ligne avec un long titre pousse alors ses colonnes plus
+   loin que les lignes voisines ("colonnes décollées" d'une ligne à l'autre).
+   Il faut une largeur FIXE identique (flex: none + width) pour que toutes
+   les lignes alignent leurs colonnes, exactement comme les classes mat-w-*
+   deja utilisees sur les tableaux d'import qui, elles, s'alignent bien.
+   Le surplus de texte est tronqué avec une ellipse (survol = valeur complète
+   via l'attribut title dans le template) plutot que de deborder. ────────── */
+.rapport-table .rapport-col {
+  flex:          0 0 150px;
+  width:         150px;
+  max-width:     150px;
+  white-space:   nowrap;
+  overflow:      hidden;
+  text-overflow: ellipsis;
+}
 
 /* ── Alerte URL (logs-plateforme) ────────────────────────────────────────
    Bandeau discret affiché sous le filtre pour montrer l'URL du log
@@ -512,6 +644,74 @@ mat-cell:last-of-type, mat-header-cell:last-of-type, mat-footer-cell:last-of-typ
   font-size:  0.83rem;
   color:      #2c3e50;
   background: transparent;
+}
+
+/* ── Panneau des codes HTTP (logs-plateforme) ────────────────────────────
+   Légende explicative des codes de réponse, affichée/masquée via le
+   bouton info de la barre d'actions. ───────────────────────────────── */
+.codes-panel {
+  background:      #fff;
+  border:           1px solid #e3e7ec;
+  border-left:      4px solid #05304e;
+  border-radius:    6px;
+  margin-bottom:    14px;
+  box-shadow:       0 2px 8px rgba(0,0,0,.05);
+}
+.codes-panel__header {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         10px 16px;
+  border-bottom:   1px solid #eef1f5;
+}
+.codes-panel__title {
+  font-size:      0.85rem;
+  font-weight:    700;
+  color:          #05304e;
+  letter-spacing: .01em;
+}
+.codes-panel__list {
+  list-style:           none;
+  margin:               0;
+  padding:              6px 16px;
+  display:              grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap:           28px;
+}
+.codes-panel__item {
+  display:       flex;
+  align-items:   baseline;
+  gap:           12px;
+  padding:       8px 0;
+  border-bottom: 1px solid #f2f4f7;
+}
+.codes-panel__item:nth-last-child(-n+2) { border-bottom: none; }
+
+@media (max-width: 576px) {
+  .codes-panel__list { grid-template-columns: 1fr; }
+  .codes-panel__item:nth-last-child(-n+2) { border-bottom: 1px solid #f2f4f7; }
+  .codes-panel__item:last-child { border-bottom: none; }
+}
+.codes-panel__badge {
+  flex-shrink:    0;
+  min-width:      3.2rem;
+  text-align:     center;
+  font-family:    'Courier New', monospace;
+  font-weight:    700;
+  font-size:      0.8rem;
+  color:          #9a5b00;
+  background:     #fdf0dd;
+  border-radius:  4px;
+  padding:        2px 8px;
+}
+.codes-panel__badge--server {
+  color:      #8a1f2b;
+  background: #fbe1e4;
+}
+.codes-panel__desc {
+  font-size: 0.85rem;
+  color:     #495057;
+  line-height: 1.4;
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -556,5 +756,94 @@ mat-cell:last-of-type, mat-header-cell:last-of-type, mat-footer-cell:last-of-typ
   border-radius:   20px;
   cursor:          pointer;
   transition:      background 0.15s, border-color 0.15s;
+}
+
+/* ── Cartes de section — formulaire de rapport ──────────────────────────
+   Ajouter class="rapport-card" sur les <div class="card"> qui regroupent
+   les filtres et les colonnes des composants: rapport-periodique,
+   rapport-statistique. ─────────────────────────────────────────────────── */
+.rapport-card {
+  border:        1px solid #e9ecef;
+  border-radius: 6px;
+}
+.rapport-card .card-header {
+  background:    #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  display:       flex;
+  align-items:   center;
+  justify-content: space-between;
+  flex-wrap:     wrap;
+  gap:           8px;
+}
+.rapport-card .card-header .rapport-card-titre {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+}
+.rapport-card .card-header .badge {
+  font-weight: 500;
+}
+
+/* ── Carte d'options repliable (ex: "Les options possibles..." dans les
+   formulaires d'import en lot) — header cliquable qui ouvre/ferme un
+   card-body via Bootstrap collapse. Ajouter class="options-card" en plus
+   de "rapport-card" sur la carte, et un chevron .options-card-chevron
+   dans le header. ─────────────────────────────────────────────────────── */
+.options-card .card-header {
+  cursor:      pointer;
+  user-select: none;
+  transition:  background-color 0.15s ease;
+}
+.options-card .card-header:hover {
+  background-color: #eef1f4;
+}
+.options-card .card-header .options-card-chevron {
+  transition: transform 0.2s ease;
+  color:      #6c757d;
+}
+.options-card .card-header[aria-expanded="true"] .options-card-chevron {
+  transform: rotate(180deg);
+}
+
+/* ── Liste d'en-têtes attendus, sous forme de puces (import en lot) ────── */
+.headers-chip-list {
+  display:   flex;
+  flex-wrap: wrap;
+  gap:       6px;
+}
+.badge-header {
+  display:         inline-block;
+  background-color: #eaf4fb;
+  color:           #05304e;
+  font-family:     "Courier New", monospace;
+  font-weight:     600;
+  font-size:       0.78rem;
+  padding:         4px 10px;
+  border-radius:   12px;
+  border:          1px solid #cfe4f3;
+  line-height:     1.4;
+}
+
+/* Case à cocher d'un champ, dans la carte "Colonnes du rapport" */
+.champ-checkbox {
+  padding:       2px 4px;
+  border-radius: 4px;
+  transition:    background-color 0.15s ease;
+}
+.champ-checkbox:hover {
+  background-color: #f1f3f5;
+}
+.champ-checkbox .form-check-label {
+  cursor:      pointer;
+  font-size:   0.88rem;
+  margin-bottom: 0;
+}
+
+/* Barre d'actions finale (créer le rapport / exporter) */
+.rapport-actions {
+  display:         flex;
+  justify-content: flex-end;
+  gap:             8px;
+  margin-top:      4px;
 }
 .btn-empty-nav:hover { background: #eaf4fb; border-color: #05304e; }

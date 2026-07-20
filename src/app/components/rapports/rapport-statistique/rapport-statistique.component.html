@@ -28,6 +28,11 @@
         </button>
       </div>
       <div id="page-rapport">
+        <div class="card rapport-card shadow-sm mb-3">
+          <div class="card-header">
+            <span class="rapport-card-titre font-weight-semibold"><i class="icon-settings"></i>{{ 'rapport.titre-filtres' | translate}}</span>
+          </div>
+          <div class="card-body">
         <form  #rapportForm="ngForm" >
           <div class="row">
             <div class="col-md-2">
@@ -203,22 +208,38 @@
               </div>
             </div>
             <div class="col-md-3">
-              <button type="button" class="btn btn-success w-100 mt-4 "  (click)="creerTableauStatistique(this.methodesGlobal.getValue(annee.value),plateforme.value);" >
+              <button type="button" class="btn btn-success w-100 mt-4 " [disabled]="isLoadingResults" (click)="creerTableauStatistique(this.methodesGlobal.getValue(annee.value));" >
                 <i class="icon-layers"></i> {{'rapport.rapport-total-statistique'| translate }} </button>
             </div>
           </div>
         </form>
+          </div>
+        </div>
 
-        <div class="row">
-          <div class="col-md-2"  *ngFor="let champ of champs">
-            <div class="list-group">
-              <div class="form-check form-check-primary">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" id="{{ champ }}" value="{{ champ }}" name="{{ champ }}"  (change)="this.creationThTable($event)">{{ champsTitre[champ] }} <i class="input-helper"></i></label>
+        <div class="card rapport-card shadow-sm mb-3" id="champs-default">
+          <div class="card-header">
+            <span class="rapport-card-titre font-weight-semibold">
+              <i class="icon-list"></i>{{ 'rapport.titre-colonnes' | translate}}
+              <span class="badge badge-secondary">{{ thTableau.length }}/{{ champs.length }}</span>
+            </span>
+            <button type="button" class="btn btn-outline-primary btn-sm" (click)="toggleTousLesChamps()">
+              <i class="fa" [ngClass]="tousLesChampsCoches ? 'fa-square-o' : 'fa-check-square-o'"></i>
+              {{ (tousLesChampsCoches ? 'rapport.tout-decocher' : 'rapport.tout-cocher') | translate }}
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6 col-sm-4 col-md-2"  *ngFor="let champ of champs">
+                <div class="champ-checkbox form-check form-check-primary">
+                  <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" id="{{ champ }}" value="{{ champ }}" name="{{ champ }}"
+                           [checked]="isChampCoche(champ)"
+                           (change)="this.creationThTable($event)">{{ champsTitre[champ] }} <i class="input-helper"></i></label>
+                </div>
               </div>
             </div>
           </div>
-        </div><hr>
+        </div>
         <!-- Tableau contenu formulaire-->
         <div class="row" *ngIf="statistiques$">
           <div class="col-md-12 mt-3">
@@ -230,13 +251,13 @@
               <div class="example-container w-100" >
                 <table    mat-table
                           [dataSource]="dataSource"
-                          class="mat-elevation-z8 w-100 p-2 rapport-table"
+                          class="mat-elevation-z8 table-mat-100 p-2 rapport-table"
                           matSort >
 
                   <!-- creation dynamique du tableau -->
                   <ng-container  *ngFor="let th of thTableau" matColumnDef="{{th}}">
-                    <th *matHeaderCellDef mat-sort-header class="font-weight-bold pl-3 w-15 "> {{ champsTitre[th]}} </th>
-                    <td *matCellDef="let row" class=" pl-3 w-15" > {{ row[th]}} </td>
+                    <th *matHeaderCellDef mat-sort-header class="font-weight-bold pl-3 rapport-col"> {{ champsTitre[th]}} </th>
+                    <td *matCellDef="let row" class="pl-3 rapport-col" [title]="row[th]" > {{ row[th]}} </td>
                   </ng-container>
 
                   <mat-header-row *matHeaderRowDef="thTableau"></mat-header-row>

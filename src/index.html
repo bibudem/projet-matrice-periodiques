@@ -20,7 +20,11 @@
   <link rel="stylesheet" href="./assets/css/style.css">
   <!-- Fin plugin css pour les pages -->
   <!-- Personaliser le style de la maquette dans ce fichier-->
-  <link rel="stylesheet" href="./assets/css/style_add.css">
+  <!-- Le parametre ?v= force le navigateur a retelecharger ce fichier apres chaque
+       modification : sans hash de build (contrairement aux styles.css d'Angular),
+       les navigateurs gardent sinon l'ancienne version en cache indefiniment.
+       Augmenter ce numero a chaque changement de style_add.css. -->
+  <link rel="stylesheet" href="./assets/css/style_add.css?v=4">
   <!-- Images pour le partage -->
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">

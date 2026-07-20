@@ -29,44 +29,40 @@
         </div>
       </div>
 
-      <!-- Cartes horizontales -->
-      <div class="logs-cards-list">
+      <!-- Cartes -->
+      <div class="logs-cards-grid">
 
         <!-- Journal des données non-importées -->
         <a class="log-card log-card--revue" routerLink="/logs-revue">
-          <div class="log-card__icon-panel">
-            <i class="icon-layers"></i>
-          </div>
-          <div class="log-card__content">
+          <div class="log-card__top">
+            <span class="log-card__icon-panel"><i class="icon-layers"></i></span>
             <p class="log-card__label">{{ 'logs.titre-logs-revue' | translate }}</p>
-            <span class="log-card__count">{{ totalLogsRevue }}</span>
-            <p class="log-card__desc">
-              Données de périodiques non importées dans la matrice.
-              Consultez et traitez les entrées en attente de traitement.
-            </p>
           </div>
+          <span class="log-card__count">{{ totalLogsRevue }}</span>
+          <p class="log-card__desc">
+            Données de périodiques non importées dans la matrice.
+            Consultez et traitez les entrées en attente de traitement.
+          </p>
           <div class="log-card__cta">
-            <i class="fa fa-arrow-right log-card__arrow"></i>
             <span>{{ 'voir-details' | translate }}</span>
+            <i class="fa fa-arrow-right log-card__arrow"></i>
           </div>
         </a>
 
         <!-- Journal des plateformes -->
         <a class="log-card log-card--plat" routerLink="/logs-plateforme">
-          <div class="log-card__icon-panel">
-            <i class="fa fa-fw fa-list"></i>
-          </div>
-          <div class="log-card__content">
+          <div class="log-card__top">
+            <span class="log-card__icon-panel"><i class="fa fa-fw fa-list"></i></span>
             <p class="log-card__label">{{ 'logs.titre-logs-plateforme' | translate }}</p>
-            <span class="log-card__count">{{ totalLogsPlat }}</span>
-            <p class="log-card__desc">
-              Événements liés aux plateformes : accès, erreurs et modifications enregistrées.
-              Suivez l'activité par source de données.
-            </p>
           </div>
+          <span class="log-card__count">{{ totalLogsPlat }}</span>
+          <p class="log-card__desc">
+            Événements liés aux plateformes : accès, erreurs et modifications enregistrées.
+            Suivez l'activité par source de données.
+          </p>
           <div class="log-card__cta">
-            <i class="fa fa-arrow-right log-card__arrow"></i>
             <span>{{ 'voir-details' | translate }}</span>
+            <i class="fa fa-arrow-right log-card__arrow"></i>
           </div>
         </a>
 

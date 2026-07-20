@@ -79,6 +79,11 @@ export class AccueilComponent implements OnInit {
     return idx < this.arrayAnnee.length - 1 ? this.arrayAnnee[idx + 1] : null;
   }
 
+  anneeSuiv(): number | null {
+    const idx = this.arrayAnnee.indexOf(this.anneeSelectionnee);
+    return idx > 0 ? this.arrayAnnee[idx - 1] : null;
+  }
+
   rankClass(rank: number): string {
     if (rank === 1) return 'rang-or';
     if (rank === 2) return 'rang-argent';

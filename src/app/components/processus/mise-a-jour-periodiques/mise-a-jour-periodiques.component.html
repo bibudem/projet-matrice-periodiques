@@ -25,96 +25,128 @@
         <!-- Alert notification div -->
         <div class="row">
           <div class="col-md-12 mt-2">
-            <blockquote class="blockquote blockquote-success">
-              <p>{{ 'importation.form-description-csv-periodiques' | translate}}</p>
-            </blockquote>
-          </div>
-          <div class="col-md-12">
-              <h4 class="card-title mb-4 mt-2">{{ 'options.title' | translate}}:</h4>
-          </div>
-          <div class="col-md-2">
-              <h6 class="card-title">{{ 'abonnement' | translate}}</h6>
-              <ul class="list-ticked">
-                <li *ngFor="let rep of this.listeChoixOptions.listAbonnement" [value]="rep.name">{{rep.name}}</li>
-              </ul>
-          </div>
-          <div class="col-md-2">
-            <h6 class="card-title">{{ 'format' | translate}}</h6>
-            <ul class="list-ticked">
-              <li *ngFor="let rep of this.listeChoixOptions.listFormat" [value]="rep.name">{{rep.name}}</li>
-            </ul>
-          </div>
-          <div class="col-md-2">
-            <h6 class="card-title">{{ 'domaine' | translate}}</h6>
-            <ul class="list-ticked">
-              <li *ngFor="let rep of this.listeChoixOptions.listDomaine" [value]="rep.name">{{rep.name}}</li>
-            </ul>
-          </div>
-          <div class="col-md-2">
-            <h6 class="card-title">{{ 'secteur' | translate}}</h6>
-            <ul class="list-ticked">
-              <li *ngFor="let rep of this.listeChoixOptions.listSecteurs" [value]="rep.name">{{rep.name}}</li>
-            </ul>
-          </div>
-          <div class="col-md-2">
-            <h6 class="card-title">{{ 'libre-acces' | translate}}</h6>
-            <ul class="list-ticked">
-              <li *ngFor="let rep of this.listeChoixOptions.listeAcces" [value]="rep.name">{{rep.name}}</li>
-            </ul>
-          </div>
-          <div class="col-md-2">
-            <h6 class="card-title">{{ 'statut' | translate}}</h6>
-            <ul class="list-ticked">
-              <li *ngFor="let rep of this.listeChoixOptions.listStatut" [value]="rep.name">{{rep.name}}</li>
-            </ul>
-          </div>
-          <div class="col-md-2">
-            <h6 class="card-title">{{ 'accesCourant' | translate}}</h6>
-            <ul class="list-ticked">
-              <li *ngFor="let rep of this.listeChoixOptions.accesCourant" [value]="rep.name">{{rep.name}}</li>
-            </ul>
-          </div>
-          <div class="col-md-2">
-            <h6 class="card-title">{{ 'entente_consortiale' | translate}}</h6>
-            <ul class="list-ticked">
-              <ng-container *ngFor="let rep of this.listeChoixOptions.listeEntenteConsortiale">
-                <li *ngIf="rep.name" [value]="rep.name">
-                  {{ rep.name }}
-                </li>
-              </ng-container>
-            </ul>
-          </div>
-          <div class="col-md-2">
-            <h6 class="card-title">{{ 'Essentiel' | translate}}</h6>
-            <ul class="list-ticked">
-              <li *ngFor="let rep of this.listeChoixOptions.essentiel" [value]="rep.name">{{rep.name}}</li>
-            </ul>
-          </div>
-        </div>
-        <form  #importationForm="ngForm" >
-          <div class="row mt-2">
-            <div class="col-md-4">
-              <div class="form-group">
-                <input type="file" class="form-control mt-4" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".csv">
+            <div class="card rapport-card headers-card shadow-sm mb-3">
+              <div class="card-header">
+                <span class="rapport-card-titre font-weight-semibold"><i class="fa fa-table"></i>{{ 'importation.entetes-attendus-titre' | translate}}</span>
+              </div>
+              <div class="card-body">
+                <div class="headers-chip-list">
+                  <span class="badge-header" *ngFor="let h of displayedColumns">{{ h }}</span>
+                </div>
+                <small class="form-text text-muted mt-2 mb-0">
+                  <i class="fa fa-info-circle mr-1"></i>{{ 'importation.entetes-ordre-libre' | translate}}
+                </small>
               </div>
             </div>
-            <div class="col-md-8">
-              <div class="form-group cacherVisible"  id="addCsv">
-                <a class="btn btn-primary mt-4 mr-2" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                  <i class="fa fa-pencil"></i> {{ 'ajouter-note' | translate}}
-                </a>
-                <button type="button" class="btn btn-outline-dark mt-4 mr-2 cacherVisible" (click)="methodesGlobal.viderInput('csvFile');methodesGlobal.nonAfficher('contenu-resultat')">
-                  {{ 'btn-annuler' | translate}}</button>
-                <button type="button" class="btn btn-success mt-4 cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
-                  <i class="fa fa-send btn-icon-prepend mr-2 "></i> {{ 'importation.csv-send' | translate}}</button>
-                <div class="col-md-12 p-2">
-                  <div class="collapse" id="collapseExample">
-                    <textarea id="note" class="form-control" spellcheck="false" placeholder="{{ 'label-ajouter-note' | translate}}"></textarea>
+          </div>
+          <div class="col-md-12">
+            <div class="card rapport-card options-card shadow-sm mb-3">
+              <div class="card-header" data-toggle="collapse" href="#optionsPossiblesCollapse" role="button"
+                   aria-expanded="false" aria-controls="optionsPossiblesCollapse">
+                <span class="rapport-card-titre font-weight-semibold"><i class="fa fa-info-circle"></i>{{ 'options.title' | translate}}</span>
+                <i class="fa fa-angle-down options-card-chevron"></i>
+              </div>
+              <div class="collapse" id="optionsPossiblesCollapse">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-2">
+                        <h6 class="card-title">{{ 'abonnement' | translate}}</h6>
+                        <ul class="list-ticked">
+                          <li *ngFor="let rep of this.listeChoixOptions.listAbonnement" [value]="rep.name">{{rep.name}}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2">
+                      <h6 class="card-title">{{ 'format' | translate}}</h6>
+                      <ul class="list-ticked">
+                        <li *ngFor="let rep of this.listeChoixOptions.listFormat" [value]="rep.name">{{rep.name}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-2">
+                      <h6 class="card-title">{{ 'domaine' | translate}}</h6>
+                      <ul class="list-ticked">
+                        <li *ngFor="let rep of this.listeChoixOptions.listDomaine" [value]="rep.name">{{rep.name}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-2">
+                      <h6 class="card-title">{{ 'secteur' | translate}}</h6>
+                      <ul class="list-ticked">
+                        <li *ngFor="let rep of this.listeChoixOptions.listSecteurs" [value]="rep.name">{{rep.name}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-2">
+                      <h6 class="card-title">{{ 'libre-acces' | translate}}</h6>
+                      <ul class="list-ticked">
+                        <li *ngFor="let rep of this.listeChoixOptions.listeAcces" [value]="rep.name">{{rep.name}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-2">
+                      <h6 class="card-title">{{ 'statut' | translate}}</h6>
+                      <ul class="list-ticked">
+                        <li *ngFor="let rep of this.listeChoixOptions.listStatut" [value]="rep.name">{{rep.name}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-2">
+                      <h6 class="card-title">{{ 'accesCourant' | translate}}</h6>
+                      <ul class="list-ticked">
+                        <li *ngFor="let rep of this.listeChoixOptions.accesCourant" [value]="rep.name">{{rep.name}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-2">
+                      <h6 class="card-title">{{ 'entente_consortiale' | translate}}</h6>
+                      <ul class="list-ticked">
+                        <ng-container *ngFor="let rep of this.listeChoixOptions.listeEntenteConsortiale">
+                          <li *ngIf="rep.name" [value]="rep.name">
+                            {{ rep.name }}
+                          </li>
+                        </ng-container>
+                      </ul>
+                    </div>
+                    <div class="col-md-2">
+                      <h6 class="card-title">{{ 'Essentiel' | translate}}</h6>
+                      <ul class="list-ticked">
+                        <li *ngFor="let rep of this.listeChoixOptions.essentiel" [value]="rep.name">{{rep.name}}</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-
+          </div>
+        </div>
+        <form  #importationForm="ngForm" >
+          <div class="card rapport-card shadow-sm mb-3">
+            <div class="card-header">
+              <span class="rapport-card-titre font-weight-semibold"><i class="fa fa-upload"></i>{{ 'importation.envoi-fichier-titre' | translate}}</span>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group mb-0">
+                    <label class="font-weight-semibold" for="csvFile">{{ 'importation.choisir-fichier' | translate}}</label>
+                    <input type="file" class="form-control" id="csvFile" #csvFile (change)="uploadListener($event)" accept=".xlsx,.xls">
+                    <small class="form-text text-muted">
+                      <i class="fa fa-info-circle mr-1"></i>{{ 'importation.note-format-excel' | translate}}
+                    </small>
+                  </div>
+                </div>
+                <div class="col-md-12 mt-3">
+                  <div class="form-group cacherVisible mb-0"  id="addCsv">
+                    <a class="btn btn-primary mr-2" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                      <i class="fa fa-pencil"></i> {{ 'ajouter-note' | translate}}
+                    </a>
+                    <button type="button" class="btn btn-outline-dark mr-2 cacherVisible" (click)="methodesGlobal.viderInput('csvFile');methodesGlobal.nonAfficher('contenu-resultat')">
+                      {{ 'btn-annuler' | translate}}</button>
+                    <button type="button" class="btn btn-success cacherVisible" data-toggle="modal" data-target="#modal-enregistrer">
+                      <i class="fa fa-send btn-icon-prepend mr-2 "></i> {{ 'importation.csv-send' | translate}}</button>
+                    <div class="col-md-12 p-2">
+                      <div class="collapse" id="collapseExample">
+                        <textarea id="note" class="form-control" spellcheck="false" placeholder="{{ 'label-ajouter-note' | translate}}"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <!-- Modal pour modifier-->
           <div class="modal fade" id="modal-enregistrer" tabindex="-1" role="dialog" aria-labelledby="modal-enregistrer" aria-hidden="true">

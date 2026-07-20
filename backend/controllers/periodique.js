@@ -29,7 +29,7 @@ exports.getAllPeriodiques = async (req, res, next) => {
 exports.getAllRapport = async (req, res, next) => {
   try {
 
-    const [allPeriodiques] = await Periodique.fetchRapportAll(req.params.plateforme);
+    const [allPeriodiques] = await Periodique.fetchRapportAll(req.query);
     res.status(200).json(allPeriodiques);
 
   } catch (err) {
@@ -43,7 +43,7 @@ exports.getAllRapport = async (req, res, next) => {
 exports.getAutresRapport = async (req, res, next) => {
   try {
 
-    const [allPeriodiques] = await Periodique.fetchRapportAutres(req.params.plateforme);
+    const [allPeriodiques] = await Periodique.fetchRapportAutres(req.query);
     res.status(200).json(allPeriodiques);
 
   } catch (err) {

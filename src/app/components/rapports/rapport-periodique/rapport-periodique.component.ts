@@ -45,6 +45,10 @@ export class RapportPeriodiqueComponent implements OnInit {
 
   notesPeriodique : any = [];
   prixPeriodique : any = [];
+  // Map idP -> valeur, construites une fois apres la reception des notes/prix
+  // (evite un balayage lineaire du tableau pour chaque ligne du rapport).
+  notesParId: Map<string, string> = new Map();
+  prixParId: Map<string, string> = new Map();
   //coresPeriodique : any = [];
   //archivesPeriodique : any = [];
   // @ts-ignore
@@ -100,12 +104,14 @@ export class RapportPeriodiqueComponent implements OnInit {
 
   }
 
-  async remplireAutresChampsPeriodiques(plateforme:string){
+  async remplireAutresChampsPeriodiques(){
     try {
-      this.periodiquesAutres$ = this.periodiqueServices.fetchRapportChampsAutres(plateforme);
+      this.periodiquesAutres$ = this.periodiqueServices.fetchRapportChampsAutres(this.filtres);
       await this.periodiquesAutres$.toPromise().then(res => {
         this.notesPeriodique = res['notes'];
         this.prixPeriodique = res['prix'];
+        this.notesParId = new Map(this.notesPeriodique.map((n: any) => [n.idP, n.notes]));
+        this.prixParId = new Map(this.prixPeriodique.map((p: any) => [p.idP, p.prix]));
         //this.coresPeriodique = res['cores'];
         //this.archivesPeriodique = res['archives'];
       });
@@ -115,17 +121,10 @@ export class RapportPeriodiqueComponent implements OnInit {
     }
   }
 
-  donneesAutresChamps(array:any, idP:string, champ:string){
-    let result = '-';
-    if(array.length==0)
-       return result;
-
-    for(let i = 0; i < array.length;i++){
-      if(array[i]['idP']==idP){
-        result = array[i][champ];
-      }
-    }
-    return result
+  // Recherche O(1) (Map deja construite dans remplireAutresChampsPeriodiques) au lieu
+  // d'un balayage lineaire du tableau notes/prix pour chaque ligne du rapport.
+  donneesAutresChamps(map: Map<string, string>, idP: string){
+    return map.has(idP) ? map.get(idP) : '-';
   }
 
   async creerTableauPlateforme() {
@@ -146,75 +145,70 @@ export class RapportPeriodiqueComponent implements OnInit {
     }
   }
 
-//liste des periodique
-  async creerTableauPeriodique(plateforme: string) {
+//liste des periodique — le filtrage (statut, domaine, secteur, abonnement, bdd,
+// accesCourant, essentiel2014/2022, fournisseur, libreAcces, plateformePrincipale,
+// autrePlateforme) est fait cote serveur (this.filtres envoye tel quel en query
+// params) : plus de double boucle client O(lignes x filtres) avec des .includes()
+// de sous-chaine fragiles.
+  async creerTableauPeriodique() {
+    if (this.isLoadingResults) return;
     try {
+      this.isLoadingResults = true;
       this.listePeriodique=[]
       this.afficherAnimation()
-      let result = Object.entries(this.filtres);
 
-      this.periodiques$ = this.periodiqueServices.fetchRapportAll(plateforme);
-        //chercher les autres champs
-        await this.remplireAutresChampsPeriodiques(plateforme);
-        // @ts-ignore
-         this.periodiques$.toPromise().then(res => {
-          let k,j=0;
-          for (let i = 0; i < res.length; i++) {
-            k=0;
-            for ( let [key,elem] of result){
-              // @ts-ignore
-              if( res[i][key]!==null && res[i][key]!=='' && elem.includes(res[i][key])){
-                k++;
-              }
-            }
-            if(k==result.length){
-              this.listePeriodique[j]={
-                "No":j+1,
-                "id":res[i].idP,
-                "titre":res[i].titre,
-                "ISSN":res[i].ISSN,
-                "EISSN":res[i].EISSN,
-                "statut":res[i].statut,
-                "accesCourant":res[i].accesCourant,
-                "abonnement":res[i].abonnement,
-                "libreAcces":res[i].libreAcces,
-                "domaine":res[i].domaine,
-                "secteur":res[i].secteur,
-                "bdd":res[i].bdd,
-                "sujets":res[i].sujets,
-                "entente_consortiale":res[i].entente_consortiale,
-                "fonds":res[i].fonds,
-                "fournisseur":res[i].fournisseur,
-                "plateformePrincipale":res[i].plateformePrincipale,
-                "autrePlateforme":res[i].autrePlateforme,
-                "format":res[i].format,
-                "duplication":res[i].duplication,
-                "duplicationCourant":res[i].duplicationCourant,
-                "duplicationEmbargo1":res[i].duplicationEmbargo1,
-                "duplicationEmbargo2":res[i].duplicationEmbargo2,
-                "prixUtil":res[i].prixUtil,
-                "essentiel2014":res[i].essentiel2014,
-                "essentiel2022":res[i].essentiel2022,
-                "notes":this.donneesAutresChamps(this.notesPeriodique,res[i].idP,'notes'),
-                "prix":this.donneesAutresChamps(this.prixPeriodique,res[i].idP,'prix'),
-                //"cores":this.donneesAutresChamps(this.coresPeriodique,res[i].idP,'cores'),
-                //"archives":this.donneesAutresChamps(this.archivesPeriodique,res[i].idP,'archives'),
-                "dateA":res[i].dateA,
-                "dateM":res[i].dateM
-              }
-              j++
-            }
+      this.periodiques$ = this.periodiqueServices.fetchRapportAll(this.filtres);
+      //chercher les autres champs (memes filtres)
+      await this.remplireAutresChampsPeriodiques();
+      // @ts-ignore
+      this.periodiques$.toPromise().then(res => {
+        for (let i = 0; i < res.length; i++) {
+          this.listePeriodique[i]={
+            "No":i+1,
+            "id":res[i].idP,
+            "titre":res[i].titre,
+            "ISSN":res[i].ISSN,
+            "EISSN":res[i].EISSN,
+            "statut":res[i].statut,
+            "accesCourant":res[i].accesCourant,
+            "abonnement":res[i].abonnement,
+            "libreAcces":res[i].libreAcces,
+            "domaine":res[i].domaine,
+            "secteur":res[i].secteur,
+            "bdd":res[i].bdd,
+            "sujets":res[i].sujets,
+            "entente_consortiale":res[i].entente_consortiale,
+            "fonds":res[i].fonds,
+            "fournisseur":res[i].fournisseur,
+            "plateformePrincipale":res[i].plateformePrincipale,
+            "autrePlateforme":res[i].autrePlateforme,
+            "format":res[i].format,
+            "duplication":res[i].duplication,
+            "duplicationCourant":res[i].duplicationCourant,
+            "duplicationEmbargo1":res[i].duplicationEmbargo1,
+            "duplicationEmbargo2":res[i].duplicationEmbargo2,
+            "prixUtil":res[i].prixUtil,
+            "essentiel2014":res[i].essentiel2014,
+            "essentiel2022":res[i].essentiel2022,
+            "notes":this.donneesAutresChamps(this.notesParId,res[i].idP),
+            "prix":this.donneesAutresChamps(this.prixParId,res[i].idP),
+            //"cores":this.donneesAutresChamps(this.coresPeriodique,res[i].idP,'cores'),
+            //"archives":this.donneesAutresChamps(this.archivesPeriodique,res[i].idP,'archives'),
+            "dateA":res[i].dateA,
+            "dateM":res[i].dateM
           }
-          // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
-          this.dataSourcesCreation(this.listePeriodique);
-        });
+        }
+        // Redéfinir le contenu de la table avec la pagination est la recherche une fois que le resultat de la bd est returné
+        this.dataSourcesCreation(this.listePeriodique);
+        this.isLoadingResults = false;
+      });
 
       //console.log(this.listePeriodique)
     } catch(err) {
       console.error(`Error : ${err.Message}`);
       //afficher le tableau
       this.nonAfficherAnimation();
-
+      this.isLoadingResults = false;
     }
   }
 
@@ -224,13 +218,35 @@ export class RapportPeriodiqueComponent implements OnInit {
       checked = $event.target.checked;
     //si cauché
       if (checked) {
-        this.thTableau.push( $event.target.value)
+        // eviter un doublon (et donc une colonne en trop / une colonne manquante dans le
+        // tableau de resultats) si l'evenement se declenche deux fois pour la meme case
+        if (!this.thTableau.includes($event.target.value)) {
+          this.thTableau.push($event.target.value)
+        }
       } else {
         // @ts-ignore
         this.thTableau.forEach((element,index)=>{
           if(element==$event.target.value) this.thTableau.splice(index,1);
         });
       }
+  }
+
+  // Indique si un champ est actuellement sélectionné pour le rapport
+  isChampCoche(champ: string): boolean {
+    return this.thTableau.includes(champ);
+  }
+
+  // Vrai si tous les champs disponibles sont cochés (meme ensemble, pas juste meme longueur —
+  // sinon un doublon combine a un champ manquant afficherait "tout coché" a tort)
+  get tousLesChampsCoches(): boolean {
+    return this.champs.length > 0
+      && this.thTableau.length === this.champs.length
+      && this.champs.every((c: string) => this.thTableau.includes(c));
+  }
+
+  // Coche ou décoche tous les champs d'un seul coup
+  toggleTousLesChamps(): void {
+    this.thTableau = this.tousLesChampsCoches ? [] : [...this.champs];
   }
 
 //apliquer les filtre pour le rapport

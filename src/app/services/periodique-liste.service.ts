@@ -8,6 +8,7 @@ import { ErrorHandlerService } from "./error-handler.service";
 
 import { Periodique } from "../models/Periodique";
 import {NavigationEnd, Router} from "@angular/router";
+import {buildFiltresParams} from "../lib/httpFiltres";
 
 
 @Injectable({
@@ -68,15 +69,11 @@ export class PeriodiqueListeService implements OnInit {
       );
   }
 
-  //chercher toute la liste des periodiques avec les champs par defaut
-  fetchRapportAll(plateforme:string): Observable<any[]> {
-    if(plateforme=='' || plateforme==undefined)
-      plateforme='vide'
-
-    let params=new HttpParams().set('plateforme', plateforme)
-     //console.log(`/api/periodique/rapport-all/${params}`)
+  //chercher toute la liste des periodiques filtree selon les criteres du rapport (filtrage cote serveur)
+  fetchRapportAll(filtres: any): Observable<any[]> {
+    const params = buildFiltresParams(filtres);
     return this.http
-      .get<any[]>(`/api/periodique/rapport-all/${params}`, { responseType: "json" })
+      .get<any[]>(`/api/periodique/rapport-all`, { params, responseType: "json" })
       .pipe(
         tap((_) => console.log("fetched periodiques raport")),
         catchError(
@@ -84,39 +81,15 @@ export class PeriodiqueListeService implements OnInit {
         )
       );
   }
-  //chercher toute la liste des periodiques avec les champs par defaut
-  fetchRapportChampsAutres(plateforme:string): Observable<any[]> {
-    if(plateforme=='')
-      plateforme='vide'
-
-    let params=new HttpParams().set('plateforme', plateforme)
-    //console.log(`/api/periodique/rapport-autres/${params}`)
+  //chercher les notes/prix associes, filtres selon les memes criteres que fetchRapportAll
+  fetchRapportChampsAutres(filtres: any): Observable<any[]> {
+    const params = buildFiltresParams(filtres);
     return this.http
-      .get<any[]>(`/api/periodique/rapport-autres/${params}`, { responseType: "json" })
+      .get<any[]>(`/api/periodique/rapport-autres`, { params, responseType: "json" })
       .pipe(
         tap((_) => console.log("fetched periodiques raport autres")),
         catchError(
           this.errorHandlerService.handleError<any[]>("fetchRapportChampsAutres", [])
-        )
-      );
-  }
-  //chercher toute la liste
-  fetchRapportFiltre(filtres:any): Observable<any[]> {
-    let result = Object.entries(filtres);
-    // console.log(typeof(result))
-    for(let [key,f] of result){
-      console.log(key)
-    }
-    let params = new HttpParams()
-
-
-
-    return this.http
-      .get<any[]>(this.url+`/rapport-filtre/${params}`, { responseType: "json" })
-      .pipe(
-        tap((_) => console.log("fetched periodiques raport")),
-        catchError(
-          this.errorHandlerService.handleError<any[]>("fetchRapportAll", [])
         )
       );
   }

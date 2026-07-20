@@ -60,12 +60,19 @@
 
           <!-- Alerte codes -->
           <div class="cacherVisible" id="alert-codes">
-            <blockquote class="blockquote blockquote-warning">
-              <button type="button" (click)="methodesGlobal.nonAfficher('alert-codes')" class="alert-dismissible close">&times;</button>
-              <ul class="list-inline">
-                <li *ngFor="let code of codes" class="list-inline-item">{{code}}</li>
+            <div class="codes-panel">
+              <div class="codes-panel__header">
+                <span class="codes-panel__title">Signification des codes de réponse HTTP</span>
+                <button type="button" class="close" aria-label="Fermer"
+                        (click)="methodesGlobal.nonAfficher('alert-codes')">&times;</button>
+              </div>
+              <ul class="codes-panel__list">
+                <li *ngFor="let item of codes" class="codes-panel__item">
+                  <span class="codes-panel__badge" [class.codes-panel__badge--server]="item.type === 'server'">{{ item.code }}</span>
+                  <span class="codes-panel__desc">{{ item.desc }}</span>
+                </li>
               </ul>
-            </blockquote>
+            </div>
           </div>
 
           <div class="table-responsive w-100">

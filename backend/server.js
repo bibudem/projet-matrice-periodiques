@@ -77,9 +77,9 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  rolling: true, // réinitialise l'expiration à chaque requête (déconnexion après 1h d'inactivité, pas 1h depuis la connexion)
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
     maxAge: 3600000,
   }
 }));
@@ -174,10 +174,10 @@ app.get('/connect-user', function (req, res, next) {
   }
 });
 
-/*app.get('/session-info', (req, res) => {
+app.get('/session-info', (req, res) => {
   console.log('Session Info:', req.session);  // Affiche l'objet complet de la session
   res.json({ session: req.session });
-});*/
+});
 
 
 app.use(errorController.get404);

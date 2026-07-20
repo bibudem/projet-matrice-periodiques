@@ -8,6 +8,7 @@ import { ErrorHandlerService } from "./error-handler.service";
 
 import { Plateforme } from "../models/Plateforme";
 import {Note} from "../models/Note";
+import {buildFiltresParams} from "../lib/httpFiltres";
 
 @Injectable({
   providedIn: "root",
@@ -69,9 +70,10 @@ export class OutilsService {
       );
   }
 
-  rapportMoyenne(): Observable<any[]> {
+  rapportMoyenne(filtres?: any): Observable<any[]> {
+    const params = buildFiltresParams(filtres);
     return this.http
-      .get<any[]>(`/api/outils/rapport-moyenne`, { responseType: "json" })
+      .get<any[]>(`/api/outils/rapport-moyenne`, { params, responseType: "json" })
       .pipe(
         tap((_) => console.log("rapport moyenne")),
         catchError(

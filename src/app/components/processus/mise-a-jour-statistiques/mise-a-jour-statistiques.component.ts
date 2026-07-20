@@ -44,6 +44,9 @@ export class MiseAJourStatistiquesComponent implements OnInit {
   //les entêts du tableau
   displayedColumns = ['IDRevue','ISSN','EISSN','annee', 'Total_Item_Requests','No_License','citations','articlesUdem','JR4COURANT','JR4INTER','JR4RETRO','JR3OAGOLD','PlateformeID'];
 
+  //entetes attendues dans le fichier Excel (annee vient du select, pas du fichier)
+  headersFichier = ['IDRevue','ISSN','EISSN','PlateformeID','Total_Item_Requests','No_License','citations','articlesUdem','JR4COURANT','JR4INTER','JR4RETRO','JR3OAGOLD'];
+
   // @ts-ignore
   dataSource: MatTableDataSource<InCites>;
   @ViewChild(MatPaginator) paginator: paginationPersonnalise | any;
@@ -53,8 +56,6 @@ export class MiseAJourStatistiquesComponent implements OnInit {
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
 
   records: UpdateStatistiques[] = [];
-
-  separator = ';';
 
   admin = '';
 
@@ -108,47 +109,27 @@ export class MiseAJourStatistiquesComponent implements OnInit {
   }
 
   uploadListener($event: any): void {
-    let text = [];
-
     let files = $event.srcElement.files;
-    if (this.isValidCSVFile(files[0])) {
-      let input = $event.target;
-      let reader = new FileReader();
-      reader.readAsArrayBuffer(input.files[0]);
-      reader.onload = async () => {
-        const buffer = reader.result as ArrayBuffer;
-        const bytes = new Uint8Array(buffer);
-        const hasUtf8Bom = bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF;
-        const encoding = hasUtf8Bom ? 'utf-8' : 'windows-1252';
-        const csvData = new TextDecoder(encoding).decode(buffer);
-
-        let csvRecordsArray = csvData.split(/\r\n|\n/);
-
-        if(csvRecordsArray[0].search(',')!=-1){
-          this.separator =','
-        }
-        //console.log(csvRecordsArray[0].search(';'));
-        let headersRow = this.getHeaderArray(csvRecordsArray, this.separator);
+    if (this.methodesGlobal.isValidExcelFile(files[0])) {
+      (async () => {
+        const rows = await this.methodesGlobal.readExcelRows(files[0]);
+        let headersRow = rows[0];
 
         // @ts-ignore
-        this.records = await this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow, this.separator)
+        this.records = await this.getDataRecordsArrayFromFile(rows, headersRow)
         this.dataSource = new MatTableDataSource( this.records);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
         this.methodesGlobal.afficher('contenu-resultat')
         this.methodesGlobal.afficher('addCsv')
-      };
-
-      reader.onerror = function () {
-        console.log('error is occured while reading file!');
-      };
+      })();
     } else {
-      alert("Please import valid .csv file.");
+      alert("Please import valid .xlsx file.");
       this.fileReset();
     }
   }
 
-  async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator: string) {
+  async getDataRecordsArrayFromFile(rows: any, headersRow: any) {
     let csvArr: UpdateStatistiques[] = [];
     let csvRecord: UpdateStatistiques;
     let currentRecord: string[];
@@ -158,56 +139,53 @@ export class MiseAJourStatistiquesComponent implements OnInit {
 
     // Prendre le numéro des colonnes selon le nom d'en-tête
     for (let i = 0; i < headersRow.length; i++) {
-      switch (headersRow[i].trim()) {
-        case 'IDRevue':
+      switch (this.methodesGlobal.normalizeHeader(headersRow[i])) {
+        case 'idrevue':
           colIDRevue = i;
           break;
-        case 'ISSN':
+        case 'issn':
           colISSN = i;
           break;
-        case 'EISSN':
+        case 'eissn':
           colEISSN = i;
           break;
-        case 'Total_Item_Requests':
+        case 'totalitemrequests':
           colTotal_Item_Requests = i;
           break;
-        case 'No_License':
+        case 'nolicense':
           colNo_License = i;
           break;
         case 'citations':
           colCitations = i;
           break;
-        case 'articlesUdem':
+        case 'articlesudem':
           colArticlesUdem = i;
           break;
-        case 'JR4COURANT':
+        case 'jr4courant':
           colJR4COURANT = i;
           break;
-        case 'JR4INTER':
+        case 'jr4inter':
           colJR4INTER = i;
           break;
-        case 'JR4RETRO':
+        case 'jr4retro':
           colJR4RETRO = i;
           break;
-        case 'JR3OAGOLD':
+        case 'jr3oagold':
           colJR3OAGOLD = i;
           break;
-        case 'PlateformeID':
+        case 'plateformeid':
           colPlateformeID = i;
           break;
       }
     }
 
-    for (let i = 1; i < csvRecordsArray.length; i++) {
-      // Ignorer les lignes vides ou non valides
-      if (!csvRecordsArray[i] || csvRecordsArray[i].trim() === '') continue;
-
+    for (let i = 1; i < rows.length; i++) {
       if (document.getElementById('annee')) {
         // @ts-ignore
         this.annee = (document.getElementById('annee') as HTMLInputElement).value;
       }
 
-      currentRecord = (csvRecordsArray[i] as string).split(separator);
+      currentRecord = rows[i];
 
       const plateformeElement = document.getElementById('plateforme') as HTMLInputElement | null;
       if (plateformeElement) {
@@ -243,19 +221,6 @@ export class MiseAJourStatistiquesComponent implements OnInit {
 
 
 
-
-  isValidCSVFile(file: any) {
-    return file.name.endsWith(".csv");
-  }
-
-  getHeaderArray(csvRecordsArr: any, separator:string) {
-    let headers = (<string>csvRecordsArr[0]).split(separator);
-    let headerArray = [];
-    for (let j = 0; j < headers.length; j++) {
-      headerArray.push(headers[j]);
-    }
-    return headerArray;
-  }
 
   fileReset() {
     this.csvReader.nativeElement.value = "";

@@ -38,6 +38,9 @@ export class MiseAJourPrixComponent implements OnInit {
   //les entêts du tableau
   displayedColumns = ['IDRevue','ISSN','EISSN','annee', 'prix','note'];
 
+  //entetes attendues dans le fichier Excel (annee vient du select, pas du fichier)
+  headersFichier = ['IDRevue','ISSN','EISSN','prix','note'];
+
 
   // @ts-ignore
   dataSource: MatTableDataSource<InCites>;
@@ -48,8 +51,6 @@ export class MiseAJourPrixComponent implements OnInit {
   methodesGlobal: MethodesGlobal = new MethodesGlobal();
 
   records: UpdatePrix[] = [];
-
-  separator = ';';
 
   admin = '';
 
@@ -81,61 +82,42 @@ export class MiseAJourPrixComponent implements OnInit {
   }
 
   uploadListener($event: any): void {
-    let text = [];
     let files = $event.srcElement.files;
-    if (this.isValidCSVFile(files[0])) {
-      let input = $event.target;
-      let reader = new FileReader();
-      reader.readAsArrayBuffer(input.files[0]);
-      reader.onload = async () => {
-        const buffer = reader.result as ArrayBuffer;
-        const bytes = new Uint8Array(buffer);
-        const hasUtf8Bom = bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF;
-        const encoding = hasUtf8Bom ? 'utf-8' : 'windows-1252';
-        const csvData = new TextDecoder(encoding).decode(buffer);
-
-        let csvRecordsArray = csvData.split(/\r\n|\n/);
-
-        if(csvRecordsArray[0].search(',')!=-1){
-          this.separator =','
-        }
-        //console.log(csvRecordsArray[0].search(';'));
-        let headersRow = this.getHeaderArray(csvRecordsArray, this.separator);
+    if (this.methodesGlobal.isValidExcelFile(files[0])) {
+      (async () => {
+        const rows = await this.methodesGlobal.readExcelRows(files[0]);
+        let headersRow = rows[0];
 
         // @ts-ignore
-        this.records = await this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow, this.separator)
+        this.records = await this.getDataRecordsArrayFromFile(rows, headersRow)
         this.dataSource = new MatTableDataSource( this.records);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
         this.methodesGlobal.afficher('contenu-resultat')
         this.methodesGlobal.afficher('addCsv')
-      };
-
-      reader.onerror = function () {
-        console.log('error is occured while reading file!');
-      };
+      })();
     } else {
-      alert("Please import valid .csv file.");
+      alert("Please import valid .xlsx file.");
       this.fileReset();
     }
   }
 
 
-  async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator:string) {
+  async getDataRecordsArrayFromFile(rows: any, headersRow: any) {
     let csvArr: UpdatePrix[] = [];
     // @ts-ignore
     let csvRecord: UpdatePrix = []; let curruntRecord;
     let colIDRevue=-1,colAnnee=-1,colPrix=-1,colISSN=-1,colEISSN=-1,colNote=-1;
     //prendre le numero des colons selon le nom d'entete
     for(let i=0;i<headersRow.length;i++){
-      switch (headersRow[i].trim()){
-        case 'IDRevue':
+      switch (this.methodesGlobal.normalizeHeader(headersRow[i])){
+        case 'idrevue':
           colIDRevue=i
           break;
-        case 'ISSN':
+        case 'issn':
           colISSN=i
           break;
-        case 'EISSN':
+        case 'eissn':
           colEISSN=i
           break;
         case 'annee':
@@ -150,12 +132,12 @@ export class MiseAJourPrixComponent implements OnInit {
       }
     }
 
-    for (let i = 1; i < csvRecordsArray.length; i++) {
+    for (let i = 1; i < rows.length; i++) {
       if(document.getElementById('annee'))
         // @ts-ignore
         this.annee=document.getElementById('annee').value;
 
-        curruntRecord = (<string>csvRecordsArray[i]).split(separator);
+        curruntRecord = rows[i];
           csvRecord = {
             idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIDRevue]),
             ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colISSN]),
@@ -169,19 +151,6 @@ export class MiseAJourPrixComponent implements OnInit {
     }
      //console.log(csvArr)
     return csvArr;
-  }
-
-  isValidCSVFile(file: any) {
-    return file.name.endsWith(".csv");
-  }
-
-  getHeaderArray(csvRecordsArr: any, separator:string) {
-    let headers = (<string>csvRecordsArr[0]).split(separator);
-    let headerArray = [];
-    for (let j = 0; j < headers.length; j++) {
-      headerArray.push(headers[j]);
-    }
-    return headerArray;
   }
 
   fileReset() {

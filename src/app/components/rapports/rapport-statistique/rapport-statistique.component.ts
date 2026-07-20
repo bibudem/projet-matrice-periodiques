@@ -90,36 +90,29 @@ export class RapportStatistiqueComponent implements OnInit {
       i++
     }
   }
-//liste des statistiques générales
-async creerTableauStatistique(annees: any, plateforme: string) {
+//liste des statistiques générales — le filtrage (statut, domaine, secteur,
+// abonnement, bdd, accesCourant, fournisseur, plateforme) est fait cote serveur
+// (this.filtres envoye tel quel en query params), le regroupement par idRevue
+// (fusion des lignes multi-annees/plateformes) reste cote client via une Map.
+async creerTableauStatistique(annees: any) {
+  if (this.isLoadingResults) return;
   try {
     if (!annees || annees.length === 0) {
       this.methodesGlobal.afficher('alertErreur');
       return;
     }
-    
+
     this.methodesGlobal.nonAfficher('alertErreur');
+    this.isLoadingResults = true;
     this.listeStatistique = [];
     this.afficherAnimation();
 
-    const anneesStr = annees.join(', ');
-    const plateformeQuery = plateforme || 'vide';
     const donneesRegroupees = new Map<string, any>();
-    
-    this.statistiques$ = this.statistiqueService.rapportStatistiques(annees, plateformeQuery);
-    
+
+    this.statistiques$ = this.statistiqueService.rapportStatistiques(annees, this.filtres);
+
     await this.statistiques$.toPromise().then(res => {
-      const filtresEntries: [string, string][] = Object.entries(this.filtres) as [string, string][];
-      
       for (const val of res) {
-        const matchesFilters = filtresEntries.every(([key, elem]) => {
-          const filterValue = val[key] as string;
-          const filterElem = elem as string;
-          return filterValue !== null && filterValue !== '' && filterElem.includes(filterValue);
-        });
-        
-        if (!matchesFilters) continue;
-        
         // Modification clé: utilisation de idRevue (val.idP) comme clé de regroupement
         const cle = val.idP;
         
@@ -176,11 +169,13 @@ async creerTableauStatistique(annees: any, plateforme: string) {
       
       this.listeStatistique = Array.from(donneesRegroupees.values());
       this.initialiserDataSource();
+      this.isLoadingResults = false;
     });
   } catch(err) {
     this.nonAfficherAnimation();
     this.methodesGlobal.afficher('alertErreur');
     console.error(`Error : ${err.message}`);
+    this.isLoadingResults = false;
   }
 }
 
@@ -197,13 +192,35 @@ private initialiserDataSource() {
     checked = $event.target.checked;
     //si cauché
     if (checked) {
-      this.thTableau.push( $event.target.value)
+      // eviter un doublon (et donc une colonne en trop / une colonne manquante dans le
+      // tableau de resultats) si l'evenement se declenche deux fois pour la meme case
+      if (!this.thTableau.includes($event.target.value)) {
+        this.thTableau.push($event.target.value)
+      }
     } else {
       // @ts-ignore
       this.thTableau.forEach((element,index)=>{
         if(element==$event.target.value) this.thTableau.splice(index,1);
       });
     }
+  }
+
+  // Indique si un champ est actuellement sélectionné pour le rapport
+  isChampCoche(champ: string): boolean {
+    return this.thTableau.includes(champ);
+  }
+
+  // Vrai si tous les champs disponibles sont cochés (meme ensemble, pas juste meme longueur —
+  // sinon un doublon combine a un champ manquant afficherait "tout coché" a tort)
+  get tousLesChampsCoches(): boolean {
+    return this.champs.length > 0
+      && this.thTableau.length === this.champs.length
+      && this.champs.every((c: string) => this.thTableau.includes(c));
+  }
+
+  // Coche ou décoche tous les champs d'un seul coup
+  toggleTousLesChamps(): void {
+    this.thTableau = this.tousLesChampsCoches ? [] : [...this.champs];
   }
 //apliquer les filtre pour form-control
   implimentationFiltre($event: any){

@@ -8,9 +8,9 @@ const router = express.Router();
 
 router.get('/all', authMiddleware, periodiqueController.getAllPeriodiques);
 
-router.get('/rapport-all/:plateforme', authMiddleware, periodiqueController.getAllRapport);
+router.get('/rapport-all', authMiddleware, periodiqueController.getAllRapport);
 
-router.get('/rapport-autres/:plateforme', authMiddleware, periodiqueController.getAutresRapport);
+router.get('/rapport-autres', authMiddleware, periodiqueController.getAutresRapport);
 
 router.post('/add', authMiddleware, periodiqueController.postPeriodique);
 

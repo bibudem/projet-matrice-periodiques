@@ -219,6 +219,11 @@
     "btn-excel": "Mise à jour des données statistiques",
     "titre-csv": "Mise à jour des données statistiques InCites",
     "confirmer-text": "Êtes-vous certain de vouloir importer les données selon les critères sélectionnés ?",
+    "note-format-excel": "Seuls les fichiers Excel (.xlsx, .xls) respectant le format des en-têtes ci-dessus seront acceptés.",
+    "entetes-attendus-titre": "En-têtes de colonnes attendues",
+    "entetes-ordre-libre": "L'ordre des colonnes n'a pas d'importance : seuls les noms d'en-têtes sont utilisés pour reconnaître les données.",
+    "envoi-fichier-titre": "Importer le fichier",
+    "choisir-fichier": "Fichier Excel à importer",
     "form-description": "Choisissez vos filtres si besoin. Les champs avec une étoile sont obligatoires.",
     "form-description-excel": "Les entêtes considérées seront: « Plateforme », « Titre », « ISSN », « EISSN », « Telechargements », « Tel-uniques », « Refus », « JR4COURANT », « JR4INTER », « JR4RETRO ». Le séparateur pour cette importation est « ; »",
     "form-description-csv": "Les entêtes considérées seront: « Name », « Web of Science Documents », « Times Cited », « ISSN », « eISSN ». Veuillez vérifier les données dans le résultat provisoire.",
@@ -265,7 +270,11 @@
     "btn-filtre": "Appliquer les filtres",
     "total-rapport": "Nombre de résultats :",
     "rapport-total-statistique": "Rapport général",
-    "rapport-statistique-plateforme": "Rapport par plateforme"
+    "rapport-statistique-plateforme": "Rapport par plateforme",
+    "titre-filtres": "Filtres du rapport",
+    "titre-colonnes": "Colonnes du rapport",
+    "tout-cocher": "Tout cocher",
+    "tout-decocher": "Tout décocher"
   },
   "logs":{
     "menu-logs": "Les journaux d'importation",

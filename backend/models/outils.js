@@ -1,6 +1,7 @@
 const db = require('../util/database');
 let SqlString = require('sqlstring'); //global declare
 let datetime = require('node-datetime');
+const { buildExactFilters, buildLikeFilters, combine } = require('../util/sqlFilters');
 
 module.exports = class Outils {
   constructor() {
@@ -87,10 +88,14 @@ module.exports = class Outils {
       "  lst.titrePlateforme;",[annee]);
   }
 
-  //creer le rapport des plateformes
-  static rapportMoyenne() {
-    //afficher la requette
-    return db.execute("SELECT tbl_periodiques.titre, tbl_periodiques.ISSN, tbl_periodiques.EISSN, tbl_periodiques.essentiel2014, tbl_periodiques.essentiel2022, tbl_periodiques.statut, tbl_statistiques.idRevue AS IdS, GROUP_CONCAT(DISTINCT tbl_statistiques.plateforme, ' ') AS plateforme,GROUP_CONCAT(DISTINCT tbl_periodiques.fournisseur, ' ') AS fournisseur,AVG(tbl_statistiques.Total_Item_Requests) AS moyenn_t,AVG(tbl_statistiques.No_License) AS moyenn_r,AVG(tbl_statistiques.citations) AS moyenn_c,AVG(tbl_statistiques.articlesUdem) AS moyenn_a,GROUP_CONCAT(tbl_statistiques.annee, ' ') AS annees FROM tbl_periodiques LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue = tbl_statistiques.idRevue WHERE tbl_statistiques.annee >= YEAR(NOW()) - 5 GROUP BY IdS");
+  // filtres: objet {colonne: 'valeur'|'valeur1,valeur2'} envoye par le frontend
+  // (statut/fournisseur sur tbl_periodiques, plateforme sur tbl_statistiques —
+  // filtre applique avant le GROUP BY, donc restreint aussi les statistiques
+  // moyennees a la/les plateforme(s) choisie(s)).
+  static rapportMoyenne(filtres) {
+    const combined = buildExactFilters(filtres, ['statut', 'fournisseur', 'plateforme']);
+    const sql = `SELECT tbl_periodiques.titre, tbl_periodiques.ISSN, tbl_periodiques.EISSN, tbl_periodiques.essentiel2014, tbl_periodiques.essentiel2022, tbl_periodiques.statut, tbl_statistiques.idRevue AS IdS, GROUP_CONCAT(DISTINCT tbl_statistiques.plateforme, ' ') AS plateforme,GROUP_CONCAT(DISTINCT tbl_periodiques.fournisseur, ' ') AS fournisseur,AVG(tbl_statistiques.Total_Item_Requests) AS moyenn_t,AVG(tbl_statistiques.No_License) AS moyenn_r,AVG(tbl_statistiques.citations) AS moyenn_c,AVG(tbl_statistiques.articlesUdem) AS moyenn_a,GROUP_CONCAT(tbl_statistiques.annee, ' ') AS annees FROM tbl_periodiques LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue = tbl_statistiques.idRevue WHERE tbl_statistiques.annee >= YEAR(NOW()) - 5${combined.clause} GROUP BY IdS`;
+    return db.execute(sql, combined.params);
   }
 
   //creer des view pour les rapports j1,j2,j4

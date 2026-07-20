@@ -182,6 +182,18 @@ export class PeriodiqueListeComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Saute directement à la page saisie par l'utilisateur (1-indexed).
+   * Ignore les valeurs vides, non numériques ou hors bornes.
+   */
+  jumpToPage(rawValue: string): void {
+    const page = parseInt(rawValue, 10);
+    if (isNaN(page)) { return; }
+    const maxPage = this.getTotalPages();
+    const clamped = Math.min(Math.max(page, 1), maxPage);
+    this.goToPage(clamped - 1);
+  }
+
+  /**
    * Vérifie si c'est la première page
    */
   isFirstPage(): boolean {

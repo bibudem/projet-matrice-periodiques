@@ -109,44 +109,37 @@ export class RapportMoyenneComponent implements OnInit {
     }
   }
 
+  // Le filtrage (statut, fournisseur, plateforme) est fait cote serveur (this.filtres
+  // envoye tel quel en query params) — plus de boucle client O(lignes x filtres)
+  // avec un test de sous-chaine fragile (`val[key].includes(elem)`).
   async creerTableauRapport() {
+    if (this.isLoadingResults) return;
     try {
-      this.rapport$ = this.moyenneService.rapportMoyenne();
+      this.isLoadingResults = true;
+      this.rapport$ = this.moyenneService.rapportMoyenne(this.filtres);
       this.listeRapport=[]
       this.afficherAnimation()
-      let resultFiltre = Object.entries(this.filtres);
-      let k=0,i=0;
       await this.rapport$.toPromise().then(res => {
         if(res!==undefined){
-          for (let val of res) {
-            k=0;
-            for ( let [key,elem] of resultFiltre){
-              // @ts-ignore
-              if( val[key]!==null && val[key]!=='' && val[key].includes(elem)){
-                k++;
-              }
+          for (let i = 0; i < res.length; i++) {
+            const val = res[i];
+            this.listeRapport[i]={
+              "Nr":i+1,
+              "annees":val.annees,
+              "idRevue":val.IdS,
+              "titre":val.titre,
+              "ISSN":val.ISSN,
+              "EISSN":val.EISSN,
+              "statut":val.statut,
+              "fournisseur":val.fournisseur,
+              "essentiel2014":val.essentiel2014,
+              "essentiel2022":val.essentiel2022,
+              "plateforme":val.plateforme,
+              "total_tel":Number(val.moyenn_t).toFixed(2),
+              "total_ref":Number(val.moyenn_r).toFixed(2),
+              "total_cit":Number(val.moyenn_c).toFixed(2),
+              "total_artU":Number(val.moyenn_a).toFixed(2)
             }
-            if(k==resultFiltre.length){
-              this.listeRapport[i]={
-                "Nr":1,
-                "annees":val.annees,
-                "idRevue":val.IdS,
-                "titre":val.titre,
-                "ISSN":val.ISSN,
-                "EISSN":val.EISSN,
-                "statut":val.statut,
-                "fournisseur":val.fournisseur,
-                "essentiel2014":val.essentiel2014,
-                "essentiel2022":val.essentiel2022,
-                "plateforme":val.plateforme,
-                "total_tel":Number(val.moyenn_t).toFixed(2),
-                "total_ref":Number(val.moyenn_r).toFixed(2),
-                "total_cit":Number(val.moyenn_c).toFixed(2),
-                "total_artU":Number(val.moyenn_a).toFixed(2)
-              }
-              i++;
-            }
-
           }
         }
         //console.log(this.listeRapport)
@@ -157,9 +150,11 @@ export class RapportMoyenneComponent implements OnInit {
         this.totalDonnees=this.listeRapport.length
         //afficher le tableau
         this.nonAfficherAnimation()
+        this.isLoadingResults = false;
       });
     } catch(err) {
       console.error(`Error : ${err.Message}`);
+      this.isLoadingResults = false;
     }
   }
 

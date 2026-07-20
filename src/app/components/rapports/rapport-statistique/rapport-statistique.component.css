@@ -1,1 +1,39 @@
-/* Styles spécifiques aux rapports définis dans style_add.css (.rapport-table, loader, drag-drop) */
+/* Styles spécifiques aux rapports définis dans style_add.css (loader, drag-drop).
+   Le style du tableau de résultats (.rapport-table) est repris ici en local
+   (styles de composant Angular) plutôt que dans le fichier global : les styles
+   de composant passent par le pipeline de build Angular et héritent donc du
+   hash de cache-busting automatique du bundle, contrairement à style_add.css
+   qui est chargé via un <link> statique dans index.html et peut rester en
+   cache navigateur d'un déploiement à l'autre. */
+
+.rapport-table th,
+.rapport-table td {
+  min-height:   40px;
+  height:       auto;
+  border-right: 1px solid #d5d0d0;
+}
+/* selecteur de classe (avec le point) et non de balise : <table mat-table>
+   rend de vraies balises <tr mat-row>/<tr mat-header-row>, pas des elements
+   <mat-row>/<mat-header-row>. */
+.rapport-table .mat-row        { height: auto; min-height: 40px !important; }
+.rapport-table .mat-header-row { background: #f8f9fa; }
+.rapport-table th {
+  color:         #05304e;
+  border-bottom: 2px solid #e9ecef;
+}
+
+/* Colonnes dynamiques (beaucoup de colonnes possibles). Les lignes mat-row
+   sont en flexbox : chaque ligne calcule la largeur de ses colonnes
+   INDEPENDAMMENT des autres si on ne fixe qu'un min-width — une ligne avec
+   une longue valeur pousse alors ses colonnes plus loin que les lignes
+   voisines ("colonnes décollées" d'une ligne à l'autre). Largeur FIXE
+   identique (flex + width) pour que toutes les lignes s'alignent, avec une
+   ellipse pour le surplus (valeur complète au survol via [title]). */
+.rapport-table .rapport-col {
+  flex:          0 0 120px;
+  width:         120px;
+  max-width:     120px;
+  white-space:   nowrap;
+  overflow:      hidden;
+  text-overflow: ellipsis;
+}

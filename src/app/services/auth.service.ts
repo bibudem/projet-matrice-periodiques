@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import {Injectable, OnInit} from "@angular/core";
+import { Router } from "@angular/router";
 // RxJS 6
 import { Observable, of } from 'rxjs';
 import {tap, delay, catchError} from 'rxjs/operators';
@@ -7,6 +8,7 @@ import {tap, delay, catchError} from 'rxjs/operators';
 import {User} from "../models/User";
 
 import { ErrorHandlerService } from "./error-handler.service";
+import { IdleTimeoutService } from "./idle-timeout.service";
 import { Inject } from "@angular/core";
 import {DOCUMENT} from "@angular/common";
 @Injectable()
@@ -34,6 +36,8 @@ export class AuthService {
 
   constructor(private http: HttpClient,
               private errorHandlerService: ErrorHandlerService,
+              private idleTimeoutService: IdleTimeoutService,
+              private router: Router,
               @Inject(DOCUMENT) readonly document: Document) {}
 
 
@@ -68,10 +72,12 @@ export class AuthService {
             case 'Admin':
               sessionStorage.setItem('groupeAdmin', 'Gestionnaire');
               sessionStorage.setItem('role', 'Admin');
+              this.idleTimeoutService.start(() => this.logoutForInactivity());
               break
             case 'Viewer':
               sessionStorage.setItem('groupeAdmin', 'Bibliothécaire');
               sessionStorage.setItem('role', 'Viewer');
+              this.idleTimeoutService.start(() => this.logoutForInactivity());
               break
             default:
               window.location.href ='/not-user'
@@ -96,10 +102,26 @@ export class AuthService {
   // Une méthode de déconnexion
 
   async logout() {
+    this.idleTimeoutService.stop();
     this.isLoggedIn = false;
     sessionStorage.clear();
     caches.keys().then((keyList) => Promise.all(keyList.map((key) => caches.delete(key))));
     window.location.href = '/api/logout';
+  }
+
+  // Déconnexion après 1h d'inactivité : détruit la session serveur puis redirige vers /login
+  // sans passer par /api/logout -> /not-user, réservée aux accès non autorisés.
+  async logoutForInactivity() {
+    this.idleTimeoutService.stop();
+    this.isLoggedIn = false;
+    sessionStorage.clear();
+    caches.keys().then((keyList) => Promise.all(keyList.map((key) => caches.delete(key))));
+    try {
+      await this.http.get('/api/logout', { responseType: 'text' }).toPromise();
+    } catch {
+      // la redirection serveur vers /not-user n'est pas du JSON, l'appel échoue mais la session est bien détruite
+    }
+    this.router.navigate(['/login']);
   }
 
   /** Redirects to the specified external link with the mediation of the router */

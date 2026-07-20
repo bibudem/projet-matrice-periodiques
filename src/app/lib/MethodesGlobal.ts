@@ -185,6 +185,32 @@ export class MethodesGlobal  {
     return val.toString()
   }
 
+  //verifie que le fichier importe est un fichier Excel
+  isValidExcelFile(file: any): boolean {
+    return !!file && /\.(xlsx|xls)$/i.test(file.name);
+  }
+
+  //normalise un entete de colonne pour la comparaison (insensible a la casse, aux accents, aux espaces/ponctuation)
+  //permet de reconnaitre 'ID Revue', 'IDRevue', 'idrevue', etc. comme le meme entete
+  normalizeHeader(value: string): string {
+    const withoutAccents = (value || '')
+      .toString()
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '');
+    return withoutAccents.replace(/[^a-z0-9]/g, '');
+  }
+
+  //lit un fichier Excel et retourne un tableau de lignes (tableau de cellules), entete en ligne 0
+  //meme forme que l'ancien csvRecordsArray[i].split(separator) pour ne pas changer la logique de mapping en aval
+  async readExcelRows(file: File): Promise<string[][]> {
+    const buffer = await file.arrayBuffer();
+    const workbook = XLSX.read(buffer, {type: 'array'});
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    return XLSX.utils.sheet_to_json(sheet, {header: 1, raw: false, defval: '-', blankrows: false}) as string[][];
+  }
+
   //si vide retourne '-'
   viderInput(id:string){
     if(id)

@@ -1,6 +1,12 @@
 const db = require('../util/database');
 let SqlString = require('sqlstring'); //global declare
 let datetime = require('node-datetime');
+const { buildExactFilters, buildLikeFilters, combine, asWhere } = require('../util/sqlFilters');
+
+// Champs a correspondance exacte (une seule valeur par ligne) vs champs stockant
+// une liste denormalisee dans une seule cellule (necessite une correspondance LIKE).
+const EXACT_COLUMNS = ['statut','domaine','secteur','abonnement','bdd','accesCourant','essentiel2014','essentiel2022','fournisseur','libreAcces'];
+const LIKE_COLUMNS = ['plateformePrincipale','autrePlateforme'];
 
 module.exports = class Periodique {
   constructor(id,titre) {
@@ -38,58 +44,29 @@ module.exports = class Periodique {
     return db.execute(sql);
   }
 
-  static  fetchRapportAll(plateforme) {
-    let sqlCondition='';
-    let valPlateforme=plateforme.split('=')[1];
-    let platformes=valPlateforme.split(',');
-    if(valPlateforme!='vide' ){
-      if(platformes.length>0){
-        //console.log(platformes.length)
-        sqlCondition+=" WHERE ( ";
-        for (let i=0;i<platformes.length;i++){
-          sqlCondition+="  `plateformePrincipale` LIKE'%" + platformes[i].toString() + "%' ";
-          if(i<platformes.length-1){
-            sqlCondition+=" OR ";
-          }
-        }
-        sqlCondition+=" )";
-      }
-      else {
-        sqlCondition=" WHERE `plateformePrincipale`='"+valPlateforme.toString()+"'";
-      }
-    }
-    /*let sql = 'SELECT *  FROM `view_rapport_periodiques_all` '+sqlCondition+'  order by idP';
-    console.log('sql: ', SqlString.format(sql));*/
-    return db.execute('SELECT *  FROM `view_rapport_periodiques_all` '+sqlCondition+'  order by idP');
+  // filtres: objet {colonne: 'valeur' | 'valeur1,valeur2'} envoye par le frontend
+  // (une cle par filtre selectionne dans le formulaire de rapport-periodique).
+  static fetchRapportAll(filtres) {
+    const combined = combine(
+      buildExactFilters(filtres, EXACT_COLUMNS),
+      buildLikeFilters(filtres, LIKE_COLUMNS)
+    );
+    return db.execute('SELECT * FROM `view_rapport_periodiques_all` ' + asWhere(combined) + ' ORDER BY idP', combined.params);
   }
 
-  static  async fetchRapportAutres(plateforme) {
-    let sqlCondition='';
-    let valPlateforme=plateforme.split('=')[1];
-    let platformes=valPlateforme.split(',');
-    if(valPlateforme!='vide' ){
-      if(platformes.length>0){
-        sqlCondition+=" AND ( ";
-        for (let i=0;i<platformes.length;i++){
-          sqlCondition+="  plateformePrincipale  LIKE '%" + platformes[i].toString() + "%' ";
-          if(i < platformes.length-1){
-            sqlCondition+=" OR ";
-          }
-        }
-        sqlCondition+=" )";
-      }
-      else {
-        sqlCondition=" AND plateformePrincipale='"+valPlateforme.toString()+"'";
-      }
-    }
-    let autresChamps = {};
-    /*let sql = "Select idP,GROUP_CONCAT('Note: ',tbl_notes.note,', ',' ',tbl_notes.dateA) AS notes  from view_rapport_periodiques_all INNER JOIN tbl_notes on view_rapport_periodiques_all.idRevue=tbl_notes.idRevue where note is not null "+sqlCondition+"  GROUP BY idP  order by idP";
-    console.log('sql: ', SqlString.format(sql));*/
-    let notes= await db.execute(" Select idP,GROUP_CONCAT('Note: ',tbl_notes.note,', ',' ',tbl_notes.dateA) AS notes  from view_rapport_periodiques_all INNER JOIN tbl_notes on view_rapport_periodiques_all.idP=tbl_notes.idRevue where note is not null "+sqlCondition+"  GROUP BY idP   order by idP");
-    let prix= await db.execute("Select idP,GROUP_CONCAT(tbl_prix_periodiques.annee ,':' , ' ',tbl_prix_periodiques.prix,'$ ') AS prix from view_rapport_periodiques_all INNER JOIN tbl_prix_periodiques on view_rapport_periodiques_all.idP=tbl_prix_periodiques.idRevue where prix is not null "+sqlCondition+"  GROUP BY idP   order by idP");
+  static async fetchRapportAutres(filtres) {
+    const { clause, params } = buildLikeFilters(filtres, LIKE_COLUMNS);
 
-    autresChamps={"notes": notes[0],"prix":prix[0]};
-    return [autresChamps]
+    let notes = await db.execute(
+      "SELECT idP, GROUP_CONCAT('Note: ', tbl_notes.note, ', ', ' ', tbl_notes.dateA) AS notes FROM view_rapport_periodiques_all INNER JOIN tbl_notes ON view_rapport_periodiques_all.idP = tbl_notes.idRevue WHERE note IS NOT NULL" + clause + " GROUP BY idP ORDER BY idP",
+      params
+    );
+    let prix = await db.execute(
+      "SELECT idP, GROUP_CONCAT(tbl_prix_periodiques.annee, ':', ' ', tbl_prix_periodiques.prix, '$ ') AS prix FROM view_rapport_periodiques_all INNER JOIN tbl_prix_periodiques ON view_rapport_periodiques_all.idP = tbl_prix_periodiques.idRevue WHERE prix IS NOT NULL" + clause + " GROUP BY idP ORDER BY idP",
+      params
+    );
+
+    return [{ notes: notes[0], prix: prix[0] }];
   }
 
   static post(periodique) {

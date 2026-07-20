@@ -45,8 +45,13 @@ export class RapportPlateformesComponent implements OnInit {
 
   champs=[]
 
-//variable boolean
+//variable boolean — pilote la visibilite du tableau d'export cache (voir ExportTOExcel)
   isLoadingResults=false
+
+  // Garde anti double-clic sur "Creer le rapport", distincte de isLoadingResults
+  // (deja utilisee pour l'export XLSX, reutiliser la meme variable rendrait le
+  // tableau d'export visible pendant une recherche normale).
+  isFetchingRapport=false
 
   thTableau:any=[]
 
@@ -97,7 +102,9 @@ export class RapportPlateformesComponent implements OnInit {
   }
 
   async creerTableauRapportPlateforme(annee: string) {
+    if (this.isFetchingRapport) return;
     try {
+      this.isFetchingRapport = true;
       this.rapportPlateformes$ = this.plateformeService.rapportPlateformes(annee);
       this.listeRapport = [];
       this.afficherAnimation();
@@ -135,8 +142,10 @@ export class RapportPlateformesComponent implements OnInit {
       this.totalDonnees = this.listeRapport.length;
       // Afficher le tableau
       this.nonAfficherAnimation();
+      this.isFetchingRapport = false;
     } catch (err) {
       console.error(`Error: ${err.Message}`);
+      this.isFetchingRapport = false;
     }
   }
 

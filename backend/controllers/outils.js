@@ -84,7 +84,7 @@ exports.rapportPlateformes = async (req, res, next) => {
 };
 exports.rapportMoyenne = async (req, res, next) => {
   try {
-    const [donnees] = await Outils.rapportMoyenne();
+    const [donnees] = await Outils.rapportMoyenne(req.query);
     //console.log('all ok')
     res.status(200).json(donnees);
 

@@ -41,7 +41,8 @@ export class ImportationInCitesComponent implements OnInit {
   records: InCites[] = [];
   @ViewChild('InCites') InCites: any;
 
-  separator=',';
+  //entetes attendues dans le fichier Excel (annee vient du select, pas du fichier)
+  headersFichier = ['Name','Web of Science Documents','Times Cited','ISSN','EISSN'];
 
   constructor( private router: Router,
                private translate: TranslateService,
@@ -64,72 +65,58 @@ export class ImportationInCitesComponent implements OnInit {
 
   uploadListener($event: any): void {
     let files = $event.srcElement.files;
-    if (this.isValidCSVFile(files[0])) {
-      let input = $event.target;
-      let reader = new FileReader();
-      reader.readAsText(input.files[0]);
-      reader.onload = async () => {
-        const csvData = reader.result as string;
-        let csvRecordsArray = csvData.split(/\r\n|\n/);
-        let headersRow = this.getHeaderArray(csvRecordsArray);
-        this.records = await this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow);
+    if (this.methodesGlobal.isValidExcelFile(files[0])) {
+      (async () => {
+        const rows = await this.methodesGlobal.readExcelRows(files[0]);
+        let headersRow = rows[0];
+        this.records = await this.getDataRecordsArrayFromFile(rows, headersRow);
         this.dataSource = new MatTableDataSource( this.records);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
         this.methodesGlobal.afficher('contenu-resultat')
         this.methodesGlobal.afficher('addCsv')
-      };
-
-      reader.onerror = function () {
-        console.log('error is occured while reading file!');
-      };
+      })();
     } else {
-      alert("Please import valid .csv file.");
+      alert("Please import valid .xlsx file.");
       this.fileReset();
     }
   }
 
 
-  async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any) {
+  async getDataRecordsArrayFromFile(rows: any, headersRow: any) {
     let csvArr: InCites[] = [];
     // @ts-ignore
     let csvRecord: InCites = []; let curruntRecord;
     let j = 1;
     let colName=-1,colArUdem=-1,colCitation=-1,colISSN=-1,colEISSN=-1
     //prendre le numero des colons selon le nom d'entete
-    if(headersRow.indexOf(';')!=-1){
-      this.separator=';';
-    }
     for(let i=0;i<headersRow.length;i++){
-      switch (headersRow[i].trim()){
-        case 'Name':
+      switch (this.methodesGlobal.normalizeHeader(headersRow[i])){
+        case 'name':
             colName=i
           break;
-        case 'Web of Science Documents':
+        case 'webofsciencedocuments':
             colArUdem=i
           break;
-        case 'Times Cited':
+        case 'timescited':
             colCitation=i
           break;
-        case 'ISSN':
+        case 'issn':
             colISSN=i
           break;
-        case 'eISSN':
-        case 'EISSN':
+        case 'eissn':
             colEISSN=i
           break;
         default:
           break;
       }
     }
-    for (let i = 1; i < csvRecordsArray.length; i++) {
+    for (let i = 1; i < rows.length; i++) {
       let annee='';
         // @ts-ignore
         annee = document.getElementById('annee').value;
-        if(csvRecordsArray[i].toString().indexOf(';')!=-1){
-          this.separator=';';
-        }
-       curruntRecord = (<string>csvRecordsArray[i]).split(this.separator);
+
+       curruntRecord = rows[i];
       //if (curruntRecord[colName]) {
         csvRecord = {
           numero: j,
@@ -147,22 +134,6 @@ export class ImportationInCitesComponent implements OnInit {
     }
      //console.log(csvArr)
     return csvArr;
-  }
-
-  isValidCSVFile(file: any) {
-    return file.name.endsWith(".csv");
-  }
-
-  getHeaderArray(csvRecordsArr: any) {
-    if(csvRecordsArr[0].toString().indexOf(';')!=-1){
-      this.separator=';';
-    }
-    let headers = (<string>csvRecordsArr[0]).split(this.separator);
-    let headerArray = [];
-    for (let j = 0; j < headers.length; j++) {
-      headerArray.push(headers[j]);
-    }
-    return headerArray;
   }
 
   fileReset() {

@@ -44,8 +44,6 @@ export class MiseAJourPeriodiquesComponent implements OnInit {
 
   records: UpdatePeriodiquesLot[] = [];
 
-  separator = ';';
-
   admin = '';
 
   note = '';
@@ -67,53 +65,33 @@ export class MiseAJourPeriodiquesComponent implements OnInit {
   ngOnInit(): void { }
 
   uploadListener($event: any): void {
-    let text = [];
-
     let files = $event.srcElement.files;
-    if (this.isValidCSVFile(files[0])) {
-      let input = $event.target;
-      let reader = new FileReader();
-      reader.readAsArrayBuffer(input.files[0]);
-      reader.onload = async () => {
-        const buffer = reader.result as ArrayBuffer;
-        const bytes = new Uint8Array(buffer);
-        const hasUtf8Bom = bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF;
-        const encoding = hasUtf8Bom ? 'utf-8' : 'windows-1252';
-        const csvData = new TextDecoder(encoding).decode(buffer);
-
-        let csvRecordsArray = csvData.split(/\r\n|\n/);
-
-        if(csvRecordsArray[0].search(',')!=-1){
-          this.separator =','
-        }
-        //console.log(csvRecordsArray[0].search(';'));
-        let headersRow = this.getHeaderArray(csvRecordsArray, this.separator);
+    if (this.methodesGlobal.isValidExcelFile(files[0])) {
+      (async () => {
+        const rows = await this.methodesGlobal.readExcelRows(files[0]);
+        let headersRow = rows[0];
 
         // @ts-ignore
-        this.records = await this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow, this.separator)
+        this.records = await this.getDataRecordsArrayFromFile(rows, headersRow)
         this.dataSource = new MatTableDataSource( this.records);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.matSort;
         this.methodesGlobal.afficher('contenu-resultat')
         this.methodesGlobal.afficher('addCsv')
-      };
-
-      reader.onerror = function () {
-        console.log('error is occured while reading file!');
-      };
+      })();
     } else {
-      alert("Please import valid .csv file.");
+      alert("Please import valid .xlsx file.");
       this.fileReset();
     }
   }
 
 
-  async getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headersRow: any, separator: string) {
+  async getDataRecordsArrayFromFile(rows: any, headersRow: any) {
     let csvArr: UpdatePeriodiquesLot[] = [];
     let colIndexMap = this.getColumnIndexMap(headersRow);
 
-    for (let i = 1; i < csvRecordsArray.length; i++) {
-      let curruntRecord = csvRecordsArray[i].split(separator);
+    for (let i = 1; i < rows.length; i++) {
+      let curruntRecord = rows[i];
       let csvRecord = this.mapRecord(curruntRecord, colIndexMap);
       csvArr.push(csvRecord);
     }
@@ -124,52 +102,39 @@ export class MiseAJourPeriodiquesComponent implements OnInit {
   getColumnIndexMap(headersRow: string[]) {
     let colIndexMap: { [key: string]: number } = {};
     for (let i = 0; i < headersRow.length; i++) {
-      colIndexMap[headersRow[i].trim()] = i;
+      colIndexMap[this.methodesGlobal.normalizeHeader(headersRow[i])] = i;
     }
     return colIndexMap;
   }
 
   mapRecord(curruntRecord: string[], colIndexMap: { [key: string]: number }) {
+    const col = (nom: string) => colIndexMap[this.methodesGlobal.normalizeHeader(nom)];
     return {
-      idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['IDRevue']]),
-      titre: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['titre']]),
-      ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['ISSN']]),
-      EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['EISSN']]),
-      statut: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['statut']]),
-      accesCourant: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['accesCourant']]),
-      abonnement: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['abonnement']]),
-      bdd: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['bdd']]),
-      fonds: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['fonds']]),
-      fournisseur: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['fournisseur']]),
-      plateformePrincipale: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['plateformePrincipale']]),
-      autrePlateforme: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['autrePlateforme']]),
-      format: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['format']]),
-      libreAcces: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['libreAcces']]),
-      domaine: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['domaine']]),
-      secteur: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['secteur']]),
-      sujets: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['sujets']]),
-      entente_consortiale: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['entente_consortiale']]),
-      duplication: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['duplication']]),
-      duplicationCourant: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['duplicationCourant']]),
-      duplicationEmbargo1: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['duplicationEmbargo1']]),
-      duplicationEmbargo2: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['duplicationEmbargo2']]),
-      essentiel2014: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['essentiel2014']]),
-      essentiel2022: this.methodesGlobal.returnCharIfNull(curruntRecord[colIndexMap['essentiel2022']])
+      idRevue: this.methodesGlobal.returnCharIfNull(curruntRecord[col('IDRevue')]),
+      titre: this.methodesGlobal.returnCharIfNull(curruntRecord[col('titre')]),
+      ISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[col('ISSN')]),
+      EISSN: this.methodesGlobal.returnCharIfNull(curruntRecord[col('EISSN')]),
+      statut: this.methodesGlobal.returnCharIfNull(curruntRecord[col('statut')]),
+      accesCourant: this.methodesGlobal.returnCharIfNull(curruntRecord[col('accesCourant')]),
+      abonnement: this.methodesGlobal.returnCharIfNull(curruntRecord[col('abonnement')]),
+      bdd: this.methodesGlobal.returnCharIfNull(curruntRecord[col('bdd')]),
+      fonds: this.methodesGlobal.returnCharIfNull(curruntRecord[col('fonds')]),
+      fournisseur: this.methodesGlobal.returnCharIfNull(curruntRecord[col('fournisseur')]),
+      plateformePrincipale: this.methodesGlobal.returnCharIfNull(curruntRecord[col('plateformePrincipale')]),
+      autrePlateforme: this.methodesGlobal.returnCharIfNull(curruntRecord[col('autrePlateforme')]),
+      format: this.methodesGlobal.returnCharIfNull(curruntRecord[col('format')]),
+      libreAcces: this.methodesGlobal.returnCharIfNull(curruntRecord[col('libreAcces')]),
+      domaine: this.methodesGlobal.returnCharIfNull(curruntRecord[col('domaine')]),
+      secteur: this.methodesGlobal.returnCharIfNull(curruntRecord[col('secteur')]),
+      sujets: this.methodesGlobal.returnCharIfNull(curruntRecord[col('sujets')]),
+      entente_consortiale: this.methodesGlobal.returnCharIfNull(curruntRecord[col('entente_consortiale')]),
+      duplication: this.methodesGlobal.returnCharIfNull(curruntRecord[col('duplication')]),
+      duplicationCourant: this.methodesGlobal.returnCharIfNull(curruntRecord[col('duplicationCourant')]),
+      duplicationEmbargo1: this.methodesGlobal.returnCharIfNull(curruntRecord[col('duplicationEmbargo1')]),
+      duplicationEmbargo2: this.methodesGlobal.returnCharIfNull(curruntRecord[col('duplicationEmbargo2')]),
+      essentiel2014: this.methodesGlobal.returnCharIfNull(curruntRecord[col('essentiel2014')]),
+      essentiel2022: this.methodesGlobal.returnCharIfNull(curruntRecord[col('essentiel2022')])
     };
-  }
-
-
-  isValidCSVFile(file: any) {
-    return file.name.endsWith(".csv");
-  }
-
-  getHeaderArray(csvRecordsArr: any, separator:string) {
-    let headers = (<string>csvRecordsArr[0]).split(separator);
-    let headerArray = [];
-    for (let j = 0; j < headers.length; j++) {
-      headerArray.push(headers[j]);
-    }
-    return headerArray;
   }
 
   fileReset() {

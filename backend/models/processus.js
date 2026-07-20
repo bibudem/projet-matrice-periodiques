@@ -57,7 +57,7 @@ module.exports = class Processus {
     return db.execute("SELECT MAX(id_processus) AS max FROM lst_processus  ");
   }
 
-  static async postPrix(values) {
+  static async postPrix(values, cache) {
     //creation de la date
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
@@ -66,9 +66,9 @@ module.exports = class Processus {
     }
     //si non valid idRevue
     if(values[0]!='-' ){
-      let valid= await this.valideIdRevue(values[0]);
+      let valid= await this.valideIdRevue(values[0], cache);
       if(!valid){
-        await this.ajoutProcessusDetails(values[0],'-1','','')
+        await this.ajoutProcessusDetails(values[0],'-1','','', cache)
         return []
       }
     }
@@ -84,26 +84,28 @@ module.exports = class Processus {
 
     //chercher l'id du revue
     if(values[0]=='-'){
-      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'autre');
+      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'autre', cache);
     }
     //si non match
     if(tabValue['idRevue']=='-1'){
       return []
     }
 
-    let prixAnnee= await db.execute("SELECT Count(idRevue) as count  FROM tbl_prix_periodiques  WHERE idRevue = ? and  annee=?",[tabValue['idRevue'],tabValue['annee']]);
+    await this.withLock(cache, `prix|${tabValue['idRevue']}|${tabValue['annee']}`, async () => {
+      let prixAnnee= await db.execute("SELECT Count(idRevue) as count  FROM tbl_prix_periodiques  WHERE idRevue = ? and  annee=?",[tabValue['idRevue'],tabValue['annee']]);
 
-    if(prixAnnee[0]['0']['count']==0){
-      await db.execute('INSERT INTO tbl_prix_periodiques SET prix = ?,note = ?,dateA = ?,annee= ? ,idRevue= ?', [tabValue['prix'],tabValue['note'],tabValue['date'],tabValue['annee'],tabValue['idRevue']] );
-    }
-    else {
-      await db.execute('UPDATE tbl_prix_periodiques SET prix =?,note =?,dateM =? WHERE idRevue=? and annee=?', [tabValue['prix'],tabValue['note'],tabValue['date'],tabValue['idRevue'],tabValue['annee']] );
-    }
+      if(prixAnnee[0]['0']['count']==0){
+        await db.execute('INSERT INTO tbl_prix_periodiques SET prix = ?,note = ?,dateA = ?,annee= ? ,idRevue= ?', [tabValue['prix'],tabValue['note'],tabValue['date'],tabValue['annee'],tabValue['idRevue']] );
+      }
+      else {
+        await db.execute('UPDATE tbl_prix_periodiques SET prix =?,note =?,dateM =? WHERE idRevue=? and annee=?', [tabValue['prix'],tabValue['note'],tabValue['date'],tabValue['idRevue'],tabValue['annee']] );
+      }
+    });
     /** Ajout details processus*/
-    await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],'');
+    await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],'', cache);
   }
 
-  static async postArchives(values) {
+  static async postArchives(values, cache) {
     //creation de la date
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
@@ -112,9 +114,9 @@ module.exports = class Processus {
     }
     //si non valid idRevue
     if(values[0]!='-' ){
-      let valid= await this.valideIdRevue(values[0]);
+      let valid= await this.valideIdRevue(values[0], cache);
       if(!valid){
-        await this.ajoutProcessusDetails(values[0],'-1','','')
+        await this.ajoutProcessusDetails(values[0],'-1','','', cache)
         return []
       }
     }
@@ -135,28 +137,28 @@ module.exports = class Processus {
 
     //chercher l'id du revue
     if(values[0]=='-'){
-      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'autre');
+      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'autre', cache);
     }
     //si non match
     if(tabValue['idRevue']=='-1'){
       return []
     }
 
-    let archives= await db.execute("SELECT Count(idRevue) as count  FROM tbl_archives  WHERE idRevue = ? and  anneeDebut=? and anneeFin=?",[tabValue['idRevue'],tabValue['anneeDebut'],tabValue['anneeFin']]);
-    //console.log(prixAnnee[0]['0']['count']);
-    if(archives[0]['0']['count']==0){
-      /*let sql1= 'INSERT INTO tbl_archives SET idRevue = ?,perennite = ?,conserverPap = ?,anneeDebut= ? ,anneeFin= ?,volDebut= ?,volFin= ?,embargo= ?,fournisseur= ?,dateA=?';
-      console.log('sql1: ', SqlString.format(sql1,[tabValue['idRevue'],tabValue['perennite'],tabValue['conserverPap'],tabValue['anneeDebut'],tabValue['anneeFin'],tabValue['volDebut'],tabValue['volFin'],tabValue['embargo'],tabValue['fournisseur'],tabValue['date']]));*/
-      await db.execute('INSERT INTO tbl_archives SET idRevue = ?,perennite = ?,conserverPap = ?,anneeDebut= ? ,anneeFin= ?,volDebut= ?,volFin= ?,embargo= ?,fournisseur= ?,dateA=?', [tabValue['idRevue'],tabValue['perennite'],tabValue['conserverPap'],tabValue['anneeDebut'],tabValue['anneeFin'],tabValue['volDebut'],tabValue['volFin'],tabValue['embargo'],tabValue['fournisseur'],tabValue['date']] );
-    }
-    else {
-      await db.execute('UPDATE tbl_archives SET perennite =?,conserverPap =?,volDebut =?,volFin =?,embargo =?,fournisseur =?,dateM =? WHERE idRevue=? and anneeDebut=? and anneeFin=?', [tabValue['perennite'],tabValue['conserverPap'],tabValue['volDebut'],tabValue['volFin'],tabValue['embargo'],tabValue['fournisseur'],tabValue['date'],tabValue['idRevue'],tabValue['anneeDebut'],tabValue['anneeFin']] );
-    }
+    await this.withLock(cache, `archives|${tabValue['idRevue']}|${tabValue['anneeDebut']}|${tabValue['anneeFin']}`, async () => {
+      let archives= await db.execute("SELECT Count(idRevue) as count  FROM tbl_archives  WHERE idRevue = ? and  anneeDebut=? and anneeFin=?",[tabValue['idRevue'],tabValue['anneeDebut'],tabValue['anneeFin']]);
+      //console.log(prixAnnee[0]['0']['count']);
+      if(archives[0]['0']['count']==0){
+        await db.execute('INSERT INTO tbl_archives SET idRevue = ?,perennite = ?,conserverPap = ?,anneeDebut= ? ,anneeFin= ?,volDebut= ?,volFin= ?,embargo= ?,fournisseur= ?,dateA=?', [tabValue['idRevue'],tabValue['perennite'],tabValue['conserverPap'],tabValue['anneeDebut'],tabValue['anneeFin'],tabValue['volDebut'],tabValue['volFin'],tabValue['embargo'],tabValue['fournisseur'],tabValue['date']] );
+      }
+      else {
+        await db.execute('UPDATE tbl_archives SET perennite =?,conserverPap =?,volDebut =?,volFin =?,embargo =?,fournisseur =?,dateM =? WHERE idRevue=? and anneeDebut=? and anneeFin=?', [tabValue['perennite'],tabValue['conserverPap'],tabValue['volDebut'],tabValue['volFin'],tabValue['embargo'],tabValue['fournisseur'],tabValue['date'],tabValue['idRevue'],tabValue['anneeDebut'],tabValue['anneeFin']] );
+      }
+    });
     /** Ajout details processus*/
-    await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],'');
+    await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],'', cache);
   }
 
-  static async postStatistiques(values) {
+  static async postStatistiques(values, cache) {
   try {
     // Création de la date
     let dt = datetime.create();
@@ -181,16 +183,16 @@ module.exports = class Processus {
 
     // Vérifier si l'idRevue est valide
     if (tabValue.idRevue !== '-') {
-      let valid = await this.valideIdRevue(tabValue.idRevue);
+      let valid = await this.valideIdRevue(tabValue.idRevue, cache);
       if (!valid) {
-        await this.ajoutProcessusDetails(tabValue.idRevue, '-1', tabValue.EISSN, tabValue.plateforme);
+        await this.ajoutProcessusDetails(tabValue.idRevue, '-1', tabValue.EISSN, tabValue.plateforme, cache);
         return [];
       }
     }
 
     // Chercher l'id du revue si absent
     if (tabValue.idRevue === '-') {
-      tabValue.idRevue = await this.matchIdRevue(tabValue.ISSN, tabValue.EISSN, 'autre');
+      tabValue.idRevue = await this.matchIdRevue(tabValue.ISSN, tabValue.EISSN, 'autre', cache);
     }
 
     // Si l'idRevue n'a pas été trouvé
@@ -202,74 +204,76 @@ module.exports = class Processus {
     if (
       [tabValue.Total_Item_Requests, tabValue.No_License, tabValue.citations,
        tabValue.articlesUdem, tabValue.JR4COURANT, tabValue.JR4INTER,
-       tabValue.JR4RETRO, tabValue.JR3OAGOLD].every(v => v === '-') 
+       tabValue.JR4RETRO, tabValue.JR3OAGOLD].every(v => v === '-')
       && tabValue.plateforme === ''
     ) {
       return [];
     }
 
-    // Vérifier si la ligne existe déjà
-    let params = [tabValue.idRevue, tabValue.annee];
-    let condition = '';
+    await this.withLock(cache, `stats|${tabValue.idRevue}|${tabValue.annee}|${tabValue.plateforme}`, async () => {
+      // Vérifier si la ligne existe déjà
+      let params = [tabValue.idRevue, tabValue.annee];
+      let condition = '';
 
-    if (tabValue.plateforme !== '') {
-      condition = 'AND plateforme = ?';
-      params.push(tabValue.plateforme);
-    }
+      if (tabValue.plateforme !== '') {
+        condition = 'AND plateforme = ?';
+        params.push(tabValue.plateforme);
+      }
 
-    const [rows] = await db.execute(
-      `SELECT idStatistique 
-       FROM tbl_statistiques 
-       WHERE idRevue = ? AND annee = ? ${condition}`,
-      params
-    );
-
-    if (rows.length > 0) {
-      // ---- UPDATE ----
-      tabValue.dateM = date;
-      let valuesUpdate = [];
-      let updateColumns = Object.keys(tabValue)
-        .map(key => {
-          if (!['ISSN','EISSN','idRevue','annee'].includes(key) && tabValue[key] !== '-') {
-            valuesUpdate.push(tabValue[key]);
-            return `${key} = ?`;
-          }
-        })
-        .filter(Boolean)
-        .join(', ');
-
-      valuesUpdate.push(tabValue.idRevue, tabValue.annee);
-      if (tabValue.plateforme !== '') valuesUpdate.push(tabValue.plateforme);
-
-      await db.execute(
-        `UPDATE tbl_statistiques 
-         SET ${updateColumns} 
-         WHERE idRevue = ? AND annee = ? ${tabValue.plateforme !== '' ? 'AND plateforme = ?' : ''}`,
-        valuesUpdate
+      const [rows] = await db.execute(
+        `SELECT idStatistique
+         FROM tbl_statistiques
+         WHERE idRevue = ? AND annee = ? ${condition}`,
+        params
       );
 
-    } else {
-      // ---- INSERT ----
-      tabValue.dateA = date;
-      let valuesInsert = [];
-      let insertColumns = Object.keys(tabValue)
-        .map(key => {
-          if (!['ISSN','EISSN'].includes(key) && tabValue[key] !== '-') {
-            valuesInsert.push(tabValue[key]);
-            return `${key} = ?`;
-          }
-        })
-        .filter(Boolean)
-        .join(', ');
+      if (rows.length > 0) {
+        // ---- UPDATE ----
+        tabValue.dateM = date;
+        let valuesUpdate = [];
+        let updateColumns = Object.keys(tabValue)
+          .map(key => {
+            if (!['ISSN','EISSN','idRevue','annee'].includes(key) && tabValue[key] !== '-') {
+              valuesUpdate.push(tabValue[key]);
+              return `${key} = ?`;
+            }
+          })
+          .filter(Boolean)
+          .join(', ');
 
-      await db.execute(
-        `INSERT INTO tbl_statistiques 
-         SET ${insertColumns}`,
-        valuesInsert
-      );
-    }
+        valuesUpdate.push(tabValue.idRevue, tabValue.annee);
+        if (tabValue.plateforme !== '') valuesUpdate.push(tabValue.plateforme);
 
-    return await this.ajoutProcessusDetails(tabValue.idRevue, tabValue.ISSN, tabValue.EISSN, tabValue.plateforme);
+        await db.execute(
+          `UPDATE tbl_statistiques
+           SET ${updateColumns}
+           WHERE idRevue = ? AND annee = ? ${tabValue.plateforme !== '' ? 'AND plateforme = ?' : ''}`,
+          valuesUpdate
+        );
+
+      } else {
+        // ---- INSERT ----
+        tabValue.dateA = date;
+        let valuesInsert = [];
+        let insertColumns = Object.keys(tabValue)
+          .map(key => {
+            if (!['ISSN','EISSN'].includes(key) && tabValue[key] !== '-') {
+              valuesInsert.push(tabValue[key]);
+              return `${key} = ?`;
+            }
+          })
+          .filter(Boolean)
+          .join(', ');
+
+        await db.execute(
+          `INSERT INTO tbl_statistiques
+           SET ${insertColumns}`,
+          valuesInsert
+        );
+      }
+    });
+
+    return await this.ajoutProcessusDetails(tabValue.idRevue, tabValue.ISSN, tabValue.EISSN, tabValue.plateforme, cache);
 
   } catch (error) {
     console.error("Error in postStatistiques:", error);
@@ -279,7 +283,7 @@ module.exports = class Processus {
 
 
 // procedure pour la mise a jour manuellement des periodique
-  static async postPeriodiques(values) {
+  static async postPeriodiques(values, cache) {
     //creation de la date
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
@@ -332,18 +336,30 @@ module.exports = class Processus {
     }
     //Chercher l'id de la plateforme
     if(values[10]!='-'){
-      let plResult = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes WHERE titrePlateforme = ? or PlatformID = ?', [values[10], values[10]]);
-      if(plResult[0].length > 0){
-        tabValue.push(plResult[0][0]['id'].toString());
+      let plId = cache ? cache.plateformeToId.get(values[10]) : undefined;
+      if(!cache){
+        let plResult = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes WHERE titrePlateforme = ? or PlatformID = ?', [values[10], values[10]]);
+        if(plResult[0].length > 0){
+          plId = plResult[0][0]['id'].toString();
+        }
+      }
+      if(plId){
+        tabValue.push(plId);
         condSql += ', plateformePrincipale = ?';
       }
     }
     //Chercher les id des autres plateforme
     if(values[11]!='-'){
       let listPl = values[11].split(",");
-      let listId ='', idP;
+      let listId ='', idP, nom;
       for(let i=0;i<listPl.length;i++){
-        idP = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes WHERE titrePlateforme = ? or PlatformID = ?', [listPl[i].trim(), listPl[i].trim()]);
+        nom = listPl[i].trim();
+        if(cache){
+          idP = cache.plateformeToId.get(nom);
+          if(idP) listId+=idP+',';
+          continue;
+        }
+        idP = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes WHERE titrePlateforme = ? or PlatformID = ?', [nom, nom]);
         if(idP && idP[0].length > 0){
           listId+=idP[0][0]['id']+',';
         }
@@ -414,7 +430,7 @@ module.exports = class Processus {
     //console.log(tabValue);
     //si non valid idRevue
     if (tabValue['idRevue'] !== '-') {
-      let valid = await this.valideIdRevue(values[0]);
+      let valid = await this.valideIdRevue(values[0], cache);
       if (valid) {
         let sql0= 'UPDATE tbl_periodiques SET ' + condSql + ', dateM =? WHERE idRevue=?';
         await db.execute(sql0, [...tabValue]);
@@ -424,35 +440,44 @@ module.exports = class Processus {
       }
     }
     if(tabValue['idRevue']=='-'){
-      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'fiche');
-      //si non match ajouter une nouvelle fiche
-      //Non plus besoin selon le ticket 125 dans DevOps
-      if(tabValue['idRevue']=='-1'){
-        tabValue.pop();
-        tabValue.push(null);
-        let sql1= 'INSERT INTO tbl_periodiques SET ' + condSql + ',dateA =?,idRevue=?';
-        //console.log('sql1: ', SqlString.format(sql1,tabValue));
-        await db.execute(sql1, [...tabValue]);
-        let lastId= await db.execute('SELECT MAX(idRevue) as idRevue FROM tbl_periodiques');
-        tabValue['idRevue']=lastId[0]['0']['idRevue'];
-      } else {
-        tabValue.pop();
-        tabValue.push(tabValue['idRevue']);
+      await this.withLock(cache, `fiche|${tabValue['ISSN']}|${tabValue['EISSN']}`, async () => {
+        tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'fiche', cache);
+        //si non match ajouter une nouvelle fiche
+        //Non plus besoin selon le ticket 125 dans DevOps
+        if(tabValue['idRevue']=='-1'){
+          tabValue.pop();
+          tabValue.push(null);
+          let sql1= 'INSERT INTO tbl_periodiques SET ' + condSql + ',dateA =?,idRevue=?';
+          //console.log('sql1: ', SqlString.format(sql1,tabValue));
+          const [insertResult] = await db.execute(sql1, [...tabValue]);
+          // insertId vient directement du resultat de l'INSERT (fiable meme sous concurrence),
+          // plutot qu'un SELECT MAX(idRevue) qui pourrait, en theorie, lire l'id d'une autre
+          // ligne inseree au meme instant par un autre traitement concurrent du meme lot.
+          tabValue['idRevue']=insertResult.insertId;
+          if(cache){
+            const newId = String(tabValue['idRevue']);
+            cache.validIds.add(newId);
+            if(tabValue['ISSN'] && tabValue['ISSN']!=='-' && !cache.issnEissnToId.has(tabValue['ISSN'])) cache.issnEissnToId.set(tabValue['ISSN'], newId);
+            if(tabValue['EISSN'] && tabValue['EISSN']!=='-' && !cache.issnEissnToId.has(tabValue['EISSN'])) cache.issnEissnToId.set(tabValue['EISSN'], newId);
+          }
+        } else {
+          tabValue.pop();
+          tabValue.push(tabValue['idRevue']);
 
-        const sql2 = `UPDATE tbl_periodiques SET ${condSql}, dateM = ? WHERE idRevue = ?`;
-        //console.log('sql2: ', SqlString.format(sql2, [...tabValue]));
+          const sql2 = `UPDATE tbl_periodiques SET ${condSql}, dateM = ? WHERE idRevue = ?`;
+          //console.log('sql2: ', SqlString.format(sql2, [...tabValue]));
 
-        await db.execute(sql2, [...tabValue]);
-      }
-
+          await db.execute(sql2, [...tabValue]);
+        }
+      });
     }
 
     /** Ajout details processus*/
-    return await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],'');
+    return await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],'', cache);
   }
 
   // procedure pour la mise a jour manuellement des periodique
-  static async postListUpdatePeriodiques(values) {
+  static async postListUpdatePeriodiques(values, cache) {
     //creation de la date
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
@@ -505,18 +530,30 @@ module.exports = class Processus {
     }
     //Chercher l'id de la plateforme
     if(values[10]!='-'){
-      let plResult = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes WHERE titrePlateforme = ? or PlatformID = ?', [values[10], values[10]]);
-      if(plResult[0].length > 0){
-        tabValue.push(plResult[0][0]['id'].toString());
+      let plId = cache ? cache.plateformeToId.get(values[10]) : undefined;
+      if(!cache){
+        let plResult = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes WHERE titrePlateforme = ? or PlatformID = ?', [values[10], values[10]]);
+        if(plResult[0].length > 0){
+          plId = plResult[0][0]['id'].toString();
+        }
+      }
+      if(plId){
+        tabValue.push(plId);
         condSql += ', plateformePrincipale = ?';
       }
     }
     //Chercher les id des autres plateforme
     if(values[11]!='-'){
       let listPl = values[11].split(",");
-      let listId ='', idP;
+      let listId ='', idP, nom;
       for(let i=0;i<listPl.length;i++){
-        idP = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes WHERE titrePlateforme = ? or PlatformID = ?', [listPl[i].trim(), listPl[i].trim()]);
+        nom = listPl[i].trim();
+        if(cache){
+          idP = cache.plateformeToId.get(nom);
+          if(idP) listId+=idP+',';
+          continue;
+        }
+        idP = await db.execute('SELECT idPlateforme AS id FROM lst_plateformes WHERE titrePlateforme = ? or PlatformID = ?', [nom, nom]);
         if(idP && idP[0].length > 0){
           listId+=idP[0][0]['id']+',';
         }
@@ -587,7 +624,7 @@ module.exports = class Processus {
     //console.log(tabValue);
     //si non valid idRevue
     if (tabValue['idRevue'] !== '-') {
-      let valid = await this.valideIdRevue(values[0]);
+      let valid = await this.valideIdRevue(values[0], cache);
       if (valid) {
         let sql0= 'UPDATE tbl_periodiques SET ' + condSql + ', dateM =? WHERE idRevue=?';
         await db.execute(sql0, [...tabValue]);
@@ -597,7 +634,7 @@ module.exports = class Processus {
       }
     }
     if(tabValue['idRevue']=='-'){
-      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'fiche');
+      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'fiche', cache);
       //si non match ajouter une nouvelle fiche
       if(tabValue['idRevue']!='-1'){
         tabValue.pop();
@@ -609,10 +646,10 @@ module.exports = class Processus {
     }
 
     /** Ajout details processus*/
-    return await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],'');
+    return await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],'', cache);
   }
 
-  static async postAbonnement(values) {
+  static async postAbonnement(values, cache) {
     //creation de la date
     let dt = datetime.create();
     let date = dt.format('Y-m-d H:M:S');
@@ -627,9 +664,9 @@ module.exports = class Processus {
 
     //si non valid idRevue
     if(values[0]!='-' ){
-      let valid= await this.valideIdRevue(values[0]);
+      let valid= await this.valideIdRevue(values[0], cache);
       if(!valid){
-        await this.ajoutProcessusDetails(values[0],'-1','','')
+        await this.ajoutProcessusDetails(values[0],'-1','','', cache)
         return []
       }
     }
@@ -653,7 +690,7 @@ module.exports = class Processus {
     updateValues.push(date);
     //chercher l'id du revue
     if(values[0]=='-'){
-      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'autre');
+      tabValue['idRevue']=await this.matchIdRevue(tabValue['ISSN'],tabValue['EISSN'],'autre', cache);
     }
     //si non match
     if(tabValue['idRevue']=='-1'){
@@ -670,7 +707,7 @@ module.exports = class Processus {
     await db.execute('UPDATE tbl_periodiques SET ' + condSql + ' ,dateM =? WHERE idRevue=?', updateValues );
 
     /** Ajout details processus*/
-    return await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],'');
+    return await this.ajoutProcessusDetails(tabValue['idRevue'],tabValue['ISSN'],tabValue['EISSN'],'', cache);
 
   }
 
@@ -749,14 +786,19 @@ static async ajoutProcessus(values) {
 }
 
 
-  static async ajoutProcessusDetails(id, issn, eissn, plateforme) {
+  static async ajoutProcessusDetails(id, issn, eissn, plateforme, cache) {
     try {
       const dt = datetime.create();
       const date = dt.format('d/m/Y H:M:S');
       const values = [id, issn, eissn, plateforme];
 
-      const [lastId] = await db.execute('SELECT MAX(id_processus) as id_processus FROM lst_processus');
-      const idPr = lastId[0]['id_processus'] + 1;
+      let idPr;
+      if (cache) {
+        idPr = cache.nextIdProcessus;
+      } else {
+        const [lastId] = await db.execute('SELECT MAX(id_processus) as id_processus FROM lst_processus');
+        idPr = lastId[0]['id_processus'] + 1;
+      }
       values.push(idPr);
       values.push(date);
 
@@ -770,7 +812,23 @@ static async ajoutProcessus(values) {
     }
   }
 
-  static async matchIdRevue(issn, eissn, processus) {
+  static async matchIdRevue(issn, eissn, processus, cache) {
+    if (cache) {
+      let idRevue;
+      if (issn !== '-' && cache.issnEissnToId.has(issn)) {
+        idRevue = cache.issnEissnToId.get(issn);
+      } else if (eissn !== '-' && cache.issnEissnToId.has(eissn)) {
+        idRevue = cache.issnEissnToId.get(eissn);
+      }
+      if (idRevue === undefined) {
+        if (processus !== 'fiche') {
+          await this.ajoutProcessusDetails(-1, issn, eissn, '', cache);
+        }
+        return '-1';
+      }
+      return idRevue;
+    }
+
     let valIdMatch = [];
     let sqlMatch = '';
     let idRevue;
@@ -811,7 +869,10 @@ static async ajoutProcessus(values) {
   }
 
 
-  static async valideIdRevue(idRevue){
+  static async valideIdRevue(idRevue, cache){
+    if (cache) {
+      return cache.validIds.has(String(idRevue));
+    }
     let count= await db.execute('SELECT COUNT(idRevue) AS count FROM tbl_periodiques  WHERE idRevue = ?  ',[idRevue])
 
     if (count[0]['0']['count']==0){
@@ -819,6 +880,71 @@ static async ajoutProcessus(values) {
     }
     else
       return true;
+  }
+
+  // Construit un cache de lot (une seule fois par import bulk) pour eviter de refaire
+  // les memes SELECT de validation/correspondance a chaque ligne du fichier.
+  static async buildBatchCache() {
+    const [periodiquesResult, plateformesResult, maxProcessusResult] = await Promise.all([
+      db.execute('SELECT idRevue, ISSN, EISSN FROM tbl_periodiques ORDER BY idRevue ASC'),
+      db.execute('SELECT idPlateforme AS id, titrePlateforme, PlatformID FROM lst_plateformes'),
+      db.execute('SELECT MAX(id_processus) AS id_processus FROM lst_processus'),
+    ]);
+
+    const validIds = new Set();
+    const issnEissnToId = new Map();
+    for (const row of periodiquesResult[0]) {
+      const id = String(row.idRevue);
+      validIds.add(id);
+      if (row.ISSN && !issnEissnToId.has(row.ISSN)) issnEissnToId.set(row.ISSN, id);
+      if (row.EISSN && !issnEissnToId.has(row.EISSN)) issnEissnToId.set(row.EISSN, id);
+    }
+
+    const plateformeToId = new Map();
+    for (const p of plateformesResult[0]) {
+      const id = String(p.id);
+      if (p.titrePlateforme) plateformeToId.set(p.titrePlateforme, id);
+      if (p.PlatformID) plateformeToId.set(p.PlatformID, id);
+    }
+
+    const nextIdProcessus = (maxProcessusResult[0][0].id_processus || 0) + 1;
+
+    return { validIds, issnEissnToId, plateformeToId, nextIdProcessus, locks: new Map() };
+  }
+
+  // Serialise les appels de `fn` partageant la meme `key` (ex: meme ISSN/EISSN, meme idRevue+annee)
+  // pendant que des lignes portant des cles differentes continuent de s'executer en parallele.
+  // Necessaire car le traitement des lignes est desormais concurrent : sans ca, deux lignes du
+  // meme fichier visant la meme fiche (ex: ISSN inconnu en double) pourraient toutes les deux
+  // conclure "non trouve" et creer chacune une fiche en double.
+  static async withLock(cache, key, fn) {
+    if (!cache) return fn();
+    const previous = cache.locks.get(key) || Promise.resolve();
+    let release;
+    const current = new Promise(resolve => { release = resolve; });
+    cache.locks.set(key, previous.then(() => current));
+    await previous;
+    try {
+      return await fn();
+    } finally {
+      release();
+    }
+  }
+
+  // Traite `items` avec au plus `concurrency` appels de `fn` en vol simultanement,
+  // sans attendre la fin d'un lot avant de lancer le suivant (contrairement a un for...of sequentiel).
+  static async runBatched(items, concurrency, fn) {
+    const results = new Array(items.length);
+    let index = 0;
+    async function worker() {
+      while (index < items.length) {
+        const current = index++;
+        results[current] = await fn(items[current], current);
+      }
+    }
+    const workers = Array.from({length: Math.min(concurrency, items.length)}, () => worker());
+    await Promise.all(workers);
+    return results;
   }
 
 };

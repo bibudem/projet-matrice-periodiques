@@ -62,16 +62,17 @@ exports.getLastIdProcessus = async (req, res, next) => {
 exports.postBulkPrix = async (req, res, next) => {
   try {
     const records = Array.isArray(req.body) ? req.body : [req.body];
+    const cache = await Processus.buildBatchCache();
     let processed = 0, errors = 0;
-    for (const record of records) {
+    await Processus.runBatched(records, 15, async (record) => {
       try {
-        await Processus.postPrix(Object.values(record));
+        await Processus.postPrix(Object.values(record), cache);
         processed++;
       } catch (err) {
         console.error(`Erreur ligne: ${err.message}`);
         errors++;
       }
-    }
+    });
     res.status(200).json({ processed, errors });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
@@ -97,16 +98,17 @@ exports.postPrix= async (req, res, next) => {
 exports.postBulkArchives = async (req, res, next) => {
   try {
     const records = Array.isArray(req.body) ? req.body : [req.body];
+    const cache = await Processus.buildBatchCache();
     let processed = 0, errors = 0;
-    for (const record of records) {
+    await Processus.runBatched(records, 15, async (record) => {
       try {
-        await Processus.postArchives(Object.values(record));
+        await Processus.postArchives(Object.values(record), cache);
         processed++;
       } catch (err) {
         console.error(`Erreur ligne: ${err.message}`);
         errors++;
       }
-    }
+    });
     res.status(200).json({ processed, errors });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
@@ -132,16 +134,17 @@ exports.postArchives= async (req, res, next) => {
 exports.postBulkStatistiques = async (req, res, next) => {
   try {
     const records = Array.isArray(req.body) ? req.body : [req.body];
+    const cache = await Processus.buildBatchCache();
     let processed = 0, errors = 0;
-    for (const record of records) {
+    await Processus.runBatched(records, 15, async (record) => {
       try {
-        await Processus.postStatistiques(Object.values(record));
+        await Processus.postStatistiques(Object.values(record), cache);
         processed++;
       } catch (err) {
         console.error(`Erreur ligne: ${err.message}`);
         errors++;
       }
-    }
+    });
     res.status(200).json({ processed, errors });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
@@ -164,16 +167,17 @@ exports.postStatistiques = async (req, res, next) => {
 exports.postBulkLotPeriodiques = async (req, res, next) => {
   try {
     const records = Array.isArray(req.body) ? req.body : [req.body];
+    const cache = await Processus.buildBatchCache();
     let processed = 0, errors = 0;
-    for (const record of records) {
+    await Processus.runBatched(records, 15, async (record) => {
       try {
-        await Processus.postPeriodiques(Object.values(record));
+        await Processus.postPeriodiques(Object.values(record), cache);
         processed++;
       } catch (err) {
         console.error(`Erreur ligne: ${err.message}`);
         errors++;
       }
-    }
+    });
     res.status(200).json({ processed, errors });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
@@ -198,16 +202,17 @@ exports.postLotPeriodiques= async (req, res, next) => {
 exports.postBulkUpdatePeriodiques = async (req, res, next) => {
   try {
     const records = Array.isArray(req.body) ? req.body : [req.body];
+    const cache = await Processus.buildBatchCache();
     let processed = 0, errors = 0;
-    for (const record of records) {
+    await Processus.runBatched(records, 15, async (record) => {
       try {
-        await Processus.postListUpdatePeriodiques(Object.values(record));
+        await Processus.postListUpdatePeriodiques(Object.values(record), cache);
         processed++;
       } catch (err) {
         console.error(`Erreur ligne: ${err.message}`);
         errors++;
       }
-    }
+    });
     res.status(200).json({ processed, errors });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
@@ -245,16 +250,17 @@ exports.ajoutProcessus=  async (req, res, next) => {
 exports.postBulkAbonnement = async (req, res, next) => {
   try {
     const records = Array.isArray(req.body) ? req.body : [req.body];
+    const cache = await Processus.buildBatchCache();
     let processed = 0, errors = 0;
-    for (const record of records) {
+    await Processus.runBatched(records, 15, async (record) => {
       try {
-        await Processus.postAbonnement(Object.values(record));
+        await Processus.postAbonnement(Object.values(record), cache);
         processed++;
       } catch (err) {
         console.error(`Erreur ligne: ${err.message}`);
         errors++;
       }
-    }
+    });
     res.status(200).json({ processed, errors });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;

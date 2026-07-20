@@ -1,6 +1,13 @@
 const db = require('../util/database');
 let SqlString = require('sqlstring'); //global declare
 let datetime = require('node-datetime');
+const { buildExactFilters, buildLikeFilters, combine, placeholders } = require('../util/sqlFilters');
+
+// tbl_periodiques : correspondance exacte. tbl_statistiques.plateforme : stocke
+// une seule plateforme par ligne, mais on garde le LIKE pour la coherence avec
+// le comportement existant (ex: recherche partielle par prefixe de PlatformID).
+const EXACT_COLUMNS = ['statut','domaine','secteur','abonnement','bdd','fournisseur','accesCourant'];
+const LIKE_COLUMNS = ['plateforme'];
 
 module.exports = class ListeStatistique {
   constructor() {
@@ -41,52 +48,22 @@ module.exports = class ListeStatistique {
     );
   }
 
-  static  async donneesStatistiqueRapport(periode) {
+  // annees: tableau d'annees (strings/numbers). filtres: objet {colonne: 'valeur'|'valeur1,valeur2'}
+  // envoye par le frontend (une cle par filtre selectionne dans le formulaire de rapport-statistique).
+  static async donneesStatistiqueRapport(annees, filtres) {
+    const anneesArr = (Array.isArray(annees) ? annees : annees.toString().split(','))
+      .map(a => a.toString().trim()).filter(a => a !== '');
 
-     let params=periode.toString().split('=')
-     let plateforme=''; let periodAnnee;
-     let sqlPlateforme = '';
+    // IN () est une erreur de syntaxe SQL — pas d'annee selectionnee = pas de resultats
+    if (anneesArr.length === 0) return [[]];
 
-     if(periode.toString().split('&')){
-       plateforme=periode.toString().split('&')[1];
-       periodAnnee=periode.toString().split('&')[0];
-       periodAnnee=periodAnnee.split('=');
-     } else {
-       periodAnnee=params;
-     }
+    const combined = combine(
+      buildExactFilters(filtres, EXACT_COLUMNS),
+      buildLikeFilters(filtres, LIKE_COLUMNS)
+    );
 
-     let annees='',i=1;
-
-     while(i < periodAnnee.length){
-       if(periodAnnee[i]!=''){
-         annees +=periodAnnee[i];
-         if(i<periodAnnee.length-2){
-           annees +=',';
-         }
-       }
-       i++
-     }
-
-    if(plateforme!=='vide'){
-      let platformes=plateforme.split(',');
-      if(platformes.length>0){
-        sqlPlateforme=" AND ( ";
-        for (let i=0;i<platformes.length;i++){
-          sqlPlateforme+="  `tbl_statistiques`.plateforme LIKE'%" + platformes[i].toString() + "%' ";
-          if(i<platformes.length-1){
-            sqlPlateforme+=" OR ";
-          }
-        }
-        sqlPlateforme+=" )";
-      } else {
-        sqlPlateforme=" AND `tbl_statistiques`.plateforme LIKE'%" + plateforme.toString() + "%'";
-      }
-
-    }
-    //console.log(annees);
-    /*let sql = "SELECT titre,ISSN,EISSN,statut,abonnement,bdd,domaine,secteur,fournisseur,tbl_periodiques.idRevue as idP,annee,Total_Item_Requests,Unique_Item_Requests,No_License, citations , articlesUdem,  JR4COURANT,  JR4INTER,  JR4RETRO,  JR3OAGOLD,plateforme FROM `tbl_periodiques` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue where annee IN ("+ annees.toString() +") "+ sqlPlateforme +" order by idP ";
-    console.log('sql: ', SqlString.format(sql));*/
-    return  db.execute("SELECT titre,ISSN,EISSN,statut,abonnement,bdd,domaine,secteur,fournisseur,tbl_periodiques.idRevue as idP,annee,Total_Item_Requests,Unique_Item_Requests,No_License, citations , articlesUdem,  JR4COURANT,  JR4INTER,  JR4RETRO,  JR3OAGOLD,plateforme FROM `tbl_periodiques` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue where annee IN ("+ annees.toString() +") "+ sqlPlateforme +" order by idP, annee ");
+    const sql = `SELECT titre,ISSN,EISSN,statut,abonnement,bdd,accesCourant,domaine,secteur,fournisseur,tbl_periodiques.idRevue as idP,annee,Total_Item_Requests,Unique_Item_Requests,No_License, citations , articlesUdem,  JR4COURANT,  JR4INTER,  JR4RETRO,  JR3OAGOLD,plateforme FROM \`tbl_periodiques\` LEFT JOIN tbl_statistiques ON tbl_periodiques.idRevue=tbl_statistiques.idRevue WHERE annee IN (${placeholders(anneesArr.length)})` + combined.clause + " ORDER BY idP, annee";
+    return db.execute(sql, [...anneesArr, ...combined.params]);
   }
 
 

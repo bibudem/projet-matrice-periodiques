@@ -21,7 +21,7 @@ export class LogsPlateformeComponent implements OnInit {
 
   logs$: Observable<any[]> | undefined;
 
-  codes: any = [];
+  codes: { code: string; desc: string; type: 'client' | 'server' }[] = [];
 
   displayedColumns = ['numero', 'plateforme', 'url', 'annee', 'message', 'dateA', 'actions'];
   listeLogs: any = [];
@@ -54,10 +54,12 @@ export class LogsPlateformeComponent implements OnInit {
     this.ifAdmin = this.methodesGlobal.ifAdminFunction();
     this.getAllLogsPlateforme();
     this.translate.get('codes').subscribe((res: any) => {
-      let result = Object.entries(res);
-      for (let [, val] of result) {
-        this.codes.push(val);
-      }
+      this.codes = Object.entries(res).map(([code, val]) => {
+        const text = String(val);
+        const separatorIndex = text.indexOf('-');
+        const desc = separatorIndex >= 0 ? text.substring(separatorIndex + 1).trim() : text;
+        return { code, desc, type: code.startsWith('5') ? 'server' : 'client' };
+      });
     });
   }
 

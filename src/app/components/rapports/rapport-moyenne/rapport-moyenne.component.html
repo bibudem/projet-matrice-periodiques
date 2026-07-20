@@ -94,7 +94,7 @@
         <!-- Tableau contenu formulaire-->
         <div class="row" > <hr>
           <div class="card-header  w-100 b-white">
-            <button type="button" class="btn btn-success  text-uppercase mt-4 p-2 mb-1 mr-5 w-35 d-inline"  (click)="creerTableauRapport();" >
+            <button type="button" class="btn btn-success  text-uppercase mt-4 p-2 mb-1 mr-5 w-35 d-inline" [disabled]="isLoadingResults" (click)="creerTableauRapport();" >
               <i class="icon-layers"></i> {{'rapport.btn-rapport'| translate }} </button>
           </div>
           <div class="col-md-12 mt-3 " *ngIf="rapport$">

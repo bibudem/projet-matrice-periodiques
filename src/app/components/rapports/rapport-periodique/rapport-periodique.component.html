@@ -21,6 +21,11 @@
         <div id="load">{{ 'importation.attendre' | translate}}</div>
       </div>
       <div id="page-rapport">
+      <div class="card rapport-card shadow-sm mb-3">
+        <div class="card-header">
+          <span class="rapport-card-titre font-weight-semibold"><i class="icon-settings"></i>{{ 'rapport.titre-filtres' | translate}}</span>
+        </div>
+        <div class="card-body">
       <form  #rapportForm="ngForm" >
         <div class="row">
           <div class="col-md-2">
@@ -31,7 +36,7 @@
                   id="plateformePrincipale"
                   name="plateformePrincipale"
                   #plateformePrincipale
-                  (valueChange)="implimentationMatFiltre(plateformePrincipale.value,'plateformePrincipale');remplireAutresChampsPeriodiques(plateformePrincipale.value)"
+                  (valueChange)="implimentationMatFiltre(plateformePrincipale.value,'plateformePrincipale')"
                   multiple>
                   <mat-option
                     *ngFor="let rep of this.listePlateforme"
@@ -264,25 +269,39 @@
           </div>-->
         </div>
       </form>
-        <div class="visible border-top border-bottom mt-2 pt-2 mb-2 pb-2" id="champs-default">
+        </div>
+      </div>
+
+      <div class="card rapport-card shadow-sm mb-3" id="champs-default">
+        <div class="card-header">
+          <span class="rapport-card-titre font-weight-semibold">
+            <i class="icon-list"></i>{{ 'rapport.titre-colonnes' | translate}}
+            <span class="badge badge-secondary">{{ thTableau.length }}/{{ champs.length }}</span>
+          </span>
+          <button type="button" class="btn btn-outline-primary btn-sm" (click)="toggleTousLesChamps()">
+            <i class="fa" [ngClass]="tousLesChampsCoches ? 'fa-square-o' : 'fa-check-square-o'"></i>
+            {{ (tousLesChampsCoches ? 'rapport.tout-decocher' : 'rapport.tout-cocher') | translate }}
+          </button>
+        </div>
+        <div class="card-body">
           <div class="row">
-            <div class="col-md-2"  *ngFor="let champ of champs" >
-              <div class="list-group" >
-                <div class="form-check form-check-primary">
-                  <label class="form-check-label">
-                    <input type="checkbox" class="form-check-input" id="{{ champ }}" value="{{ champ }}" name="{{ champ }}"  (change)="this.creationThTable($event)">{{ champsTitre[champ] }} <i class="input-helper"></i></label>
-                </div>
+            <div class="col-6 col-sm-4 col-md-2" *ngFor="let champ of champs" >
+              <div class="champ-checkbox form-check form-check-primary">
+                <label class="form-check-label">
+                  <input type="checkbox" class="form-check-input" id="{{ champ }}" value="{{ champ }}" name="{{ champ }}"
+                         [checked]="isChampCoche(champ)"
+                         (change)="this.creationThTable($event)">{{ champsTitre[champ] }} <i class="input-helper"></i></label>
               </div>
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-3 offset-md-9">
-            <button type="button" class="btn btn-success  text-uppercase mt-2"  (click)="creerTableauPeriodique(this.methodesGlobal.getValue(plateformePrincipale.value))" >
-              <i class="icon-chart icon-layers"></i> {{'rapport.btn-rapport'| translate }}
-            </button>
-          </div>
-        </div>
+      </div>
+
+      <div class="rapport-actions mb-3">
+        <button type="button" class="btn btn-success text-uppercase" [disabled]="isLoadingResults" (click)="creerTableauPeriodique()" >
+          <i class="icon-chart icon-layers"></i> {{'rapport.btn-rapport'| translate }}
+        </button>
+      </div>
 
       <!-- Tableau contenu formulaire-->
       <div class="row" >
@@ -294,13 +313,13 @@
             <div class="example-container mat-elevation-z8 w-100" >
               <table   mat-table
                        [dataSource]="dataSource"
-                       class="mat-elevation-z8 w-100 p-2 rapport-table"
+                       class="mat-elevation-z8 table-mat-100 p-2 rapport-table"
                        matSort>
 
                 <!-- creation dynamique du tableau -->
                 <ng-container  *ngFor="let th of thTableau" matColumnDef="{{th}}">
-                  <th *matHeaderCellDef mat-sort-header class="font-weight-bold w-15 pl-3"> {{ champsTitre[th]}} </th>
-                  <td *matCellDef="let row" class="w-15 pl-3" ><a *ngIf="(champsTitre[th]=='ID Revue')" title="Consulter la fiche"  routerLink="/periodique/{{ row[th] }}"> {{row[th]}} </a><span *ngIf="(champsTitre[th]!='ID Revue')">{{row[th]}}</span></td>
+                  <th *matHeaderCellDef mat-sort-header class="font-weight-bold rapport-col pl-3"> {{ champsTitre[th]}} </th>
+                  <td *matCellDef="let row" class="rapport-col pl-3" [title]="row[th]" ><a *ngIf="(champsTitre[th]=='ID Revue')" title="Consulter la fiche"  routerLink="/periodique/{{ row[th] }}"> {{row[th]}} </a><span *ngIf="(champsTitre[th]!='ID Revue')">{{row[th]}}</span></td>
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="thTableau"></mat-header-row>
