@@ -11,8 +11,9 @@
               <i class="icon-action-undo btn-icon-prepend"></i> {{ 'btn-return' | translate }}
             </button>
             <button class="btn btn-info ml-1 btn-sm mb-1"
-                    (click)="methodesGlobal.ExportTOExcel('tableau-processus','liste-processus-details.xlsx')">
-              <i class="fa fa-file-excel-o"></i> {{ 'btn-export' | translate }}
+                    [disabled]="isExporting || totalItems === 0"
+                    (click)="exporterExcel()">
+              <i class="fa" [ngClass]="isExporting ? 'fa-spinner fa-spin' : 'fa-file-excel-o'"></i> {{ 'btn-export' | translate }}
             </button>
           </span>
         </div>
@@ -161,14 +162,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Table cachée pour export Excel -->
-    <table class="table table-bordered cacherVisible" id="tableau-processus">
-      <tr><th *ngFor="let th of displayedColumns">{{ th }}</th></tr>
-      <tr *ngFor="let col of listeProcessus">
-        <td *ngFor="let rep of displayedColumns">{{ col[rep] }}</td>
-      </tr>
-    </table>
 
     <!-- Animation de chargement -->
     <div *ngIf="isLoading" class="loading-container">

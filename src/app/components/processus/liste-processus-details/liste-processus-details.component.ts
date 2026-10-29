@@ -6,6 +6,7 @@ import {MethodesGlobal} from "../../../lib/MethodesGlobal";
 import {ProcessusService} from "../../../services/processus.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ConfirmDialogComponent} from "../../../lib/confirm-suppression-dialog.component";
+import * as XLSX from "xlsx";
 
 @Component({
   selector: 'app-liste-processus-details',
@@ -25,6 +26,7 @@ export class ListeProcessusDelailsComponent implements OnInit, AfterViewInit {
   fileName = 'liste-processus.xlsx';
   idProcessus: string = '';
   isLoading = true;
+  isExporting = false;
 
   currentPage = 0;
   pageSize = 25;
@@ -67,15 +69,7 @@ export class ListeProcessusDelailsComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (response) => {
           const rows: any[] = response?.data || [];
-          this.listeProcessus = rows.map((r: any, i: number) => ({
-            numero: skip + i + 1,
-            id_details: r.id_details,
-            idRevue: r.idRevue === '-1' ? '!!!' : r.idRevue,
-            ISSN: r.ISSN === '-1' ? '!!!' : r.ISSN,
-            EISSN: r.EISSN,
-            titre: r.titre,
-            dateA: r.dateA
-          }));
+          this.listeProcessus = rows.map((r: any, i: number) => this.mapRow(r, skip + i + 1));
           this.dataSource.data = this.listeProcessus;
           this.totalItems = response?.total || 0;
           this.isLoading = false;
@@ -83,6 +77,48 @@ export class ListeProcessusDelailsComponent implements OnInit, AfterViewInit {
         error: (err) => {
           console.error(`Erreur chargement détails: ${err}`);
           this.isLoading = false;
+        }
+      });
+  }
+
+  private mapRow(r: any, numero: number): any {
+    return {
+      numero,
+      id_details: r.id_details,
+      idRevue: r.idRevue === '-1' ? '!!!' : r.idRevue,
+      ISSN: r.ISSN === '-1' ? '!!!' : r.ISSN,
+      EISSN: r.EISSN,
+      titre: r.titre,
+      dateA: r.dateA
+    };
+  }
+
+  // Exporte toutes les lignes du processus (filtre de recherche inclus), pas seulement la page affichée
+  exporterExcel(): void {
+    if (this.isExporting || this.totalItems === 0) return;
+    this.isExporting = true;
+
+    this.processusService.fetchAllDetailsPaginated(this.idProcessus, 0, this.totalItems, this.prepareSearch(this.textRechercher))
+      .subscribe({
+        next: (response) => {
+          const rows: any[] = (response?.data || []).map((r: any, i: number) => this.mapRow(r, i + 1));
+          const donnees = rows.map(r => ({
+            'No': r.numero,
+            'idRevue': r.idRevue,
+            'ISSN': r.ISSN,
+            'EISSN': r.EISSN,
+            'Titre': r.idRevue === '!!!' ? "Le match n'est pas fait pour ce périodique" : r.titre,
+            "Date d'ajout": r.dateA
+          }));
+          const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(donnees);
+          const wb: XLSX.WorkBook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, 'processus-' + this.idProcessus);
+          XLSX.writeFile(wb, 'liste-processus-details.xlsx');
+          this.isExporting = false;
+        },
+        error: (err) => {
+          console.error(`Erreur export détails: ${err}`);
+          this.isExporting = false;
         }
       });
   }
