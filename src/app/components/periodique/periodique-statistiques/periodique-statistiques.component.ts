@@ -140,6 +140,7 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
   }
   //appliquer modifier fiche
   async apliquerModifier(idStatistique:number) {
+    if (!this.ifAdmin) { return; }
     //changer l'action
     this.action='save'
     //cacher le boutton add
@@ -204,6 +205,7 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
   }
 
   delete(id: number): void {
+    if (!this.ifAdmin) { return; }
     let textAlert:string='';
     //changer le texte pour le boutton
     this.translate.get('message.supprimer-text').subscribe((res: string) => {
@@ -276,6 +278,7 @@ export class PeriodiqueStatistiquesComponent implements OnInit {
   }
 //fonction pour valider
   onSubmit(f: NgForm) {
+    if (!this.ifAdmin) { return; }
     // @ts-ignore
     let action = document.getElementById('action').value
     // @ts-ignore

@@ -13,19 +13,20 @@ router.use('/login', (req, res, next) => {
       return res.status(500).send({ message: 'Erreur lors de la déconnexion' });
     }
     // Redirige vers le processus d'authentification
-    auth.passport.authenticate('provider', { failureRedirect: '/api/logout' })(req, res, next);
+    auth.passport.authenticate('provider', { failureRedirect: '/api/logout?raison=echec-connexion' })(req, res, next);
   });
 });
 
 router.get('/callback.js', (req, res, next) => {
-  auth.passport.authenticate('provider', { failureRedirect: '/api/logout' }, (err, user) => {
+  auth.passport.authenticate('provider', { failureRedirect: '/api/logout?raison=echec-connexion' }, (err, user, info) => {
     if (err) {
-      console.log('Erreur lors de l\'authentification : ' + err);
-      return res.redirect('/api/logout');
+      console.error(`[auth] ${new Date().toISOString()} Échec de connexion (erreur Azure/OAuth) : ${err.message || err}`);
+      return res.redirect('/api/logout?raison=echec-connexion');
     }
     if (!user) {
-      console.log('Aucun utilisateur trouvé après l\'authentification');
-      return res.redirect('/api/logout');
+      // ex. "Unable to verify authorization request state." si le state OAuth ne correspond pas
+      console.warn(`[auth] ${new Date().toISOString()} Échec de connexion (aucun utilisateur) : ${info?.message || 'raison inconnue'}`);
+      return res.redirect('/api/logout?raison=echec-connexion');
     }
 
     req.logIn(user, (err) => {

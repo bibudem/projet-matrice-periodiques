@@ -59,6 +59,7 @@ export class PeriodiqueHistoriqueComponent implements OnInit {
   ngOnInit(): void {
     //ajout de niveau de securité
     this.ifAdmin=this.methodesGlobal.ifAdminFunction();
+    if (!this.ifAdmin) { this.displayedColumns = this.displayedColumns.filter(c => c !== 'modiffier' && c !== 'supprimer'); }
     //afficher le bon bouton
     this.methodesGlobal.afficher('add-boutton');
     this.methodesGlobal.nonAfficher('save-boutton');
@@ -99,6 +100,7 @@ export class PeriodiqueHistoriqueComponent implements OnInit {
 
   //appliquer modifier fiche
   apliquerModifier(idArchive:number) {
+    if (!this.ifAdmin) { return; }
     //changer l'action
     this.action='save'
     //cacher le boutton add
@@ -156,6 +158,7 @@ export class PeriodiqueHistoriqueComponent implements OnInit {
   }
 
   delete(id: number): void {
+    if (!this.ifAdmin) { return; }
     let textAlert:string='';
     //changer le texte pour le boutton
     this.translate.get('message.supprimer-text').subscribe((res: string) => {
@@ -205,6 +208,7 @@ export class PeriodiqueHistoriqueComponent implements OnInit {
 
   //fonction pour valider
   onSubmit(f: NgForm) {
+    if (!this.ifAdmin) { return; }
     // @ts-ignore
     let action = document.getElementById('action').value
     //recouperer les donnes pour creer l'objet

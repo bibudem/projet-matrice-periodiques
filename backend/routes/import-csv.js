@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post('/add', authMiddleware, importCsvController.postInCites);
 router.post('/add-bulk', authMiddleware, importCsvController.postBulkInCites);
-router.get('/update/:annee', authMiddleware, importCsvController.updateInCites);
+router.get('/update/:annee', authMiddleware, authMiddleware.adminOnly, importCsvController.updateInCites);
 
 module.exports = router;

@@ -138,8 +138,8 @@
             <th class="font-weight-bold ">{{ 'fournisseur' | translate}}</th>
             <th class="font-weight-bold w-10">{{ 'dateA' | translate}}</th>
             <th class="font-weight-bold w-10">{{ 'dateM' | translate}}</th>
-            <th class="font-weight-bold ">{{ 'btn-modifier' | translate}}</th>
-            <th class="font-weight-bold ">{{ 'btn-supprimer' | translate}}</th>
+            <th *ngIf="ifAdmin" class="font-weight-bold ">{{ 'btn-modifier' | translate}}</th>
+            <th *ngIf="ifAdmin" class="font-weight-bold ">{{ 'btn-supprimer' | translate}}</th>
           </tr>
           </thead>
           <tbody>
@@ -155,12 +155,12 @@
             <td>{{ rep.fournisseur}}</td>
             <td>{{ rep.dateA | date:'short': 'fr' }}</td>
             <td>{{ rep.dateM | date:'short': 'fr' }}</td>
-            <td class="text-center">
+            <td *ngIf="ifAdmin" class="text-center">
               <button type="button" class="btn btn-dark btn-rounded btn-icon btn-sm " title="Modifier"  (click)="apliquerModifier(rep.idArchive)">
                 <i class="icon-note"></i>
               </button>
             </td>
-            <td class="text-center">
+            <td *ngIf="ifAdmin" class="text-center">
               <button  mat-icon-button (click)="delete(rep.idArchive)">
                 <mat-icon  color="warn">
                   delete

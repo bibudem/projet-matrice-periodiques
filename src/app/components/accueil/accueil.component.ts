@@ -14,7 +14,8 @@ export class AccueilComponent implements OnInit {
   totalCitation = 0;
   totalArticleUdem = 0;
 
-  anneeSelectionnee: number = new Date().getFullYear();
+  // Par défaut : l'année précédente (données complètes) ; l'année en cours reste accessible avec la flèche ›
+  anneeSelectionnee: number = new Date().getFullYear() - 1;
   arrayAnnee: number[] = [];
 
   top10: any[] = [];

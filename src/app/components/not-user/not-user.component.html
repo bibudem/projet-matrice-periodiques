@@ -1,21 +1,40 @@
-<section class="top">
-  <div class="title">
-    <h1>{{ 'app-title' | translate}}</h1>
-    <h5 class="text-center mt-2">{{ 'home.home-description' | translate}}</h5>
-  </div>
-</section>
-<section class="page">
-  <div class="parallax2">
-    <div class="overlay"></div>
-    <h2>{{ 'not-user-title' | translate}}</h2>
-  </div>
-  <div class="paragraph second">
-    <div class="alert alert-warning text-center">
-      <small>{{ 'user-explication' | translate}}: <a href="mailto:service@bib.umontreal.ca">service@bib.umontreal.ca</a></small>
+<main class="nu-page" aria-labelledby="nu-title">
+
+  <!-- Bandeau visuel (décoratif) -->
+  <div class="nu-hero" aria-hidden="true"></div>
+
+  <section class="nu-card">
+    <img class="nu-logo" src="assets/images/biblio-logo.png" alt="Les bibliothèques — Université de Montréal">
+
+    <p class="nu-app">{{ 'app-title' | translate }}</p>
+
+    <span class="nu-icon" aria-hidden="true"><i class="fa fa-lock"></i></span>
+
+    <h1 id="nu-title" class="nu-title">{{ 'not-user-title' | translate }}</h1>
+    <p class="nu-text">{{ 'not-user-message' | translate }}</p>
+
+    <div *ngIf="raison" class="nu-error" role="alert">
+      <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+      <div>
+        <strong>{{ (raison === 'acces-refuse' ? 'not-user-erreur-acces-titre' : 'not-user-erreur-connexion-titre') | translate }}</strong>
+        <p>
+          {{ (raison === 'acces-refuse' ? 'not-user-erreur-acces' : 'not-user-erreur-connexion') | translate }}
+          <a href="mailto:service@bib.umontreal.ca">service&#64;bib.umontreal.ca</a>
+        </p>
+      </div>
     </div>
-    <p class="text-center">
-      <a href="https://bib.umontreal.ca/"  class="btn btn-outline-dark  mt-2 ml-5">{{ 'not-user-lien' | translate}}</a>
-      <a href="/api/auth/login"  class="btn btn-outline-success  mt-2 ml-2">{{ 'connexion' | translate}}</a>
-    </p>
-  </div>
-</section>
+
+    <a href="/api/auth/login" class="nu-btn-primary">
+      <i class="fa fa-sign-in" aria-hidden="true"></i>
+      <span>{{ 'connexion' | translate }}</span>
+    </a>
+  </section>
+
+  <footer class="nu-footer">
+    <a href="https://bib.umontreal.ca/" class="nu-link-site">
+      <i class="fa fa-arrow-left" aria-hidden="true"></i>
+      <span>{{ 'not-user-lien' | translate }}</span>
+    </a>
+  </footer>
+
+</main>

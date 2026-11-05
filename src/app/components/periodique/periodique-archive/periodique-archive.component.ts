@@ -115,6 +115,7 @@ export class PeriodiqueArchiveComponent implements OnInit {
 
   //appliquer modifier fiche
   apliquerModifier(idArchive:number) {
+    if (!this.ifAdmin) { return; }
     //cacher le boutton add
     this.methodesGlobal.nonAfficher('add-boutton');
     this.methodesGlobal.afficher('save-boutton');
@@ -182,6 +183,7 @@ export class PeriodiqueArchiveComponent implements OnInit {
   }
 
   async delete(id: number) {
+    if (!this.ifAdmin) { return; }
 
     let textAlert:string='';
     //changer le texte pour le boutton
@@ -230,6 +232,7 @@ export class PeriodiqueArchiveComponent implements OnInit {
   }
   //fonction pour valider
   onSubmit(f: NgForm) {
+    if (!this.ifAdmin) { return; }
     // @ts-ignore
     let action = document.getElementById('action').value
     //recouperer les donnes pour creer l'objet

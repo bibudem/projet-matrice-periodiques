@@ -1,23 +1,29 @@
 import {Component, OnInit} from '@angular/core';
-import {TranslateService} from "@ngx-translate/core";
-import {HomeService} from "../../services/home.service";
+import {ActivatedRoute} from '@angular/router';
+
+type RaisonErreur = 'acces-refuse' | 'echec-connexion';
 
 @Component({
   selector: 'page-404',
   templateUrl: './not-user.component.html',
   styleUrls: ['./not-user.component.css']
 })
-export class NotUserComponent implements OnInit{
+export class NotUserComponent implements OnInit {
 
-  constructor(private translate:TranslateService) {
+  /** Motif d'erreur transmis dans l'URL (?raison=...), null si simple déconnexion */
+  raison: RaisonErreur | null = null;
 
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    this.supprimerHistorique();
+    const r = this.route.snapshot.queryParamMap.get('raison');
+    this.raison = (r === 'acces-refuse' || r === 'echec-connexion') ? r : null;
   }
-  async ngOnInit() {
-    await this.supprimerHistorique()
-  }
-  //fonction qui supprime tous les cookies
-  async supprimerHistorique(){
+
+  // Vider les données de session côté navigateur
+  supprimerHistorique(): void {
     localStorage.clear();
-    sessionStorage.clear()
+    sessionStorage.clear();
   }
 }

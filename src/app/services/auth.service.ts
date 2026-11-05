@@ -80,7 +80,7 @@ export class AuthService {
               this.idleTimeoutService.start(() => this.logoutForInactivity());
               break
             default:
-              window.location.href ='/not-user'
+              window.location.href ='/not-user?raison=acces-refuse'
           }
 
           }
@@ -88,6 +88,13 @@ export class AuthService {
         );
     } catch (e : any){
       isLoggedIn=false;
+      if (e?.status === 403) {
+        // Authentifié UdeM mais pas dans un groupe autorisé : afficher le message d'erreur sur /not-user
+        this.idleTimeoutService.stop();
+        sessionStorage.clear();
+        window.location.href = '/not-user?raison=acces-refuse';
+        return of(false);
+      }
       await this.logout()
       console.log('Erreur login http'+e);
     }

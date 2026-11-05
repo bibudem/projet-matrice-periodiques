@@ -16,7 +16,8 @@ function AzureOAuthStrategy() {
       scope:'openid%20profile%20email%20phone%20address',
       response_type:'code',
       origin: "Application",
-      state:false
+      // Protection CSRF : un "state" aléatoire est stocké en session et vérifié au retour d'Azure
+      state: true
     },
 
 

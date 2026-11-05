@@ -1,140 +1,188 @@
-:root {
-  --bc: #efeeee;
-  --white: #ffffff;
-  --black: #000000;
-  --red: #da2c4d;
-  --teal: #20c997;
-  --cyan: #17a2b8;
-  --primary: #f9c6cf;
-  --font-family-sans-serif: -apple-system,BlinkMacSystemFont,'Figtree', sans-serif;
+/* Page « Accès réservé » — palette de l'application (bleu UdeM #0071b9, marine #05304e) */
+:host {
+  --nu-blue: #0071b9;
+  --nu-blue-dark: #005a94;
+  --nu-navy: #05304e;
+  --nu-text: #2d3a45;
+  --nu-muted: #55606b;      /* contraste AA sur blanc */
+  --nu-bg: #f4f7fa;
+  --nu-border: #d0dde8;
+  --nu-focus: #ffbf47;
+  display: block;
 }
-* {
-  box-sizing: border-box;
+
+* { box-sizing: border-box; }
+
+.nu-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--nu-bg);
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--nu-text);
 }
-/* Classes */
-.top {
-  padding: 2em;
-  margin: 0 auto;
-  background-color: white;
+
+/* Bandeau image */
+.nu-hero {
+  width: 100%;
+  height: clamp(160px, 32vh, 300px);
+  background:
+    linear-gradient(180deg, rgba(5, 48, 78, .55), rgba(5, 48, 78, .8)),
+    url("/assets/images/bib-not-user.jpg") center / cover no-repeat;
+}
+
+/* Carte centrale, remontée sur le bandeau */
+.nu-card {
+  position: relative;
+  width: calc(100% - 32px);
+  max-width: 520px;
+  margin-top: clamp(-120px, -14vh, -64px);
+  padding: 2.25rem 2rem 1.75rem;
+  background: #fff;
+  border: 1px solid var(--nu-border);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(5, 48, 78, .14);
   text-align: center;
 }
-.title {
-  color: var(--black);
+
+.nu-logo {
+  display: block;
+  width: 220px;
+  max-width: 70%;
+  height: auto;
+  margin: 0 auto 1rem;
 }
-.title h1 {
-  margin: 0;
-  padding: 0;
-  font-size: 35px;
-  font-weight: 400;
-  letter-spacing: 8px;
+
+.nu-app {
+  margin: 0 0 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--nu-border);
+  font-size: clamp(1.15rem, 3.2vw, 1.4rem);
+  font-weight: 700;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  font-family: 'Figtree', sans-serif;
+  color: var(--nu-blue);
 }
-.title h3 {
-  font-size: 14px;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 8px;
-  line-height: 0;
-  font-family: 'Lora', serif;
-}
-/* Parallax */
-.parallax1 {
-  position: relative;
-  background-image: url("https://matrice.bib.umontreal.ca/assets/images/bib-not-user.jpg");
-  min-height: 35vh;
-  position: relative;
-  background-attachment: fixed;
-  background-position: bottom;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.parallax2 {
-  display: flex;
-  justify-content: center;
+
+.nu-icon {
+  display: inline-flex;
   align-items: center;
-  position: relative;
-  background-image: url("https://matrice.bib.umontreal.ca/assets/images/bib-not-user.jpg");
-  min-height: 45vh;
-  position: relative;
-  background-attachment: fixed;
-  background-position: bottom;
-  background-repeat: no-repeat;
-  background-size: cover;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: .75rem;
+  border-radius: 50%;
+  background: #e6f1f8;
+  color: var(--nu-blue);
+  font-size: 1.5rem;
 }
-.overlay {
+
+.nu-title {
+  margin: 0 0 .5rem;
+  font-size: clamp(1.5rem, 4vw, 1.9rem);
+  font-weight: 700;
+  color: var(--nu-navy);
+}
+
+.nu-text {
+  margin: 0 auto 1.75rem;
+  max-width: 40ch;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--nu-muted);
+}
+
+/* Bouton principal : se connecter */
+.nu-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, .5);
-  position: absolute;
+  min-height: 48px;
+  padding: .8rem 1.5rem;
+  border-radius: 10px;
+  background: var(--nu-blue);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color .15s ease, box-shadow .15s ease, transform .15s ease;
 }
-.parallax2 h2 {
-  font-size: 3em;
-  font-weight: 300;
-  text-transform: uppercase;
-  color: var(--white);
-  z-index: 1;
-  font-family: 'Lora', serif;
+.nu-btn-primary:hover {
+  background: var(--nu-blue-dark);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(0, 113, 185, .3);
+  transform: translateY(-1px);
 }
-h5 {
-  color: #495057;
-  font-weight: normal;
-}
-/* Paragraph */
-.paragraph {
-  margin: 3em 0;
+
+/* Message d'erreur de connexion (affiché seulement avec ?raison=...) */
+.nu-error {
   display: flex;
-  justify-content: center;
+  align-items: flex-start;
+  gap: .75rem;
+  margin: 0 0 1.5rem;
+  padding: .9rem 1rem;
+  border-radius: 8px;
+  background: #fdecee;
+  border-left: 4px solid #c62839;
+  text-align: left;
+  color: #6b1220;
+  font-size: .9rem;
+  line-height: 1.5;
+}
+.nu-error .fa { margin-top: .15rem; font-size: 1.15rem; color: #c62839; }
+.nu-error strong { display: block; margin-bottom: .15rem; color: #8a1426; }
+.nu-error p { margin: 0; }
+.nu-error a {
+  color: #8a1426;
+  font-weight: 600;
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
+.nu-error a:focus-visible {
+  outline: 3px solid var(--nu-focus);
+  outline-offset: 2px;
+}
+
+/* Lien secondaire en bas : site des Bibliothèques */
+.nu-footer {
+  margin: 2rem 0 2.5rem;
+  padding: 0 16px;
+}
+.nu-link-site {
+  display: inline-flex;
   align-items: center;
-  flex-direction: column;
+  gap: .5rem;
+  min-height: 44px;
+  padding: .5rem .75rem;
+  border-radius: 8px;
+  color: var(--nu-navy);
+  font-weight: 500;
+  text-decoration: none;
 }
-.paragraph p {
-  width: 60%;
-  font-size: 1.05em;
-  line-height: 1.45em;
-  letter-spacing: .1em;
-  color: rgb(64, 64, 64);
-  font-family: 'Lora', serif;
+.nu-link-site:hover {
+  color: var(--nu-blue);
+  text-decoration: underline;
 }
-.first span {
-  font-size: 4em;
-  color: var(--red);
-  float: left;
-  font-weight: 400;
-  line-height: 55px;
-  padding: .05em .2em 0 0;
-  font-family: 'Lora', serif;
+
+/* Focus clavier bien visible */
+.nu-btn-primary:focus-visible,
+.nu-link-site:focus-visible {
+  outline: 3px solid var(--nu-focus);
+  outline-offset: 3px;
 }
-.second span {
-  font-size: 4em;
-  color: var(--teal);
-  float: left;
-  font-weight: 400;
-  line-height: 55px;
-  padding: .05em .2em 0 0;
-  font-family: 'Lora', serif;
+
+/* Mobile */
+@media (max-width: 480px) {
+  .nu-card { padding: 1.75rem 1.25rem 1.25rem; border-radius: 12px; }
+  .nu-logo { width: 180px; }
 }
-.third span {
-  font-size: 4em;
-  color: var(--cyan);
-  float: left;
-  font-weight: 400;
-  line-height: 55px;
-  padding: .05em .2em 0 0;
-}
-/* Selection */
-::selection {
-  color: var(--white);
-  background: rgba(161, 181, 201, .8);
-}
-/* SCROLLBAR */
-::-webkit-scrollbar-track {
-  background-color: #F5F5F5;
-}
-::-webkit-scrollbar {
-  width: 12px;
-  background-color: #F5F5F5;
-}
-::-webkit-scrollbar-thumb {
-  background-color: rgba(161, 181, 201, .8);
+
+/* Réduction des animations */
+@media (prefers-reduced-motion: reduce) {
+  .nu-btn-primary { transition: none; }
+  .nu-btn-primary:hover { transform: none; }
 }

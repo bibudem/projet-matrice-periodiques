@@ -58,6 +58,7 @@ export class PeriodiqueNoteComponent implements OnInit {
 
     //ajout de niveau de securité
     this.ifAdmin=this.methodesGlobal.ifAdminFunction();
+    if (!this.ifAdmin) { this.displayedColumns = this.displayedColumns.filter(c => c !== 'modiffier' && c !== 'supprimer'); }
 
     //afficher le bon bouton
     this.methodesGlobal.afficher('add-boutton-note');
@@ -104,6 +105,7 @@ export class PeriodiqueNoteComponent implements OnInit {
 
   //appliquer modifier fiche
   apliquerModifier(idNote:number) {
+    if (!this.ifAdmin) { return; }
     //cacher le boutton add
     this.methodesGlobal.nonAfficher('add-boutton-note');
     this.methodesGlobal.afficher('save-boutton-note');
@@ -148,6 +150,7 @@ export class PeriodiqueNoteComponent implements OnInit {
   }
 
   delete(id: number): void {
+    if (!this.ifAdmin) { return; }
     let textAlert:string='';
     //changer le texte pour le boutton
     this.translate.get('message.supprimer-text').subscribe((res: string) => {
@@ -205,6 +208,7 @@ export class PeriodiqueNoteComponent implements OnInit {
 
   //fonction pour valider
   onSubmit(f: NgForm) {
+    if (!this.ifAdmin) { return; }
     // @ts-ignore
     let action = document.getElementById('action').value
     //recouperer les donnes pour creer l'objet

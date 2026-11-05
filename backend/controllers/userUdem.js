@@ -14,7 +14,23 @@ exports.getUserUdem = async (req, res, next) => {
     const [ficheUser] = await UserAuth.returnUserUdem(user);
 
     if (ficheUser.groupe === 'not-user') {
-      return res.redirect('/api/logout');
+      // Trace du refus : qui, combien de groupes reçus d'Azure, et si la liste était absente (dépassement > 200)
+      let nbGroupes = 0, depassement = false;
+      try {
+        const claims = JSON.parse(user);
+        nbGroupes = Array.isArray(claims.groups) ? claims.groups.length : 0;
+        depassement = !claims.groups && !!claims._claim_names?.groups;
+      } catch (_) { /* jeton illisible : valeurs par défaut */ }
+      console.warn(`[auth] ${new Date().toISOString()} Accès refusé : ${ficheUser.courriel || '(courriel inconnu)'}`
+        + ` | groupes reçus : ${nbGroupes} | dépassement de groupes : ${depassement ? 'oui' : 'non'}`);
+
+      // Détruire la session et répondre 403 : le frontend affiche le message d'erreur sur /not-user
+      return req.logout(() => {
+        req.session.destroy(() => {
+          res.clearCookie('connect.sid');
+          res.status(403).json({ raison: 'acces-refuse' });
+        });
+      });
     }
 
     return res.status(200).json(ficheUser);

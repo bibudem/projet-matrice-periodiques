@@ -57,6 +57,7 @@ export class PeriodiquePrixComponent implements OnInit {
   ngOnInit(): void {
     //ajout de niveau de securité
     this.ifAdmin=this.methodesGlobal.ifAdminFunction();
+    if (!this.ifAdmin) { this.displayedColumns = this.displayedColumns.filter(c => c !== 'modiffier' && c !== 'supprimer'); }
 
     this.idRevue=localStorage.getItem('idRevue');
     //afficher le bon bouton
@@ -101,6 +102,7 @@ export class PeriodiquePrixComponent implements OnInit {
 
   //appliquer modifier fiche
   apliquerModifier(idPrix:number) {
+    if (!this.ifAdmin) { return; }
     //cacher le boutton add
     this.methodesGlobal.nonAfficher('add-boutton');
     this.methodesGlobal.afficher('save-boutton');
@@ -148,6 +150,7 @@ export class PeriodiquePrixComponent implements OnInit {
   }
 
   delete(id: number): void {
+    if (!this.ifAdmin) { return; }
     let textAlert:string='';
     //changer le texte pour le boutton
     this.translate.get('message.supprimer-text').subscribe((res: string) => {
@@ -194,6 +197,7 @@ export class PeriodiquePrixComponent implements OnInit {
   }
 //fonction pour valider
   onSubmit(f: NgForm) {
+    if (!this.ifAdmin) { return; }
     // @ts-ignore
     let action = document.getElementById('action').value
     //recouperer les donnes pour creer l'objet

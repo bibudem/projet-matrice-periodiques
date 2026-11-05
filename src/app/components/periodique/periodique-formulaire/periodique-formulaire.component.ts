@@ -322,6 +322,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
   }
   //supprimer un enregistrement
   delete(id: number): void {
+    if (!this.ifAdmin) { return; }
     const ref = this.dialog.open(ConfirmDialogComponent, {
       width: '420px',
       data: {
@@ -493,6 +494,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
 
 //fonction pour valider
   onSubmit(f: NgForm) {
+    if (!this.ifAdmin) { return; }
     // @ts-ignore
     const action = (document.getElementById('action') as HTMLInputElement)?.value;
 
@@ -540,6 +542,7 @@ export class PeriodiqueFormulaireComponent implements OnInit {
   }
 
   confirmerModification(form: NgForm): void {
+    if (!this.ifAdmin) { return; }
     const ref = this.dialog.open(ConfirmDialogComponent, {
       width: '420px',
       data: {

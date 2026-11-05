@@ -42,7 +42,7 @@ const routes: Routes = [
   { path: '', component: AccueilComponent, canActivate: [AuthGuard] },
   { path: 'accueil', component: AccueilComponent, canActivate: [AuthGuard] },
   { path: 'periodique/liste', component: PeriodiqueListeComponent, canActivate: [AuthGuard] },
-  { path: 'periodique/add', component: PeriodiqueFormulaireComponent, canActivate: [AuthGuard] },
+  { path: 'periodique/add', component: PeriodiqueFormulaireComponent, canActivate: [AuthGuard, AdminGuard] },
   { path: 'periodique/:id', component: PeriodiqueFormulaireComponent, canActivate: [AuthGuard] },
   { path: 'periodique/archive/:id', component: PeriodiqueArchiveComponent, canActivate: [AuthGuard] },
   { path: 'periodique/statistiques/:id', component: PeriodiqueStatistiquesComponent, canActivate: [AuthGuard] },

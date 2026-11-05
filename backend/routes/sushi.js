@@ -8,7 +8,7 @@ const router = express.Router();
 
 
 
-router.get('/rapports-sushi/:date', authMiddleware, sushiController.getAllSushi);
+router.get('/rapports-sushi/:date', authMiddleware, authMiddleware.adminOnly, sushiController.getAllSushi);
 
 
 

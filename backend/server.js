@@ -80,6 +80,11 @@ app.use(session({
   rolling: true, // réinitialise l'expiration à chaque requête (déconnexion après 1h d'inactivité, pas 1h depuis la connexion)
   cookie: {
     httpOnly: true,
+    // 'auto' : cookie "Secure" quand la requête arrive en HTTPS (via le proxy de confiance, X-Forwarded-Proto),
+    // et non sécurisé en HTTP local pour ne pas bloquer le développement
+    secure: 'auto',
+    // 'lax' (et non 'strict') : le cookie doit être envoyé au retour d'Azure (redirection GET de premier niveau)
+    sameSite: 'lax',
     maxAge: 3600000,
   }
 }));
@@ -102,8 +107,9 @@ app.get('/logout', (req, res) => {
         return res.status(500).send({ message: 'Erreur lors de la destruction de la session' });
       }
       res.clearCookie('connect.sid');
-      //res.send({ message: 'User logout' });
-      res.redirect('/not-user');
+      // Transmettre le motif (liste blanche) pour afficher le bon message sur /not-user
+      const raison = ['acces-refuse', 'echec-connexion'].includes(req.query.raison) ? req.query.raison : null;
+      res.redirect(raison ? `/not-user?raison=${raison}` : '/not-user');
     });
   });
 });
@@ -174,10 +180,6 @@ app.get('/connect-user', function (req, res, next) {
   }
 });
 
-app.get('/session-info', (req, res) => {
-  console.log('Session Info:', req.session);  // Affiche l'objet complet de la session
-  res.json({ session: req.session });
-});
 
 
 app.use(errorController.get404);

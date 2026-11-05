@@ -272,6 +272,7 @@ export class PeriodiqueListeComponent implements OnInit, AfterViewInit {
   }
 
   supprimerPeriodique(id: string, titre: string): void {
+    if (!this.ifAdmin) { return; }
     const ref = this.dialog.open(ConfirmDialogComponent, {
       width: '420px',
       data: {
