@@ -37,6 +37,8 @@
         </div>
         <!-- fin alert notification div -->
         <form   #periodiqueForm="ngForm" name="periodiqueForm" id="periodiqueForm"  (ngSubmit)="onSubmit(periodiqueForm)">
+          <!-- Viewer : consultation seulement, tous les champs sont désactivés -->
+          <fieldset class="fiche-fieldset" [disabled]="!ifAdmin">
           <div class="row">
             <div class="col-md-4">
               <div class="form-group">
@@ -130,6 +132,7 @@
                 <mat-form-field class="w-100">
                   <mat-select
                     [(ngModel)]="periodique.secteur"
+                    [disabled]="!ifAdmin"
 
                     id="secteur"
                     name="secteur"
@@ -153,6 +156,7 @@
                 <mat-form-field class="w-100">
                   <mat-select
                     [(ngModel)]="periodique.fonds"
+                    [disabled]="!ifAdmin"
                     id="fonds"
                     name="fonds"
                     #fonds
@@ -279,6 +283,7 @@
                       <mat-form-field class="w-100">
                         <mat-select
                           [(ngModel)]="periodique.autrePlateforme"
+                          [disabled]="!ifAdmin"
                           placeholder="{{ 'plateforme-autre' | translate}}"
                           id="autrePlateforme"
                           name="autrePlateforme"
@@ -577,6 +582,7 @@
 
           </div>
 
+          </fieldset>
         </form>
       </div>
     </div>

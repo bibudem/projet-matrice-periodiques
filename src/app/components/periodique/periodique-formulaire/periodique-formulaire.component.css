@@ -1,3 +1,26 @@
 @import "../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css";
 @import "../../../../../node_modules/@ng-select/ng-select/themes/material.theme.css";
 @import "../../../../../node_modules/@ng-select/ng-select/themes/ant.design.theme.css";
+
+/* Fieldset neutre (pas de bordure ni d'espacement) : sert seulement à désactiver les champs pour un Viewer */
+.fiche-fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+/* Champs désactivés (Viewer) : texte bien lisible, curseur explicite */
+.fiche-fieldset:disabled .form-control,
+.fiche-fieldset:disabled select,
+.fiche-fieldset:disabled textarea {
+  background-color: #f4f7fa;
+  color: #2d3a45;
+  opacity: 1;
+  cursor: not-allowed;
+}
+.fiche-fieldset:disabled .form-check-input { cursor: not-allowed; }
+:host ::ng-deep .mat-mdc-select-disabled .mat-mdc-select-value,
+:host ::ng-deep .mat-select-disabled .mat-select-value {
+  color: #2d3a45;
+}
